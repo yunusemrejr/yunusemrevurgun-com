@@ -1,0 +1,188 @@
+ 
+ <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    <link rel="icon" type="image/x-icon" href="../../media/general/icon.webp">
+     <meta name="description" content="Have you ever wondered how your PHP source code gets to run? At some point, you installed PHP and started writing your scripts. You connected to your XAMPP MySQL with a few lines of code and it's magic! Well, maybe it is not magic after all.">
+           <link rel="stylesheet" href="../styles/general.css"  />
+
+<!-- Start Open Web Analytics Tracker -->
+<script type="text/javascript">
+//<![CDATA[
+var owa_baseUrl = 'https://gor.bio/analytics/';
+var owa_cmds = owa_cmds || [];
+owa_cmds.push(['setSiteId', 'f078cf651d6c4bd497f0a3bf53b4c5a9']);
+owa_cmds.push(['trackPageView']);
+owa_cmds.push(['trackClicks']);
+
+(function() {
+    var _owa = document.createElement('script'); _owa.type = 'text/javascript'; _owa.async = true;
+    owa_baseUrl = ('https:' == document.location.protocol ? window.owa_baseSecUrl || owa_baseUrl.replace(/http:/, 'https:') : owa_baseUrl );
+    _owa.src = owa_baseUrl + 'modules/base/dist/owa.tracker.js';
+    var _owa_s = document.getElementsByTagName('script')[0]; _owa_s.parentNode.insertBefore(_owa, _owa_s);
+}());
+//]]>
+</script>
+<!-- End Open Web Analytics Code -->
+
+        
+<title>
+        
+        How Does PHP Run?
+        
+        | The Panoptic Pen - Personal Development and Self-Improvement Blog
+    </title>
+
+  </head>
+  <body>
+    <header>
+      <nav id="top-navbar">
+        <img src="../../media/general/icon.webp" alt="Yunus Emre Vurgun Logo">
+        <ul>
+          <li>
+            <a href="../../index/index.html">Home</a>
+          </li>
+          <li>
+            <a href="../../index/about.html">About /Projects</a>
+          </li>
+          <li>
+            <a href="../../index/gallery.html">Gallery</a>
+          </li>
+          <li>
+            <a href="../index.php">Blog</a>
+          </li>
+          <li>
+            <a href="../../wooden-log/index.php">Wooden-Log</a>
+          </li>
+        </ul>
+      </nav>
+      <h1>Yunus Emre Vurgun's Blog</h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="#footer">Go to Bottom</a>
+          </li>
+           
+        </ul>
+      </nav>
+    </header>
+    <section id="blog-section">
+      <H2>How Does PHP Run?</H2>
+ 
+
+      <div id="posts-container"><p>Have you ever wondered how your PHP source code gets to run? At some point, you installed PHP and started writing your scripts. You connected to your XAMPP MySQL with a few lines of code and it's magic! Well, maybe it is not magic after all.</p>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    <a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4zaK2PbPlxv8Ve2wTdL4d_-f0c5xva3NamTQ3VnV7Th6vwGj6H9JjDSEhsCkuTh4iRzElHfMvYW_ETWwFPgjHuIxijZOMGzLlFSIZNxR0tYUCnRcNdG288xWOUve3358iP5p5-XOOi58e4C8jTq8Y4plOd2wj3Nops-f0A3MW6pMTM4F6Qi5vWMeyaQ/s6000/pexels-realtoughcandycom-11035390.jpg" style="margin-left: 1em; margin-right: 1em;">
+        <img border="0" data-original-height="4000" data-original-width="6000" height="255" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4zaK2PbPlxv8Ve2wTdL4d_-f0c5xva3NamTQ3VnV7Th6vwGj6H9JjDSEhsCkuTh4iRzElHfMvYW_ETWwFPgjHuIxijZOMGzLlFSIZNxR0tYUCnRcNdG288xWOUve3358iP5p5-XOOi58e4C8jTq8Y4plOd2wj3Nops-f0A3MW6pMTM4F6Qi5vWMeyaQ/w384-h255/pexels-realtoughcandycom-11035390.jpg" width="384" />
+    </a>
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    PHP is an interpreted <i>(interpreter produces a result from your code but compiler turns your program into assembly)</i> scripting language for server-side programming. It first appeared in 1995, 27 years ago.
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    So how does it run? It needs an interpreter to run, and that is the "Zend Engine". This engine has several duties that allow us to run our PHP programs. It compiles your source code into bytecode, then it goes into its virtual machine that executes this new bytecode, and you have yourself a running PHP program.
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    As of PHP 8, you can compile your code via the JIT Compiler. What is the difference?
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    &nbsp;Well, JIT is a "just in time" compiler, and this means that now you can "compile" your program into machine code directly.
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    So, before PHP 8 and JIT, how did the Zend Engine work?
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    &nbsp;We first need to talk about caching. A cache is a collection of duplicate data. This is something we need to have because accessing the necessary data directly will take longer.
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    &nbsp;PHP uses caching to reduce the time of page generation. You wouldn't want your WordPress website's visitors to wait too long, would you? That's why.
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    PHP has a caching engine to do the caching. This engine is called the "OPCache," and it is built into PHP.
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    &nbsp;OPCache stores the precompiled bytecode in the shared memory, and because of this, the need to load the actual script on every request from the visitor/client is not needed.
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    Here is the visual diagram of the process of running PHP, including OPCache and JIT, but of course, this is an extremely simplified version of how things work:
+</div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;"></div>
+<div class="separator" style="clear: both; text-align: center;">
+    <a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjoY5YwBs_g9KJEQbmhpFKX1Y3GlpQEn4ulWSm2MlnvXfGSdbiTPkBy9aDrpuTntOJ-5g3nIl10VF4s8UqsYHB0p45zzwFHugjAy1lAm6Zc3SSINn4QVxqcF1XrL3yClarAxdNAuktiitGszhwUWpZvKUj_sgAXrYHKumQ0mNy2nPm402nG-WCgTUzLnQ/s1280/Presentation1.png" style="margin-left: 1em; margin-right: 1em;">
+        <img border="0" data-original-height="720" data-original-width="1280" height="279" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjoY5YwBs_g9KJEQbmhpFKX1Y3GlpQEn4ulWSm2MlnvXfGSdbiTPkBy9aDrpuTntOJ-5g3nIl10VF4s8UqsYHB0p45zzwFHugjAy1lAm6Zc3SSINn4QVxqcF1XrL3yClarAxdNAuktiitGszhwUWpZvKUj_sgAXrYHKumQ0mNy2nPm402nG-WCgTUzLnQ/w495-h279/Presentation1.png" width="495" />
+    </a>
+</div>
+<div><br /></div>
+<div class="separator" style="clear: both; text-align: center;">
+    We need to keep in mind that things get more detailed and complicated as you dig into them. In this brief explanation, I tried to explain the big picture as a whole, but there are endless details in PHP that will enlighten us step by step as we learn more.
+</div>
+<div><br /></div>
+<b>Sources:</b>
+<p>
+    <a href="https://www.php.net/manual/en/intro.opcache.php" rel="nofollow">
+        <span style="font-size: xx-small;">https://www.php.net/manual/en/intro.opcache.php</span>
+    </a>
+</p>
+<p>
+    <a href="https://www.php.net/manual/en/intro.wincache.php" rel="nofollow">
+        <span style="font-size: xx-small;">https://www.php.net/manual/en/intro.wincache.php</span>
+    </a>
+</p>
+<p>
+    <a href="https://www.droptica.com/blog/how-php-interpreter-works/" rel="nofollow">
+        <span style="font-size: xx-small;">https://www.droptica.com/blog/how-php-interpreter-works/</span>
+    </a>
+</p>
+<p>
+    <a href="https://en.wikipedia.org/wiki/PHP" rel="nofollow">
+        <span style="font-size: xx-small;">https://en.wikipedia.org/wiki/PHP</span>
+    </a>
+</p>
+<p>
+    <a href="https://help.dreamhost.com/hc/en-us/articles/216660668-OPcache-overview#:~:text=OPcache%20is%20a%20caching%20engine,parse%20scripts%20on%20each%20request." rel="nofollow">
+        <span style="font-size: xx-small;">https://help.dreamhost.com/hc/en-us/articles/216660668-OPcache-overview#:~:text=OPcache%20is%20a%20caching%20engine,parse%20scripts%20on%20each%20request.</span>
+    </a>
+</p>
+<p>
+    <a href="https://www.droptica.com/blog/jit-compiler-php-8/" rel="nofollow">
+        <span style="font-size: xx-small;">https://www.droptica.com/blog/jit-compiler-php-8/</span>
+    </a>
+</p>
+<p>
+    <a href="https://en.wikibooks.org/wiki/PHP_Programming/Caching#:~:text=A%20cache%20is%20a%20collection,to%20minimize%20page%20generation%20time." rel="nofollow">
+        <span style="font-size: xx-small;">https://en.wikibooks.org/wiki/PHP_Programming/Caching#:~:text=A%20cache%20is%20a%20collection,to%20minimize%20page%20generation%20time.</span>
+    </a>
+</p>
+</section>June 9, 2023</div>
+
+    </section>
+     
+    <footer id='footer'>
+      <p>&copy; 2024 Yunus Emre Vurgun - Software Developer</p>
+    </footer>
+
+
+<script src="../scripts/general_DOM_control.js"></script>
+
+
+
+  </body>
+</html>

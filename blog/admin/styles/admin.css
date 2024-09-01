@@ -1,0 +1,17 @@
+body{
+    text-align:center;
+  font-family: "Instrument Serif", serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size:26px;
+    background-color: #2C3152;
+    color: aliceblue;
+}
+
+input[type="submit"]{
+    padding:10px;
+    border:none;
+    border-radius:5px;
+    color:white;
+    background-color:rgb(59, 59, 59);
+}

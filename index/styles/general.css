@@ -1,0 +1,285 @@
+ 
+@import url('https://fonts.googleapis.com/css2?family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Baumans&family=Cagliostro&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap')
+;
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #434560;
+    color: #fff;
+    padding: 20px;  
+      padding-bottom: 0 !important;
+      background-image: url("../../media/general/bg.webp") !important; /* Background image */
+       background-position: center; /* Center the background image */
+       animation: binary-roll  11s   ;
+ }
+header h1{
+    margin-top: 40px;
+    font-family: "Baumans", system-ui;
+ 
+}
+header > nav:not(#top-navbar) > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(39, 39, 39);
+    width: fit-content;
+    padding:5px;
+    border-radius: 5px   5px 0 0;
+    font-family: "Cagliostro", sans-serif;
+    
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+section {
+    padding: 20px;
+}
+
+footer {
+    background-color: #424560;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Responsive Styles */
+@media only screen and (max-width: 600px) {
+    nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    section {
+        padding: 10px;
+    }
+}
+ 
+/* Special CSS for top-navbar */
+#top-navbar {
+    margin-left:-20px;
+    background-color: #2c3152; /* Terminal background color */
+     padding: 10px 20px; /* Padding for desktop */
+    position: fixed; /* Fixed position to stay at the top */
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Ensures the navbar is above other content */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    font-family: "Asap Condensed", sans-serif;
+ }
+
+#top-navbar ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#top-navbar ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+#top-navbar ul li a {
+    color: rgb(183, 192, 255); /* Terminal text color   */
+    text-decoration: none;
+    font-size: 16px; /* Desktop font size */
+    transition: color 0.3s; /* Smooth color transition */
+    position: relative; /* Positioning for additional elements */
+}
+
+/* Adjust font size for mobile */
+@media only screen and (max-width: 600px) {
+    #top-navbar {
+        padding: 5px 10px; /* Reduce padding for mobile */
+    }
+
+    #top-navbar ul li a {
+        font-size: 14px; /* Smaller font size for mobile */
+    }
+}
+
+/* Hover effect */
+#top-navbar ul li a:hover {
+    color: rgb(255, 255, 255); /* Change text color to cyan on hover */
+}
+
+/* Terminal cursor effect */
+#top-navbar ul li a::after {
+    content: '▊'; /* Custom cursor symbol */
+    color: rgba(125, 125, 125, 0.261); /* Cursor color */
+    font-size: 12px; /* Cursor size */
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 5px); /* Positioning relative to the link */
+    transform: translateY(-50%);
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s; /* Smooth transition */
+}
+
+#top-navbar ul li a:hover::after {
+    opacity: 1; /* Show cursor on hover */
+}
+
+/* Blink animation for cursor */
+@keyframes blink-animation {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Targeting by IDs */
+#about,
+#gallery,
+#projects,
+#education,
+#contact,
+#home,
+#links {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #23252a; /* Dark gray background */
+    color: #c2c2c2; /* Light gray text */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Dark gray shadow */
+}
+
+/* Targeting by classes */
+.project {
+    margin-bottom: 20px;
+}
+
+.project h3 {
+    color: #c2c2c2; /* Light gray text */
+}
+
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2C3152; /* Dark background */
+    color: #f7f7f7; /* Light gray text */
+}
+
+h2 {
+    color: #c2c2c2; /* Light gray text */
+    text-decoration:underline;
+}
+
+p {
+    color: #c2c2c2; /* Light gray text */
+}
+
+a {
+    color: rgb(255, 230, 43); /* Light gray text */
+}
+
+#links a{
+    margin: 5px;
+}
+
+ /* Style for the social profiles */
+#links {
+    margin-top: 20px;
+}
+
+.social-table {
+    display: flex;
+    flex-direction: column;
+}
+
+.social-item {
+    margin-bottom: 10px;
+}
+
+.social-item a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.social-item a i {
+    margin-right: 10px;
+}
+
+.social-item a:hover {
+    text-decoration: underline;
+}
+
+#logos-of-things i{
+    color:rgb(55, 55, 55);
+}
+
+#top-navbar{
+    display: flex;
+}
+#top-navbar img{
+    max-width: 25px !important;
+}
+
+#top-navbar ul{
+    margin-top: 4px;
+    margin-left: 15px;
+}
+
+@keyframes binary-roll {
+    0% {   background-position: bottom;}
+    100% {   background-position: center; }
+}
+
+@media screen and (max-width: 800px) {
+    #yunus-pop-art{
+        max-width: 50% !important;
+     }
+    
+}
+
+@media screen and (min-width: 700px) {
+    #yunus-pop-art{
+        max-width: 30% !important;
+     }
+    
+}
+
+#yunus-pop-art{
+    max-width: 40%;
+    border-radius: 10px 190px 30px 20px;
+}
+
+#gallery a{
+    text-decoration: none;
+}
+
+.social-table select{
+    display:block;
+        margin-bottom: 20px;
+    padding: 15px;
+    background-color: #23252a; /* Dark gray background */
+    color: #c2c2c2; /* Light gray text */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Dark gray shadow */
+}
+
+.project i{
+    color:#ffeb00;
+}
+
+.fa-graduation-cap{
+    color:#0aff00;
+}
+
+.fa-stamp{
+        color:#ff7f00;
+
+}

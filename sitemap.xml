@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+	<url>
+		<loc>https://yunusemrevurgun.com/index</loc>
+	</url>
+	<url>
+		<loc>https://yunusemrevurgun.com/index/about.html</loc>
+	</url>
+		<url>
+		<loc>https://yunusemrevurgun.com/index/gallery.html</loc> 
+	</url>
+			<url>
+		<loc>https://yunusemrevurgun.com/wooden-log/index.php</loc>
+	</url>
+		<url>
+		<loc>https://yunusemrevurgun.com/blog/</loc>
+	</url>
+			<url>
+		<loc>https://yunusemrevurgun.com/blog/sitemap/sitemap.xml</loc>
+	</url>
+</urlset>
