@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yunus Emre Vurgun • Personal Brand Kit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        
+        :root {
+            --blue: #1E518F;
+            --blue-light: #48729E;
+            --green: #446049;
+            --green-dark: #3A5541;
+            --ink: #141C17;
+            --paper: #FEFEFE;
+        }
+        
+        * {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+        
+        .brand-bg {
+            background-color: #1E518F;
+            background-image: 
+                linear-gradient(#48729E 1px, transparent 1px),
+                linear-gradient(90deg, #48729E 1px, transparent 1px);
+            background-size: 40px 40px;
+            position: relative;
+        }
+        
+        .brand-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(30, 81, 143, 0.85) 0%, rgba(30, 81, 143, 0.92) 100%);
+            pointer-events: none;
+        }
+        
+        .hero-portrait {
+            filter: drop-shadow(25px 25px 25px rgba(20, 28, 23, 0.4));
+            border: 8px solid #FEFEFE;
+        }
+        
+        .swatch {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .swatch:hover {
+            transform: scale(1.08);
+            box-shadow: 10px 10px 0 -2px #141C17;
+        }
+        
+        .logo-yemre {
+            font-family: 'Space Grotesk', sans-serif;
+            color: #446049;
+            text-shadow: 3px 3px 0 #141C17;
+            letter-spacing: -4px;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- HEADER / NAV -->
+    <nav class="brand-bg text-white border-b border-[#48729E]/30 sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <!-- YEMRE monogram -->
+                <div class="logo-yemre text-4xl font-semibold tracking-[-4px] leading-none">YEMRE</div>
+                <div>
+                    <span class="text-2xl font-semibold tracking-[-1px]">YUNUS EMRE</span>
+                    <span class="block text-xs uppercase tracking-[2px] text-[#48729E] -mt-1">VURGUN</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-x-8 text-sm font-medium uppercase tracking-widest">
+                <a href="#colors" class="hover:text-[#446049]">COLORS</a>
+                <a href="#type" class="hover:text-[#446049]">TYPE</a>
+                <a href="#elements" class="hover:text-[#446049]">ELEMENTS</a>
+                <a href="#usage" class="hover:text-[#446049]">USAGE</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="brand-bg text-white min-h-screen flex items-center relative overflow-hidden">
+        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-x-2 bg-white/10 backdrop-blur-md text-white text-sm font-medium px-6 py-2 rounded-3xl border border-white/20">
+                    <span class="text-[#446049]">●</span>
+                    LINE-ART • BLUEPRINT • GREEN
+                </div>
+                
+                <h1 class="text-7xl md:text-8xl font-semibold tracking-[-3px] leading-none">
+                    YUNUS EMRE<br>VURGUN
+                </h1>
+                
+                <p class="text-2xl text-[#829DBD] max-w-md">
+                    Engineer • Designer • Builder
+                </p>
+            </div>
+            
+            <!-- PORTRAIT -->
+            <div class="flex justify-center md:justify-end">
+                <img src="mxU0T.jpg" alt="Yunus Emre Vurgun Portrait" 
+                     class="hero-portrait w-full max-w-[420px] md:max-w-[480px] rounded-3xl object-cover">
+            </div>
+        </div>
+        
+        <div class="absolute bottom-8 right-8 text-[#48729E]/60 text-xs font-mono tracking-[3px] rotate-90 origin-bottom-right">
+            BLUEPRINT • 2026
+        </div>
+    </header>
+
+    <!-- COLOR PALETTE -->
+    <section id="colors" class="max-w-screen-2xl mx-auto px-8 py-20">
+        <div class="flex justify-between items-baseline mb-12">
+            <h2 class="text-5xl font-semibold tracking-[-2px]">Exact Color Palette</h2>
+            <p class="text-[#446049] uppercase tracking-widest text-sm">Pulled directly from your portrait</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            <div class="swatch rounded-3xl overflow-hidden border-2 border-[#141C17]">
+                <div class="h-40 bg-[#1E518F] flex items-end p-4">
+                    <div class="text-white font-mono text-sm">BLUEPRINT<br><span class="text-3xl font-semibold">#1E518F</span></div>
+                </div>
+                <div class="bg-white px-4 py-3 text-xs text-[#141C17]">Primary background • Grid base</div>
+            </div>
+            
+            <div class="swatch rounded-3xl overflow-hidden border-2 border-[#141C17]">
+                <div class="h-40 bg-[#48729E] flex items-end p-4">
+                    <div class="text-white font-mono text-sm">GRID LINES<br><span class="text-3xl font-semibold">#48729E</span></div>
+                </div>
+                <div class="bg-white px-4 py-3 text-xs text-[#141C17]">Light grid accent</div>
+            </div>
+            
+            <div class="swatch rounded-3xl overflow-hidden border-2 border-[#141C17]">
+                <div class="h-40 bg-[#446049] flex items-end p-4">
+                    <div class="text-white font-mono text-sm">HOODIE GREEN<br><span class="text-3xl font-semibold">#446049</span></div>
+                </div>
+                <div class="bg-white px-4 py-3 text-xs text-[#141C17]">Primary brand green</div>
+            </div>
+            
+            <div class="swatch rounded-3xl overflow-hidden border-2 border-[#141C17]">
+                <div class="h-40 bg-[#3A5541] flex items-end p-4">
+                    <div class="text-white font-mono text-sm">CAP GREEN<br><span class="text-3xl font-semibold">#3A5541</span></div>
+                </div>
+                <div class="bg-white px-4 py-3 text-xs text-[#141C17]">Secondary green • Cap brim</div>
+            </div>
+            
+            <div class="swatch rounded-3xl overflow-hidden border-2 border-[#141C17]">
+                <div class="h-40 bg-[#141C17] flex items-end p-4">
+                    <div class="text-white font-mono text-sm">LINE ART INK<br><span class="text-3xl font-semibold">#141C17</span></div>
+                </div>
+                <div class="bg-white px-4 py-3 text-xs text-[#141C17]">Illustration lines • Text</div>
+            </div>
+            
+            <div class="swatch rounded-3xl overflow-hidden border-2 border-[#141C17]">
+                <div class="h-40 bg-[#FEFEFE] flex items-end p-4 border border-[#141C17]/10">
+                    <div class="text-[#141C17] font-mono text-sm">PAPER WHITE<br><span class="text-3xl font-semibold">#FEFEFE</span></div>
+                </div>
+                <div class="bg-white px-4 py-3 text-xs text-[#141C17]">Backgrounds • Highlights</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TYPOGRAPHY -->
+    <section id="type" class="bg-[#141C17] text-white py-20">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <h2 class="text-5xl font-semibold tracking-[-2px] mb-12">Typography</h2>
+            
+            <div class="grid md:grid-cols-12 gap-12">
+                <div class="md:col-span-5">
+                    <div class="mb-8">
+                        <div class="uppercase text-xs tracking-widest text-[#48729E] mb-2">HEADINGS • DISPLAY</div>
+                        <h3 class="text-7xl leading-none font-semibold tracking-[-2px]" style="font-family: 'Space Grotesk', sans-serif;">
+                            SPACE GROTESK
+                        </h3>
+                    </div>
+                    
+                    <div>
+                        <div class="uppercase text-xs tracking-widest text-[#48729E] mb-2">BODY • UI</div>
+                        <p class="text-6xl leading-none font-medium" style="font-family: 'Inter', sans-serif;">
+                            INTER
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-7 bg-[#1E518F] p-8 rounded-3xl border border-[#48729E]/30">
+                    <div class="flex flex-col gap-y-8">
+                        <div>
+                            <div class="text-xs uppercase mb-1">H1 — 72px</div>
+                            <div class="text-6xl font-semibold tracking-[-1px]">YUNUS EMRE VURGUN</div>
+                        </div>
+                        <div>
+                            <div class="text-xs uppercase mb-1">H2 — 48px</div>
+                            <div class="text-5xl font-medium">Blueprint Engineering</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BRAND ELEMENTS -->
+    <section id="elements" class="max-w-screen-2xl mx-auto px-8 py-20 bg-white">
+        <h2 class="text-5xl font-semibold tracking-[-2px] mb-12">Brand Elements</h2>
+        
+        <div class="grid md:grid-cols-3 gap-10">
+            <div>
+                <div class="text-sm uppercase text-[#446049] mb-4">PORTRAIT STYLE</div>
+                <div class="border-2 border-[#141C17] p-6 rounded-3xl">
+                    <div class="bg-[#1E518F] h-72 rounded-2xl flex items-center justify-center text-white text-center text-sm font-medium">
+                        Line-art illustration with selective green coloring
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="text-sm uppercase text-[#446049] mb-4">SIGNATURE MONOGRAM</div>
+                <div class="border-2 border-[#141C17] p-8 rounded-3xl flex flex-col items-center justify-center h-full">
+                    <div class="logo-yemre text-[160px] leading-none mb-2">YEMRE</div>
+                    <p class="text-xs text-center">Official monogram. Always in hoodie green #446049 with ink shadow.</p>
+                </div>
+            </div>
+            
+            <div>
+                <div class="text-sm uppercase text-[#446049] mb-4">REPEATING PATTERN</div>
+                <div class="border-2 border-[#141C17] p-6 rounded-3xl h-full flex flex-col">
+                    <div class="flex-1 brand-bg rounded-2xl flex items-center justify-center text-white text-[10px] font-mono tracking-[4px] leading-tight text-center">
+                        40PX<br>GRID<br>REPEAT
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- USAGE GUIDELINES -->
+    <section id="usage" class="bg-[#141C17] text-white py-20">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <h2 class="text-5xl font-semibold tracking-[-2px] mb-12">Do’s & Don’ts</h2>
+            
+            <div class="grid md:grid-cols-2 gap-x-16">
+                <div>
+                    <div class="uppercase text-[#446049] text-xs mb-6">ALWAYS</div>
+                    <ul class="space-y-6 text-lg">
+                        <li class="flex gap-x-4"><span class="text-[#446049] text-3xl leading-none">✓</span> Use exact hex values</li>
+                        <li class="flex gap-x-4"><span class="text-[#446049] text-3xl leading-none">✓</span> Keep line-art high contrast</li>
+                        <li class="flex gap-x-4"><span class="text-[#446049] text-3xl leading-none">✓</span> Pair blueprint blue + hoodie green</li>
+                        <li class="flex gap-x-4"><span class="text-[#446049] text-3xl leading-none">✓</span> Use YEMRE monogram as lockup</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <div class="uppercase text-[#829DBD] text-xs mb-6">NEVER</div>
+                    <ul class="space-y-6 text-lg opacity-70">
+                        <li class="flex gap-x-4"><span class="text-red-400 text-3xl leading-none">✕</span> Use cap B as icon</li>
+                        <li class="flex gap-x-4"><span class="text-red-400 text-3xl leading-none">✕</span> Change green shades</li>
+                        <li class="flex gap-x-4"><span class="text-red-400 text-3xl leading-none">✕</span> Add extra colors</li>
+                        <li class="flex gap-x-4"><span class="text-red-400 text-3xl leading-none">✕</span> Use realistic photo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="brand-bg py-12 text-white text-center text-xs font-mono tracking-widest">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            YUNUS EMRE VURGUN • PERSONAL BRAND KIT 2026
+        </div>
+    </footer>
+</body>
+</html>
