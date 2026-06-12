@@ -1,0 +1,8 @@
+# dev/ - local-only operational files
+.env
+.env.*
+_backups/
+logs/
+*.log
+_work/
+_quarantine/
