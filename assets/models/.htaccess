@@ -1,0 +1,10 @@
+# Allow WASM files
+AddType application/wasm .wasm
+AddType application/javascript .js
+AddType application/json .json
+
+# Enable CORS for model files
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+</IfModule>

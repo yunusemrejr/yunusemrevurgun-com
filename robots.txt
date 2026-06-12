@@ -1,0 +1,69 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yunusemrevurgun.com/sitemap.xml
+
+# LLM & AI crawler guidance
+# Machine-readable AI guidance: https://yunusemrevurgun.com/llms.txt
+# Attribution: Content by Yunus Emre Vurgun (yunusemrevurgun.com)
+
+# Disallow admin and system areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+Disallow: /dev/
+Disallow: /includes/
+Disallow: /middleware/
+Disallow: /models/
+Disallow: /router/
+Disallow: /scripts/
+Disallow: /views/
+
+# Allow public pages
+Allow: /
+Allow: /about
+Allow: /portfolio
+Allow: /gallery
+Allow: /blog
+Allow: /updates
+Allow: /post-code
+Allow: /travel
+Allow: /yunobot
+Allow: /contact
+Allow: /search
+Allow: /uploads/
+
+# AI-specific crawler rules
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
+User-agent: CCBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
+# Crawl delay
+Crawl-delay: 1

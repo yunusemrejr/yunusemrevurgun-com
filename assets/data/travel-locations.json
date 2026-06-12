@@ -1,0 +1,432 @@
+{
+  "locations": [
+    {
+      "id": 1,
+      "country": "Argentina",
+      "city": "Buenos Aires",
+      "lat": -34.6037,
+      "lng": -58.3816,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 2,
+      "country": "Argentina",
+      "city": "Ushuaia",
+      "lat": -54.8019,
+      "lng": -68.3030,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 3,
+      "country": "Argentina",
+      "city": "El Calafate",
+      "lat": -50.3370,
+      "lng": -72.2648,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 4,
+      "country": "Azerbaijan",
+      "city": "Baku",
+      "lat": 40.4093,
+      "lng": 49.8671,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 5,
+      "country": "Bosnia and Herzegovina",
+      "city": "Sarajevo",
+      "lat": 43.8563,
+      "lng": 18.4131,
+"images": ["bosnia.webp", "bosnia2.webp", "bosnia3.webp", "bosnia4.webp", "bosnia5.webp"]
+,      "visited": ""
+    },
+    {
+      "id": 6,
+      "country": "Cambodia",
+      "city": "Phnom Penh",
+      "lat": 11.5564,
+      "lng": 104.9282,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 7,
+      "country": "France",
+      "city": "Paris",
+      "lat": 48.8566,
+      "lng": 2.3522,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 8,
+      "country": "France",
+      "city": "Disneyland (Marne‑la‑Vallée)",
+      "lat": 48.8670,
+      "lng": 2.7832,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 9,
+      "country": "Georgia",
+      "city": "Tbilisi",
+      "lat": 41.7151,
+      "lng": 44.8271,
+      "images": ["georgia.webp"],
+      "visited": ""
+    },
+    {
+      "id": 10,
+      "country": "South Korea",
+      "city": "Seoul",
+      "lat": 37.5665,
+      "lng": 126.9780,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 11,
+      "country": "Maldives",
+      "city": "Malé",
+      "lat": 3.8925,
+      "lng": 73.0695,
+      "images": ["maldives.webp","maldives2.webp","maldives3.webp"],
+      "visited": ""
+    },
+    {
+      "id": 12,
+      "country": "Malaysia",
+      "city": "Kuala Lumpur",
+      "lat": 3.1390,
+      "lng": 101.6869,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 13,
+      "country": "Morocco",
+      "city": "Marrakech",
+      "lat": 31.6295,
+      "lng": -7.9811,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 14,
+      "country": "North Macedonia",
+      "city": "Skopje",
+      "lat": 41.9981,
+      "lng": 21.4254,
+      "images": ["macedonia.webp","macedonia2.webp"],
+      "visited": ""
+    },
+    {
+      "id": 15,
+      "country": "Russia",
+      "city": "St Petersburg",
+      "lat": 59.9343,
+      "lng": 30.3351,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 16,
+      "country": "Russia",
+      "city": "Novgorod",
+      "lat": 58.5210,
+      "lng": 31.2749,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 17,
+      "country": "Saudi Arabia",
+      "city": "Mecca",
+      "lat": 21.3891,
+      "lng": 39.8579,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 18,
+      "country": "Saudi Arabia",
+      "city": "Medina",
+      "lat": 24.5247,
+      "lng": 39.5692,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 19,
+      "country": "Serbia",
+      "city": "Belgrade",
+      "lat": 44.7866,
+      "lng": 20.4489,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 20,
+      "country": "Singapore",
+      "city": "Singapore",
+      "lat": 1.3521,
+      "lng": 103.8198,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 21,
+      "country": "Spain",
+      "city": "Barcelona",
+      "lat": 41.3851,
+      "lng": 2.1734,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 22,
+      "country": "Sweden",
+      "city": "Stockholm",
+      "lat": 59.3293,
+      "lng": 18.0686,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 23,
+      "country": "Sweden",
+      "city": "Vesteros",
+      "lat": 57.7582,
+      "lng": 16.6326,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 24,
+      "country": "Turkey",
+      "city": "Istanbul",
+      "lat": 41.0082,
+      "lng": 28.9784,
+      "images": ["istanbul-momo.png","istanbul.webp",
+      "istanbul2.webp",
+      "istanbul3.webp","istanbul4.webp","istanbul5.webp","istanbul6.webp","istanbul7.webp","istanbul8.webp","istanbul9.webp","istanbul10.webp","istanbul11.webp","istanbul12.webp","istanbul13.webp","istanbul14.webp","istanbul15.webp","istanbul19.webp","istanbul33.webp"
+      ],
+      "visited": ""
+    },
+    {
+      "id": 25,
+      "country": "Turkey",
+      "city": "Ankara",
+      "lat": 39.9334,
+      "lng": 32.8597,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 26,
+      "country": "Turkey",
+      "city": "Eskisehir",
+      "lat": 39.7667,
+      "lng": 30.5256,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 27,
+      "country": "Turkey",
+      "city": "Rize",
+      "lat": 41.0256,
+      "lng": 40.5217,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 28,
+      "country": "Turkey",
+      "city": "Trabzon",
+      "lat": 41.0151,
+      "lng": 39.7269,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 29,
+      "country": "Turkey",
+      "city": "Kars",
+      "lat": 40.6013,
+      "lng": 43.0978,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 30,
+      "country": "Turkey",
+      "city": "Kocaeli",
+      "lat": 40.7662,
+      "lng": 29.9440,
+      "images": ["kocaeli.webp","izmit.webp"],
+      "visited": ""
+    },
+    {
+      "id": 31,
+      "country": "Turkey",
+      "city": "Izmir",
+      "lat": 38.4237,
+      "lng": 27.1428,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 32,
+      "country": "Turkey",
+      "city": "Bursa",
+      "lat": 40.1828,
+      "lng": 29.0665,
+      "images": ["bursaiznik.webp",
+      "bursaiznik2.webp",
+      "bursaiznik3.webp",
+      "bursaiznik4.webp",
+      "bursaiznik5.webp",
+      "bursaiznik6.webp",
+      "bursaiznik7.webp"],
+      "visited": ""
+    },
+    {
+      "id": 33,
+      "country": "Turkey",
+      "city": "Çeşme",
+      "lat": 38.3248,
+      "lng": 26.3026,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 34,
+      "country": "Turkey",
+      "city": "Fethiye",
+      "lat": 36.62,
+      "lng": 29.1167,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 35,
+      "country": "Turkey",
+      "city": "Balıkesir",
+      "lat": 39.6481,
+      "lng": 27.8869,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 36,
+      "country": "Thailand",
+      "city": "Bangkok",
+      "lat": 13.7563,
+      "lng": 100.5018,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 37,
+      "country": "Tanzania",
+      "city": "Dar es Salaam",
+      "lat": -6.7924,
+      "lng": 39.2083,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 38,
+      "country": "United Kingdom",
+      "city": "London",
+      "lat": 51.5074,
+      "lng": -0.1278,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 39,
+      "country": "United Kingdom",
+      "city": "Oxford",
+      "lat": 51.7520,
+      "lng": -1.2577,
+      "images": [],
+      "visited": ""
+    },
+    {
+      "id": 40,
+      "country": "United States",
+      "city": "Boston, MA",
+      "lat": 42.3601,
+      "lng": -71.0589,
+      "images": ["boston.jpg","boston2.jpg","boston3.jpg","boston4.jpg",
+      
+      
+      "bostonusa.webp",
+            "bostonusa2.webp",
+            "bostonusa3.webp",
+            "bostonusa4.webp",
+            "bostonusa5.webp",
+            "bostonusa6.webp",
+            "bostonusa7.webp",
+            "bostonusa8.webp",
+            "bostonusa9.webp",
+            "bostonusa10.webp",
+            "bostonusa11.webp",
+            "bostonusa14.webp",
+            "bostonusa21.webp",
+            "bostonusa42.webp",
+            "bostonusa43.webp",
+            "bostonusa91.webp",
+            "bostonusa98.webp"
+      
+      ],
+      "visited": ""
+    },
+    {
+      "id": 41,
+      "country": "United States",
+      "city": "Portland, Maine",
+      "lat": 43.6591,
+      "lng": -70.2568,
+      "images": [           "portlandusa.webp","portlandusa8.webp",
+            "portlandusa2.webp",
+            "portlandusa3.webp"],
+      "visited": ""
+    },
+    {
+      "id": 42,
+      "country": "United States",
+      "city": "Exeter, NH",
+      "lat": 42.9765,
+      "lng": -71.1869,
+      "images": ["exeterusa.webp","exeterusa2.webp","exeterusa3.webp","exeterusa9.webp"],
+      "visited": ""
+    },
+    {
+      "id": 43,
+      "country": "United States",
+      "city": "New York City",
+      "lat": 40.7128,
+      "lng": -74.0060,
+      "images": [],
+      "visited": ""
+    },
+     {
+      "id":44,
+      "country": "United States",
+      "city": "Braintree, MA",
+      "lat": 42.2084,
+      "lng": -71.0022,
+      "images": ["braintree.jpg","braintreeusa1.webp","braintreeusa4.webp"],
+      "visited": ""
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "name": "Yunus Emre Vurgun - Software Developer & IT Specialist",
+  "short_name": "Yµn ^…^ ƒ(x)",
+  "description": "Personal website of Yunus Emre Vurgun — software developer and IT specialist focusing on computational intelligence, operational technology, AI/ML systems, and industrial automation.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0D1219",
+  "theme_color": "#0D1219",
+  "categories": ["productivity", "utilities", "business"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/assets/images/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/favicon-pfp.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Portfolio",
+      "short_name": "Work",
+      "description": "View project archive",
+      "url": "/portfolio",
+      "icons": [{ "src": "/assets/images/pwa-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Blog",
+      "short_name": "Journal",
+      "description": "Read technical articles",
+      "url": "/blog",
+      "icons": [{ "src": "/assets/images/pwa-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "YunoBot",
+      "short_name": "AI",
+      "description": "Chat with YunoBot AI assistant",
+      "url": "/yunobot",
+      "icons": [{ "src": "/assets/images/pwa-icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

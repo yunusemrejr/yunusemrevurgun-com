@@ -1,0 +1,37 @@
+/*
+============================================
+ADMIN SPACE - MINIMAL ADDITIONS
+============================================
+
+This file now contains only minimal additions.
+All major styling is handled by admin.css and page-specific CSS files.
+*/
+
+:root {
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+}
+
+.admin-search-container {
+    width: min(280px, 40vw);
+}
+
+@media (max-width: 1180px) {
+    .admin-ui-nav,
+    .admin-ui-right .admin-ui-link {
+        display: none;
+    }
+
+    .admin-ui-menu-toggle {
+        display: inline-flex;
+        justify-self: end;
+    }
+
+    .admin-search-container {
+        width: 100%;
+        max-width: 280px;
+    }
+}

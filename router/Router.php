@@ -1,0 +1,272 @@
+<?php
+// Get the project root directory using __DIR__
+$projectRoot = dirname(__DIR__);
+
+// Include the setPath file using the project root
+require_once $projectRoot . '/config/setPath.php';
+
+ 
+class Router {
+    private $routes = [
+        '' => 'views/home.php',
+        'home' => 'views/home.php',
+        'about' => 'views/about.php',
+        'portfolio' => 'views/portfolio.php',
+        'contact' => 'views/contact.php',
+        'gallery' => 'views/gallery.php',
+        'blog' => 'views/blog.php',
+        'updates' => 'views/updates.php',
+        'travel' => 'views/travel.php',
+        'post-code' => 'views/post-code/index.php',
+        'yunobot' => 'views/yunobot/index.php',
+        'more' => 'views/more.php',
+        'admin/login' => 'views/admin/login.php',
+        'admin' => 'views/admin/login.php',
+        'admin/logout' => 'views/admin/logout.php',
+        'admin/dashboard' => 'views/admin/dashboard.php',
+        'admin/blog' => 'views/admin/blog/index.php',
+        'admin/blog/create' => 'views/admin/blog/create.php',
+        'admin/blog/edit' => 'views/admin/blog/edit.php',
+        'admin/blog/delete' => 'api/blog/delete.php',
+        'admin/updates' => 'views/admin/updates/index.php',
+        'admin/updates/create' => 'views/admin/updates/create.php',
+        'admin/updates/edit' => 'views/admin/updates/edit.php',
+        'admin/gallery' => 'views/admin/gallery/index.php',
+        'admin/updates/delete' => 'views/admin/updates/delete.php',
+        'admin/portfolio' => 'views/admin/portfolio/index.php',
+        'admin/portfolio/create' => 'views/admin/portfolio/create.php',
+        'admin/portfolio/edit' => 'views/admin/portfolio/edit.php',
+        'admin/portfolio/delete' => 'views/admin/portfolio/delete.php',
+        '404' => 'views/404.php',
+        'sitemap' => 'views/sitemap.php',
+        'sitemap.xml' => 'api/sitemap.php',
+        'llms.txt' => 'api/llms.php',
+        'diag-updates' => 'views/diag_updates.php',
+        'privacy' => 'views/legal/privacy.php',
+        'terms' => 'views/legal/terms.php',
+        'cookies' => 'views/legal/cookies.php',
+        'admin/js-check' => 'views/admin/js-check.php',
+        'admin/settings' => 'views/admin/settings/index.php',
+
+        'admin/tracker-codes' => 'views/admin/tracker-codes/index.php',
+        'admin/tracker-codes/edit' => 'views/admin/tracker-codes/edit.php',
+        'admin/tracker-codes/create' => 'views/admin/tracker-codes/create.php',
+        'search' => 'views/search.php',
+        'api/search' => 'api/search.php',
+        'api/llms' => 'api/llms.php',
+        'api/diag_updates' => 'api/diag_updates.php',
+        'api/contact' => 'api/contact.php',
+        'admin/search' => 'views/admin/search.php',
+        'admin/api/search' => 'views/admin/api/search.php',
+    ];
+
+    public function __construct() {
+        // Remove CSRF middleware registration if present
+    }
+
+    public function route() {
+        // Handle both development and production modes
+        $isDevMode = (php_sapi_name() === 'cli-server' || getenv('MODE') === 'development');
+        
+        if ($isDevMode) {
+            // Development mode: use REQUEST_URI
+            $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+            $url = parse_url($requestUri, PHP_URL_PATH);
+            $url = trim($url, '/');
+        } else {
+            // Production mode: use GET parameter from .htaccess
+            $url = $_GET['url'] ?? '';
+            $url = trim($url, '/');
+        }
+
+        // Handle root URL (empty string)
+        if (empty($url)) {
+            $url = '';
+        }
+
+        // Debug: Log the route being requested (development only)
+        if (getenv('MODE') === 'development') {
+            error_log("Router: Request URI: " . ($_SERVER['REQUEST_URI'] ?? 'N/A'));
+            error_log("Router: Parsed URL: " . $url);
+        }
+
+        // Check for lockdown mode (except for admin pages)
+        if (!str_starts_with($url, 'admin/')) {
+            require_once dirname(__DIR__) . '/models/Settings.php';
+            $settings = new Settings();
+            
+            if ($settings->isLockdownModeEnabled()) {
+                // Display lockdown page
+                require_once dirname(__DIR__) . '/views/lockdown.php';
+                return;
+            }
+        }
+
+        // Special case for /admin - redirect to login if not authenticated
+        if ($url === 'admin' || $url === 'admin/') {
+            // Start session if not already started
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            // Check if user is logged in
+            if (!isset($_SESSION['user_id'])) {
+                // In development mode, use relative path instead of FULL_BASE_PATH
+                if (getenv('MODE') === 'development') {
+                    header('Location: /admin/login');
+                } else {
+                    header('Location: ' . FULL_BASE_PATH . 'admin/login');
+                }
+                exit;
+            }
+        }
+
+        // Check if this is a blog post URL - fixed regex pattern
+        if (strpos($url, 'blog/') === 0) {  // First check if it starts with blog/
+            $slug = substr($url, strlen('blog/')); // Get everything after blog/
+            
+            // Normalize: strip index.php, page/N, posts/ prefixes from malformed URLs
+            $slug = preg_replace('#^index\.php/#', '', $slug);
+            $slug = preg_replace('#^page/\d+/#', '', $slug);
+            $slug = preg_replace('#^posts/#', '', $slug);
+            $slug = preg_replace('#/index\.php/#', '/', $slug);
+            $slug = preg_replace('#/page/\d+/#', '/', $slug);
+            $slug = preg_replace('#/+/#', '/', $slug);
+            $slug = trim($slug, '/');
+            
+            if (!empty($slug)) {
+                require_once dirname(__DIR__) . '/models/Blog.php';
+                $blog = new Blog();
+                
+                if (getenv('MODE') === 'development') {
+                    error_log("Router: Processing blog post URL");
+                    error_log("Full URL: " . $_SERVER['REQUEST_URI']);
+                    error_log("Processed URL: " . $url);
+                    error_log("Extracted slug: " . $slug);
+                }
+                
+                // Get the published post
+                $post = $blog->getPublishedPost($slug);
+                
+                if ($post) {
+                    if (getenv('MODE') === 'development') {
+                        error_log("Router: Found post with title: " . $post['title']);
+                    }
+                    $GLOBALS['current_post'] = $post;
+                    require_once dirname(__DIR__) . '/views/blog-post.php';
+                    return;
+                }
+                
+                if (getenv('MODE') === 'development') {
+                    error_log("Router: No post found with slug: " . $slug);
+                }
+                $notFoundPath = dirname(__DIR__) . '/' . $this->routes['404'];
+                require_once $notFoundPath;
+                return;
+            }
+        }
+
+        // Check if this is an individual update URL
+        if (strpos($url, 'updates/') === 0) {
+            $updateId = substr($url, strlen('updates/')); // Get everything after updates/
+            
+            if (!empty($updateId) && is_numeric($updateId)) {
+                require_once dirname(__DIR__) . '/models/Updates.php';
+                $updates = new Updates();
+                
+                if (getenv('MODE') === 'development') {
+                    error_log("Router: Processing individual update URL");
+                    error_log("Full URL: " . $_SERVER['REQUEST_URI']);
+                    error_log("Processed URL: " . $url);
+                    error_log("Extracted update ID: " . $updateId);
+                }
+                
+                // Get the update
+                $update = $updates->getUpdateById($updateId);
+                
+                if ($update) {
+                    if (getenv('MODE') === 'development') {
+                        error_log("Router: Found update with title: " . $update['title']);
+                    }
+                    $GLOBALS['current_update'] = $update;
+                    require_once dirname(__DIR__) . '/views/update-single.php';
+                    return;
+                }
+                
+                if (getenv('MODE') === 'development') {
+                    error_log("Router: No update found with ID: " . $updateId);
+                }
+                $notFoundPath = dirname(__DIR__) . '/' . $this->routes['404'];
+                require_once $notFoundPath;
+                return;
+            }
+        }
+
+        // Route to appropriate page FIRST (before including header/footer)
+        // Handle admin pages early to prevent header/footer inclusion
+        if (array_key_exists($url, $this->routes)) {
+            // For admin pages, ensure proper routing
+            if (str_starts_with($url, 'admin/') || $url === 'admin') {
+                // Allow access to login without verification
+                if ($url === 'admin/login' || $url === 'admin') {
+                    $routePath = $this->routes[$url];
+                    // Convert relative path to absolute if needed
+                    if (!str_starts_with($routePath, '/') && !str_starts_with($routePath, dirname(__DIR__))) {
+                        $routePath = dirname(__DIR__) . '/' . $routePath;
+                    }
+                    require_once $routePath;
+                    return;
+                }
+                
+                // For other admin pages, verify session
+                if (!isset($_SESSION['user_id'])) {
+                    // In development mode, use relative path instead of FULL_BASE_PATH
+                    if (getenv('MODE') === 'development' || php_sapi_name() === 'cli-server') {
+                        header('Location: /admin/login');
+                    } else {
+                        header('Location: ' . FULL_BASE_PATH . 'admin/login');
+                    }
+                    exit;
+                }
+            }
+        }
+
+        // Pages that manage their own layout via ui.php functions
+        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'yunobot', 'search', 'privacy', 'terms', 'cookies', 'more', 'diag_updates', 'sitemap', 'llms'];
+        $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
+
+        if (!$skipLayout) {
+            require_once dirname(__DIR__) . '/views/includes/header.php';
+        }
+
+        // Continue routing for non-admin pages
+        if (array_key_exists($url, $this->routes)) {
+            $routePath = $this->routes[$url];
+            if (!str_starts_with($routePath, '/') && !str_starts_with($routePath, dirname(__DIR__))) {
+                $routePath = dirname(__DIR__) . '/' . $routePath;
+            }
+            require_once $routePath;
+        } else {
+            require_once dirname(__DIR__) . '/views/404.php';
+        }
+
+        if (!$skipLayout) {
+            require_once dirname(__DIR__) . '/views/includes/footer.php';
+        }
+    }
+
+    protected function processMiddleware($route) {
+        // Removed any CSRF-specific middleware checks
+        // ... existing code ...
+    }
+}
+
+// If global.php is not included, include it and restrict direct access
+if (file_exists('../global.php')) {
+    require_once '../global.php';
+    restrictDirectAccess();
+
+}  
+ 
+
+?> 

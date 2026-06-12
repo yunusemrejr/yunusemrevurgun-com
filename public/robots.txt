@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yunusemrevurgun.com/sitemap.xml
+# LLM guidance
+# https://yunusemrevurgun.com/llms.txt
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+Disallow: /dev/
+Disallow: /includes/
+Disallow: /middleware/
+Disallow: /models/
+Disallow: /router/
+Disallow: /scripts/
+Disallow: /views/
+
+# Allow important pages
+Allow: /
+Allow: /about
+Allow: /portfolio
+Allow: /gallery
+Allow: /blog
+Allow: /updates
+Allow: /post-code
+Allow: /travel
+Allow: /yunobot
+Allow: /contact
+Allow: /search
+Allow: /uploads/
+
+# Crawl delay (optional)
+Crawl-delay: 1

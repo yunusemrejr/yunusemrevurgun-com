@@ -1,0 +1,3 @@
+# This endpoint is generated dynamically.
+# Canonical machine-readable source:
+https://yunusemrevurgun.com/llms.txt

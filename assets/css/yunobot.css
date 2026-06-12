@@ -1,0 +1,649 @@
+/* ============================================
+   YUNOBOT PAGE — YEV Brand Design System
+   Dark-first, monospace-driven, technical minimalism
+   ============================================ */
+
+/* ===== CUSTOM PROPERTIES ===== */
+:root {
+  --yuno-bg: var(--color-bg-primary);
+  --yuno-surface: var(--color-bg-elevated);
+  --yuno-border: var(--color-border);
+  --yuno-text: var(--color-text-primary);
+  --yuno-text-secondary: var(--color-text-secondary);
+  --yuno-text-muted: var(--color-text-tertiary);
+  --yuno-accent: var(--color-accent);
+  --yuno-surface-hover: var(--color-bg-subtle);
+
+  --msg-user-bg: var(--color-bg-subtle);
+  --msg-user-border: var(--color-border);
+  --msg-bot-bg: var(--color-surface);
+  --msg-bot-border: var(--color-border-strong);
+
+  --status-loading: var(--color-warning);
+  --status-ready: var(--color-success);
+  --status-error: var(--color-danger);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes yunobot-slideInMessage {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes yunobot-typingWave {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-6px); opacity: 1; }
+}
+
+@keyframes yunobot-fadeInTitle {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+.ui-yunobot-messages::-webkit-scrollbar { width: 4px; }
+.ui-yunobot-messages::-webkit-scrollbar-track { background: transparent; }
+.ui-yunobot-messages::-webkit-scrollbar-thumb {
+  background: var(--color-border, rgba(42, 54, 66, 0.7));
+  border-radius: var(--radius-full);
+}
+.ui-yunobot-messages::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
+}
+
+/* ============================================================
+   PAGE LAYOUT
+   ============================================================ */
+
+/* Section container — uses brand elevated surface */
+.ui-yunobot-container {
+  width: 100%;
+  max-width: var(--content-narrow, 720px);
+  margin: 0 auto;
+}
+
+/* Chat wrapper — card-style elevated surface */
+.ui-yunobot-chat {
+  background: var(--yuno-surface);
+  border: 1px solid var(--yuno-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  max-height: 72vh;
+  min-height: 400px;
+  contain: layout style paint;
+}
+
+/* ============================================================
+   STATUS BAR — minimal, monospace
+   ============================================================ */
+
+.chat-status-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+  transition: border-color var(--transition-fast);
+}
+
+.chat-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast);
+}
+
+.chat-status-dot.loading {
+  background: var(--status-loading);
+  animation: yunobot-statusPulse 1.5s ease-in-out infinite;
+}
+
+.chat-status-dot.ready {
+  background: var(--status-ready);
+}
+
+.chat-status-dot.error {
+  background: var(--status-error);
+}
+
+@keyframes yunobot-statusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.chat-status-text {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   CHAT MESSAGES
+   ============================================================ */
+
+.ui-yunobot-messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: var(--space-2);
+  padding-right: var(--space-2);
+  min-height: 0;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+.chat-message {
+  margin-bottom: var(--space-5);
+  display: flex;
+  gap: var(--space-3);
+  animation: yunobot-slideInMessage var(--transition-base) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chat-message.user-message { flex-direction: row-reverse; }
+.chat-message.bot-message { flex-direction: row; }
+
+/* Avatars — square, monospace */
+.message-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 500;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-border);
+}
+
+/* Message body */
+.message-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-width: 78%;
+}
+
+.user-message .message-body { align-items: flex-end; }
+.bot-message .message-body { align-items: flex-start; }
+
+/* Message content */
+.message-content {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  font-family: var(--font-body);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.user-message .message-content {
+  background: var(--msg-user-bg);
+  border: 1px solid var(--msg-user-border);
+  color: var(--color-text-primary);
+}
+
+.bot-message .message-content {
+  background: var(--msg-bot-bg);
+  border: 1px solid var(--msg-bot-border);
+  color: var(--color-text-secondary);
+}
+
+/* Typography in messages */
+.message-content strong,
+.message-content b {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.message-content em,
+.message-content i { font-style: italic; }
+
+.message-content code {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.1rem 0.35rem;
+  color: var(--color-text-secondary);
+}
+
+.message-content pre {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  margin: var(--space-2) 0;
+  overflow-x: auto;
+}
+
+.message-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.message-content ul,
+.message-content ol {
+  margin: var(--space-1) 0;
+  padding-left: var(--space-5);
+}
+
+.message-content li { margin: var(--space-1) 0; line-height: 1.6; }
+
+.message-content a {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.message-content a:hover { text-decoration-thickness: 2px; }
+
+/* Message meta */
+.message-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-display);
+  padding: 0 var(--space-1);
+}
+
+/* Copy button */
+.message-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+  padding: 0;
+}
+
+.message-copy-btn:hover { color: var(--color-text-primary); }
+.message-copy-btn:active { transform: scale(0.9); }
+.message-copy-btn.copied { color: var(--status-ready); }
+.message-copy-btn svg { width: 12px; height: 12px; }
+
+/* ============================================================
+   TYPING INDICATOR
+   ============================================================ */
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--msg-bot-bg);
+  border: 1px solid var(--msg-bot-border);
+  border-radius: var(--radius-sm);
+}
+
+.typing-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--color-text-tertiary);
+  border-radius: var(--radius-full);
+  animation: yunobot-typingWave 1.2s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* ============================================================
+   EXAMPLE QUESTIONS
+   ============================================================ */
+
+.example-questions {
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.example-questions.hidden { display: none; }
+
+.example-questions-label {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-3);
+  font-weight: 400;
+}
+
+.example-questions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.example-question-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 32px;
+}
+
+.example-question-chip:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-text-tertiary);
+  color: var(--color-text-primary);
+}
+
+.example-question-chip:active { transform: translateY(0); }
+
+/* ============================================================
+   QUICK ACTIONS
+   ============================================================ */
+
+.chat-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  margin-bottom: var(--space-2);
+}
+
+.chat-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.chat-action-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.chat-action-btn:active { transform: scale(0.96); }
+.chat-action-btn svg { width: 12px; height: 12px; }
+
+/* ============================================================
+   INPUT AREA
+   ============================================================ */
+
+.chat-input-container {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-end;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-4);
+  flex-shrink: 0;
+}
+
+.chat-input-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-input {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  transition: border-color var(--transition-fast);
+  line-height: 1.5;
+  resize: none;
+  overflow: hidden;
+  min-height: 40px;
+  max-height: 120px;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--color-focus-ring);
+  box-shadow: 0 0 0 1px var(--color-focus-ring);
+}
+
+.chat-input::placeholder {
+  color: var(--color-text-disabled);
+}
+
+.chat-input-hint {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  color: var(--color-text-disabled);
+  margin-top: var(--space-1);
+}
+
+/* Send button — accent brand green */
+.chat-send-button {
+  width: 40px;
+  height: 40px;
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.chat-send-button:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.chat-send-button:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.chat-send-button:disabled {
+  background: var(--color-border);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.chat-send-button:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.chat-send-button svg { width: 16px; height: 16px; }
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+
+.ui-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal, 1050);
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-modal[aria-hidden="false"] { display: flex; }
+
+.ui-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg-overlay, rgba(0, 0, 0, 0.6));
+}
+
+.ui-modal-panel {
+  position: relative;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  max-width: 560px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.ui-modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.ui-modal-close:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+/* Info button */
+.ui-yunobot-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-4);
+}
+
+.ui-yunobot-info-btn {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  font-family: var(--font-display);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.ui-yunobot-info-btn:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-text-tertiary);
+}
+
+.ui-yunobot-info-text {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-text-disabled);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .ui-yunobot-chat {
+    padding: var(--space-4);
+    max-height: 78vh;
+    min-height: 300px;
+    border-radius: var(--radius-md);
+  }
+
+  .chat-message { gap: var(--space-2); margin-bottom: var(--space-4); }
+  .message-avatar { width: 24px; height: 24px; font-size: 0.6rem; }
+  .message-body { max-width: 88%; }
+  .message-content { padding: var(--space-2) var(--space-3); }
+  .example-questions { padding: var(--space-3); }
+  .example-question-chip { min-height: 36px; padding: var(--space-1) var(--space-3); }
+  .chat-action-btn { min-height: 32px; }
+  .chat-input-hint { display: none; }
+  .chat-input { min-height: 44px; font-size: 16px; } /* 16px prevents iOS zoom */
+}
+
+@media (max-width: 480px) {
+  .ui-yunobot-chat {
+    padding: var(--space-3);
+    max-height: 80vh;
+    min-height: 260px;
+  }
+
+  .message-avatar { width: 22px; height: 22px; }
+  .message-body { max-width: 90%; }
+  .chat-input { font-size: 16px; }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .chat-action-btn { min-height: 44px; }
+  .example-question-chip { min-height: 44px; }
+  .chat-send-button { min-width: 44px; min-height: 44px; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

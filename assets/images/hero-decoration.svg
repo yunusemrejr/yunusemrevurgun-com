@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none" role="img" aria-label="Decorative illustration">
+  <g opacity="0.45" transform="rotate(-8 200 250)">
+    <!-- Hand-drawn style Y symbol with organic imperfect lines -->
+    <!-- Main stem - slightly wobbly -->
+    <path d="M195 80 Q198 150 193 220 Q190 290 196 380 Q198 420 200 450" 
+          stroke="#C4501A" stroke-width="8" stroke-linecap="round" fill="none"
+          stroke-dasharray="0"/>
+    <!-- Left arm -->
+    <path d="M200 160 Q170 140 120 125 Q100 118 75 115" 
+          stroke="#C4501A" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <!-- Right arm -->
+    <path d="M200 155 Q235 130 285 120 Q310 115 335 118" 
+          stroke="#C4501A" stroke-width="8" stroke-linecap="round" fill="none"/>
+    
+    <!-- Decorative circles - hand drawn feel -->
+    <circle cx="75" cy="115" r="18" stroke="#7B9E87" stroke-width="3" fill="none" opacity="0.7"/>
+    <circle cx="335" cy="118" r="22" stroke="#D4A574" stroke-width="3" fill="none" opacity="0.6"/>
+    <circle cx="200" cy="450" r="15" stroke="#8B7B9E" stroke-width="3" fill="none" opacity="0.5"/>
+    
+    <!-- Small decorative marks - pencil sketch feel -->
+    <path d="M55 95 L65 105 M60 90 L70 100" stroke="#7B9E87" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+    <path d="M350 100 L360 110 M355 95 L365 105" stroke="#D4A574" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+    <path d="M185 470 L195 480 M190 465 L200 475" stroke="#8B7B9E" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+    
+    <!-- Abstract organic shape background element -->
+    <path d="M100 200 Q150 180 200 200 Q250 220 280 190 Q310 160 340 200 Q360 240 320 280 Q280 320 240 300 Q200 280 160 310 Q120 340 90 290 Q60 240 100 200Z" 
+          stroke="#E5E2DE" stroke-width="2" fill="none" opacity="0.4" stroke-dasharray="4 6"/>
+    
+    <!-- Small dots scattered - hand-drawn feel -->
+    <circle cx="140" cy="250" r="4" fill="#C4501A" opacity="0.3"/>
+    <circle cx="260" cy="240" r="5" fill="#7B9E87" opacity="0.35"/>
+    <circle cx="180" cy="320" r="4" fill="#D4A574" opacity="0.3"/>
+    <circle cx="300" cy="300" r="4" fill="#8B7B9E" opacity="0.25"/>
+    <circle cx="120" cy="350" r="3" fill="#C4501A" opacity="0.2"/>
+    <circle cx="270" cy="370" r="4" fill="#7B9E87" opacity="0.3"/>
+  </g>
+</svg>

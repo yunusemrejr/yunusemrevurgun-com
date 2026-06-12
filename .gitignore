@@ -1,0 +1,78 @@
+# =============================================================================
+# .gitignore for yunusemrevurgun.com
+# Converted from FTP-based deploys to Git push-to-deploy (Namecheap bare repo + post-receive hook)
+# =============================================================================
+
+# --- Secrets & credentials (NEVER commit) ---
+.env
+.env.*
+*.env
+**/.env
+**/*.env
+**/*-pass*
+**/*-secret*
+**/*-creds*
+**/*-key*
+config*.local.php
+*.pem
+*.key
+
+# --- Local dev / agent work / scratch (never to production) ---
+dev/
+dev/**
+**/_backups/
+**/_backups/**
+**/logs/
+**/logs/**
+**/*.log
+
+# --- Legacy FTP / deploy scripts and markers (retiring FTP) ---
+.ftpquota
+ftp-info.txt
+ftp_sync*.sh
+deploy*.sh
+.deployguard*
+.deployguard.local
+*.ftp*
+
+# --- Generated, caches, build, temp artifacts ---
+node_modules/
+vendor/
+dist/
+build/
+.cache/
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~
+__pycache__/
+*.pyc
+.ruff_cache/
+.playwright-cli/
+.last-ai-crawl
+
+# --- OS / editor / IDE ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-*
+*.code-workspace
+
+# --- User uploaded / runtime content (must survive deploys as untracked files on server) ---
+uploads/
+user-content/
+media/uploads/
+
+# --- Database / local state files that are instance-specific (comment out if you version your seed data) ---
+# *.db
+# *.sqlite*
+# *.sqlite3
+
+# Per-site extra rules
+
+
+# Note: .htaccess, robots.txt, sitemap.xml, manifest*, sw.js, core assets, PHP/HTML/JS/CSS/JSON content files etc. SHOULD be committed.
+# After any push to the bare repo, the post-receive hook does force checkout into the live document root.

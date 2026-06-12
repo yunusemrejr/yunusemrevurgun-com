@@ -1,0 +1,55 @@
+<?php
+require_once dirname(__DIR__) . '/config/setPath.php';
+require_once __DIR__ . '/includes/ui.php';
+
+$morePages = [
+    [
+        'title' => 'YunoBot',
+        'href' => FULL_BASE_PATH . 'yunobot',
+        'description' => 'Terminal-style AI chat interface powered by local ML models.',
+        'icon' => '>',
+    ],
+    [
+        'title' => 'Post-Code',
+        'href' => FULL_BASE_PATH . 'post-code',
+        'description' => 'Concepts and mathematics foundations for post-code era computing.',
+        'icon' => '//',
+    ],
+];
+
+$currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');
+
+ui_render_head(
+    'More | Yunus Emre Vurgun',
+    'Additional projects and pages.',
+);
+?>
+<body>
+<div class="ui-page">
+    <?php ui_render_navbar('more'); ?>
+
+    <main class="ui-main">
+        <section class="ui-section">
+            <p class="ui-eyebrow">Explore</p>
+            <h1 class="ui-section-title">More</h1>
+            <p class="ui-section-text">Additional projects and experiments alongside the main work.</p>
+        </section>
+
+        <section class="ui-section">
+            <div class="ui-more-grid">
+                <?php foreach ($morePages as $page): ?>
+                    <a class="ui-more-card" href="<?= htmlspecialchars($page['href']) ?>">
+                        <span class="ui-more-icon" aria-hidden="true"><?= htmlspecialchars($page['icon']) ?></span>
+                        <h2 class="ui-more-title"><?= htmlspecialchars($page['title']) ?></h2>
+                        <p class="ui-more-desc"><?= htmlspecialchars($page['description']) ?></p>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    </main>
+
+    <?php ui_render_footer(); ?>
+</div>
+<?php ui_render_tracker_codes(dirname(__DIR__)); ?>
+</body>
+</html>
