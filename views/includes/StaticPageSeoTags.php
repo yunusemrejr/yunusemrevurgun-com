@@ -235,7 +235,8 @@ $ogType = $pageType;
                 "https://odysee.com/@programmingwithyunusemrevu7222",
                 "https://mastodon.social/@yunusemrevurgn",
                 "https://x.com/agenticn3rd",
-                "https://bsky.app/profile/yunusemrevurgun.bsky.social"
+                "https://bsky.app/profile/yunusemrevurgun.bsky.social",
+                "https://instagram.com/yemrevu"
             ],
             "knowsAbout": [
                 "Software Development",
@@ -318,7 +319,8 @@ $ogType = $pageType;
             "sameAs": [
                 "https://github.com/yunusemrejr",
                 "https://linkedin.com/in/yunus-emre-vurgun-49ba9a177",
-                "https://x.com/agenticn3rd"
+                "https://x.com/agenticn3rd",
+                "https://instagram.com/yemrevu"
             ],
             "founder": {"@id": "<?php echo FULL_BASE_PATH; ?>#person"}
         },
