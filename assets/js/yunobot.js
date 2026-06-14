@@ -276,8 +276,15 @@
         // Quick action buttons
         var clearBtn = document.getElementById('clearChatBtn');
         var exportBtn = document.getElementById('exportChatBtn');
+        var timeBtn = document.getElementById('timeBtn');
         if (clearBtn) clearBtn.addEventListener('click', clearChat);
         if (exportBtn) exportBtn.addEventListener('click', exportChat);
+        if (timeBtn) timeBtn.addEventListener('click', function() {
+            chatInput.value = 'What time is it?';
+            chatInput.focus();
+            autoResizeInput();
+            handleSend();
+        });
         
         // Focus input on load
         chatInput.focus();

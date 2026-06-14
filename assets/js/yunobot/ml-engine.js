@@ -119,6 +119,16 @@
                     { pattern: /^(?:hi|hello|hey|greetings|howdy|sup|what's\s*up|heyo|yo|wassup|selam|merhaba)/i, response: "Hello! How can I help you today?", confidence: 0.9 },
                     { pattern: /^(?:good\s*(?:morning|afternoon|evening|day))/i, response: "Good day! What would you like to know?", confidence: 0.9 },
                 ],
+
+                // Turkish greeting patterns
+                greeting_tr: [
+                    { pattern: /^(?:selam|merhaba|günaydın|iyi\s*akşamlar|iyi\s*günler|hey|alo|hey\s*bot)/i, response: "Selam! Size nasıl yardımcı olabilirim?", confidence: 0.9 },
+                    { pattern: /^(?:nasılsın|naber|ne\s*haber|iyi\s*misinn?)/i, response: "Teşekkür ederim, iyiyim! Size nasıl yardımcı olabilirim?", confidence: 0.9 },
+                    { pattern: /^(?:günaydın)/i, response: "Günaydın! Size nasıl yardımcı olabilirim?", confidence: 0.9 },
+                    { pattern: /^(?:iyi\s*akşamlar)/i, response: "İyi akşamlar! Size nasıl yardımcı olabilirim?", confidence: 0.9 },
+                    { pattern: /^(?:teşekkür\s*ederim|sağ\s*ol|eyvallah|teşekkürler)/i, response: "Rica ederim! Başka bir şey sorabilirsiniz.", confidence: 0.9 },
+                    { pattern: /^(?:hoşça\s*kal|güle\s*güle|bye|görüşürüz)/i, response: "Görüşürüz! Tekrar beklerim.", confidence: 0.9 },
+                ],
                 
                 // Question patterns (specific ones with high confidence, generic ones with low confidence)
                 questions: [
@@ -158,6 +168,36 @@
                     { pattern: /(?:what|tell\s*me).*(?:about|is).*(?:yunus|this\s*site|website)/i, response: "This is Yunus Emre Vurgun's personal website. He's a software developer and IT specialist. You can explore his portfolio, blog, gallery, and more!", confidence: 0.6 },
                 ],
                 
+                // Turkish Q&A patterns (Turkish responses for Turkish queries)
+                turkish_qa: [
+                    { pattern: /^(?:kim\s*sin\s*sen|kim\s*bu|kim\s*yunus|kim\s*bu\s*yunus|kimsiniz)/i, response: "Ben YunoBot, Yunus'un AI asistanıyım. Yunus Emre Vurgun, İstanbul'da yaşayan bir yazılım geliştirici ve BT uzmanıdır.", confidence: 0.95 },
+                    { pattern: /^(?:yunus\s*nerede|nerede\s*yunus|nerede\s*yaşıyor|yaşıyor\s*nerede|hangi\s*şehir)/i, response: "Yunus İstanbul, Türkiye'de yaşıyor.", confidence: 0.95 },
+                    { pattern: /^(?:yunus\s*ne\s*yapar|ne\s*yapıyor|mesleği\s*ne|uzmanlık|ne\s*iş)/i, response: "Yunus yazılım geliştirici ve BT uzmanıdır. Endüstriyel müşteriler için PHP ve JavaScript ile sistemler geliştiriyor, Django ile web uygulamaları yapıyor, saf C++ ile sinir ağları kuruyor ve hesaplamalı zekayla ilgileniyor.", confidence: 0.95 },
+                    { pattern: /^(?:proje|projeler|yaptığı|nedir\s*projeler)/i, response: "Yunus'in endüstriyel müşteriler için PHP ve JavaScript ile hazırlanan bir çizelgeleme sistemi, Neo4j ve Plotly ile grafik verilerini görselleştiren bir Django uygulaması (Mr. Graphy), saf C++ ile sınıflandırma için bir sinir ağı ve daha fazlası gibi projeleri var. Detaylar için portfolyo sayfasına göz atabilirsiniz.", confidence: 0.95 },
+                    { pattern: /^(?:teknoloji|dili|kullanılan|hangi\s*dil|php|javascript|python|c\+\+|django)/i, response: "Yunus PHP, JavaScript, Python, Django, Neo4j, C++ ve daha birçok teknoloji ile çalışıyor. Endüstriyel müşteriler için PHP ve JavaScript kullanarak projeler geliştirdi, saf C++ ile sinir ağları kurdurdu ve Django uygulamaları geliştirdi.", confidence: 0.95 },
+                    { pattern: /^(?:matematik|matematiğe|sayısal|sayı|algoritma|hesaplamalı)/i, response: "Yunus güçlü algoritmik temelleri ve bilgisayarın arkasındaki matematiği değerlendiriyor. Hesaplamalı zeka, sinir ağları ve algoritmalarla ilgileniyor.", confidence: 0.95 },
+                    { pattern: /^(?:kayıt|github|depo|repo|açık\s*kaynak)/i, response: "Yunus GitHub'da 100'den fazla deposu var. Kullanıcı adı: github.com/yunusemrejr. Çoğu projesi açık kaynaklıdır.", confidence: 0.95 },
+                    { pattern: /^(?:eğitim|okul|üniversite|bölüm|mezun)/i, response: "Yunus programlama alanında A.S. derecesine sahiptir ve Beykoz Üniversitesi, Illinois Institute of Technology ve Anadolu Üniversitesi'nde çalışmalar yapmıştır.", confidence: 0.95 },
+                    { pattern: /^(?:sertifika|certificate|google|cisco)/i, response: "Yunus Google Cloud, Cisco ve diğer kurumlardan çeşitli sertifikalar almıştır. Sürekli öğrenmeye önem verir. Detaylar için Hakkında sayfasına göz atabilirsiniz.", confidence: 0.95 },
+                    { pattern: /^(?:yaş|kaç\s*yaşında|doğum|doğdu)/i, response: "Yunus Şubat 2000'de doğmuştur, bu yüzden 20'li yaşlarındadır. Evet, bir 2000'li çocuğudur!", confidence: 0.95 },
+                    { pattern: /^(?:türk\s*mü|türk\s*müyüm|nerede\s*doğdu|memleket)/i, response: "Evet, Yunus Türk'tür! İstanbul, Türkiye'de yaşıyor.", confidence: 0.95 },
+                    { pattern: /^(?:hangi\s*dil\s*konuş|konuş|anla|türkçe\s*mi|ingilizce\s*mi|çoklu\s*dil)/i, response: "Bot şu anda yalnızca İngilizce yanıt verir, ancak anlamsal benzerlik sayesinde Türkçe de içeren soruları anlayabilir. Tamamen tarayıcınızda çalışır.", confidence: 0.9 },
+                    { pattern: /^(?:nasılsın|naber|ne\s*haber|nasıl\s*gidiyor|iyi\s*misin)/i, response: "Teşekkür ederim, iyiyim! Size nasıl yardımcı olabilirim? Site hakkında bir şey öğrenmek ister misiniz?", confidence: 0.85 },
+                ],
+
+                // Turkish tool-use patterns
+                turkish_tools: [
+                    { pattern: /^(?:saat|saat\s*kaç|şu\s*an\s*saat|bugün\s*saat|zaman|tarih)/i, intent: 'tool_time', confidence: 0.95 },
+                    { pattern: /^(?:hesapla|matematik|topla|çıkar|çarp|böl|kaç\s*edir|hesap)/i, intent: 'tool_calculator', confidence: 0.9 },
+                ],
+
+                // Tool patterns
+                tools: [
+                    { pattern: /^(?:what\s*time|current\s*time|what\s*is\s*the\s*time|time\s*now|what\s*date|today|what\s*day)/i, intent: 'tool_time', confidence: 0.95 },
+                    { pattern: /^(?:calculate|calc|compute|math\s*problem|solve|what\s*is\s*\d+|sum|add|subtract|multiply|divide)/i, intent: 'tool_calculator', confidence: 0.9 },
+                    { pattern: /^(?:search\s*(?:for|about)?|google|look\s*up|find\s*(?:info|information)?|web\s*search)/i, intent: 'tool_search', confidence: 0.85 },
+                ],
+
                 // General conversation
                 general: [
                     { pattern: /(?:thanks|thank\s*you|thx|appreciate)/i, response: "You're welcome! Is there anything else I can help with?", confidence: 0.9 },
@@ -195,7 +235,29 @@
                 "How old is Yunus?",
                 "Can Yunus speak Turkish?",
                 "What is YunoBot?",
+                "Şu an saat kaç? (What time is it?)",
+                "Yunus kimdir? (Who is Yunus?)",
+                "Projeleri neler? (What are his projects?)",
             ];
+        }
+
+        /**
+         * Detect if input is primarily Turkish
+         */
+        isTurkishInput(input) {
+            const lower = input.toLowerCase();
+            // Turkish-specific character patterns + common Turkish words
+            const turkishIndicators = [
+                /[çğıöşü]/, // Turkish characters
+                /\b(kim|nerede|ne|nasıl|hangi|kaç|nedir|kimdir|olan|yapar|yaşıyor|proje|teknoloji|matematik|eğitim|sertifika|github|çalışıyor|çalışma|yazılım|geliştirici|endüstriyel|otomasyon|sinir|ağ|yapay|zeka|saat|tarih|dil|konuş|anla|günaydın|merhaba|selam|teşekkür|rica|görüşürüz|hoşça)\b/i,
+                /\b(yunus\s*kim|kimsin|nasılsın|naber|ne\s*haber|yaş|kaç|yaşında|türk|istanbul|ankara|izmir)\b/i,
+            ];
+            
+            let score = 0;
+            for (const indicator of turkishIndicators) {
+                if (indicator.test(lower)) score++;
+            }
+            return score >= 2 || (/[çğıöşü]/.test(lower) && score >= 1);
         }
         
         /**
@@ -1622,8 +1684,461 @@
                         ],
                         response: "Yunus is always open to interesting opportunities and collaborations! He's particularly interested in computational intelligence, industrial automation, and innovative software projects. Reach out through the contact page to discuss possibilities.",
                     },
+                    // Turkish Q&A targets
                     {
-                        intent: 'yunus_blog_topics',
+                        intent: 'kimsin',
+                        sentences: [
+                            'kimsin',
+                            'kimsiniz',
+                            'sen kimsin',
+                            'kimsin sen',
+                            'kim bu',
+                            'kim bu bot',
+                            'kim yunobot',
+                            'kim bu yunobot',
+                            'bu ne',
+                            'sen ne',
+                            'ne yapıyorsun',
+                            'ne yapıyorsun burada',
+                        ],
+                        response: "Ben YunoBot, Yunus'un AI asistanıyım. Siteye hoş geldiniz! Size nasıl yardımcı olabilirim?",
+                    },
+                    {
+                        intent: 'kim_yunus',
+                        sentences: [
+                            'kim yunus',
+                            'kim yunus emre vurgun',
+                            'kim bu yunus',
+                            'kim bu adam',
+                            'kim bu kişi',
+                            'kim bu insan',
+                            'kimdir yunus',
+                            'kimdir bu',
+                            'kimdir yunus emre vurgun',
+                            'kimdir bu kişi',
+                        ],
+                        response: "Yunus Emre Vurgun, İstanbul'da yaşayan bir yazılım geliştirici ve BT uzmanıdır. Endüstriyel otomasyon, hesaplamalı zeka ve yapay zeka alanlarında çalışıyor. Detaylı bilgi için Hakkında sayfasına göz atabilirsiniz.",
+                    },
+                    {
+                        intent: 'nerede_yunus',
+                        sentences: [
+                            'nerede yunus',
+                            'nerede yaşıyor yunus',
+                            'nerede yaşıyor',
+                            'nerede buluşuruz',
+                            'hangi şehir',
+                            'hangi şehirde yaşıyor',
+                            'hangi ülke',
+                            'hangi ülkede yaşıyor',
+                            'memleketi neresi',
+                            'nereli yunus',
+                            'nereli',
+                        ],
+                        response: "Yunus İstanbul, Türkiye'de yaşıyor.",
+                    },
+                    {
+                        intent: 'ne_yapar_yunus',
+                        sentences: [
+                            'ne yapar yunus',
+                            'ne yapıyor yunus',
+                            'ne iş yapar',
+                            'ne iş yapıyor',
+                            'mesleği ne',
+                            'uzmanlık ne',
+                            'ne iş yapıyor bu adam',
+                            'ne iş yapıyor yunus',
+                            'yazılım geliştirici',
+                            'yazılım mühendisi',
+                            'programcı mı',
+                            'geliştirici mi',
+                        ],
+                        response: "Yunus yazılım geliştirici ve BT uzmanıdır. Endüstriyel müşteriler için sistemler geliştiriyor, Django ile web uygulamaları yapıyor, saf C++ ile sinir ağları kuruyor ve hesaplamalı zeka/operasyon teknolojileri alanında çalışıyor.",
+                    },
+                    {
+                        intent: 'proje_nerede',
+                        sentences: [
+                            'projeleri nerede',
+                            'projeleri neler',
+                            'projeleri ne',
+                            'hangi projeler var',
+                            'proje var mı',
+                            'ne projeleri var',
+                            'yaptığı projeler',
+                            'yaptığı işler',
+                            'çalışmaları',
+                            'eserleri',
+                            'portfolio nerede',
+                            'projeleri gör',
+                        ],
+                        response: "Yunus'in endüstriyel müşteriler için PHP ve JavaScript ile hazırlanan bir çizelgeleme sistemi, Neo4j ve Plotly ile grafik verilerini görselleştiren bir Django uygulaması (Mr. Graphy), saf C++ ile sınıflandırma için bir sinir ağı ve daha fazlası gibi projeleri var. Detaylar için portfolyo sayfasına göz atabilirsiniz.",
+                    },
+                    {
+                        intent: 'teknoloji_neler',
+                        sentences: [
+                            'hangi teknolojileri kullanıyor',
+                            'teknolojileri neler',
+                            'hangi dilleri biliyor',
+                            'hangi programlama dili',
+                            'php biliyor mu',
+                            'python biliyor mu',
+                            'javascript biliyor mu',
+                            'c++ biliyor mu',
+                            'django biliyor mu',
+                            'react biliyor mu',
+                            'node biliyor mu',
+                            'neoj4 biliyor mu',
+                            'neo4j biliyor mu',
+                            'tek stack',
+                        ],
+                        response: "Yunus PHP, JavaScript, Python, Django, Neo4j, C++ ve daha birçok teknoloji ile çalışıyor. Endüstriyel müşteriler için PHP ve JavaScript kullanarak projeler geliştirdi, saf C++ ile sinir ağları kurdurdu ve Django uygulamaları geliştirdi. Detaylar için portfolyo sayfasına göz atabilirsiniz.",
+                    },
+                    {
+                        intent: 'matematik_ilgi',
+                        sentences: [
+                            'matematik seviyor mu',
+                            'matematik biliyor mu',
+                            'matematik var mı',
+                            'sayısal zeka',
+                            'algoritma',
+                            'sayısal yetenek',
+                            'matematik yeteneği',
+                            'matematik arka planı',
+                            'hesaplamalı düşünme',
+                            'algoritmik düşünme',
+                        ],
+                        response: "Yunus güçlü algoritmik temelleri ve bilgisayarın arkasındaki matematiği değerlendiriyor. Hesaplamalı zeka ve teknolojinin temelindeki matematiksel prensiplerle ilgileniyor. Çalışmaları sinir ağları, algoritmalar ve hesaplamalı sistemlerdeki matematiksel kavramları içeriyor.",
+                    },
+                    {
+                        intent: 'github_nerede',
+                        sentences: [
+                            'github nerede',
+                            'github var mı',
+                            'github kullanıyor mu',
+                            'açık kaynak',
+                            'foss',
+                            'repo var mı',
+                            'depo var mı',
+                            'kodları nerede',
+                            'kaynak kodu nerede',
+                            'github adresi',
+                            'github linki',
+                            'github profili',
+                        ],
+                        response: "Yunus GitHub'da 100'den fazla deposu var. Kullanıcı adı: github.com/yunusemrejr. Çoğu projesi açık kaynaklıdır ve çeşitli lisanslarla paylaşılıyor.",
+                    },
+                    {
+                        intent: 'eğitim_nerede',
+                        sentences: [
+                            'nerede okudu',
+                            'okul nerede',
+                            'üniversite nerede',
+                            'hangi üniversitede',
+                            'bölüm ne',
+                            'mezuniyet',
+                            'derecesi var mı',
+                            'eğitim durumu',
+                            'eğitim geçmişi',
+                            'çalıştığı okullar',
+                            'beykoz üniversitesi',
+                            'anadolu üniversitesi',
+                            'illinois',
+                        ],
+                        response: "Yunus programlama alanında A.S. derecesine sahiptir ve Beykoz Üniversitesi, Illinois Institute of Technology ve Anadolu Üniversitesi'nde çalışmalar yapmıştır. Sürekli öğrenmeye önem verir ve Google Cloud, Cisco gibi kurumlardan kurslar almıştır.",
+                    },
+                    {
+                        intent: 'yaş_yunus',
+                        sentences: [
+                            'yaşı kaç',
+                            'kaç yaşında',
+                            'yaş kaç',
+                            'doğum tarihi',
+                            'doğduğu yıl',
+                            'doğum yeri',
+                            '2000 doğumlu',
+                            'şubat doğumlu',
+                            'yaş sorusu',
+                            'kaç yaşındasın',
+                            'yaşın kaç',
+                            'doğum günü',
+                        ],
+                        response: "Yunus Şubat 2000'de doğmuştur, bu yüzden 20'li yaşlarındadır. Evet, bir 2000'li çocuğudur!",
+                    },
+                    {
+                        intent: 'türk_mü',
+                        sentences: [
+                            'türk mü',
+                            'türkçe konuşuyor mu',
+                            'türkiye\'den mi',
+                            'nerede yaşıyor yunus',
+                            'memleketi neresi',
+                            'hangi ülke',
+                            'istanbul\'da mı yaşıyor',
+                            'türkiye\'de mi yaşıyor',
+                        ],
+                        response: "Evet, Yunus Türk'tür! İstanbul, Türkiye'de yaşıyor.",
+                    },
+                    {
+                        intent: 'sertifika_sor',
+                        sentences: [
+                            'sertifika var mı',
+                            'sertifikaları neler',
+                            'hangi sertifikaları var',
+                            'google cloud sertifikası var mı',
+                            'cisco sertifikası var mı',
+                            'kurslar var mı',
+                            'online kurslar',
+                            'eğitimleri neler',
+                            'sertifika listesi',
+                            'sertifika detayları',
+                        ],
+                        response: "Evet! Yunus Google Cloud, Cisco ve diğer kurumlardan çeşitli sertifikalar almıştır. Sürekli öğrenmeye önem verir. Detaylar için Hakkında sayfasına göz atabilirsiniz.",
+                    },
+                    {
+                        intent: 'blog_neler',
+                        sentences: [
+                            'blogda neler yazıyor',
+                            'blog konuları neler',
+                            'ne yazıyor',
+                            'hangi konularda yazıyor',
+                            'yazı konuları',
+                            'makaleleri neler',
+                            'yazılım yazıyor mu',
+                            'teknoloji yazıyor mu',
+                            'makale konuları',
+                            'blog içeriği',
+                            'yazı içeriği',
+                            'ne tür yazılar',
+                            'yazı türü',
+                        ],
+                        response: "Yunus hesaplamalı zeka, operasyon teknolojisi, endüstriyel otomasyon, sinir ağları, grafik veritabanları (Neo4j), Django geliştirme ve yazılım mimarisi konularında yazıyor. Hem teorik temelleri hem de pratik uygulamaları kapsıyor.",
+                    },
+                    {
+                        intent: 'söyleyebileceklerin',
+                        sentences: [
+                            'ne yapabilirsin',
+                            'ne yapabiliyorsun',
+                            'neler yapabilirsin',
+                            'yeteneğin neler',
+                            'gücün neler',
+                            'sınırların neler',
+                            'ne yapamazsın',
+                            'yardımcı olabilir misin',
+                            'nasıl yardımcı olursun',
+                            'komutlar neler',
+                            'aracın var mı',
+                            'araçlar neler',
+                        ],
+                        response: "Site gezintisine yardımcı olabilirim, Yunus'un çalışmaları ve arka planı hakkında sorularınızı cevaplayabilirim, doğal dil sorgularını anlayabilirim (hatalara ve varyasyonlara karşı dayanıklı) ve bağlama duyarlı takip soruları sağlayabilirim. Tüm işlem tarayıcınızda yerel olarak gerçekleşir!",
+                    },
+                    {
+                        intent: 'gizlilik',
+                        sentences: [
+                            'veri saklıyor musun',
+                            'izliyor musun',
+                            'veri topluyor musun',
+                            'gizlilik var mı',
+                            'veri gizliliği',
+                            'çerez kullanıyor musun',
+                            'takip ediyor musun',
+                            'sunucuya veri gönderiyor musun',
+                            'istemci tarafında mı çalışıyor',
+                            'çevrimdışı mı çalışır',
+                            'sunucu yok mu',
+                            'veri gizli mi',
+                        ],
+                        response: "Tamamen tarayıcınızda çalışır, sunucu ile hiçbir iletişim olmaz. Tüm işlemler yerel olarak gerçekleşir. Sorularınız cihazınızdan hiç çıkmaz. Model bir kez indirilir ve önbelleğe alınır. Herhangi bir sunucuda konuşma geçmişi saklanmaz, sizi izlemez veya kişisel veri toplamaz.",
+                    },
+                    {
+                        intent: 'endüstriyel_otomasyon',
+                        sentences: [
+                            'endüstriyel otomasyon',
+                            'endüstriyel otomasyon deneyimi',
+                            'plc',
+                            'scada',
+                            'hmi',
+                            'opc ua',
+                            'modbus',
+                            'mqtt',
+                            'endüstriyel iot',
+                            'iot',
+                            'operasyon teknolojisi',
+                            'ot',
+                            'it ot birleşimi',
+                            'üretim otomasyonu',
+                            'fabrika otomasyonu',
+                            'süreç otomasyonu',
+                            'kontrol sistemleri',
+                            'kepserver',
+                            'kepware',
+                            'endüstriyel yazılım',
+                            'endüstriyel proje',
+                            'endüstriyel müşteri',
+                            'çizelgeleme sistemi',
+                            'php endüstriyel',
+                        ],
+                        response: "Yunus endüstriyel otomasyon ve operasyon teknolojisi (OT) alanında uzmanlaşmıştır. Endüstriyel müşteriler için PHP ve JavaScript ile çizelgeleme sistemleri geliştirdi, KepServerEX REST API istemcileri oluşturdu ve IT/OT birleşimi üzerinde çalışıyor. Odak noktası PLC iletişimi, SCADA sistemleri ve MQTT, OPC UA gibi endüstriyel IoT protokolleri.",
+                    },
+                    {
+                        intent: 'blog_konuları',
+                        sentences: [
+                            'blogda ne yazıyor',
+                            'blog konuları neler',
+                            'ne tür yazılar var',
+                            'hangi konularda yazıyor',
+                            'yazılım yazıyor mu',
+                            'teknoloji yazıyor mu',
+                            'yapay zeka yazıyor mu',
+                            'makale konuları',
+                            'blog içeriği ne',
+                            'yazı içerikleri',
+                            'yazı türleri neler',
+                        ],
+                        response: "Yunus hesaplamalı zeka, operasyon teknolojisi, endüstriyel otomasyon, sinir ağları, grafik veritabanları (Neo4j), Django geliştirme ve yazılım mimarisi konularında yazıyor. Hem teorik temelleri hem de pratik uygulamaları kapsıyor.",
+                    },
+                    {
+                        intent: 'öğrenme_kaynakları',
+                        sentences: [
+                            'nasıl öğrendi',
+                            'öğrenme yolu',
+                            'kendi kendine öğrendi mi',
+                            'resmi eğitim',
+                            'online kurslar',
+                            'öğrenme kaynakları',
+                            'çalışma yöntemleri',
+                            'öğrenme tarzı',
+                            'eğitim yolu',
+                            'kariyer yolu',
+                            'profesyonel gelişim',
+                            'yetkinlik geliştirme',
+                            'sürekli öğrenme',
+                            'öğrenme felsefesi',
+                            'öğretim tarzı',
+                            'bilgi paylaşımı',
+                            'odysee var mı',
+                            'youtube var mı',
+                            'içerik üretiyor mu',
+                            'eğitici içerik',
+                            'öğretici yazılar',
+                            'rehberler',
+                            'eğitim materyalleri',
+                        ],
+                        response: "Yunus büyük ölçüde kendi kendine öğrenmiştir ve çeşitli kurumlardan resmi eğitimi almıştır. Pratik öğrenmeyi, deneyimi ve güçlü algoritmik temelleri değerlendirir. Odysee'de sinir ağları hakkında eğitici içerikler üretir ve ayrıntılı teknik blog yazıları yazar.",
+                    },
+                    {
+                        intent: 'iletişim_yöntemi',
+                        sentences: [
+                            'nasıl iletişime geçebilirim',
+                            'iletişim nasıl',
+                            'nasıl ulaşabilirim',
+                            'en iyi iletişim',
+                            'tercih edilen iletişim',
+                            'nasıl yunusa ulaşırım',
+                            'ulaşım yöntemi',
+                            'iletişim bilgileri',
+                            'e-posta adresi',
+                            'telefon numarası',
+                            'linkedin var mı',
+                            'twitter var mı',
+                            'sosyal medya',
+                            'mesaj atabilir miyim',
+                            'işbirliği yapabilir miyim',
+                            'danışmanlık',
+                            'iş teklifi',
+                            'proje teklifi',
+                            'freelance',
+                            'sözleşmeli iş',
+                            'full time',
+                            'part time',
+                            'uzaktan çalışma',
+                            'yer değiştirme',
+                            'iş durumu',
+                            'çalışma durumu',
+                        ],
+                        response: "Yunus ile en iyi iletişim kurma yolu bu web sitesindeki İletişim sayfasıdır. İşbirliği, danışmanlık ve ilginç proje fırsatlarına açıktır. Doğrudan iletişim için İletişim bölümüne göz atabilirsiniz.",
+                    },
+                    {
+                        intent: 'müsait_mi',
+                        sentences: [
+                            'müsait mi',
+                            'iş arıyor mu',
+                            'iş fırsatları',
+                            'proje fırsatları',
+                            'freelance müsait',
+                            'sözleşmeli iş',
+                            'full time mi',
+                            'part time mi',
+                            'remote çalışır mı',
+                            'yer değişikliği',
+                            'iş durumu ne',
+                            'çalışıyor mu',
+                            'yeni fırsatlar',
+                            'kariyer fırsatları',
+                            'iş fırsatları',
+                            'proje fırsatları',
+                            'çalışıyor mu şu anda',
+                            'işi var mı',
+                        ],
+                        response: "Yunus ilginç fırsatlar ve işbirlikleri için her zaman açıktır! Özellikle hesaplamalı zeka, endüstriyel otomasyon ve yenilikçi yazılım projeleriyle ilgileniyor. Detaylar için İletişim sayfasından ulaşabilirsiniz.",
+                    },
+                    {
+                        intent: 'gitar_calar_mı',
+                        sentences: [
+                            'gitar çalar mı',
+                            'şarkı söyler mi',
+                            'müzik yapar mı',
+                            'gitar çalıyor mu',
+                            'çalıyor mu gitar',
+                            'enstrüman çalar mı',
+                            'müzik hobisi',
+                            'gitar yeteneği',
+                            'şarkı söylüyor mu',
+                            'müzisyen mi',
+                            'gitarist mi',
+                            'hobisi müzik',
+                            'gitar çalışıyor mu',
+                            'müzik zevki',
+                            'favori müzik',
+                        ],
+                        response: "Yunus gitar çalar, ancak şarkı söyleme yeteneğinden emin değilim! Gitar çalmayı dinlenmek için tercih eder. Kodlama ve teknik çalışmalarıyla daha çok tanınır.",
+                    },
+                    {
+                        intent: 'programcı_mı',
+                        sentences: [
+                            'programcı mı',
+                            'geliştirici mi',
+                            'kod yazar mı',
+                            'yazılım mühendisi mi',
+                            'yazılım geliştirici mi',
+                            'yazılımcı mı',
+                            'kodluyor mu',
+                            'kod yazıyor mu',
+                            'it uzmanı mı',
+                            'mühendis mi',
+                            'programcıdır',
+                            'geliştiricidir',
+                        ],
+                        response: "Evet! Yunus yazılım geliştirici ve programcıdır. PHP, JavaScript, Python, Django, C++ ve daha birçok teknoloji ile projeler oluşturur. Ayrıca hesaplamalı zeka ve operasyon teknolojisi alanında bir BT uzmanıdır.",
+                    },
+                    {
+                        intent: 'açık_kaynak',
+                        sentences: [
+                            'açık kaynak mı',
+                            'açık kaynak projeleri var mı',
+                            'açık kaynak katkısı',
+                            'foss mu',
+                            'özgür yazılım',
+                            'gnu mu',
+                            'lisans kullanıyor mu',
+                            'hangi lisans',
+                            'kodları açık mı',
+                            'kodları kullanabilir miyim',
+                            'fork edebilir miyim',
+                            'kaynak kodu erişilebilir mi',
+                            'herkese açık mı',
+                        ],
+                        response: "Evet! Yunus'ın çoğu çalışması açık kaynaklıdır ve GitHub'da bulunur. Bilgi paylaşımına ve topluluğa katkı sağlamaya inanır. Projelerini github.com/yunusemrejr adresinde çeşitli lisanslarla bulabilirsiniz.",
+                    },
+                ],
                         sentences: [
                             'what does yunus write about',
                             'yunus blog topics',
@@ -2509,6 +3024,171 @@
         }
         
         /**
+         * Execute tool calls (time, calculator, search)
+         */
+        executeTool(intent, input) {
+            switch (intent) {
+                case 'tool_time': {
+                    const now = new Date();
+                    const options = { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        timeZoneName: 'short'
+                    };
+                    const timeStr = now.toLocaleString('en-US', options);
+                    const isTurkish = this.isTurkishInput(input);
+                    return {
+                        intent: 'tool_time',
+                        response: isTurkish 
+                            ? `Şu anda: ${now.toLocaleString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}`
+                            : `Current time: ${timeStr}`,
+                        confidence: 1.0,
+                        tool: 'time',
+                    };
+                }
+                
+                case 'tool_calculator': {
+                    try {
+                        // Extract math expression from input
+                        let expr = input
+                            .replace(/^(?:calculate|calc|compute|math\s*problem|solve|what\s*is|what's|equals?|equal)\s*/i, '')
+                            .replace(/^(?:hesapla|matematik|topla|çıkar|çarp|böl|kaç\s*edir|hesap)\s*/i, '')
+                            .trim();
+                        
+                        // Handle Turkish math words
+                        expr = expr
+                            .replace(/\bve\b/gi, '+')
+                            .replace(/\beksi\b|\bçıkar\b|\bçıkarma\b/gi, '-')
+                            .replace(/\bartı\b|\btopla\b|\btoplama\b/gi, '+')
+                            .replace(/\bçarp\b|\bçarpma\b|\bkere\b|\bkez\b/gi, '*')
+                            .replace(/\bböl\b|\bbölme\b/gi, '/')
+                            .replace(/\büzeri\b|\bküvvet\b/gi, '**');
+                        
+                        // Only allow safe math characters
+                        if (!/^[\d\s\+\-\*\/\(\)\.\%\**]+$/.test(expr)) {
+                            throw new Error('Unsafe expression');
+                        }
+                        
+                        // Evaluate safely (no eval of arbitrary code)
+                        const result = Function('"use strict"; return (' + expr + ')')();
+                        
+                        if (!isFinite(result)) {
+                            return {
+                                intent: 'tool_calculator',
+                                response: this.isTurkishInput(input)
+                                    ? 'Hesaplama sonucu sonsuz veya tanımsız. Lütfen geçerli bir ifade girin.'
+                                    : 'The calculation resulted in infinity or NaN. Please enter a valid expression.',
+                                confidence: 0.9,
+                                tool: 'calculator',
+                            };
+                        }
+                        
+                        const formatted = Number.isInteger(result) ? result : result.toFixed(6).replace(/\.?0+$/, '');
+                        
+                        return {
+                            intent: 'tool_calculator',
+                            response: this.isTurkishInput(input)
+                                ? `Hesaplama sonucu: ${expr.replace(/\*/g, '×').replace(/\//g, '÷')} = ${formatted}`
+                                : `Calculation result: ${expr.replace(/\*/g, '×').replace(/\//g, '÷')} = ${formatted}`,
+                            confidence: 0.95,
+                            tool: 'calculator',
+                        };
+                    } catch (e) {
+                        return {
+                            intent: 'tool_calculator',
+                            response: this.isTurkishInput(input)
+                                ? 'Hesaplama yapamadım. Örnek: "calculate 2+2" veya "12 * 5" gibi deneyin.'
+                                : 'I could not calculate that. Try something like "calculate 2+2" or "12 * 5".',
+                            confidence: 0.8,
+                            tool: 'calculator',
+                        };
+                    }
+                }
+                
+                case 'tool_search': {
+                    const query = input
+                        .replace(/^(?:search\s*(?:for|about)?|google|look\s*up|find\s*(?:info|information)?|web\s*search)\s*/i, '')
+                        .trim();
+                    
+                    if (!query) {
+                        return {
+                            intent: 'tool_search',
+                            response: this.isTurkishInput(input)
+                                ? 'Ne aramak istediğinizi belirtin. Örnek: "search for quantum computing" veya "yapay zeka ara"'
+                                : 'What would you like me to search for? Example: "search for quantum computing"',
+                            confidence: 0.9,
+                            tool: 'search',
+                        };
+                    }
+                    
+                    // Open search in new tab
+                    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                    setTimeout(() => window.open(searchUrl, '_blank'), 300);
+                    
+                    return {
+                        intent: 'tool_search',
+                        response: this.isTurkishInput(input)
+                            ? `"${query}" için arama yeni sekmede açılıyor...`
+                            : `Searching for "${query}" in a new tab...`,
+                        confidence: 0.9,
+                        tool: 'search',
+                        url: searchUrl,
+                    };
+                }
+                
+                default:
+                    return null;
+            }
+        }
+
+        /**
+         * Get Turkish response for detected Turkish input
+         */
+        getTurkishResponse(input) {
+            const normalized = input.toLowerCase().trim();
+            
+            // Try Turkish pattern matching first
+            const turkishPatterns = this.patterns.turkish_qa || [];
+            for (const patternData of turkishPatterns) {
+                if (patternData.pattern.test(normalized)) {
+                    return {
+                        intent: patternData.intent,
+                        response: patternData.response,
+                        confidence: patternData.confidence,
+                        language: 'tr',
+                    };
+                }
+            }
+            
+            // Try Turkish tools
+            const turkishTools = this.patterns.turkish_tools || [];
+            for (const toolData of turkishTools) {
+                if (toolData.pattern.test(normalized)) {
+                    const toolResult = this.executeTool(toolData.intent, input);
+                    if (toolResult) return toolResult;
+                }
+            }
+            
+            // Try semantic matching with Turkish targets if available
+            if (this.targetEmbeddings && this.targetEmbeddings.qa_tr) {
+                // Future: add Turkish semantic targets
+            }
+            
+            // Fallback: acknowledge Turkish and offer English help
+            return {
+                intent: 'language_tr',
+                response: "Türkçe sorunuzu anladım, ancak şu anda yalnızca İngilizce yanıt verebiliyorum. Lütfen sorunuzu İngilizce sorun ya da site gezintisi için 'take me to about' gibi komutları deneyin. Size yardımcı olmaya çalışacağım!",
+                confidence: 0.7,
+                language: 'tr',
+            };
+        }
+        
+        /**
          * Process input and generate response (PERFORMANCE OPTIMIZED)
          * Features:
          * - Lazy worker initialization (on first interaction)
@@ -2565,6 +3245,9 @@
             // Normalize input: handle all-caps, extra spaces, etc.
             let normalizedInput = input.trim();
             
+            // Detect Turkish input early
+            const isTurkish = this.isTurkishInput(normalizedInput);
+            
             // If input is all caps, convert to title case for better matching
             if (normalizedInput === normalizedInput.toUpperCase() && normalizedInput.length > 1) {
                 normalizedInput = normalizedInput.charAt(0).toUpperCase() + normalizedInput.slice(1).toLowerCase();
@@ -2588,6 +3271,17 @@
                 .replace(/\bkock\b/gi, 'knock')
                 .replace(/\bwhat\s*ru\b/gi, 'what r u')
                 .replace(/\bwhat\s*are\s*u\b/gi, 'what are you');
+            
+            // If Turkish input, handle separately with Turkish response
+            if (isTurkish) {
+                const trResult = this.getTurkishResponse(normalizedInput);
+                if (trResult && trResult.confidence >= 0.6) {
+                    this.lastIntent = trResult.intent;
+                    this.lastQuery = normalizedInput;
+                    this.addToHistory(input, trResult.response, trResult.intent, trResult.confidence);
+                    return trResult;
+                }
+            }
             
             // Handle single technology mentions (like "c++", "php")
             const singleTechMatch = normalizedInput.match(/^(c\+\+|php|javascript|python|django|java|react|node|math|mathematics)$/i);
