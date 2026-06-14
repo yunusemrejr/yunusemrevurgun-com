@@ -2138,7 +2138,8 @@
                         ],
                         response: "Evet! Yunus'ın çoğu çalışması açık kaynaklıdır ve GitHub'da bulunur. Bilgi paylaşımına ve topluluğa katkı sağlamaya inanır. Projelerini github.com/yunusemrejr adresinde çeşitli lisanslarla bulabilirsiniz.",
                     },
-                ],
+                    {
+                        intent: 'yunus_blog_topics',
                         sentences: [
                             'what does yunus write about',
                             'yunus blog topics',

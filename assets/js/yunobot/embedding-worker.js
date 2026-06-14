@@ -22,7 +22,7 @@ const baseUrl = workerPath.endsWith(suffix)
     ? workerUrl.origin + workerPath.slice(0, -suffix.length)
     : workerUrl.origin;
 
-const transformersLocalPath = baseUrl + 'assets/js/vendor/transformers/dist/transformers.min.js';
+const transformersLocalPath = baseUrl + '/assets/js/vendor/transformers/dist/transformers.min.js';
 
 // ============================================================
 // LRU CACHE FOR EMBEDDINGS
