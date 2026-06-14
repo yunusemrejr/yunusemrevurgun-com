@@ -28,6 +28,7 @@ Allow: /gallery
 Allow: /blog
 Allow: /updates
 Allow: /post-code
+Allow: /science-corner
 Allow: /travel
 Allow: /yunobot
 Allow: /contact

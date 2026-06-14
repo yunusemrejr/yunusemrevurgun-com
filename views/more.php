@@ -15,6 +15,12 @@ $morePages = [
         'description' => 'Concepts and mathematics foundations for post-code era computing.',
         'icon' => '//',
     ],
+    [
+        'title' => 'Science Corner',
+        'href' => FULL_BASE_PATH . 'science-corner',
+        'description' => 'Quotes, equations, and ideas from the greatest scientific minds.',
+        'icon' => 'Σ',
+    ],
 ];
 
 $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');

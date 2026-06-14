@@ -49,6 +49,18 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://yunusemrevurgun.com/post-code</loc>
+    <lastmod>2026-06-15T00:00:00+00:00</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://yunusemrevurgun.com/science-corner</loc>
+    <lastmod>2026-06-15T00:00:00+00:00</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://yunusemrevurgun.com/sitemap</loc>
     <lastmod>2026-06-01T12:09:42+00:00</lastmod>
     <priority>0.3</priority>
