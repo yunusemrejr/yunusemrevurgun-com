@@ -1070,6 +1070,63 @@ textarea.ui-input {
   object-fit: cover;
 }
 
+/* ===== PORTRAIT CROSSFADE ===== */
+.ui-portrait-crossfade {
+  position: relative;
+}
+
+.ui-portrait-crossfade-base,
+.ui-portrait-crossfade-alt {
+  display: block;
+}
+
+.ui-portrait-crossfade-base {
+  position: relative;
+  z-index: 1;
+  animation: ui-portrait-crossfade-base 10s ease-in-out infinite;
+}
+
+.ui-portrait-crossfade-alt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  opacity: 0;
+  animation: ui-portrait-crossfade-alt 10s ease-in-out infinite;
+}
+
+@keyframes ui-portrait-crossfade-base {
+  0%, 40% { opacity: 1; }
+  50%, 90% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes ui-portrait-crossfade-alt {
+  0%, 40% { opacity: 0; }
+  50%, 90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Hero portrait frame holds the crossfade on the landing page */
+.ui-hero-portrait-frame {
+  width: 240px;
+  height: 240px;
+  border-radius: var(--brand-portrait-radius, 24px);
+  border: var(--brand-portrait-border, 8px solid #FEFEFE);
+  box-shadow: var(--brand-portrait-shadow, 25px 25px 25px rgba(20,28,23,0.4));
+  overflow: hidden;
+}
+
+.ui-hero-portrait-frame .ui-hero-portrait {
+  width: 100%;
+  height: 100%;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
 /* ===== EMPTY STATES ===== */
 .ui-empty {
   padding: var(--space-8);
@@ -1961,7 +2018,8 @@ textarea.ui-input {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 992px) {
-  .ui-hero-portrait {
+  .ui-hero-portrait,
+  .ui-hero-portrait-frame {
     width: 200px;
     height: 200px;
   }
@@ -2002,7 +2060,8 @@ textarea.ui-input {
     min-height: calc(100vh - var(--navbar-height));
   }
 
-  .ui-hero-portrait {
+  .ui-hero-portrait,
+  .ui-hero-portrait-frame {
     width: 180px;
     height: 180px;
   }
@@ -2036,7 +2095,8 @@ textarea.ui-input {
 }
 
 @media (max-width: 480px) {
-  .ui-hero-portrait {
+  .ui-hero-portrait,
+  .ui-hero-portrait-frame {
     width: 160px;
     height: 160px;
   }

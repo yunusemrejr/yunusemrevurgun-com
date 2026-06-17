@@ -109,8 +109,14 @@ ui_render_head(
                 <aside class="ui-photo-box" style="position: sticky; top: calc(var(--navbar-height) + 2rem);">
                     <div class="ui-profile-frame">
                         <img
-                            class="ui-profile-image"
+                            class="ui-profile-image ui-portrait-crossfade-base"
                             src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg"
+                            alt="Yunus Emre Vurgun"
+                            loading="eager"
+                        >
+                        <img
+                            class="ui-profile-image ui-portrait-crossfade-alt"
+                            src="<?= FULL_BASE_PATH ?>assets/images/real-pfp.png"
                             alt="Yunus Emre Vurgun"
                             loading="eager"
                         >

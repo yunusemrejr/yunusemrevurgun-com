@@ -13,12 +13,20 @@ ui_render_head(
 
     <main class="ui-hero">
         <div class="ui-hero-content">
-            <img
-                class="ui-hero-portrait"
-                src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg"
-                alt="Yunus Emre Vurgun"
-                loading="eager"
-            >
+            <div class="ui-portrait-crossfade ui-hero-portrait-frame">
+                <img
+                    class="ui-hero-portrait ui-portrait-crossfade-base"
+                    src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg"
+                    alt="Yunus Emre Vurgun"
+                    loading="eager"
+                >
+                <img
+                    class="ui-hero-portrait ui-portrait-crossfade-alt"
+                    src="<?= FULL_BASE_PATH ?>assets/images/real-pfp.png"
+                    alt="Yunus Emre Vurgun"
+                    loading="eager"
+                >
+            </div>
             <div class="ui-hero-monogram">YEMRE</div>
             <h1 class="ui-hero-name">Yunus Emre Vurgun</h1>
             <p class="ui-hero-tagline">SOFTWARE &minus; AGENTS &minus; WIRES</p>
