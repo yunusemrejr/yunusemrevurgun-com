@@ -12,6 +12,7 @@ ui_render_head(
     <?php ui_render_navbar(''); ?>
 
     <main class="ui-hero">
+        <div class="ui-hero-bg" aria-hidden="true"></div>
         <div class="ui-hero-content">
             <div class="ui-portrait-crossfade ui-hero-portrait-frame">
                 <img
@@ -23,6 +24,12 @@ ui_render_head(
                 <img
                     class="ui-hero-portrait ui-portrait-crossfade-alt"
                     src="<?= FULL_BASE_PATH ?>assets/images/real-pfp.png"
+                    alt="Yunus Emre Vurgun"
+                    loading="eager"
+                >
+                <img
+                    class="ui-hero-portrait ui-portrait-crossfade-tert"
+                    src="<?= FULL_BASE_PATH ?>assets/images/portrait-3.png"
                     alt="Yunus Emre Vurgun"
                     loading="eager"
                 >

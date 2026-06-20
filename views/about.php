@@ -121,6 +121,12 @@ ui_render_head(
                             alt="Yunus Emre Vurgun"
                             loading="eager"
                         >
+                        <img
+                            class="ui-profile-image ui-portrait-crossfade-tert"
+                            src="<?= FULL_BASE_PATH ?>assets/images/portrait-3.png"
+                            alt="Yunus Emre Vurgun"
+                            loading="eager"
+                        >
                     </div>
                     <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);">
                         <p style="font-size: var(--text-sm); color: var(--color-text-secondary); line-height: 1.6;">

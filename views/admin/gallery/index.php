@@ -122,35 +122,35 @@ include __DIR__ . '/../includes/header.php';
 </main>
 
 <!-- Upload Modal -->
-<div class="modal" id="uploadModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Upload Images</h5>
-                <button type="button" class="modal-close" id="closeUploadModalBtn">&times;</button>
+<div class="admin-upload-modal" id="uploadModal" tabindex="-1">
+    <div class="admin-upload-modal-content">
+        <div class="admin-modal-header">
+            <h5 class="admin-modal-title">Upload Images</h5>
+            <button type="button" class="admin-btn-close" id="closeUploadModalBtn">&times;</button>
+        </div>
+        <form id="uploadForm">
+        <div class="admin-modal-body">
+            <div class="admin-form-group">
+                <label for="imageTitle" class="admin-form-label">Image Title (optional)</label>
+                <input type="text" class="admin-form-control" id="imageTitle" name="imageTitle" placeholder="Default title" autocomplete="off">
             </div>
-            <form id="uploadForm">
-            <div class="modal-body">
-                <div class="admin-form-group">
-                    <label for="imageTitle" class="admin-form-label">Image Title (optional)</label>
-                    <input type="text" class="admin-form-control" id="imageTitle" name="imageTitle" placeholder="Default title" autocomplete="off">
-                </div>
-                <div class="admin-upload-dropzone" id="dropzone">
-                    <i class="bi bi-cloud-upload admin-upload-dropzone-icon"></i>
-                    <p class="admin-upload-dropzone-text">Drag and drop images here or click to browse</p>
-                    <input type="file" id="images" name="images" multiple accept="image/*" style="display: none;">
-                </div>
-                <div class="admin-upload-preview" id="uploadPreview"></div>
-                <div class="admin-upload-progress" id="uploadProgress" style="display: none;">
-                    <div class="admin-upload-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
+            <div class="admin-upload-dropzone" id="dropzone">
+                <i class="bi bi-cloud-upload admin-upload-dropzone-icon"></i>
+                <p class="admin-upload-dropzone-text">Drag and drop images here or click to browse</p>
+                <input type="file" id="images" name="images" multiple accept="image/*" class="admin-upload-input">
             </div>
-            <div class="modal-footer">
+            <div class="admin-upload-preview" id="uploadPreview"></div>
+            <div class="admin-upload-progress" id="uploadProgress" style="display: none;">
+                <div class="admin-upload-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="admin-modal-footer">
+            <div class="admin-upload-buttons">
                 <button type="button" class="admin-btn admin-btn-secondary" id="cancelUploadBtn">Cancel</button>
                 <button type="button" class="admin-btn admin-btn-primary" id="startUpload">Upload</button>
             </div>
-            </form>
         </div>
+        </form>
     </div>
 </div>
 

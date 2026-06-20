@@ -54,7 +54,7 @@
                 
                 // Make AJAX request to delete
                 $.ajax({
-                    url: window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/api/blog/delete',
+                    url: window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/api/blog/delete.php',
                     method: 'POST',
                     data: {
                         id: postId,

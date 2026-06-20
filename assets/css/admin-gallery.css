@@ -223,6 +223,14 @@ ADMIN GALLERY PAGES — POLISHED DARK THEME
   margin: 0;
 }
 
+.admin-modal-body {
+  padding: 0;
+}
+
+.admin-upload-input {
+  display: none;
+}
+
 .admin-btn-close {
   background: transparent;
   border: none;

@@ -50,7 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = preg_replace('#<style\b[^>]*>(.*?)</style>#is', '', $content);
     $content = preg_replace('#\s*on\w+\s*=\s*["\'][^"\']*["\']#is', '', $content);
     $excerpt = $_POST['excerpt'] ?? '';
-    $status = (($_POST['status'] ?? 'draft') === 'published') ? 'published' : 'draft';
+    // Ensure status is explicitly captured from form submission
+    $rawStatus = $_POST['status'] ?? null;
+    error_log('[BLOG_EDIT] POST status raw: ' . var_export($rawStatus, true));
+    $status = ($rawStatus === 'published') ? 'published' : 'draft';
+    error_log('[BLOG_EDIT] Status after processing: ' . $status);
     
     // Ensure we have a slug or generate one
     if (empty($_POST['slug'])) {
