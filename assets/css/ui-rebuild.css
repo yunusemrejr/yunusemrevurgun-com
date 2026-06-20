@@ -689,10 +689,14 @@ h1, h2, h3, h4, h5, h6 {
 .ui-hero-monogram {
   font-family: var(--font-display);
   font-size: clamp(3rem, 8vw, 5rem);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
-  color: var(--brand-monogram-color, #446049);
-  text-shadow: var(--brand-monogram-shadow, 3px 3px 0 #141C17);
+  color: #FEFEFE;
+  -webkit-text-stroke: 2.5px #446049;
+  paint-order: stroke fill;
+  text-shadow:
+    0 0 12px rgba(68,96,73,0.3),
+    3px 3px 0 #141C17;
   letter-spacing: var(--brand-monogram-tracking, -4px);
   text-transform: uppercase;
 }
