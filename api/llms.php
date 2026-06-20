@@ -84,6 +84,7 @@ echo "  deployment: FTP sync to Namecheap shared hosting\n";
 echo "  pwa: Service workers, Web App Manifest\n\n";
 
 echo "social_profiles:\n";
+echo "- YouTube: https://www.youtube.com/@yunusemrevurgun1\n";
 echo "- GitHub: https://github.com/yunusemrejr\n";
 echo "- LinkedIn: https://linkedin.com/in/yunus-emre-vurgun-49ba9a177\n";
 echo "- Mastodon: https://mastodon.social/@yunusemrevurgn\n";

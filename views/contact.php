@@ -243,6 +243,10 @@ ui_render_head(
                         <p style="font-size: var(--text-sm); color: var(--color-text-secondary);">I typically respond within 24-48 hours on weekdays.</p>
                     </div>
                     <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
+                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">YouTube</p>
+                        <p style="font-size: var(--text-sm);"><a href="https://www.youtube.com/@yunusemrevurgun1" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yunusemrevurgun1</a></p>
+                    </div>
+                    <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">GitHub</p>
                         <p style="font-size: var(--text-sm);"><a href="https://github.com/yunusemrejr" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yunusemrejr</a></p>
                     </div>

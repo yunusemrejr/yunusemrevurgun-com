@@ -81,6 +81,7 @@ ui_render_head(
                         <div class="ui-command-panel">
                             <div class="ui-command-content">
                                 <ul class="ui-card-list">
+                                    <li><strong>YouTube</strong><br><a href="https://www.youtube.com/@yunusemrevurgun1" target="_blank" rel="noopener noreferrer">@yunusemrevurgun1</a></li>
                                     <li><strong>GitHub</strong><br><a href="https://github.com/yunusemrejr" target="_blank" rel="noopener noreferrer">@yunusemrejr</a></li>
                                     <li><strong>LinkedIn</strong><br><a href="https://linkedin.com/in/yunus-emre-vurgun-49ba9a177" target="_blank" rel="noopener noreferrer">Profile</a></li>
                                     <li><strong>Mastodon</strong><br><a href="https://mastodon.social/@yunusemrevurgn" target="_blank" rel="noopener noreferrer">@yunusemrevurgn</a></li>
