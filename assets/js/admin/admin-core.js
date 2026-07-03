@@ -19,10 +19,39 @@
         // Initialize core admin functionality
         init: function() {
             this.initSidebar();
+            this.initMobileMenu();
             this.initSearch();
             this.initSearchClickOutside();
             this.initResponsive();
             this.bindGlobalEvents();
+        },
+
+        // Initialize mobile drawer nav (data-admin-menu-open / data-admin-menu-close)
+        initMobileMenu: function() {
+            const $menu = $('#adminUiMobileMenu');
+            if (!$menu.length) return;
+            const $openBtn = $('[data-admin-menu-open]');
+            const $closeItems = $('[data-admin-menu-close]', $menu);
+            let prevOverflow = '';
+
+            function open() {
+                prevOverflow = document.body.style.overflow;
+                $menu.addClass('is-open').attr('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function close() {
+                $menu.removeClass('is-open').attr('aria-hidden', 'true');
+                document.body.style.overflow = prevOverflow || '';
+            }
+
+            $openBtn.on('click', open);
+            $closeItems.on('click', close);
+
+            // Close on Escape when open
+            $(document).on('keydown', function(e) {
+                if (e.keyCode === 27 && $menu.hasClass('is-open')) close();
+            });
         },
 
         // Initialize sidebar functionality
