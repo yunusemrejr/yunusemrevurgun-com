@@ -16,19 +16,19 @@ COLOR SYSTEM
 - Warm off-white (text):     #F6F1E8  (primary text on charcoal)
 
 TYPOGRAPHY
-- Display/Headings: Space Grotesk (500–600 weights)
+- Display/Headings: Fraunces (400–700, optical sizing)
 - Body/UI:          Inter (400–600 weights)
 - Code:             IBM Plex Mono
 
 SIGNATURE ELEMENTS
 - Signature grid: 40px squares, #1B1714 bg + #2E2622 1px lines
 - Portrait frame: 8px solid #F4EFE6, 24px radius, 25px 25px 25px shadow
-- YEMRE monogram: Space Grotesk 600, #A8221E, 3px 3px 0 #100C0A, -4px tracking
+- YEMRE monogram: Fraunces 600, #A8221E, 3px 3px 0 #100C0A, -4px tracking
 
 ===============================================================================
 */
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* ===== CSS CUSTOM PROPERTIES ===== */
 :root {
@@ -57,10 +57,10 @@ SIGNATURE ELEMENTS
   --color-surface: rgba(246, 241, 232, 0.06);
   --color-surface-hover: rgba(246, 241, 232, 0.10);
 
-  /* Typography — brand kit: Space Grotesk + Inter */
-  --font-display: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Typography — brand kit: Fraunces + Inter */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Space Grotesk', var(--font-body);
+  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
 
   /* Type Scale */
   --text-xs: 0.75rem;
@@ -1014,92 +1014,136 @@ textarea.ui-input {
   line-height: 1.6;
 }
 
-/* ===== GALLERY ===== */
-.ui-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-4);
+/* ===== GALLERY SLIDESHOW ===== */
+/* Single-image carousel: arrow navigation, no grid scroll. */
+.ui-slideshow {
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-.ui-gallery-item {
+.ui-slideshow-stage {
   position: relative;
-  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ui-slideshow-viewport {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
 }
 
-.ui-gallery-image {
+.ui-slideshow-track {
+  display: flex;
+  transition: transform var(--transition-base);
+  will-change: transform;
+}
+
+.ui-slideshow-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 2;
+  background-color: var(--color-bg-dark);
+}
+
+.ui-slideshow-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  filter: grayscale(100%);
-  transition: filter var(--transition-slow), transform var(--transition-slow);
-}
-
-.ui-gallery-item:hover .ui-gallery-image {
-  filter: grayscale(0%);
-  transform: scale(1.03);
-}
-
-/* Lightbox */
-.ui-lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-modal);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(16, 12, 10, 0.92);
-}
-
-.ui-lightbox.is-open {
-  display: flex;
-}
-
-.ui-lightbox-backdrop {
-  position: absolute;
-  inset: 0;
-}
-
-.ui-lightbox-content {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  background-color: var(--color-bg-elevated);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-}
-
-.ui-lightbox-image {
-  max-width: 100%;
-  max-height: 80vh;
   object-fit: contain;
-  border-radius: var(--radius-md);
+  display: block;
 }
 
-.ui-lightbox-close {
-  position: absolute;
-  top: var(--space-3);
-  right: var(--space-3);
-  width: 36px;
-  height: 36px;
+.ui-slideshow-arrow {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--text-xl);
   color: var(--color-text-secondary);
   background-color: var(--color-surface);
-  border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-.ui-lightbox-close:hover {
+.ui-slideshow-arrow svg {
+  width: 22px;
+  height: 22px;
+}
+
+.ui-slideshow-arrow:hover,
+.ui-slideshow-arrow:focus-visible {
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
   background-color: var(--color-surface-hover);
+  outline: none;
+}
+
+.ui-slideshow-arrow:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.ui-slideshow-arrow:active {
+  transform: scale(0.94);
+}
+
+.ui-slideshow-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ui-slideshow-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding: 0 var(--space-1);
+}
+
+.ui-slideshow-counter {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ui-slideshow-caption {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .ui-slideshow-stage { gap: var(--space-2); }
+  .ui-slideshow-arrow { width: 40px; height: 40px; }
+  .ui-slideshow-arrow svg { width: 18px; height: 18px; }
+  .ui-slideshow-slide { aspect-ratio: 4 / 3; }
+}
+
+@media (max-width: 420px) {
+  .ui-slideshow-arrow { width: 36px; height: 36px; }
+  .ui-slideshow-meta { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+  .ui-slideshow-caption { text-align: left; }
 }
 
 /* ===== PROFILE FRAME (brand kit spec) ===== */
@@ -2148,10 +2192,6 @@ textarea.ui-input {
     flex-direction: column;
     text-align: center;
     gap: var(--space-3);
-  }
-
-  .ui-gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 
   .ui-yunobot-container {

@@ -111,7 +111,7 @@ ui_render_head(
                     <div class="ui-profile-frame">
                         <img
                             class="ui-profile-image ui-portrait-crossfade-base"
-                            src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg"
+                            src="<?= FULL_BASE_PATH ?>assets/images/portrait-3.png"
                             alt="Yunus Emre Vurgun"
                             loading="eager"
                         >
@@ -123,7 +123,7 @@ ui_render_head(
                         >
                         <img
                             class="ui-profile-image ui-portrait-crossfade-tert"
-                            src="<?= FULL_BASE_PATH ?>assets/images/portrait-3.png"
+                            src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg"
                             alt="Yunus Emre Vurgun"
                             loading="eager"
                         >

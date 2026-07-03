@@ -1,6 +1,6 @@
 /* ===== CSS VARIABLES — YEV BRAND KIT DESIGN SYSTEM ===== */
 /* Single source of truth for all design tokens. */
-/* Warm charcoal base + cream surfaces + crimson accent + Space Grotesk/Inter */
+/* Warm charcoal base + cream surfaces + crimson accent + Fraunces/Inter */
 /* Dark-first, light-vibe editorial palette. Elegant, minimal, mobile-first. */
 
 :root {
@@ -77,10 +77,10 @@
   --color-info-bg: rgba(59, 130, 246, 0.15);
   --color-info-border: rgba(59, 130, 246, 0.3);
 
-  /* ===== TYPOGRAPHY (Space Grotesk display + Inter body) ===== */
-  --font-display: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* ===== TYPOGRAPHY (Fraunces display + Inter body) ===== */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Space Grotesk', var(--font-body);
+  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'Roboto Mono', Menlo, Monaco, monospace;
 
   --text-xs: 0.75rem;      /* 12px */

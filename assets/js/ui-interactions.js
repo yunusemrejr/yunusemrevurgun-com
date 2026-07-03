@@ -141,42 +141,129 @@
     applyFilter('all');
   }
 
-  function initGalleryLightbox() {
-    const lightbox = q('#uiLightbox');
-    if (!lightbox) return;
+  function initSlideshow() {
+    const root = q('[data-slideshow]');
+    if (!root) return;
 
-    const lightboxImg = q('.ui-lightbox-image', lightbox);
-    const lightboxTitle = q('.ui-lightbox-title', lightbox);
-    const triggers = qa('.ui-gallery-item');
-    const closeBtns = qa('[data-lightbox-close]', lightbox);
+    const track = q('.ui-slideshow-track', root);
+    const prevBtn = q('[data-slideshow-prev]', root);
+    const nextBtn = q('[data-slideshow-next]', root);
+    const currentEl = q('[data-slideshow-current]', root);
+    const captionEl = q('[data-slideshow-caption]', root);
+    const slides = qa('.ui-slideshow-slide', track);
+    const total = slides.length;
+    if (!track || total === 0) return;
 
-    function openLightbox(src, title) {
-      if (lightboxImg) {
-        lightboxImg.src = src;
-        lightboxImg.alt = title || 'Gallery image';
-      }
-      if (lightboxTitle) lightboxTitle.textContent = title || '';
-      lightbox.classList.add('is-open');
-      document.body.style.overflow = 'hidden';
+    let index = 0;
+    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function render() {
+      index = (index + total) % total;
+      track.style.transform = 'translateX(-' + index * 100 + '%)';
+      if (currentEl) currentEl.textContent = String(index + 1);
+      if (captionEl) captionEl.textContent = slides[index].dataset.title || '';
+      if (prevBtn) prevBtn.disabled = false;
+      if (nextBtn) nextBtn.disabled = false;
     }
 
-    function closeLightbox() {
-      lightbox.classList.remove('is-open');
-      document.body.style.overflow = '';
+    function go(dir) {
+      index += dir;
+      render();
     }
 
-    triggers.forEach((item) => {
-      item.addEventListener('click', function () {
-        const src = item.dataset.image || '';
-        const title = item.dataset.title || '';
-        if (src) openLightbox(src, title);
-      });
-    });
+    if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
 
-    closeBtns.forEach((btn) => btn.addEventListener('click', closeLightbox));
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+      // Only react when the slideshow is in view (avoid hijacking global keys)
+      if (!root.getBoundingClientRect || root.getBoundingClientRect().bottom < 0 || root.getBoundingClientRect().top > window.innerHeight) return;
+      if (event.key === 'ArrowLeft') { go(-1); }
+      else if (event.key === 'ArrowRight') { go(1); }
     });
+
+    // Touch swipe (mobile)
+    let startX = 0, startY = 0, touching = false;
+    const viewport = q('.ui-slideshow-viewport', root);
+    if (viewport) {
+      viewport.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 1) return;
+        touching = true;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+      viewport.addEventListener('touchend', function (e) {
+        if (!touching) return;
+        touching = false;
+        const dx = (e.changedTouches[0] ? e.changedTouches[0].clientX : 0) - startX;
+        const dy = (e.changedTouches[0] ? e.changedTouches[0].clientY : 0) - startY;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
+      }, { passive: true });
+    }
+
+    render();
+    void reducedMotion;
+  }
+
+  // Dynamic favicon — cycles the three landing-page portraits.
+  function initDynamicFavicon() {
+    const links = qa('link[rel~="icon"]');
+    if (!links.length) return;
+    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const sources = [
+      BASE_PATH + 'assets/images/portrait-3.png',
+      BASE_PATH + 'assets/images/real-pfp.png',
+      BASE_PATH + 'assets/images/yunus-emre-vurgun-portrait.jpg'
+    ];
+
+    const size = 64;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const images = sources.map(function (src) {
+      const img = new Image();
+      img.src = src;
+      img.decoding = 'async';
+      return img;
+    });
+
+    function drawOne(img) {
+      if (!img.naturalWidth) return false;
+      ctx.clearRect(0, 0, size, size);
+      // object-fit: cover crop into square
+      const ratio = Math.max(size / img.naturalWidth, size / img.naturalHeight);
+      const w = img.naturalWidth * ratio;
+      const h = img.naturalHeight * ratio;
+      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+      return true;
+    }
+
+    function setFavicon(img) {
+      if (!drawOne(img)) return false;
+      let url;
+      try { url = canvas.toDataURL('image/png'); } catch (e) { return false; }
+      links.forEach(function (l) { l.href = url; });
+      return true;
+    }
+
+    function applyIndex(i) {
+      const img = images[i];
+      if (img.naturalWidth) { setFavicon(img); }
+      else { img.addEventListener('load', function () { setFavicon(img); }, { once: true }); }
+      img.addEventListener('error', function () {}, { once: true });
+    }
+
+    applyIndex(0);
+    if (reducedMotion || sources.length < 2) return;
+
+    let idx = 0;
+    setInterval(function () {
+      idx = (idx + 1) % images.length;
+      applyIndex(idx);
+    }, 5000);
   }
 
 
@@ -550,7 +637,8 @@
     initMobileMenu();
     initAboutCommandCenter();
     initPortfolioFilters();
-    initGalleryLightbox();
+    initSlideshow();
+    initDynamicFavicon();
     initYunobotArchitectureModal();
     initYunobotTerminal();
   }
