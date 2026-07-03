@@ -1,7 +1,7 @@
 /* ===== CSS VARIABLES — YEV BRAND KIT DESIGN SYSTEM ===== */
 /* Single source of truth for all design tokens. */
-/* Aligned with the Yunus Emre Vurgun personal brand kit v2.0.0. */
-/* Blueprint Blue base + Hoodie Green accent + Space Grotesk/Inter typography */
+/* Warm charcoal base + cream surfaces + crimson accent + Space Grotesk/Inter */
+/* Dark-first, light-vibe editorial palette. Elegant, minimal, mobile-first. */
 
 :root {
   /* ===== RESPONSIVE BREAKPOINTS ===== */
@@ -27,41 +27,41 @@
   --space-20: 80px;
   --space-24: 96px;
 
-  /* ===== COLOR PALETTE — YEV BRAND KIT v2.0.0 ===== */
-  /* Blueprint Blue base — dominant hero/background */
-  --color-bg-primary: #1E518F;
-  --color-bg-elevated: #1A4780;
-  --color-bg-card: #FEFEFE;
-  --color-bg-dark: #141C17;
-  --color-bg-subtle: rgba(254, 254, 254, 0.05);
-  --color-bg-hover: rgba(254, 254, 254, 0.08);
-  --color-bg-overlay: rgba(20, 28, 23, 0.7);
+  /* ===== COLOR PALETTE — CRIMSON / CREAM / WARM CHARCOAL ===== */
+  /* Warm charcoal base — dark-first, never pure black (espresso warmth) */
+  --color-bg-primary: #1B1714;     /* warm charcoal — dominant background */
+  --color-bg-elevated: #241E1A;   /* lifted warm surface (panels, modals) */
+  --color-bg-card: #F4EFE6;       /* cream / smoky white — light cards */
+  --color-bg-dark: #100C0A;       /* line-art ink — deepest shadow/border base */
+  --color-bg-subtle: rgba(244, 239, 230, 0.05);
+  --color-bg-hover: rgba(244, 239, 230, 0.08);
+  --color-bg-overlay: rgba(16, 12, 10, 0.7);
 
-  /* Text — Paper White on Blueprint Blue, Line Art Ink on light */
-  --color-text-primary: #FEFEFE;
-  --color-text-secondary: rgba(254, 254, 254, 0.78);
-  --color-text-tertiary: rgba(254, 254, 254, 0.45);
-  --color-text-inverse: #141C17;
-  --color-text-disabled: rgba(254, 254, 254, 0.3);
+  /* Text — warm off-white (smoky white) on charcoal, ink on cream */
+  --color-text-primary: #F6F1E8;
+  --color-text-secondary: rgba(246, 241, 232, 0.78);
+  --color-text-tertiary: rgba(246, 241, 232, 0.45);
+  --color-text-inverse: #1B1714;
+  --color-text-disabled: rgba(246, 241, 232, 0.3);
 
-  /* Brand accents */
-  --color-accent: #446049;           /* Hoodie Green — brand green, monogram fill */
-  --color-accent-hover: #5A7A5F;
-  --color-accent-secondary: #3A5541; /* Cap Green */
-  --color-accent-subtle: rgba(68, 96, 73, 0.15);
+  /* Brand accents — Crimson (singular primary accent) */
+  --color-accent: #A8221E;           /* deep crimson — brand accent */
+  --color-accent-hover: #C5302A;     /* lighter crimson on hover */
+  --color-accent-secondary: #7C1815; /* darker crimson surface */
+  --color-accent-subtle: rgba(168, 34, 30, 0.15);
 
-  /* Grid / Lines */
-  --color-grid: #48729E;             /* Grid Lines — blueprint grid lines */
+  /* Grid / Lines — low-contrast warm (soft structural contrast) */
+  --color-grid: #2E2622;             /* warm grid lines for the signature grid */
 
-  /* Borders */
-  --color-border: rgba(254, 254, 254, 0.18);
-  --color-border-strong: rgba(254, 254, 254, 0.35);
-  --color-border-focus: rgba(68, 96, 73, 0.5);
+  /* Borders — quiet, low-contrast against the charcoal canvas */
+  --color-border: rgba(246, 241, 232, 0.16);
+  --color-border-strong: rgba(246, 241, 232, 0.32);
+  --color-border-focus: rgba(168, 34, 30, 0.5);
 
   /* Surfaces */
-  --color-surface: rgba(254, 254, 254, 0.06);
-  --color-surface-hover: rgba(254, 254, 254, 0.1);
-  --color-surface-alt: rgba(20, 28, 23, 0.08);
+  --color-surface: rgba(246, 241, 232, 0.06);
+  --color-surface-hover: rgba(246, 241, 232, 0.10);
+  --color-surface-alt: rgba(16, 12, 10, 0.10);
 
   /* Semantic */
   --color-success: #22c55e;
@@ -77,7 +77,7 @@
   --color-info-bg: rgba(59, 130, 246, 0.15);
   --color-info-border: rgba(59, 130, 246, 0.3);
 
-  /* ===== TYPOGRAPHY (brand kit: Space Grotesk + Inter) ===== */
+  /* ===== TYPOGRAPHY (Space Grotesk display + Inter body) ===== */
   --font-display: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-heading: 'Space Grotesk', var(--font-body);
@@ -117,12 +117,12 @@
   --radius-2xl: 16px;
   --radius-full: 9999px;
 
-  /* ===== SHADOWS ===== */
-  --shadow-sm: 0 1px 3px rgba(20, 28, 23, 0.15);
-  --shadow-md: 0 4px 12px rgba(20, 28, 23, 0.2);
-  --shadow-lg: 0 8px 24px rgba(20, 28, 23, 0.25);
-  --shadow-xl: 0 16px 48px rgba(20, 28, 23, 0.3);
-  --shadow-focus: 0 0 0 3px rgba(68, 96, 73, 0.3);
+  /* ===== SHADOWS (warm ink base) ===== */
+  --shadow-sm: 0 1px 3px rgba(16, 12, 10, 0.25);
+  --shadow-md: 0 4px 12px rgba(16, 12, 10, 0.30);
+  --shadow-lg: 0 8px 24px rgba(16, 12, 10, 0.35);
+  --shadow-xl: 0 16px 48px rgba(16, 12, 10, 0.40);
+  --shadow-focus: 0 0 0 3px rgba(168, 34, 30, 0.3);
 
   /* ===== TRANSITIONS ===== */
   --transition-fast: 120ms ease;
@@ -154,16 +154,18 @@
   --color-bg: var(--color-bg-primary);
   --color-brand: var(--color-accent);
   --color-brand-hover: var(--color-accent-hover);
+  --color-brand-subtle: var(--color-accent-subtle);
+  --color-brand-border: var(--color-border-focus);
   --color-border-default: var(--color-border);
 
   /* ===== BRAND KIT SPECIFICS ===== */
-  --brand-portrait-border: 8px solid #FEFEFE;
+  --brand-portrait-border: 8px solid #F4EFE6;        /* cream frame */
   --brand-portrait-radius: 24px;
-  --brand-portrait-shadow: 25px 25px 25px rgba(20, 28, 23, 0.4);
-  --brand-monogram-color: #446049;
-  --brand-monogram-shadow: 3px 3px 0 #141C17;
+  --brand-portrait-shadow: 25px 25px 25px rgba(16, 12, 10, 0.45);
+  --brand-monogram-color: #A8221E;                 /* crimson monogram fill */
+  --brand-monogram-shadow: 3px 3px 0 #100C0A;
   --brand-monogram-tracking: -4px;
   --brand-grid-size: 40px;
-  --brand-grid-color: #48729E;
-  --brand-bg-blueprint: #1E518F;
+  --brand-grid-color: #2E2622;
+  --brand-bg-charcoal: #1B1714;
 }

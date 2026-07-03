@@ -322,10 +322,10 @@ require_once __DIR__ . '/../includes/header.php';
 }
 
 .favicon-btn-primary {
-background: var(--admin-text-primary, #FEFEFE);
-    color: var(--admin-bg-primary, #1E518F);
+background: var(--admin-text-primary, #F6F1E8);
+    color: var(--admin-bg-primary, #1B1714);
 
-    color: var(--admin-bg-primary, #1E518F);
+    color: var(--admin-bg-primary, #1B1714);
 }
 
 .favicon-btn-secondary {

@@ -179,7 +179,7 @@ $ogType = $pageType;
 <meta name="application-name" content="<?php echo $siteName; ?>">
 <meta name="msapplication-tooltip" content="<?php echo $siteName; ?>">
 <meta name="msapplication-starturl" content="<?php echo FULL_BASE_PATH; ?>">
-<meta name="msapplication-TileColor" content="#1E518F">
+<meta name="msapplication-TileColor" content="#1B1714">
 
 <!-- Sitemap & LLM guidance -->
 <link rel="sitemap" type="application/xml" title="Sitemap" href="<?php echo FULL_BASE_PATH; ?>sitemap.xml">

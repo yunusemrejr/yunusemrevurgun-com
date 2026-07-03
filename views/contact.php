@@ -172,12 +172,12 @@ ui_render_head(
             <div class="ui-contact-grid">
                 <div class="ui-glass-panel">
                     <?php if ($success): ?>
-                        <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(68,96,73,0.2) 0%, rgba(254,254,254,0.06) 100%); border: 1px solid var(--color-accent); border-radius: var(--radius-lg);">
+                        <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(168,34,30,0.2) 0%, rgba(246,241,232,0.06) 100%); border: 1px solid var(--color-accent); border-radius: var(--radius-lg);">
                             <p style="color: var(--color-text-primary);">Thank you. Your message has been sent.</p>
                         </div>
                     <?php endif; ?>
                     <?php if ($error): ?>
-                        <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(254,254,254,0.06) 100%); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-lg);">
+                        <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(246,241,232,0.06) 100%); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-lg);">
                             <p style="color: var(--color-text-primary);"><?= htmlspecialchars($error) ?></p>
                         </div>
                     <?php endif; ?>

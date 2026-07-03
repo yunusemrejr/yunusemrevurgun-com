@@ -40,7 +40,7 @@ $faviconMime = 'image/png';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1E518F">
+    <meta name="theme-color" content="#1B1714">
     <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
     <meta name="description" content="Admin Panel - <?php echo htmlspecialchars($pageTitle); ?>">
     <meta name="robots" content="noindex, nofollow">

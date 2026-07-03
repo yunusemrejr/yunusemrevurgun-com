@@ -68,7 +68,7 @@ ui_render_head(
             }
             .ui-toggle-btn.is-active {
                 background: var(--color-text-primary, #EAEAEA);
-                color: var(--color-bg-primary, #0D1219);
+                color: var(--color-bg-primary, #1B1714);
                 border-color: var(--color-text-primary, #EAEAEA);
             }
             .ui-map-view-container {
@@ -77,7 +77,7 @@ ui_render_head(
                 height: 65vh;
                 min-height: 450px;
                 border: 1px solid var(--color-border, rgba(42, 54, 66, 0.7));
-                background: var(--color-bg-primary, #0D1219);
+                background: var(--color-bg-primary, #1B1714);
             }
             .ui-map-view {
                 position: absolute;
@@ -138,7 +138,7 @@ ui_render_head(
                 height: 10px;
                 background: var(--color-text-primary, #ffffff);
                 border-radius: 0;
-                border: 2px solid var(--color-bg-primary, #0D1219);
+                border: 2px solid var(--color-bg-primary, #1B1714);
                 transition: transform 0.2s ease;
             }
             .ui-map-dot:hover .ui-map-dot-core {

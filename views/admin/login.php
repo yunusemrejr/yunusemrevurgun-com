@@ -325,7 +325,7 @@ if (strpos($currentPath, '/admin') !== false &&
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1E518F">
+    <meta name="theme-color" content="#1B1714">
     <meta name="description" content="Admin Login - Yunus Emre Vurgun Personal Website Administration">
     <meta name="robots" content="noindex, nofollow">
     <title>Admin Login | Yunus Emre Vurgun</title>
@@ -353,7 +353,7 @@ if (strpos($currentPath, '/admin') !== false &&
 </head>
 <body class="admin-login-body">
     <noscript>
-        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1E518F; color: #FEFEFE; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1B1714; color: #F6F1E8; display: flex; align-items: center; justify-content: center; z-index: 9999;">
             <div style="text-align: center; padding: 2rem;">
                 <h1 style="font-family: 'Space Grotesk', 'Inter', sans-serif;">JavaScript Required</h1>
                 <p>This page requires JavaScript to function properly.</p>
