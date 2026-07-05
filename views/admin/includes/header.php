@@ -68,7 +68,7 @@ $faviconMime = 'image/png';
     <?php if (in_array($page, ['blog', 'blog-create', 'blog-edit'], true)): ?>
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-blog.css">
     <?php endif; ?>
-    <?php if ($page === 'gallery'): ?>
+    <?php if ($page === 'gallery' || $page === 'music'): ?>
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-gallery.css">
     <?php endif; ?>
     <?php if (in_array($page, ['portfolio', 'portfolio-create', 'portfolio-edit'], true)): ?>

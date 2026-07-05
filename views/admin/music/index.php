@@ -292,6 +292,7 @@ $pageScripts = '
 
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "' . FULL_BASE_PATH . 'api/admin/music/upload.php", true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
         xhr.upload.addEventListener("progress", function(e) {
             if (e.lengthComputable) {
@@ -380,6 +381,7 @@ $pageScripts = '
 
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "' . FULL_BASE_PATH . 'api/admin/music/update.php", true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         xhr.addEventListener("load", function() {
             submitBtn.disabled = false;
             submitBtn.textContent = "Save Changes";
@@ -413,6 +415,7 @@ $pageScripts = '
 
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "' . FULL_BASE_PATH . 'api/admin/music/delete.php", true);
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             xhr.addEventListener("load", function() {
                 try {
                     var resp = JSON.parse(xhr.responseText);
