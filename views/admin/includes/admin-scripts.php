@@ -112,7 +112,13 @@ $adminModules = [
     ],
     
     // Search
-    'search' => []
+    'search' => [],
+    
+    // Music
+    'music' => [
+        'admin-forms.js',
+        'admin-tables.js'
+    ],
 ];
 
 // Function to determine current page context
@@ -160,6 +166,8 @@ function getCurrentAdminPageContext() {
         if (strpos($path, '/create') !== false) return 'tracker-codes-create';
         if (strpos($path, '/edit') !== false) return 'tracker-codes-edit';
         return 'tracker-codes';
+    } elseif (strpos($path, '/admin/music') !== false) {
+        return 'music';
     } elseif (strpos($path, '/admin/search') !== false) {
         return 'search';
     }
@@ -268,7 +276,13 @@ function getRequiredAdminModules() {
             ],
             
             // Search
-            'search' => []
+            'search' => [],
+            
+            // Music
+            'music' => [
+                'admin-forms.js',
+                'admin-tables.js'
+            ],
         ];
     }
     

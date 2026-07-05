@@ -21,6 +21,12 @@ $morePages = [
         'description' => 'Quotes, equations, and ideas from the greatest scientific minds.',
         'icon' => 'Σ',
     ],
+    [
+        'title' => 'Music',
+        'href' => FULL_BASE_PATH . 'music',
+        'description' => 'Audio tracks with an in-browser music player.',
+        'icon' => '♪',
+    ],
 ];
 
 $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');

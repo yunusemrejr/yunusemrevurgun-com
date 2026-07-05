@@ -35,9 +35,12 @@ if (!function_exists('ui_render_head')) {
     <?php if (isset($extraMeta['yunobot']) && $extraMeta['yunobot']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/yunobot.css?v=<?= filemtime(__DIR__ . '/../../assets/css/yunobot.css') ?>">
     <?php endif; ?>
+    <?php if (isset($extraMeta['music']) && $extraMeta['music']): ?>
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/music.css?v=<?= filemtime(__DIR__ . '/../../assets/css/music.css') ?>">
+    <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot'], true)) continue;
+        if (is_string($key) && in_array($key, ['yunobot', 'music'], true)) continue;
         if (!empty($value) && is_string($value)) echo $value . "\n";
     endforeach; ?>
 </head>

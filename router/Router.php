@@ -59,6 +59,8 @@ class Router {
         'api/contact' => 'api/contact.php',
         'admin/search' => 'views/admin/search.php',
         'admin/api/search' => 'views/admin/api/search.php',
+        'music' => 'views/music.php',
+        'admin/music' => 'views/admin/music/index.php',
     ];
 
     public function __construct() {
@@ -233,7 +235,7 @@ class Router {
         }
 
         // Pages that manage their own layout via ui.php functions
-        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'science-corner', 'yunobot', 'search', 'privacy', 'terms', 'cookies', 'more', 'diag_updates', 'sitemap', 'llms'];
+        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'science-corner', 'yunobot', 'search', 'privacy', 'terms', 'cookies', 'more', 'diag_updates', 'sitemap', 'llms', 'music'];
         $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
 
         if (!$skipLayout) {

@@ -30,6 +30,7 @@ $adminNavItems = [
     ['id' => 'updates', 'label' => 'Updates', 'href' => FULL_BASE_PATH . 'admin/updates'],
     ['id' => 'settings', 'label' => 'Settings', 'href' => FULL_BASE_PATH . 'admin/settings'],
     ['id' => 'tracker-codes', 'label' => 'Tracker', 'href' => FULL_BASE_PATH . 'admin/tracker-codes'],
+    ['id' => 'music', 'label' => 'Music', 'href' => FULL_BASE_PATH . 'admin/music'],
 ];
 
 $faviconUrl = FULL_BASE_PATH . 'assets/images/favicon-pfp.png';
