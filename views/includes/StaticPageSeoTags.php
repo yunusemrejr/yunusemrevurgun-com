@@ -157,8 +157,8 @@ $ogType = $pageType;
 <meta name="twitter:title" content="<?php echo htmlspecialchars($pageTitle); ?>">
 <meta name="twitter:description" content="<?php echo htmlspecialchars($pageDescription); ?>">
 <meta name="twitter:image" content="<?php echo $ogImage; ?>">
-<meta name="twitter:creator" content="@agenticn3rd">
-<meta name="twitter:site" content="@agenticn3rd">
+<meta name="twitter:creator" content="@yemrevu">
+<meta name="twitter:site" content="@yemrevu">
 <meta name="twitter:label1" content="Written by">
 <meta name="twitter:data1" content="Yunus Emre Vurgun">
 <meta name="twitter:label2" content="Location">
@@ -234,7 +234,7 @@ $ogType = $pageType;
                 "https://linkedin.com/in/yunus-emre-vurgun-49ba9a177",
                 "https://odysee.com/@programmingwithyunusemrevu7222",
                 "https://mastodon.social/@yunusemrevurgn",
-                "https://x.com/agenticn3rd",
+                "https://x.com/yemrevu",
                 "https://bsky.app/profile/yunusemrevurgun.bsky.social",
                 "https://instagram.com/yemrevu",
                 "https://www.youtube.com/@yunusemrevurgun1"
@@ -320,7 +320,7 @@ $ogType = $pageType;
             "sameAs": [
                 "https://github.com/yunusemrejr",
                 "https://linkedin.com/in/yunus-emre-vurgun-49ba9a177",
-                "https://x.com/agenticn3rd",
+                "https://x.com/yemrevu",
                 "https://instagram.com/yemrevu",
                 "https://www.youtube.com/@yunusemrevurgun1"
             ],

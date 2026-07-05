@@ -68,7 +68,7 @@ $extraMeta = [
             'sameAs' => [
                 'https://github.com/yunusemrejr',
                 'https://linkedin.com/in/yunus-emre-vurgun-49ba9a177',
-                'https://x.com/agenticn3rd',
+                'https://x.com/yemrevu',
                 'https://instagram.com/yemrevu',
             ],
         ],

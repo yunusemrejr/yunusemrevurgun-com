@@ -260,7 +260,7 @@ ui_render_head(
                     </div>
                     <div class="ui-glass-panel">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">X / Twitter</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://x.com/agenticn3rd" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@agenticn3rd</a></p>
+                        <p style="font-size: var(--text-sm);"><a href="https://x.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yemrevu</a></p>
                     </div>
                     <div class="ui-glass-panel">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Instagram</p>
