@@ -291,13 +291,28 @@
         
         // Update status as ML engine initializes
         updateStatus('loading', 'Loading ML model...');
+
+        // Use callback for actual worker readiness
+        if (mlEngine) {
+            mlEngine.onReady = function() {
+                updateStatus('ready', 'Ready');
+            };
+            mlEngine.onError = function() {
+                updateStatus('ready', 'Offline mode');
+            };
+            
+            // Check if already ready (unlikely but possible)
+            if (mlEngine.workerReady) {
+                updateStatus('ready', 'Ready');
+            }
+        }
         
-        // The ML engine initializes async via Web Worker.
-        // Mark as ready after a short delay once the engine is constructed.
-        // The engine handles its own internal readiness via workerReady flag.
+        // Fallback: if worker never initializes within 10 seconds, show offline mode
         setTimeout(function() {
-            updateStatus('ready', '');
-        }, 2000);
+            if (mlEngine && !mlEngine.workerReady) {
+                updateStatus('ready', 'Offline mode');
+            }
+        }, 10000);
     }
     
     function autoResizeInput() {

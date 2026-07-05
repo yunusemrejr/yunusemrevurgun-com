@@ -24,6 +24,12 @@
             this.requestCounter = 0;
             
             // ============================================================
+            // Callback for readiness notification
+            // ============================================================
+            this.onReady = null;
+            this.onError = null;
+            
+            // ============================================================
             // PERFORMANCE: Query debouncing for faster inference
             // ============================================================
             this.debounceMs = 150; // Debounce rapid-fire queries
@@ -75,8 +81,8 @@
             this.workerInactivityTimeout = null;
             this.WORKER_INACTIVITY_MS = 4 * 60 * 1000; // 4 minutes (worker self-terminates at 5)
             
-            // Lazy initialization - worker starts on first user interaction
-            // this.initializeWorker(); // Called lazily
+            // Start worker initialization immediately (not lazy)
+            this.ensureWorkerInitialized();
         }
         
         // ============================================================
@@ -2444,6 +2450,7 @@
                         consecutiveFailures = 0;
                         startHealthCheck();
                         this.precomputeTargetEmbeddings();
+                        if (this.onReady) this.onReady();
                     } else if (type === 'embedding') {
                         const resolve = this.pendingRequests.get(id);
                         if (resolve) {
@@ -2502,6 +2509,7 @@
                         this.embeddingWorker = null;
                     }
                     if (healthCheckInterval) clearInterval(healthCheckInterval);
+                    if (this.onError) this.onError();
                 });
                 
                 // Initialize the model with timeout
@@ -2511,11 +2519,13 @@
                 setTimeout(() => {
                     if (!this.workerReady) {
                         console.warn('Model initialization timeout - continuing with regex-only mode');
+                        if (this.onError) this.onError();
                     }
                 }, 10000);
             } catch (error) {
                 console.warn('Failed to initialize embedding worker (semantic matching disabled):', error);
                 this.workerReady = false;
+                if (this.onError) this.onError();
             }
         }
         
@@ -3145,6 +3155,13 @@
                 default:
                     return null;
             }
+        }
+
+        /**
+         * Public readiness check
+         */
+        get isReady() {
+            return this.workerReady;
         }
 
         /**
