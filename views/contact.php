@@ -258,6 +258,10 @@ ui_render_head(
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Bluesky</p>
                         <p style="font-size: var(--text-sm);"><a href="https://bsky.app/profile/yunusemrevurgun.bsky.social" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yunusemrevurgun</a></p>
                     </div>
+                    <div class="ui-glass-panel" style="margin-bottom: 1rem;">
+                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Threads</p>
+                        <p style="font-size: var(--text-sm);"><a href="https://www.threads.com/@yemrevu" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yemrevu</a></p>
+                    </div>
                     <div class="ui-glass-panel">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">X / Twitter</p>
                         <p style="font-size: var(--text-sm);"><a href="https://x.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yemrevu</a></p>

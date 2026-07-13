@@ -89,6 +89,7 @@ echo "- GitHub: https://github.com/yunusemrejr\n";
 echo "- LinkedIn: https://linkedin.com/in/yunus-emre-vurgun-49ba9a177\n";
 echo "- Mastodon: https://mastodon.social/@yunusemrevurgn\n";
 echo "- Bluesky: https://bsky.app/profile/yunusemrevurgun.bsky.social\n";
+echo "- Threads: https://www.threads.com/@yemrevu\n";
 echo "- X/Twitter: https://x.com/yemrevu\n";
 echo "- Instagram: https://instagram.com/yemrevu\n\n";
 

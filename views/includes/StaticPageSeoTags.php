@@ -236,6 +236,7 @@ $ogType = $pageType;
                 "https://mastodon.social/@yunusemrevurgn",
                 "https://x.com/yemrevu",
                 "https://bsky.app/profile/yunusemrevurgun.bsky.social",
+                "https://www.threads.com/@yemrevu",
                 "https://instagram.com/yemrevu",
                 "https://www.youtube.com/@yunusemrevurgun1"
             ],
