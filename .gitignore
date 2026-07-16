@@ -5,6 +5,16 @@
 *.jsonl
 .DS_Store
 
+# Runtime artifacts (may contain session IDs / throttle data)
+error_log
+error_log.txt
+rate_limit_storage.json
+
+# Agent/tooling + local memory (never deployed)
+.codex
+.agent_memory/
+sessionlog.jsonl
+
 _backups/
 backups/
 dev/_backups/
@@ -12,6 +22,9 @@ dev/.agent_memory/
 dev/_work/
 dev/.env
 dev/_incoming_remote/
+dev/test_db.sqlite
+dev/tests/
+dev/logs/
 
 storage/sessions/
 cache/
