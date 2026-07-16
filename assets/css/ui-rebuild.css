@@ -299,13 +299,12 @@ body .ui-cards-section {
   gap: var(--space-10);
 }
 
-/* YEMRE Wordmark — Aileron bold, uppercase */
+/* YEMRE Wordmark — Aileron Black, title case */
 .ui-wordmark {
   font-family: var(--font-display);
   font-size: var(--text-xl);
-  font-weight: 700;
+  font-weight: 900;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
   color: var(--color-text-primary);
   text-decoration: none;
   transition: opacity var(--transition-fast);

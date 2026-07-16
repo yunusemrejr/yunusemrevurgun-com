@@ -86,7 +86,7 @@ if (!function_exists('ui_render_navbar')) {
 <header class="ui-navbar-wrap">
     <nav class="ui-navbar" aria-label="Main">
         <div class="ui-nav-left">
-            <a class="ui-wordmark" href="<?= FULL_BASE_PATH ?>">YEMRE</a>
+            <a class="ui-wordmark" href="<?= FULL_BASE_PATH ?>">Yemre</a>
             <ul class="ui-nav-links" role="list">
                 <?php foreach (ui_nav_items() as $item):
                     $itemLabel = strtolower($item['label']);
