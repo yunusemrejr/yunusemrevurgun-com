@@ -37,7 +37,7 @@ ui_render_head(
             <div class="ui-update-row" style="margin-bottom: 1.5rem;">
                 <img
                     class="ui-update-avatar"
-                    src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg"
+                    src="<?= FULL_BASE_PATH ?>assets/images/favicon.svg"
                     alt="Yunus Emre Vurgun"
                     loading="eager"
                 >
