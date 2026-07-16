@@ -340,7 +340,7 @@ window.TRAVEL_STATIC_IMAGE_BASE = <?php echo json_encode($staticImageBase); ?>;
 </script>
 <script data-cfasync="false" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script data-cfasync="false" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/travel-rebuild.js?v=<?= time() ?>"></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/travel-rebuild.js?v=<?= filemtime(__DIR__ . '/../assets/js/travel-rebuild.js') ?>"></script>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 </body>
 </html>

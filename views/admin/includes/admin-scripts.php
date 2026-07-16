@@ -113,9 +113,11 @@ function getRequiredAdminModules() {
 function outputAdminScripts() {
     $requiredModules = getRequiredAdminModules();
     $basePath = FULL_BASE_PATH . 'assets/js/admin/';
-    
+    $baseDir = dirname(__DIR__, 3) . '/assets/js/admin/';
+
     foreach ($requiredModules as $module) {
-        echo '<script src="' . $basePath . $module . '?v=' . time() . '"></script>' . "\n    ";
+        $version = @filemtime($baseDir . $module) ?: '1';
+        echo '<script src="' . $basePath . $module . '?v=' . $version . '"></script>' . "\n    ";
     }
 }
 ?>

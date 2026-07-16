@@ -102,10 +102,10 @@ if (!function_exists('ui_render_navbar')) {
                 </li>
                 <?php endforeach; ?>
                 <li>
-                    <a class="ui-nav-link ui-nav-link-more<?= $requestPath === 'more' ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>more">+</a>
+                    <a class="ui-nav-link ui-nav-link-more<?= $requestPath === 'more' ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>more" aria-label="More pages">+</a>
                 </li>
             </ul>
-            <button class="ui-mobile-toggle" type="button" aria-label="Open menu" data-mobile-menu-open aria-expanded="false"><span></span><span></span><span></span></button>
+            <button class="ui-mobile-toggle" type="button" aria-label="Open menu" data-mobile-menu-open aria-expanded="false" aria-controls="uiMobileMenu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 </header>
@@ -117,7 +117,7 @@ if (!function_exists('ui_render_navbar')) {
             <?php foreach (ui_nav_items() as $item): ?>
                 <li><a href="<?= htmlspecialchars($item['href']) ?>" data-mobile-menu-close><?= htmlspecialchars($item['label']) ?></a></li>
             <?php endforeach; ?>
-            <li><a href="<?= FULL_BASE_PATH ?>more" data-mobile-menu-close>+</a></li>
+            <li><a href="<?= FULL_BASE_PATH ?>more" data-mobile-menu-close aria-label="More pages">+</a></li>
         </ul>
     </div>
 </div>

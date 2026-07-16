@@ -24,7 +24,21 @@ MEDIA
 ===============================================================================
 */
 
-/* Aileron and Canva Sans are brand fonts; system sans-serif fallbacks are used by default */
+/* Aileron is self-hosted (OFL); Canva Sans is proprietary, system sans-serif fallback is used */
+@font-face {
+  font-family: 'Aileron';
+  src: url('../fonts/aileron-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Aileron';
+  src: url('../fonts/aileron-900.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* ===== CSS CUSTOM PROPERTIES ===== */
 :root {
@@ -303,7 +317,7 @@ body .ui-cards-section {
   font-size: var(--text-xl);
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: #575757;
+  color: #a6a6a6;
   text-decoration: none;
   transition: opacity var(--transition-fast);
   line-height: 1;
@@ -359,6 +373,7 @@ body .ui-cards-section {
   -webkit-tap-highlight-color: transparent;
   background: transparent;
   border: none;
+  color: #575757;
   transition: color var(--transition-fast), background-color var(--transition-fast);
   align-items: center;
   justify-content: center;
@@ -379,9 +394,10 @@ body .ui-cards-section {
   display: block;
   width: 20px;
   height: 2px;
-  background-color: #575757;
+  background-color: currentColor;
   position: absolute;
   left: 50%;
+  margin-left: -10px;
   transition: background-color var(--transition-fast), opacity var(--transition-fast), transform var(--transition-fast);
 }
 
@@ -423,11 +439,14 @@ body .ui-cards-section {
   z-index: var(--z-modal);
   visibility: hidden;
   pointer-events: none;
+  /* keep visible until the slide-out/fade finishes on close */
+  transition: visibility 0s linear 0.35s;
 }
 
 .ui-mobile-menu.is-open {
   visibility: visible;
   pointer-events: auto;
+  transition-delay: 0s;
 }
 
 .ui-mobile-backdrop {

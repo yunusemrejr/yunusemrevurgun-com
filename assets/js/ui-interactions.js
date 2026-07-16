@@ -36,6 +36,7 @@
       menu.setAttribute('aria-hidden', 'false');
       if (openBtn) {
         openBtn.setAttribute('aria-expanded', 'true');
+        openBtn.setAttribute('aria-label', 'Close menu');
         openBtn.classList.add('active');
       }
       document.body.classList.add('menu-open');
@@ -47,6 +48,7 @@
       menu.setAttribute('aria-hidden', 'true');
       if (openBtn) {
         openBtn.setAttribute('aria-expanded', 'false');
+        openBtn.setAttribute('aria-label', 'Open menu');
         openBtn.classList.remove('active');
       }
       document.body.classList.remove('menu-open');

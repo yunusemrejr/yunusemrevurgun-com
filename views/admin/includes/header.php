@@ -88,7 +88,7 @@ $faviconMime = 'image/svg+xml';
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-travel.css">
     <?php endif; ?>
 
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-space.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-space.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-space.css') ?: '1'; ?>">
 
     <script>
         window.FULL_BASE_PATH = <?php echo json_encode(FULL_BASE_PATH); ?>;
