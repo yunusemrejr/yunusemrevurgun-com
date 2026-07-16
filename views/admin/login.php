@@ -194,32 +194,20 @@ function generateCaptcha() {
  * @param string $answerHash The hash of the correct answer
  * @return bool True if correct, false otherwise
  */
-function verifyCaptcha($userAnswer, $answerHash) {
-    if (!isset($_SESSION['captcha_secret']) || !isset($_SESSION['captcha_answer_hash'])) {
+function verifyCaptcha($userAnswer) {
+    if (!isset($_SESSION['captcha_answer'])) {
         return false;
     }
     
-    // Verify the hash matches the session hash first
-    if (!hash_equals($_SESSION['captcha_answer_hash'], $answerHash)) {
-        return false;
-    }
-    
-    // Get the correct answer from session (we'll store it temporarily)
-    // Since we can't reverse the hash, we'll verify by checking if the user's answer matches
     $userAnswerInt = (int)trim($userAnswer);
-    
-    // We need to verify the answer matches what was generated
-    // Since we hash the answer, we'll verify by checking if the hash of user's answer matches
-    $userAnswerHash = hash_hmac('sha256', (string)$userAnswerInt, $_SESSION['captcha_secret']);
-    
-    return hash_equals($answerHash, $userAnswerHash);
+    return $userAnswerInt === (int)$_SESSION['captcha_answer'];
 }
 
 // Generate CAPTCHA if not already set or if explicitly refreshing (GET only, not on POST)
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' && (!isset($_SESSION['captcha_question']) || isset($_GET['refresh_captcha']))) {
     $captcha = generateCaptcha();
     $_SESSION['captcha_question'] = $captcha['question'];
-    $_SESSION['captcha_answer_hash'] = $captcha['hash'];
+    $_SESSION['captcha_answer'] = $captcha['answer'];
     $_SESSION['captcha_issued_at'] = time();
 }
 
@@ -251,30 +239,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($error)) {
             if (!isset($_POST['captcha_answer']) || empty(trim($_POST['captcha_answer']))) {
                 $error = "Please complete the security verification.";
-            } elseif (!isset($_SESSION['captcha_answer_hash']) || !isset($_POST['captcha_hash']) || (time() - (int)($_SESSION['captcha_issued_at'] ?? 0)) > 900) {
+            } elseif (!isset($_SESSION['captcha_answer']) || (time() - (int)($_SESSION['captcha_issued_at'] ?? 0)) > 900) {
                 $error = "Security verification expired. Please refresh the page.";
                 $captcha = generateCaptcha();
                 $_SESSION['captcha_question'] = $captcha['question'];
-                $_SESSION['captcha_answer_hash'] = $captcha['hash'];
+                $_SESSION['captcha_answer'] = $captcha['answer'];
                 $_SESSION['captcha_issued_at'] = time();
             } else {
                 $userAnswer = trim($_POST['captcha_answer']);
-                $answerHash = $_POST['captcha_hash'];
                 
-                if (hash_equals($_SESSION['captcha_answer_hash'], $answerHash) && verifyCaptcha($userAnswer, $answerHash)) {
+                if (verifyCaptcha($userAnswer)) {
                     // CAPTCHA passed — set session flag and regenerate for next step
                     $_SESSION['captcha_passed'] = true;
                     $_SESSION['captcha_passed_at'] = time();
                     $captcha = generateCaptcha();
                     $_SESSION['captcha_question'] = $captcha['question'];
-                    $_SESSION['captcha_answer_hash'] = $captcha['hash'];
+                    $_SESSION['captcha_answer'] = $captcha['answer'];
                     $_SESSION['captcha_issued_at'] = time();
                 } else {
                     $error = "Incorrect answer. Please try again.";
                     recordLoginFailure();
                     $captcha = generateCaptcha();
                     $_SESSION['captcha_question'] = $captcha['question'];
-                    $_SESSION['captcha_answer_hash'] = $captcha['hash'];
+                    $_SESSION['captcha_answer'] = $captcha['answer'];
                     $_SESSION['captcha_issued_at'] = time();
                 }
             }
@@ -300,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($loginResult) {
                     clearLoginFailures();
                     CSRFProtection::rotateToken();
-                    unset($_SESSION['captcha_question'], $_SESSION['captcha_answer_hash'], $_SESSION['captcha_issued_at'], $_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
+                    unset($_SESSION['captcha_question'], $_SESSION['captcha_answer'], $_SESSION['captcha_issued_at'], $_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
                     header('Location: ' . FULL_BASE_PATH . 'admin/dashboard');
                     exit;
                 } else {
@@ -441,7 +428,7 @@ if (strpos($currentPath, '/admin') !== false &&
                                    min="0"
                                    max="20"
                                    style="max-width: 200px; margin-top: 0.5rem;">
-                            <input type="hidden" name="captcha_hash" value="<?php echo htmlspecialchars($_SESSION['captcha_answer_hash'] ?? ''); ?>">
+                            
                         </div>
                         <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit" id="captcha-submit-btn">
                             <span class="btn-text">Verify</span>
@@ -485,8 +472,6 @@ if (strpos($currentPath, '/admin') !== false &&
 
                         <!-- Hidden CAPTCHA fields for final submit -->
                         <input type="hidden" name="captcha_verified" value="1">
-                        <input type="hidden" name="captcha_answer" id="captcha_answer_final" value="">
-                        <input type="hidden" name="captcha_hash" id="captcha_hash_final" value="">
 
                         <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit">
                             <span class="btn-text">Login</span>

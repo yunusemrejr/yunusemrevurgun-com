@@ -134,19 +134,12 @@
             var username = $('#username');
             var password = $('#password');
             var captchaAnswerHidden = $('#captcha_answer_final');
-            var captchaHashHidden = $('#captcha_hash_final');
 
-            // Copy CAPTCHA values to hidden fields before submit
+            // Copy CAPTCHA answer to hidden field before submit
             if (captchaAnswerHidden) {
                 var captchaInput = $('#captcha_answer');
                 if (captchaInput) {
                     captchaAnswerHidden.value = captchaInput.value;
-                }
-            }
-            if (captchaHashHidden) {
-                var captchaHashInput = form.querySelector('input[name="captcha_hash"]');
-                if (captchaHashInput) {
-                    captchaHashHidden.value = captchaHashInput.value;
                 }
             }
 
