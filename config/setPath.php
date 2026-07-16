@@ -160,12 +160,8 @@ if (!defined('FULL_BASE_PATH')) {
     define('FULL_BASE_PATH', BASE_PATH);
 }
 
- 
-?>
-<?php
-//prevent direct access to this file
+
 if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
     header('Location: ' . FULL_BASE_PATH);
     exit;
 }
-?>

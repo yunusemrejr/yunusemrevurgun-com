@@ -1,11 +1,5 @@
 <?php
-// Get the project root directory - use absolute path resolution
-$projectRoot = dirname(__DIR__);
-
-// Include the setPath file using the project root
-require_once $projectRoot . '/config/setPath.php';
- 
-
+require_once dirname(__DIR__) . '/config/setPath.php';
 
 class SessionAdminSecurityMiddleware {
     private $request;
@@ -15,24 +9,21 @@ class SessionAdminSecurityMiddleware {
     }
 
     public function handle() {
-        // Only check for admin session authentication
         if (isAdminRequestUri($this->request['uri'])) {
-            // Skip check for login and logout pages (compare paths, not full URLs)
             $requestPath = parse_url($this->request['uri'], PHP_URL_PATH);
             if (strpos($requestPath, '/admin/login') !== false || strpos($requestPath, '/admin/logout') !== false) {
                 return true;
             }
 
-            // Check session for other admin pages
             if (!isset($_SESSION['user_id'])) {
                 header('Location: ' . getAdminLoginPath());
                 exit;
             }
 
-             if (in_array($this->request['method'], ['POST', 'DELETE'], true)) {
-                $csrfToken = $_POST['csrf_token'] ?? $this->request['headers']['X-CSRF-Token'] ?? $this->request['body']['csrf_token'] ?? '';
+            if (in_array($this->request['method'], ['POST', 'DELETE'], true)) {
+                $csrfToken = $_POST['csrf_token'] ?? '';
 
-                if (!$this->isValidCsrfToken($csrfToken)) {
+                if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
                     http_response_code(403);
                     echo json_encode(['error' => 'Invalid CSRF token']);
                     exit;
@@ -40,9 +31,5 @@ class SessionAdminSecurityMiddleware {
             }
         }
         return true;
-    }
-
-    private function isValidCsrfToken($token) {
-        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
     }
 }

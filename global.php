@@ -7,6 +7,12 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+function ensureSessionStarted(): void {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+}
+
 function restrictDirectAccess() {
     if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
