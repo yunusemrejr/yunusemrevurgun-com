@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Please fix the errors below.';
     } elseif ($error === null && $captchaError) {
         $error = $captchaError;
-    } elseif ($error === null && $error === null && $captchaValid && empty($fieldErrors)) {
+    } elseif ($captchaValid && empty($fieldErrors)) {
         try {
             $contact = new Contact();
             if ($contact->sendEmail($data)) {

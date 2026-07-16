@@ -32,7 +32,6 @@ $adminNavItems = [
     ['id' => 'tracker-codes', 'label' => 'Tracker', 'href' => FULL_BASE_PATH . 'admin/tracker-codes'],
     ['id' => 'music', 'label' => 'Music', 'href' => FULL_BASE_PATH . 'admin/music'],
     ['id' => 'travel', 'label' => 'Travel', 'href' => FULL_BASE_PATH . 'admin/travel'],
-    ['id' => 'travel', 'label' => 'Travel', 'href' => FULL_BASE_PATH . 'admin/travel'],
 ];
 
 $faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg';

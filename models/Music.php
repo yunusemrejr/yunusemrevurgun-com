@@ -108,7 +108,9 @@ class Music {
 
     public function archiveTrack($id) {
         requireAdminSession(false);
-        $query = "UPDATE music_tracks SET is_archived = 1, archived_at = NOW() WHERE id = :id";
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $nowFunc = ($driver === 'sqlite') ? "datetime('now')" : "NOW()";
+        $query = "UPDATE music_tracks SET is_archived = 1, archived_at = $nowFunc WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();

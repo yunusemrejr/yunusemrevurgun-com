@@ -61,6 +61,7 @@ function getCurrentAdminPageContext() {
         return 'tracker-codes';
     }
     if (strpos($path, '/admin/music') !== false) return 'music';
+    if (strpos($path, '/admin/travel') !== false) return 'travel';
     if (strpos($path, '/admin/search') !== false) return 'search';
     
     return 'dashboard';
