@@ -4,7 +4,7 @@ require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 
 ui_render_head(
     'YunoBot | Yunus Emre Vurgun',
-    'AI chat assistant powered by local ML models with semantic understanding.',
+    'AI chat assistant powered by a custom neural network that runs entirely in your browser.',
     ['yunobot' => true]
 );
 ?>
@@ -16,7 +16,7 @@ ui_render_head(
         <section class="ui-section">
             <p class="ui-eyebrow">AI Assistant</p>
             <h1 class="ui-section-title">YunoBot</h1>
-            <p class="ui-section-text">A hybrid AI assistant combining regex patterns and semantic embeddings for contextual responses.</p>
+            <p class="ui-section-text">A privacy-first AI assistant powered by a custom neural network trained for this site. It runs entirely in your browser — no downloads, no API calls — and answers instantly.</p>
         </section>
 
         <section class="ui-section">
@@ -59,7 +59,7 @@ ui_render_head(
                             <textarea
                                 class="chat-input"
                                 id="chatInput"
-                                placeholder="Type a message... (Enter to send, Shift+Enter for new line)"
+                                placeholder="Type a message..."
                                 autocomplete="off"
                                 rows="1"
                                 aria-label="Chat message input"
@@ -78,25 +78,13 @@ ui_render_head(
 </div>
 
 <!-- ============================================================
-     PERFORMANCE: Preconnect to CDN origins for faster model loading
+     Custom neural network — weights + runtime ship with the page.
+     No CDN, no external model download: instant load, instant answers.
      ============================================================ -->
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://huggingface.co" crossorigin>
-<link rel="preconnect" href="https://cdn-pollinations.vercel.app" crossorigin>
-
-<!-- ============================================================
-     PERFORMANCE: Prefetch critical ML resources
-     ============================================================ -->
-<link rel="prefetch" href="<?= FULL_BASE_PATH ?>assets/js/yunobot/ml-engine.js" as="script">
-<link rel="prefetch" href="<?= FULL_BASE_PATH ?>assets/js/yunobot/embedding-worker.js" as="script">
-
-<!-- ============================================================
-     ML Engine Scripts - loaded with defer for non-blocking parsing
-     Primary: ml-engine.js (hybrid regex + semantic embeddings)
-     Worker: embedding-worker.js (Transformers.js in background thread)
-     ============================================================ -->
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/ml-engine.js" defer></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot.js" defer></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/nn-weights.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/nn-weights.js') ?>" defer></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/nn-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/nn-engine.js') ?>" defer></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/ml-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/ml-engine.js') ?>" defer></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot.js') ?>" defer></script>
 
 <!-- ============================================================
      PERFORMANCE: Service Worker for offline caching

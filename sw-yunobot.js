@@ -3,13 +3,14 @@
  * 
  * Features:
  * - Cache JS files for offline use
- * - IndexedDB model caching hints
  * - Fallback responses when offline
  * - Stale-while-revalidate strategy for assets
+ * (YunoBot runs on a custom neural network shipped with the page —
+ *  no external model downloads to cache.)
  */
 
 const CACHE_NAME = 'yunobot-v1';
-const CACHE_VERSION = '20260513';
+const CACHE_VERSION = '20260717';
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -18,29 +19,13 @@ const STATIC_ASSETS = [
     'yunobot',
     
     // JS files
-    'assets/js/yunobot/ml-encode.js',
-    'assets/js/yunobot/ml-route.js',
-    'assets/js/yunobot/ml-refine.js',
-    'assets/js/yunobot/ml-classic.js',
-    'assets/js/yunobot/ml-planner.js',
-    'assets/js/yunobot/ml-compose.js',
-    'assets/js/yunobot/ml-runtime.js',
+    'assets/js/yunobot/nn-weights.js',
+    'assets/js/yunobot/nn-engine.js',
     'assets/js/yunobot/ml-engine.js',
-    'assets/js/yunobot/embedding-worker.js',
     'assets/js/yunobot.js',
     
     // CSS
     'assets/css/yunobot.css',
-    'assets/css/components/coffee-mug.css',
-    'assets/css/components/minimal-navbar.css',
-    
-    // Shared assets — Transformers.js (loaded via CDN fallback in worker)
-];
-
-// Model files that should be cached (IndexedDB is preferred for large files)
-const MODEL_ASSETS = [
-    // Transformers.js will cache these automatically in IndexedDB
-    // We just list them here for reference
 ];
 
 // ============================================================
@@ -100,12 +85,9 @@ self.addEventListener('fetch', (event) => {
     // Skip non-GET requests
     if (request.method !== 'GET') return;
     
-    // Skip cross-origin requests (except CDN for models)
+    // Skip cross-origin requests
     const isSameOrigin = url.origin === location.origin;
-    const isModelCDN = url.hostname === 'cdn.jsdelivr.net' || 
-                       url.hostname === 'huggingface.co';
-    
-    if (!isSameOrigin && !isModelCDN) return;
+    if (!isSameOrigin) return;
     
     // ============================================================
     // Strategy 1: Cache-first for static JS/CSS
@@ -154,29 +136,7 @@ self.addEventListener('fetch', (event) => {
     }
     
     // ============================================================
-    // Strategy 2: Network-first for model files (CDN)
-    // ============================================================
-    if (isModelCDN) {
-        event.respondWith(
-            fetch(request)
-                .then((response) => {
-                    if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME + '-' + CACHE_VERSION)
-                            .then((cache) => cache.put(request, clone));
-                    }
-                    return response;
-                })
-                .catch(() => {
-                    // Network failed - try cache
-                    return caches.match(request);
-                })
-        );
-        return;
-    }
-    
-    // ============================================================
-    // Strategy 3: Default - network first
+    // Strategy 2: Default - network first
     // ============================================================
     event.respondWith(
         fetch(request)

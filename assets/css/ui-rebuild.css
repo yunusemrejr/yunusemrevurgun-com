@@ -1396,6 +1396,9 @@ textarea.ui-input {
 }
 
 @media (max-width: 768px) {
+  .ui-footer-meta {
+    flex-wrap: wrap;
+  }
   .ui-footer-social-label {
     display: none;
   }
@@ -1404,6 +1407,7 @@ textarea.ui-input {
   }
   .ui-footer-socials {
     gap: var(--space-3);
+    flex-wrap: wrap;
   }
   .ui-footer-socials a {
     display: flex;

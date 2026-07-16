@@ -1,23 +1,14 @@
 /* ============================================
-   YUNOBOT PAGE — YEV Brand Design System
-   Dark-first, monospace-driven, technical minimalism
+   YUNOBOT PAGE — YEV Design System
+   Light muted palette, sharp corners, Aileron
    ============================================ */
 
 /* ===== CUSTOM PROPERTIES ===== */
 :root {
-  --yuno-bg: var(--color-bg-primary);
-  --yuno-surface: var(--color-bg-elevated);
   --yuno-border: var(--color-border);
   --yuno-text: #575757;
   --yuno-text-secondary: #8fa6a6;
   --yuno-text-muted: #8490a4;
-  --yuno-accent: var(--color-accent);
-  --yuno-surface-hover: var(--color-bg-subtle);
-
-  --msg-user-bg: var(--color-bg-subtle);
-  --msg-user-border: var(--color-border);
-  --msg-bot-bg: var(--color-surface);
-  --msg-bot-border: var(--color-border-strong);
 
   --status-loading: var(--color-warning);
   --status-ready: var(--color-success);
@@ -35,12 +26,7 @@
 
 @keyframes yunobot-typingWave {
   0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-  40% { transform: translateY(-6px); opacity: 1; }
-}
-
-@keyframes yunobot-fadeInTitle {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  40% { transform: translateY(-4px); opacity: 1; }
 }
 
 /* ============================================================
@@ -50,8 +36,8 @@
 .ui-yunobot-messages::-webkit-scrollbar { width: 4px; }
 .ui-yunobot-messages::-webkit-scrollbar-track { background: transparent; }
 .ui-yunobot-messages::-webkit-scrollbar-thumb {
-  background: var(--color-border, rgba(42, 54, 66, 0.7));
-  border-radius: var(--radius-full);
+  background: var(--color-border-strong);
+  border-radius: var(--radius-sm);
 }
 .ui-yunobot-messages::-webkit-scrollbar-thumb:hover {
   background: #8490a4;
@@ -61,28 +47,29 @@
    PAGE LAYOUT
    ============================================================ */
 
-/* Section container — uses brand elevated surface */
 .ui-yunobot-container {
   width: 100%;
-  max-width: var(--content-narrow, 720px);
+  max-width: var(--content-narrow);
   margin: 0 auto;
 }
 
-/* Chat wrapper — card-style elevated surface */
+/* Chat shell — flat brand surface, sharp corners (feed-card language) */
 .ui-yunobot-chat {
-  background: var(--yuno-surface);
+  background: var(--color-surface);
   border: 1px solid var(--yuno-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
+  border-radius: var(--radius-sm);
+  padding: var(--space-5);
   display: flex;
   flex-direction: column;
-  max-height: 72vh;
+  height: 62vh;
+  height: 62dvh;
   min-height: 400px;
-  contain: layout style paint;
+  max-height: 640px;
+  box-sizing: border-box;
 }
 
 /* ============================================================
-   STATUS BAR — minimal, monospace
+   STATUS BAR — static, no pulse, square indicator
    ============================================================ */
 
 .chat-status-bar {
@@ -91,38 +78,25 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   margin-bottom: var(--space-3);
-  border-radius: var(--radius-sm);
-  background: var(--color-bg-subtle);
+  background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
-  transition: border-color var(--transition-fast);
+  min-width: 0;
 }
 
 .chat-status-dot {
   width: 6px;
   height: 6px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
+  background: var(--color-text-disabled);
   transition: background-color var(--transition-fast);
 }
 
-.chat-status-dot.loading {
-  background: var(--status-loading);
-  animation: yunobot-statusPulse 1.5s ease-in-out infinite;
-}
-
-.chat-status-dot.ready {
-  background: var(--status-ready);
-}
-
-.chat-status-dot.error {
-  background: var(--status-error);
-}
-
-@keyframes yunobot-statusPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
+.chat-status-dot.loading { background: var(--status-loading); }
+.chat-status-dot.ready { background: var(--status-ready); }
+.chat-status-dot.error { background: var(--status-error); }
 
 .chat-status-text {
   font-family: var(--font-display);
@@ -130,6 +104,9 @@
   color: #8490a4;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ============================================================
@@ -139,7 +116,7 @@
 .ui-yunobot-messages {
   flex: 1;
   overflow-y: auto;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
   padding-right: var(--space-2);
   min-height: 0;
   overscroll-behavior: contain;
@@ -147,16 +124,16 @@
 }
 
 .chat-message {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-4);
   display: flex;
   gap: var(--space-3);
-  animation: yunobot-slideInMessage var(--transition-base) cubic-bezier(0.16, 1, 0.3, 1);
+  animation: yunobot-slideInMessage var(--transition-base) ease-out;
 }
 
 .chat-message.user-message { flex-direction: row-reverse; }
 .chat-message.bot-message { flex-direction: row; }
 
-/* Avatars — square, monospace */
+/* Avatars — square, Aileron */
 .message-avatar {
   width: 28px;
   height: 28px;
@@ -168,7 +145,7 @@
   font-family: var(--font-display);
   font-size: 0.65rem;
   font-weight: 500;
-  background: var(--color-bg-subtle);
+  background: var(--color-surface-alt);
   color: #8490a4;
   border: 1px solid var(--color-border);
 }
@@ -179,6 +156,7 @@
   flex-direction: column;
   gap: var(--space-1);
   max-width: 78%;
+  min-width: 0;
 }
 
 .user-message .message-body { align-items: flex-end; }
@@ -193,18 +171,19 @@
   font-family: var(--font-body);
   word-wrap: break-word;
   overflow-wrap: break-word;
+  min-width: 0;
 }
 
 .user-message .message-content {
-  background: var(--msg-user-bg);
-  border: 1px solid var(--msg-user-border);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
   color: #575757;
 }
 
 .bot-message .message-content {
-  background: var(--msg-bot-bg);
-  border: 1px solid var(--msg-bot-border);
-  color: #8fa6a6;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: #575757;
 }
 
 /* Typography in messages */
@@ -218,17 +197,17 @@
 .message-content i { font-style: italic; }
 
 .message-content code {
-  font-family: var(--font-display);
+  font-family: var(--font-mono);
   font-size: var(--text-xs);
-  background: var(--color-bg-subtle);
+  background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 0.1rem 0.35rem;
-  color: #8fa6a6;
+  color: #575757;
 }
 
 .message-content pre {
-  background: var(--color-bg-primary);
+  background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
@@ -242,7 +221,7 @@
   padding: 0;
   font-size: var(--text-xs);
   line-height: 1.6;
-  color: #8fa6a6;
+  color: #575757;
 }
 
 .message-content ul,
@@ -294,16 +273,16 @@
 .message-copy-btn svg { width: 12px; height: 12px; }
 
 /* ============================================================
-   TYPING INDICATOR
+   TYPING INDICATOR — square dots, brand-sharp
    ============================================================ */
 
 .typing-indicator {
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  padding: var(--space-3);
-  background: var(--msg-bot-bg);
-  border: 1px solid var(--msg-bot-border);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
 }
 
@@ -311,7 +290,7 @@
   width: 5px;
   height: 5px;
   background: #8490a4;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-sm);
   animation: yunobot-typingWave 1.2s ease-in-out infinite;
   opacity: 0.5;
 }
@@ -324,10 +303,9 @@
    ============================================================ */
 
 .example-questions {
-  margin-top: var(--space-4);
   margin-bottom: var(--space-3);
-  padding: var(--space-4);
-  background: var(--color-surface);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   flex-shrink: 0;
@@ -341,7 +319,7 @@
   color: #8490a4;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
   font-weight: 400;
 }
 
@@ -354,35 +332,34 @@
 .example-question-chip {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-2) var(--space-3);
-  background: transparent;
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: #8490a4;
+  color: #575757;
   cursor: pointer;
   transition: all var(--transition-fast);
   min-height: 32px;
+  letter-spacing: 0.03em;
 }
 
 .example-question-chip:hover {
-  background: var(--color-bg-hover);
-  border-color: #8490a4;
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
   color: #575757;
 }
 
-.example-question-chip:active { transform: translateY(0); }
-
 /* ============================================================
-    QUICK ACTIONS — standalone row above input
-    ============================================================ */
+   QUICK ACTIONS — row above input
+   ============================================================ */
 
 .chat-actions {
   display: flex;
   gap: var(--space-2);
   flex-shrink: 0;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -391,51 +368,55 @@
   align-items: center;
   gap: var(--space-1);
   padding: var(--space-1) var(--space-3);
-  background: transparent;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: #8490a4;
+  color: #575757;
   cursor: pointer;
   transition: all var(--transition-fast);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.5px;
   white-space: nowrap;
+  min-height: 32px;
 }
 
 .chat-action-btn:hover {
-  background: var(--color-bg-hover);
-  border-color: #8490a4;
-  color: #8fa6a6;
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+  color: #575757;
 }
 
-.chat-action-btn:active { transform: scale(0.96); }
+.chat-action-btn:active { transform: scale(0.98); }
 .chat-action-btn svg { width: 12px; height: 12px; }
 
 /* ============================================================
-    INPUT AREA
-    ============================================================ */
+   INPUT AREA — textarea and send button top-aligned, equal base height
+   ============================================================ */
 
 .chat-input-container {
   display: flex;
   gap: var(--space-2);
-  align-items: center;
+  align-items: flex-start;
   border-top: 1px solid var(--color-border);
   padding-top: var(--space-4);
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .chat-input-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .chat-input {
-  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
   padding: var(--space-3) var(--space-4);
-  background: var(--color-bg-primary);
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   color: #575757;
@@ -445,157 +426,64 @@
   line-height: 1.5;
   resize: none;
   overflow: hidden;
-  min-height: 40px;
+  min-height: 44px;
   max-height: 120px;
 }
 
 .chat-input:focus {
   outline: none;
-  border-color: var(--color-focus-ring);
-  box-shadow: 0 0 0 1px var(--color-focus-ring);
+  border-color: var(--color-border-strong);
 }
 
 .chat-input::placeholder {
-  color: #b5b3af;
+  color: var(--color-text-disabled);
 }
 
 .chat-input-hint {
   font-family: var(--font-display);
   font-size: 0.6rem;
-  color: #b5b3af;
+  color: var(--color-text-disabled);
   margin-top: var(--space-1);
 }
 
-/* Send button — accent brand green */
+/* Send button — matches active filter-pill language (solid muted teal) */
 .chat-send-button {
-  width: 40px;
-  height: 40px;
-  background: var(--color-accent);
-  border: none;
+  width: 44px;
+  height: 44px;
+  background: #8fa6a6;
+  border: 1px solid #8fa6a6;
   border-radius: var(--radius-sm);
-  color: #575757;
+  color: #e3e2de;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--transition-fast), transform var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .chat-send-button:hover {
-  background: var(--color-accent-hover);
-  transform: translateY(-1px);
+  background: #8490a4;
+  border-color: #8490a4;
 }
 
-.chat-send-button:active {
-  transform: translateY(0) scale(0.97);
-}
+.chat-send-button:active { transform: scale(0.97); }
 
 .chat-send-button:disabled {
-  background: var(--color-border);
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-disabled);
   cursor: not-allowed;
   transform: none;
 }
 
 .chat-send-button:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
+  outline: 2px solid var(--color-border-strong);
   outline-offset: 2px;
 }
 
 .chat-send-button svg { width: 16px; height: 16px; }
-
-/* ============================================================
-   MODAL
-   ============================================================ */
-
-.ui-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-modal, 1050);
-  align-items: center;
-  justify-content: center;
-}
-
-.ui-modal[aria-hidden="false"] { display: flex; }
-
-.ui-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: var(--color-bg-overlay, rgba(0, 0, 0, 0.6));
-}
-
-.ui-modal-panel {
-  position: relative;
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-8);
-  max-width: 560px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.ui-modal-close {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-4);
-  width: 28px;
-  height: 28px;
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: #8490a4;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-}
-
-.ui-modal-close:hover {
-  background: var(--color-bg-hover);
-  color: #575757;
-}
-
-/* Info button */
-.ui-yunobot-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  margin-top: var(--space-4);
-}
-
-.ui-yunobot-info-btn {
-  width: 32px;
-  height: 32px;
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: #8490a4;
-  cursor: pointer;
-  font-family: var(--font-display);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-}
-
-.ui-yunobot-info-btn:hover {
-  background: var(--color-bg-hover);
-  color: #575757;
-  border-color: #8490a4;
-}
-
-.ui-yunobot-info-text {
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  color: #b5b3af;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 
 /* ============================================================
    RESPONSIVE
@@ -603,19 +491,19 @@
 
 @media (max-width: 768px) {
   .ui-yunobot-chat {
-    padding: var(--space-4);
-    max-height: 78vh;
-    min-height: 300px;
-    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    height: 64vh;
+    height: 64dvh;
+    min-height: 340px;
   }
 
-  .chat-message { gap: var(--space-2); margin-bottom: var(--space-4); }
+  .chat-message { gap: var(--space-2); margin-bottom: var(--space-3); }
   .message-avatar { width: 24px; height: 24px; font-size: 0.6rem; }
-  .message-body { max-width: 88%; }
+  .message-body { max-width: 85%; }
   .message-content { padding: var(--space-2) var(--space-3); }
-  .example-questions { padding: var(--space-3); }
-  .example-question-chip { min-height: 36px; padding: var(--space-1) var(--space-3); }
-  .chat-action-btn { min-height: 32px; }
+  .example-questions { padding: var(--space-2) var(--space-3); }
+  .example-question-chip { min-height: 36px; }
+  .chat-action-btn { min-height: 36px; }
   .chat-input-hint { display: none; }
   .chat-input { min-height: 44px; font-size: 16px; } /* 16px prevents iOS zoom */
 }
@@ -623,12 +511,13 @@
 @media (max-width: 480px) {
   .ui-yunobot-chat {
     padding: var(--space-3);
-    max-height: 80vh;
-    min-height: 260px;
+    height: 60vh;
+    height: 60dvh;
+    min-height: 320px;
   }
 
   .message-avatar { width: 22px; height: 22px; }
-  .message-body { max-width: 90%; }
+  .message-body { max-width: 88%; }
   .chat-input { font-size: 16px; }
 }
 
@@ -636,16 +525,13 @@
 @media (hover: none) and (pointer: coarse) {
   .chat-action-btn { min-height: 44px; }
   .example-question-chip { min-height: 44px; }
-  .chat-send-button { min-width: 44px; min-height: 44px; }
+  .chat-send-button { width: 44px; height: 44px; }
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .chat-message,
+  .typing-dot {
+    animation: none;
   }
 }

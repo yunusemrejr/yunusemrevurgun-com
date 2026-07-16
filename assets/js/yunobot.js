@@ -286,13 +286,19 @@
             handleSend();
         });
         
-        // Focus input on load
-        chatInput.focus();
+        // Focus input on load (preventScroll: avoid jumping past the page title;
+        // on touch devices skip auto-focus so the on-screen keyboard stays closed)
+        if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            chatInput.focus({ preventScroll: true });
+        }
         
-        // Update status as ML engine initializes
-        updateStatus('loading', 'Loading ML model...');
+        // Show starter example questions immediately
+        showExampleQuestions(getInitialExamples());
+        
+        // Update status as the neural network initializes
+        updateStatus('loading', 'Loading neural network...');
 
-        // Use callback for actual worker readiness
+        // Use callback for neural network readiness
         if (mlEngine) {
             mlEngine.onReady = function() {
                 updateStatus('ready', 'Ready');
@@ -392,7 +398,7 @@
                 // Re-enable input
                 chatInput.disabled = false;
                 sendButton.disabled = false;
-                chatInput.focus();
+                chatInput.focus({ preventScroll: true });
             });
         })();
     }

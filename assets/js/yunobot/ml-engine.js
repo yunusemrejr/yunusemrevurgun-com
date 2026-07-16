@@ -1,6 +1,8 @@
 /**
- * YunoBot ML Engine - Hybrid Pattern Matching & Semantic Search
- * Combines regex patterns (fast, accurate) with Transformers.js embeddings (semantic understanding)
+ * YunoBot ML Engine - Hybrid Pattern Matching & Custom Neural Network
+ * Combines regex patterns (fast, accurate) with a custom fastText-style
+ * neural network (assets/js/yunobot/nn-engine.js + nn-weights.js) trained
+ * specifically for this site. No external models, no downloads, no workers.
  */
 
 (function() {
@@ -14,27 +16,16 @@
             this.semanticTargets = this.initializeSemanticTargets();
             
             // ============================================================
-            // PERFORMANCE: Lazy loading state
+            // Custom neural network state (local, instant — no worker)
             // ============================================================
-            this.embeddingWorker = null;
-            this.workerReady = false;
-            this.workerInitiated = false; // Track if we've started init
-            this.targetEmbeddings = null;
-            this.pendingRequests = new Map();
-            this.requestCounter = 0;
+            this.nn = window.YunoBotNN || null;
+            this.workerReady = false; // kept for UI compatibility; true once NN is ready
             
             // ============================================================
             // Callback for readiness notification
             // ============================================================
             this.onReady = null;
             this.onError = null;
-            
-            // ============================================================
-            // PERFORMANCE: Query debouncing for faster inference
-            // ============================================================
-            this.debounceMs = 150; // Debounce rapid-fire queries
-            this.debounceTimer = null;
-            this.lastQueryTime = 0;
             
             // ============================================================
             // PERFORMANCE: Response deduplication cache
@@ -75,23 +66,27 @@
                 lastRecalibration: Date.now(),
             };
             
-            // ============================================================
-            // PERFORMANCE: Inactivity timeout for worker
-            // ============================================================
-            this.workerInactivityTimeout = null;
-            this.WORKER_INACTIVITY_MS = 4 * 60 * 1000; // 4 minutes (worker self-terminates at 5)
-            
-            // Start worker initialization immediately (not lazy)
-            this.ensureWorkerInitialized();
+            // Initialize the neural network (synchronous — inference is microseconds)
+            this.initNN();
         }
         
-        // ============================================================
-        // PERFORMANCE: Lazy worker initialization
-        // ============================================================
-        ensureWorkerInitialized() {
-            if (this.workerInitiated) return;
-            this.workerInitiated = true;
-            this.initializeWorker();
+        /**
+         * Wire up the custom in-browser neural network.
+         * Weights ship with the page, so readiness is immediate; the
+         * onReady/onError callbacks fire async so listeners can attach first.
+         */
+        initNN() {
+            if (this.nn && this.nn.ready) {
+                this.workerReady = true;
+                setTimeout(() => {
+                    if (this.onReady) this.onReady();
+                }, 0);
+            } else {
+                console.warn('[YunoBot] Neural network unavailable — regex-only mode');
+                setTimeout(() => {
+                    if (this.onError) this.onError();
+                }, 0);
+            }
         }
         
         initializePatterns() {
@@ -154,17 +149,17 @@
                     { pattern: /^(?:is\s*yunus\s*(?:turkish|turkey|türkiye))|(?:yunus\s*(?:is\s*)?(?:turkish|from\s*turkey|from\s*türkiye))|(?:is\s*he\s*(?:turkish|from\s*turkey))/i, response: "Yes, Yunus is Turkish! He's based in Istanbul, Türkiye.", confidence: 0.95 },
                     { pattern: /^(?:does\s*(?:he|yunus)\s*(?:have|has)\s*(?:certifications|certificates|certs))|(?:certifications\s*(?:of|for)\s*yunus)|(?:yunus\s*(?:certifications|certificates))/i, response: "Yes! Yunus has taken courses and certifications from Google Cloud, Cisco, and other institutions. He's always learning and values continuous education. Check out his about page for more details on his education and certifications.", confidence: 0.95 },
                     { pattern: /^(?:are\s*you\s*(?:an\s*)?ai|are\s*you\s*(?:a\s*)?bot|are\s*you\s*(?:a\s*)?robot)|(?:you\s*(?:are|is)\s*(?:ai|bot|robot))/i, response: "Yes, I'm YunoBot, an AI assistant created by Yunus to help visitors navigate his website and answer questions about his work and background. I use machine learning to understand natural language!", confidence: 0.95 },
-                    { pattern: /^(?:are\s*you\s*(?:chatgpt|gpt|grok|gemini|claude|llm|large\s*language\s*model))|(?:you\s*(?:are|is)\s*(?:chatgpt|gpt|grok|gemini|claude|llm))|(?:is\s*you\s*(?:an\s*)?llm)|(?:are\s*u\s*gpt)/i, response: "No, I'm not ChatGPT, Grok, Gemini, or any other LLM. I'm YunoBot, a specialized AI assistant built specifically for Yunus's website. I use Transformers.js with semantic embeddings (all-MiniLM-L6-v2 model) for understanding, not a large language model. I'm designed to answer questions about Yunus and help navigate his site!", confidence: 0.95 },
-                    { pattern: /^(?:what\s*(?:is|are)\s*the\s*difference|what\s*differences|how\s*(?:are|is)\s*you\s*different|compare\s*you|you\s*vs|you\s*versus).*(?:chatgpt|gpt|grok|gemini|claude|llm|other)/i, response: "The main difference: ChatGPT and other LLMs are large language models that generate text. I use semantic embeddings - I convert text into mathematical vectors and compare similarity. Key differences: 1) I don't generate text, I match to predefined answers, 2) I'm much smaller (~25MB vs billions of parameters), 3) I run entirely in your browser (no API calls), 4) I'm specialized for Yunus's site only, 5) I use cosine similarity between vectors, not next-token prediction. Think of me as a smart search engine, not a text generator!", confidence: 0.95 },
-                    { pattern: /^(?:so\s*you\s*(?:are|is)\s*(?:an\s*)?lm|you\s*(?:are|is)\s*(?:an\s*)?lm|all[\s-]?minilm|yunus\s*copied|yunus\s*stole|so\s*r\s*u\s*(?:a\s*)?clone|r\s*u\s*(?:a\s*)?clone)/i, response: "No, I'm not an LLM or a clone! all-MiniLM-L6-v2 is an embedding model, not a language model. It converts text to vectors (embeddings) for similarity matching. Yunus didn't copy or steal anything - it's an open-source model from Hugging Face that he integrated using Transformers.js. The difference: LLMs generate text, embedding models convert text to numbers for comparison. I use embeddings to find similar questions, then return predefined answers - I don't generate responses like ChatGPT does.", confidence: 0.95 },
-                    { pattern: /^(?:what\s*(?:is|are)\s*minilm|minilm\?|what\s*is\s*minilm|i\s*dont?\s*get\s*it|i\s*dont?\s*understand)/i, response: "MiniLM (all-MiniLM-L6-v2) is a small embedding model from Microsoft. It converts text into 384-dimensional vectors (numbers). When you ask a question, I convert it to a vector, then compare it to vectors of my target questions using cosine similarity. The closest match wins! It's like finding the most similar question in meaning, not exact words. That's why I understand typos and variations - the semantic meaning is preserved in the vector space.", confidence: 0.95 },
-                    { pattern: /^(?:how\s*do\s*embeddings\s*work|if\s*you\s*are\s*not\s*an\s*llm|how\s*does\s*embeddings\s*work|explain\s*embeddings|what\s*are\s*embeddings)/i, response: "Embeddings work like this: 1) Your question gets converted to a vector (list of numbers) by MiniLM, 2) I compare this vector to vectors of my target questions using cosine similarity (measures angle between vectors), 3) The closest match (highest similarity) determines my response. It's semantic matching - 'where is your work' and 'show me portfolio' have similar vectors even though words differ. I don't generate text like LLMs - I just find the best matching predefined answer based on meaning similarity!", confidence: 0.95 },
-                    { pattern: /^(?:what\s*kind\s*of\s*ai|what\s*type\s*of\s*ai|what\s*are\s*you|how\s*do\s*you\s*work|what\s*technology|what\s*model)/i, response: "I'm YunoBot, powered by Transformers.js using the all-MiniLM-L6-v2 model for semantic understanding. I use a hybrid approach: regex patterns for instant responses and semantic embeddings (vector similarity) for natural language understanding. This lets me handle typos, variations, and conversational queries!", confidence: 0.95 },
+                    { pattern: /^(?:are\s*you\s*(?:chatgpt|gpt|grok|gemini|claude|llm|large\s*language\s*model))|(?:you\s*(?:are|is)\s*(?:chatgpt|gpt|grok|gemini|claude|llm))|(?:is\s*you\s*(?:an\s*)?llm)|(?:are\s*u\s*gpt)/i, response: "No, I'm not ChatGPT, Grok, Gemini, or any other LLM. I'm YunoBot, a specialized AI assistant built specifically for Yunus's website. I run on a custom neural network that Yunus trained specifically for this site — it runs entirely in your browser, with no downloads and no API calls. I'm designed to answer questions about Yunus and help navigate his site!", confidence: 0.95 },
+                    { pattern: /^(?:what\s*(?:is|are)\s*the\s*difference|what\s*differences|how\s*(?:are|is)\s*you\s*different|compare\s*you|you\s*vs|you\s*versus).*(?:chatgpt|gpt|grok|gemini|claude|llm|other)/i, response: "The main difference: ChatGPT and other LLMs are large language models that generate text. I'm a custom neural network trained for this site. Key differences: 1) I don't generate text, I match your question to predefined answers, 2) I'm tiny (~300KB of weights vs billions of parameters), 3) I run entirely in your browser — no API calls, no tracking, 4) I'm specialized for Yunus's site only, 5) I use vector similarity, not next-token prediction. Think of me as a smart search engine, not a text generator!", confidence: 0.95 },
+                    { pattern: /^(?:so\s*you\s*(?:are|is)\s*(?:an\s*)?lm|you\s*(?:are|is)\s*(?:an\s*)?lm|all[\s-]?minilm|yunus\s*copied|yunus\s*stole|so\s*r\s*u\s*(?:a\s*)?clone|r\s*u\s*(?:a\s*)?clone)/i, response: "No, I'm not an LLM or a clone! I'm a custom neural network Yunus designed and trained for this website. It converts your question into a vector and finds the most similar known topic, then returns a predefined answer. Nothing is downloaded from the internet and no data ever leaves your browser. The difference: LLMs generate text, while I match meaning and return curated answers.", confidence: 0.95 },
+                    { pattern: /^(?:what\s*(?:is|are)\s*minilm|minilm\?|what\s*is\s*minilm|i\s*dont?\s*get\s*it|i\s*dont?\s*understand)/i, response: "I used to run on MiniLM; now my brain is a compact custom neural network — a fastText-style embedding model Yunus trained on this site's content. It converts text into 64-dimensional vectors (numbers). When you ask a question, I convert it to a vector and compare it to vectors of my known topics using cosine similarity. The closest match wins! That's how I handle typos and variations — the semantic meaning is preserved in the vector space.", confidence: 0.95 },
+                    { pattern: /^(?:how\s*do\s*embeddings\s*work|if\s*you\s*are\s*not\s*an\s*llm|how\s*does\s*embeddings\s*work|explain\s*embeddings|what\s*are\s*embeddings)/i, response: "Embeddings work like this: 1) Your question is converted to a vector (a list of numbers) by my custom neural network, 2) I compare this vector to vectors of my known topics using cosine similarity (it measures the angle between vectors), 3) The closest match determines my response. It's semantic matching - 'where is your work' and 'show me portfolio' get similar vectors even though the words differ. I don't generate text like LLMs - I find the best matching predefined answer!", confidence: 0.95 },
+                    { pattern: /^(?:what\s*kind\s*of\s*ai|what\s*type\s*of\s*ai|what\s*are\s*you|how\s*do\s*you\s*work|what\s*technology|what\s*model)/i, response: "I'm YunoBot, powered by a custom neural network trained specifically for this website. I use a hybrid approach: regex patterns for instant answers and a fastText-style embedding network (vector similarity) for natural language understanding. Everything runs locally in your browser — no servers, no external models — so I load instantly and handle typos and casual phrasing!", confidence: 0.95 },
                     { pattern: /^(?:what\s*(?:are|is)\s*u|what\s*(?:are|is)\s*r\s*u|what\s*ru|what\s*the\s*fuck\s*(?:are|is)\s*(?:u|r\s*u|you))/i, response: "I'm YunoBot, Yunus's AI assistant! I help visitors navigate his website and answer questions about his work, background, and projects. I use semantic embeddings to understand natural language, so I can handle questions even with typos or casual phrasing. How can I help you?", confidence: 0.9 },
-                    { pattern: /^(?:what\s*are\s*you\s*internally|what\s*are\s*u\s*internally|internally\s*what\s*are\s*you|how\s*are\s*you\s*built)/i, response: "Internally, I'm a hybrid system: 1) Regex patterns for instant keyword matching, 2) Transformers.js running all-MiniLM-L6-v2 embedding model in a Web Worker, 3) Cosine similarity comparison between your question's vector and my target question vectors, 4) Predefined answer responses (I don't generate text). The model loads once (~25MB) and runs entirely in your browser. I'm essentially a semantic search engine with predefined answers!", confidence: 0.95 },
-                    { pattern: /^(?:do\s*you\s*load|you\s*load|load\s*that|load\s*the\s*(?:l6|lm|model)|how\s*do\s*you\s*load|where\s*do\s*you\s*load)/i, response: "Yes! The all-MiniLM-L6-v2 model loads once when you first visit the page. Transformers.js is loaded locally from the server (with CDN fallback), and the model itself is downloaded from Hugging Face on first use. It runs in a Web Worker so it doesn't block the UI. The model is about 25MB and gets cached in your browser's IndexedDB. Once loaded, it converts text to embeddings instantly. Yunus integrated it using Transformers.js - it's all client-side, no server processing needed!", confidence: 0.95 },
+                    { pattern: /^(?:what\s*are\s*you\s*internally|what\s*are\s*u\s*internally|internally\s*what\s*are\s*you|how\s*are\s*you\s*built)/i, response: "Internally, I'm a hybrid system: 1) Regex patterns for instant keyword matching, 2) A custom fastText-style neural network — an embedding-bag encoder with a softmax classifier, int8-quantized, ~300KB of weights — trained by Yunus on this site's Q&A data, 3) Cosine similarity between your question's vector and my topic vectors, 4) Predefined answers (I don't generate text). The whole network runs in your browser: no worker, no downloads, no API calls. I'm essentially a semantic search engine with predefined answers!", confidence: 0.95 },
+                    { pattern: /^(?:do\s*you\s*load|you\s*load|load\s*that|load\s*the\s*(?:l6|lm|model)|how\s*do\s*you\s*load|where\s*do\s*you\s*load)/i, response: "There's nothing to download! My neural network ships with the page as a compact int8-quantized weight file (~300KB) served directly from this site. It initializes in milliseconds and runs entirely on your device — no Hugging Face, no CDN, no IndexedDB cache needed. Yunus trained it offline on this site's content, then quantized it for instant loading.", confidence: 0.95 },
                     { pattern: /^(?:can\s*yunus\s*sing)|(?:does\s*yunus\s*sing)|(?:yunus\s*(?:can|does)\s*sing)/i, response: "Yunus plays guitar, but I'm not sure about his singing abilities! He enjoys playing guitar to unwind. He's more known for his coding and technical work than singing.", confidence: 0.95 },
-                    { pattern: /^(?:can\s*you\s*speak\s*(?:turkish|türkçe|english|spanish|french|german|any\s*language))|(?:do\s*you\s*(?:speak|know|understand)\s*(?:turkish|türkçe|english|spanish|french|german|any\s*language))|(?:you\s*(?:can|do)\s*speak)|(?:do\s*you\s*only\s*know\s*(?:english|wneglish|englsih|engilsh))/i, response: "I primarily understand English, but I can process questions in other languages too thanks to semantic embeddings! However, my responses are in English. The semantic model I use (all-MiniLM-L6-v2) is multilingual, so I can understand the meaning even if you ask in Turkish or other languages, but I'll respond in English.", confidence: 0.95 },
+                    { pattern: /^(?:can\s*you\s*speak\s*(?:turkish|türkçe|english|spanish|french|german|any\s*language))|(?:do\s*you\s*(?:speak|know|understand)\s*(?:turkish|türkçe|english|spanish|french|german|any\s*language))|(?:you\s*(?:can|do)\s*speak)|(?:do\s*you\s*only\s*know\s*(?:english|wneglish|englsih|engilsh))/i, response: "I primarily understand English, but my neural network was also trained on Turkish site content, so I can often understand Turkish questions too. My responses are in English, though — and everything still runs locally in your browser.", confidence: 0.95 },
                     { pattern: /^(?:is\s*(?:he|yunus)\s*(?:a\s*)?(?:programmer|programer|progrmmer|progamer|coder|developer))|(?:yunus\s*(?:is\s*)?(?:a\s*)?(?:programmer|programer|progrmmer|progamer|coder|developer))|(?:does\s*(?:he|yunus)\s*(?:program|code))/i, response: "Yes! Yunus is a software developer and programmer. He creates projects using PHP, JavaScript, Python, Django, C++, and more. He's also an IT specialist focusing on computational intelligence and operational technology.", confidence: 0.95 },
                     { pattern: /^(?:knock\s*knock|kock\s*kock|knockknock|kockkokc|knockknockk)/i, response: "Who's there? 😊 I'm YunoBot, Yunus's AI assistant. How can I help you today?", confidence: 0.9 },
                     { pattern: /(?:what|tell\s*me).*(?:can|do).*(?:you|yuno|bot)/i, response: "I can help you navigate the site, answer questions about Yunus's work, and guide you to different sections. Try asking me to take you somewhere!", confidence: 0.85 },
@@ -1207,7 +1202,7 @@
                             'what software',
                             'what platform',
                         ],
-                        response: "I'm YunoBot, powered by Transformers.js using the all-MiniLM-L6-v2 model for semantic understanding. I use a hybrid approach: regex patterns for instant responses and semantic embeddings (vector similarity) for natural language understanding. This lets me handle typos, variations, and conversational queries!",
+                        response: "I'm YunoBot, powered by a custom neural network trained specifically for this website. I use a hybrid approach: regex patterns for instant answers and a fastText-style embedding network (vector similarity) for natural language understanding. Everything runs locally in your browser — no servers, no external models — so I load instantly and handle typos and casual phrasing!",
                     },
                     {
                         intent: 'bot_llm',
@@ -1247,7 +1242,7 @@
                             'this is chatgpt',
                             'this is gpt',
                         ],
-                        response: "No, I'm not ChatGPT, Grok, Gemini, or any other LLM. I'm YunoBot, a specialized AI assistant built specifically for Yunus's website. I use Transformers.js with semantic embeddings (all-MiniLM-L6-v2 model) for understanding, not a large language model. I'm designed to answer questions about Yunus and help navigate his site!",
+                        response: "No, I'm not ChatGPT, Grok, Gemini, or any other LLM. I'm YunoBot, a specialized AI assistant built specifically for Yunus's website. I run on a custom neural network that Yunus trained specifically for this site — it runs entirely in your browser, with no downloads and no API calls. I'm designed to answer questions about Yunus and help navigate his site!",
                     },
                     {
                         intent: 'bot_difference',
@@ -1280,7 +1275,7 @@
                             'are you similar to chatgpt',
                             'are you the same as chatgpt',
                         ],
-                        response: "The main difference: ChatGPT and other LLMs are large language models that generate text. I use semantic embeddings - I convert text into mathematical vectors and compare similarity. Key differences: 1) I don't generate text, I match to predefined answers, 2) I'm much smaller (~25MB vs billions of parameters), 3) I run entirely in your browser (no API calls), 4) I'm specialized for Yunus's site only, 5) I use cosine similarity between vectors, not next-token prediction. Think of me as a smart search engine, not a text generator!",
+                        response: "The main difference: ChatGPT and other LLMs are large language models that generate text. I'm a custom neural network trained for this site. Key differences: 1) I don't generate text, I match your question to predefined answers, 2) I'm tiny (~300KB of weights vs billions of parameters), 3) I run entirely in your browser — no API calls, no tracking, 4) I'm specialized for Yunus's site only, 5) I use vector similarity, not next-token prediction. Think of me as a smart search engine, not a text generator!",
                     },
                     {
                         intent: 'bot_model_clarification',
@@ -1315,7 +1310,7 @@
                             'what are you if not llm',
                             'if not llm then what',
                         ],
-                        response: "No, I'm not an LLM or a clone! all-MiniLM-L6-v2 is an embedding model, not a language model. It converts text to vectors (embeddings) for similarity matching. Yunus didn't copy or steal anything - it's an open-source model from Hugging Face that he integrated using Transformers.js. The difference: LLMs generate text, embedding models convert text to numbers for comparison. I use embeddings to find similar questions, then return predefined answers - I don't generate responses like ChatGPT does.",
+                        response: "No, I'm not an LLM or a clone! I'm a custom neural network Yunus designed and trained for this website. It converts your question into a vector and finds the most similar known topic, then returns a predefined answer. Nothing is downloaded from the internet and no data ever leaves your browser. The difference: LLMs generate text, while I match meaning and return curated answers.",
                     },
                     {
                         intent: 'bot_minilm_explanation',
@@ -1347,7 +1342,7 @@
                             'minilm basics',
                             'how does minilm work',
                         ],
-                        response: "MiniLM (all-MiniLM-L6-v2) is a small embedding model from Microsoft. It converts text into 384-dimensional vectors (numbers). When you ask a question, I convert it to a vector, then compare it to vectors of my target questions using cosine similarity. The closest match wins! It's like finding the most similar question in meaning, not exact words. That's why I understand typos and variations - the semantic meaning is preserved in the vector space.",
+                        response: "I used to run on MiniLM; now my brain is a compact custom neural network — a fastText-style embedding model Yunus trained on this site's content. It converts text into 64-dimensional vectors (numbers). When you ask a question, I convert it to a vector and compare it to vectors of my known topics using cosine similarity. The closest match wins! That's how I handle typos and variations — the semantic meaning is preserved in the vector space.",
                     },
                     {
                         intent: 'bot_embeddings_explanation',
@@ -1386,7 +1381,7 @@
                             'text to numbers',
                             'text to embeddings',
                         ],
-                        response: "Embeddings work like this: 1) Your question gets converted to a vector (list of numbers) by MiniLM, 2) I compare this vector to vectors of my target questions using cosine similarity (measures angle between vectors), 3) The closest match (highest similarity) determines my response. It's semantic matching - 'where is your work' and 'show me portfolio' have similar vectors even though words differ. I don't generate text like LLMs - I just find the best matching predefined answer based on meaning similarity!",
+                        response: "Embeddings work like this: 1) Your question is converted to a vector (a list of numbers) by my custom neural network, 2) I compare this vector to vectors of my known topics using cosine similarity (it measures the angle between vectors), 3) The closest match determines my response. It's semantic matching - 'where is your work' and 'show me portfolio' get similar vectors even though the words differ. I don't generate text like LLMs - I find the best matching predefined answer!",
                     },
                     {
                         intent: 'bot_identity_casual',
@@ -1457,7 +1452,7 @@
                             'explain your architecture',
                             'describe your internals',
                         ],
-                        response: "Internally, I'm a hybrid system: 1) Regex patterns for instant keyword matching, 2) Transformers.js running all-MiniLM-L6-v2 embedding model in a Web Worker, 3) Cosine similarity comparison between your question's vector and my target question vectors, 4) Predefined answer responses (I don't generate text). The model loads once (~25MB) and runs entirely in your browser. I'm essentially a semantic search engine with predefined answers!",
+                        response: "Internally, I'm a hybrid system: 1) Regex patterns for instant keyword matching, 2) A custom fastText-style neural network — an embedding-bag encoder with a softmax classifier, int8-quantized, ~300KB of weights — trained by Yunus on this site's Q&A data, 3) Cosine similarity between your question's vector and my topic vectors, 4) Predefined answers (I don't generate text). The whole network runs in your browser: no worker, no downloads, no API calls. I'm essentially a semantic search engine with predefined answers!",
                     },
                     {
                         intent: 'bot_model_loading',
@@ -1496,7 +1491,7 @@
                             'model ram',
                             'model download size',
                         ],
-                        response: "Yes! The all-MiniLM-L6-v2 model loads once when you first visit the page. Transformers.js is loaded locally from the server (with CDN fallback), and the model itself is downloaded from Hugging Face on first use. It runs in a Web Worker so it doesn't block the UI. The model is about 25MB and gets cached in your browser's IndexedDB. Once loaded, it converts text to embeddings instantly. Yunus integrated it using Transformers.js - it's all client-side, no server processing needed!",
+                        response: "There's nothing to download! My neural network ships with the page as a compact int8-quantized weight file (~300KB) served directly from this site. It initializes in milliseconds and runs entirely on your device — no Hugging Face, no CDN, no IndexedDB cache needed. Yunus trained it offline on this site's content, then quantized it for instant loading.",
                     },
                     {
                         intent: 'yunus_singing',
@@ -1605,7 +1600,7 @@
                             'what language',
                             'which languages',
                         ],
-                        response: "I primarily understand English, but I can process questions in other languages too thanks to semantic embeddings! However, my responses are in English. The semantic model I use (all-MiniLM-L6-v2) is multilingual, so I can understand the meaning even if you ask in Turkish or other languages, but I'll respond in English.",
+                        response: "I primarily understand English, but my neural network was also trained on Turkish site content, so I can often understand Turkish questions too. My responses are in English, though — and everything still runs locally in your browser.",
                     },
                     // NEW INTENTS
                     {
@@ -2389,333 +2384,68 @@
         }
         
         /**
-         * Initialize Web Worker for embeddings (with health monitoring)
+         * Find semantic match using the custom neural network
+         * (checks both navigation and Q&A). Synchronous — inference
+         * is a handful of float ops, no worker or network involved.
          */
-        initializeWorker() {
-            // Check if Web Workers are supported
-            if (typeof Worker === 'undefined') {
-                console.warn('Web Workers not supported, semantic matching disabled');
-                this.workerReady = false;
-                return;
-            }
-            
-            try {
-                const basePath = window.FULL_BASE_PATH || '';
-                const workerPath = basePath + 'assets/js/yunobot/embedding-worker.js';
-                
-                console.log('Initializing embedding worker from:', workerPath);
-                this.embeddingWorker = new Worker(workerPath, { type: 'module' });
-                
-                // ============================================================
-                // PERFORMANCE: Worker health monitoring
-                // ============================================================
-                let healthCheckInterval = null;
-                let consecutiveFailures = 0;
-                const MAX_CONSECUTIVE_FAILURES = 3;
-                
-                const startHealthCheck = () => {
-                    healthCheckInterval = setInterval(() => {
-                        if (!this.embeddingWorker) {
-                            clearInterval(healthCheckInterval);
-                            return;
-                        }
-                        
-                        const pingId = `ping-${Date.now()}`;
-                        const pongTimeout = setTimeout(() => {
-                            consecutiveFailures++;
-                            if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
-                                console.warn('[YunoBot] Worker health check failed, restarting...');
-                                this.restartWorker();
-                            }
-                        }, 3000);
-                        
-                        this.embeddingWorker.postMessage({ type: 'ping', data: { id: pingId } });
-                        
-                        const checkPong = (event) => {
-                            if (event.data?.id === pingId) {
-                                clearTimeout(pongTimeout);
-                                consecutiveFailures = 0;
-                                this.embeddingWorker.removeEventListener('message', checkPong);
-                            }
-                        };
-                        this.embeddingWorker.addEventListener('message', checkPong);
-                    }, 15000); // Check every 15 seconds
-                };
-                
-                this.embeddingWorker.addEventListener('message', (event) => {
-                    const { type, id, error, embedding, results, stats } = event.data;
-                    
-                    if (type === 'ready') {
-                        this.workerReady = true;
-                        consecutiveFailures = 0;
-                        startHealthCheck();
-                        this.precomputeTargetEmbeddings();
-                        if (this.onReady) this.onReady();
-                    } else if (type === 'embedding') {
-                        const resolve = this.pendingRequests.get(id);
-                        if (resolve) {
-                            this.pendingRequests.delete(id);
-                            resolve(embedding);
-                        }
-                    } else if (type === 'similarity') {
-                        const resolve = this.pendingRequests.get(id);
-                        if (resolve) {
-                            this.pendingRequests.delete(id);
-                            resolve(results);
-                        }
-                    } else if (type === 'stats') {
-                        // Handle stats response
-                        const resolve = this.pendingRequests.get(id);
-                        if (resolve) {
-                            this.pendingRequests.delete(id);
-                            resolve(stats);
-                        }
-                    } else if (type === 'pong') {
-                        // Health check response - handled by listener
-                    } else if (type === 'error') {
-                        console.warn('Embedding worker error:', error);
-                        // If model failed to initialize, that's okay - we'll use regex-only mode
-                        if (error && error.includes('Model config parse error')) {
-                            console.info('Model initialization failed - continuing with regex-only mode. This is expected if Hugging Face blocks browser requests.');
-                        }
-                        const resolve = this.pendingRequests.get(id);
-                        if (resolve) {
-                            this.pendingRequests.delete(id);
-                            resolve(null);
-                        }
-                    } else if (type === 'cache_cleared') {
-                        // Cache was cleared by worker
-                        const resolve = this.pendingRequests.get(id);
-                        if (resolve) {
-                            this.pendingRequests.delete(id);
-                            resolve(true);
-                        }
-                    }
-                });
-                
-                this.embeddingWorker.addEventListener('error', (error) => {
-                    console.error('Worker initialization error (semantic matching disabled):', error);
-                    console.error('Worker path attempted:', workerPath);
-                    console.error('Full error details:', {
-                        message: error.message,
-                        filename: error.filename,
-                        lineno: error.lineno,
-                        colno: error.colno
-                    });
-                    this.workerReady = false;
-                    // Clean up
-                    if (this.embeddingWorker) {
-                        this.embeddingWorker.terminate();
-                        this.embeddingWorker = null;
-                    }
-                    if (healthCheckInterval) clearInterval(healthCheckInterval);
-                    if (this.onError) this.onError();
-                });
-                
-                // Initialize the model with timeout
-                this.embeddingWorker.postMessage({ type: 'init' });
-                
-                // Timeout after 10 seconds - if model doesn't load, continue without semantic matching
-                setTimeout(() => {
-                    if (!this.workerReady) {
-                        console.warn('Model initialization timeout - continuing with regex-only mode');
-                        if (this.onError) this.onError();
-                    }
-                }, 10000);
-            } catch (error) {
-                console.warn('Failed to initialize embedding worker (semantic matching disabled):', error);
-                this.workerReady = false;
-                if (this.onError) this.onError();
-            }
-        }
-        
-        /**
-         * PERFORMANCE: Restart worker on health check failure
-         */
-        restartWorker() {
-            console.log('[YunoBot] Restarting embedding worker...');
-            if (this.embeddingWorker) {
-                this.embeddingWorker.terminate();
-                this.embeddingWorker = null;
-            }
-            this.workerReady = false;
-            this.workerInitiated = false;
-            this.targetEmbeddings = null;
-            this.pendingRequests.clear();
-            
-            // Re-initialize
-            this.initializeWorker();
-        }
-        
-        /**
-         * PERFORMANCE: Reset inactivity timeout
-         */
-        resetInactivityTimeout() {
-            if (this.workerInactivityTimeout) {
-                clearTimeout(this.workerInactivityTimeout);
-            }
-            this.workerInactivityTimeout = setTimeout(() => {
-                // Send terminate message to worker (it will clean up and close)
-                if (this.embeddingWorker) {
-                    this.embeddingWorker.postMessage({ type: 'terminate' });
-                    this.embeddingWorker = null;
-                    this.workerReady = false;
-                    this.workerInitiated = false;
-                    this.targetEmbeddings = null;
-                    console.log('[YunoBot] Worker terminated due to inactivity');
-                }
-            }, this.WORKER_INACTIVITY_MS);
-        }
-        
-        /**
-         * Precompute embeddings for all semantic targets (navigation + Q&A)
-         */
-        async precomputeTargetEmbeddings() {
-            if (!this.workerReady || !this.embeddingWorker) return;
-            
-            try {
-                const navEmbeddings = [];
-                const qaEmbeddings = [];
-                
-                // Precompute navigation embeddings
-                for (const target of this.semanticTargets.navigation) {
-                    const sentence = target.sentences[0];
-                    const embedding = await this.generateEmbedding(sentence);
-                    if (embedding) {
-                        navEmbeddings.push({
-                            target: target.target,
-                            embedding,
-                            type: 'navigation',
-                        });
-                    }
-                }
-                
-                // Precompute Q&A embeddings
-                for (const qa of this.semanticTargets.qa) {
-                    const sentence = qa.sentences[0];
-                    const embedding = await this.generateEmbedding(sentence);
-                    if (embedding) {
-                        qaEmbeddings.push({
-                            intent: qa.intent,
-                            response: qa.response,
-                            embedding,
-                            type: 'qa',
-                        });
-                    }
-                }
-                
-                this.targetEmbeddings = {
-                    navigation: navEmbeddings,
-                    qa: qaEmbeddings,
-                };
-            } catch (error) {
-                console.warn('Failed to precompute target embeddings:', error);
-            }
-        }
-        
-        /**
-         * Generate embedding for text via worker
-         */
-        generateEmbedding(text) {
-            return new Promise((resolve) => {
-                if (!this.workerReady || !this.embeddingWorker) {
-                    resolve(null);
-                    return;
-                }
-                
-                const id = `embed-${++this.requestCounter}`;
-                this.pendingRequests.set(id, resolve);
-                
-                // Timeout after 5 seconds
-                setTimeout(() => {
-                    if (this.pendingRequests.has(id)) {
-                        this.pendingRequests.delete(id);
-                        resolve(null);
-                    }
-                }, 5000);
-                
-                this.embeddingWorker.postMessage({
-                    type: 'embed',
-                    data: { text, id },
-                });
-            });
-        }
-        
-        /**
-         * Find semantic match using embeddings (checks both navigation and Q&A)
-         */
-        async findSemanticMatch(input) {
-            if (!this.workerReady || !this.targetEmbeddings) {
+        findSemanticMatch(input) {
+            if (!this.workerReady || !this.nn || !this.nn.ready) {
                 return null;
             }
             
             try {
-                // Generate embedding for user input
-                const queryEmbedding = await this.generateEmbedding(input);
-                if (!queryEmbedding) return null;
+                const candidates = this.nn.match(input, 8);
+                if (!candidates || candidates.length === 0) return null;
                 
                 const allMatches = [];
-                
-                // Check navigation targets (lower threshold for typos/partial words)
-                if (this.targetEmbeddings.navigation && this.targetEmbeddings.navigation.length > 0) {
-                    for (const target of this.targetEmbeddings.navigation) {
-                        const similarity = this.cosineSimilarity(queryEmbedding, target.embedding);
-                        if (similarity >= 0.4) { // Lowered from 0.5 to catch typos
-                            allMatches.push({
-                                type: 'navigation',
-                                target: target.target,
-                                confidence: similarity,
-                            });
-                        }
-                    }
-                }
-                
-                // Check Q&A targets (lower threshold for natural language variations)
-                if (this.targetEmbeddings.qa && this.targetEmbeddings.qa.length > 0) {
-                    for (const qa of this.targetEmbeddings.qa) {
-                        const similarity = this.cosineSimilarity(queryEmbedding, qa.embedding);
-                        if (similarity >= 0.4) { // Lowered from 0.5 to catch more variations
-                            allMatches.push({
-                                type: 'qa',
-                                intent: qa.intent,
-                                response: qa.response,
-                                confidence: similarity,
-                            });
-                        }
+                for (const c of candidates) {
+                    if (c.confidence < 0.25) continue;
+                    if (c.type === 'navigation') {
+                        allMatches.push({
+                            type: 'navigation',
+                            target: c.target,
+                            confidence: c.confidence,
+                        });
+                    } else if (c.type === 'qa') {
+                        const qaTarget = this.semanticTargets.qa.find(q => q.intent === c.intent);
+                        if (!qaTarget) continue;
+                        allMatches.push({
+                            type: 'qa',
+                            intent: qaTarget.intent,
+                            response: qaTarget.response,
+                            confidence: c.confidence,
+                        });
                     }
                 }
                 
                 if (allMatches.length === 0) return null;
                 
                 // Prioritize location/travel intents when input contains location keywords
-                const hasLocationKeyword = /(?:where|which|how\s*many|countries|travel|visited|went|go)/i.test(input);
+                const hasLocationKeyword = /(?:where|which|hows*many|countries|travel|visited|went|go)/i.test(input);
                 if (hasLocationKeyword) {
-                    // Boost confidence for location/travel intents
                     allMatches.forEach(match => {
                         if (match.type === 'qa' && (match.intent === 'where_is_yunus' || match.intent === 'yunus_travel')) {
-                            match.confidence += 0.1; // Boost by 0.1
+                            match.confidence += 0.1;
                         }
                     });
                 }
                 
                 // Prioritize birth/age intents when input contains birth/age keywords
-                const hasBirthKeyword = /(?:when\s*(?:was\s*)?(?:he|yunus)\s*(?:born|birth)|how\s*old|age|born|birth|2000s?\s*kid)/i.test(input);
+                const hasBirthKeyword = /(?:whens*(?:wass*)?(?:he|yunus)s*(?:born|birth)|hows*old|age|born|birth|2000s?s*kid)/i.test(input);
                 if (hasBirthKeyword) {
-                    // Boost confidence for birth/age intents
                     allMatches.forEach(match => {
                         if (match.type === 'qa' && match.intent === 'yunus_birth_age') {
-                            match.confidence += 0.15; // Boost by 0.15
+                            match.confidence += 0.15;
                         }
                     });
                 }
                 
                 // Prioritize nationality intents when input contains nationality keywords
-                const hasNationalityKeyword = /(?:turkish|turkey|türkiye|nationality|from\s*turkey|from\s*türkiye)/i.test(input);
+                const hasNationalityKeyword = /(?:turkish|turkey|türkiye|nationality|froms*turkey|froms*türkiye)/i.test(input);
                 if (hasNationalityKeyword) {
-                    // Boost confidence for nationality intents
                     allMatches.forEach(match => {
                         if (match.type === 'qa' && match.intent === 'yunus_nationality') {
-                            match.confidence += 0.15; // Boost by 0.15
+                            match.confidence += 0.15;
                         }
                     });
                 }
@@ -2723,44 +2453,19 @@
                 // Prioritize certification intents when input contains certification keywords
                 const hasCertKeyword = /(?:certification|certificate|cert|certs)/i.test(input);
                 if (hasCertKeyword) {
-                    // Boost confidence for certification intents
                     allMatches.forEach(match => {
                         if (match.type === 'qa' && match.intent === 'yunus_certifications') {
-                            match.confidence += 0.15; // Boost by 0.15
+                            match.confidence += 0.15;
                         }
                     });
                 }
                 
-                // Sort by confidence (highest first)
                 allMatches.sort((a, b) => b.confidence - a.confidence);
-                
-                // Return best match
                 return allMatches[0];
             } catch (error) {
                 console.warn('Semantic matching failed:', error);
                 return null;
             }
-        }
-        
-        /**
-         * Calculate cosine similarity between two vectors
-         */
-        cosineSimilarity(vecA, vecB) {
-            if (!vecA || !vecB || vecA.length !== vecB.length) return 0;
-            
-            let dotProduct = 0;
-            let normA = 0;
-            let normB = 0;
-            
-            for (let i = 0; i < vecA.length; i++) {
-                dotProduct += vecA[i] * vecB[i];
-                normA += vecA[i] * vecA[i];
-                normB += vecB[i] * vecB[i];
-            }
-            
-            if (normA === 0 || normB === 0) return 0;
-            
-            return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
         }
         
         /**
@@ -3192,11 +2897,6 @@
                 }
             }
             
-            // Try semantic matching with Turkish targets if available
-            if (this.targetEmbeddings && this.targetEmbeddings.qa_tr) {
-                // Future: add Turkish semantic targets
-            }
-            
             // Fallback: acknowledge Turkish and offer English help
             return {
                 intent: 'language_tr',
@@ -3219,27 +2919,6 @@
          *           Pattern matching (early exit) → Semantic matching → Fallback
          */
         async process(input) {
-            // ============================================================
-            // PERFORMANCE: Lazy worker initialization
-            // ============================================================
-            this.ensureWorkerInitialized();
-            
-            // Reset inactivity timeout
-            this.resetInactivityTimeout();
-            
-            // ============================================================
-            // PERFORMANCE: Query debouncing
-            // ============================================================
-            const now = Date.now();
-            if (now - this.lastQueryTime < this.debounceMs) {
-                // Debounce rapid-fire queries - wait for debounce period
-                await new Promise(resolve => {
-                    clearTimeout(this.debounceTimer);
-                    this.debounceTimer = setTimeout(resolve, this.debounceMs);
-                });
-            }
-            this.lastQueryTime = Date.now();
-            
             // ============================================================
             // PERFORMANCE: Response cache check
             // ============================================================
@@ -3343,7 +3022,7 @@
                 this.lastQuery = normalizedInput;
                 return {
                     intent: 'bot_llm',
-                    response: "No, I'm not ChatGPT, Grok, Gemini, or any other LLM. I'm YunoBot, a specialized AI assistant built specifically for Yunus's website. I use Transformers.js with semantic embeddings (all-MiniLM-L6-v2 model) for understanding, not a large language model. I'm designed to answer questions about Yunus and help navigate his site!",
+                    response: "No, I'm not ChatGPT, Grok, Gemini, or any other LLM. I'm YunoBot, a specialized AI assistant built specifically for Yunus's website. I run on a custom neural network that Yunus trained specifically for this site — it runs entirely in your browser, with no downloads and no API calls. I'm designed to answer questions about Yunus and help navigate his site!",
                     confidence: 0.9,
                 };
             }
@@ -3357,6 +3036,17 @@
                     response: "Great! Is there anything else you'd like to know about Yunus or his work?",
                     confidence: 0.8,
                 };
+            }
+            
+            // Run pattern matching once (reused by tool, STEP 1 and STEP 3 below)
+            const matches = this.matchPatterns(normalizedInput);
+            
+            // Tool intents (time, calculator, search) are high-precision anchored
+            // patterns — they must win over fuzzy follow-up heuristics below.
+            const toolMatch = matches.find(m => m.intent && m.intent.startsWith('tool_') && m.confidence >= 0.7);
+            if (toolMatch) {
+                const toolResult = this.executeTool(toolMatch.intent, normalizedInput);
+                if (toolResult) return toolResult;
             }
             
             // Check if this is a follow-up question
@@ -3494,7 +3184,7 @@
                         /(?:internally|internal\s*structure)/i.test(normalizedInput)) {
                         return {
                             intent: 'bot_internal',
-                            response: "Internally, I'm a hybrid system: 1) Regex patterns for instant keyword matching, 2) Transformers.js running all-MiniLM-L6-v2 embedding model in a Web Worker, 3) Cosine similarity comparison between your question's vector and my target question vectors, 4) Predefined answer responses (I don't generate text). The model loads once (~25MB) and runs entirely in your browser. I'm essentially a semantic search engine with predefined answers!",
+                            response: "Internally, I'm a hybrid system: 1) Regex patterns for instant keyword matching, 2) A custom fastText-style neural network — an embedding-bag encoder with a softmax classifier, int8-quantized, ~300KB of weights — trained by Yunus on this site's Q&A data, 3) Cosine similarity between your question's vector and my topic vectors, 4) Predefined answers (I don't generate text). The whole network runs in your browser: no worker, no downloads, no API calls. I'm essentially a semantic search engine with predefined answers!",
                             confidence: 0.9,
                         };
                     }
@@ -3503,7 +3193,7 @@
                         /(?:load|loading|l6|lm\s*thing)/i.test(normalizedInput)) {
                         return {
                             intent: 'bot_model_loading',
-                            response: "Yes! The all-MiniLM-L6-v2 model loads once when you first visit the page. Transformers.js is loaded locally from the server (with CDN fallback), and the model itself is downloaded from Hugging Face on first use. It runs in a Web Worker so it doesn't block the UI. The model is about 25MB and gets cached in your browser's IndexedDB. Once loaded, it converts text to embeddings instantly. Yunus integrated it using Transformers.js - it's all client-side, no server processing needed!",
+                            response: "There's nothing to download! My neural network ships with the page as a compact int8-quantized weight file (~300KB) served directly from this site. It initializes in milliseconds and runs entirely on your device — no Hugging Face, no CDN, no IndexedDB cache needed. Yunus trained it offline on this site's content, then quantized it for instant loading.",
                             confidence: 0.9,
                         };
                     }
@@ -3512,7 +3202,7 @@
                         /(?:minilm|dont?\s*get|dont?\s*understand)/i.test(normalizedInput)) {
                         return {
                             intent: 'bot_minilm_explanation',
-                            response: "MiniLM (all-MiniLM-L6-v2) is a small embedding model from Microsoft. It converts text into 384-dimensional vectors (numbers). When you ask a question, I convert it to a vector, then compare it to vectors of my target questions using cosine similarity. The closest match wins! It's like finding the most similar question in meaning, not exact words. That's why I understand typos and variations - the semantic meaning is preserved in the vector space.",
+                            response: "I used to run on MiniLM; now my brain is a compact custom neural network — a fastText-style embedding model Yunus trained on this site's content. It converts text into 64-dimensional vectors (numbers). When you ask a question, I convert it to a vector and compare it to vectors of my known topics using cosine similarity. The closest match wins! That's how I handle typos and variations — the semantic meaning is preserved in the vector space.",
                             confidence: 0.9,
                         };
                     }
@@ -3521,7 +3211,7 @@
                         /(?:embeddings|embedding|how\s*does?\s*it\s*work|how\s*do\s*you\s*work)/i.test(normalizedInput)) {
                         return {
                             intent: 'bot_embeddings_explanation',
-                            response: "Embeddings work like this: 1) Your question gets converted to a vector (list of numbers) by MiniLM, 2) I compare this vector to vectors of my target questions using cosine similarity (measures angle between vectors), 3) The closest match (highest similarity) determines my response. It's semantic matching - 'where is your work' and 'show me portfolio' have similar vectors even though words differ. I don't generate text like LLMs - I just find the best matching predefined answer based on meaning similarity!",
+                            response: "Embeddings work like this: 1) Your question is converted to a vector (a list of numbers) by my custom neural network, 2) I compare this vector to vectors of my known topics using cosine similarity (it measures the angle between vectors), 3) The closest match determines my response. It's semantic matching - 'where is your work' and 'show me portfolio' get similar vectors even though the words differ. I don't generate text like LLMs - I find the best matching predefined answer!",
                             confidence: 0.9,
                         };
                     }
@@ -3530,7 +3220,7 @@
                         /(?:difference|different|compare|vs|versus)/i.test(normalizedInput)) {
                         return {
                             intent: 'bot_difference',
-                            response: "The main difference: ChatGPT and other LLMs are large language models that generate text. I use semantic embeddings - I convert text into mathematical vectors and compare similarity. Key differences: 1) I don't generate text, I match to predefined answers, 2) I'm much smaller (~25MB vs billions of parameters), 3) I run entirely in your browser (no API calls), 4) I'm specialized for Yunus's site only, 5) I use cosine similarity between vectors, not next-token prediction. Think of me as a smart search engine, not a text generator!",
+                            response: "The main difference: ChatGPT and other LLMs are large language models that generate text. I'm a custom neural network trained for this site. Key differences: 1) I don't generate text, I match your question to predefined answers, 2) I'm tiny (~300KB of weights vs billions of parameters), 3) I run entirely in your browser — no API calls, no tracking, 4) I'm specialized for Yunus's site only, 5) I use vector similarity, not next-token prediction. Think of me as a smart search engine, not a text generator!",
                             confidence: 0.9,
                         };
                     }
@@ -3539,7 +3229,7 @@
                         /(?:lm\s*called|yunus\s*(?:copied|stole)|all[\s-]?minilm|clone)/i.test(normalizedInput)) {
                         return {
                             intent: 'bot_model_clarification',
-                            response: "No, I'm not an LLM or a clone! all-MiniLM-L6-v2 is an embedding model, not a language model. It converts text to vectors (embeddings) for similarity matching. Yunus didn't copy or steal anything - it's an open-source model from Hugging Face that he integrated using Transformers.js. The difference: LLMs generate text, embedding models convert text to numbers for comparison. I use embeddings to find similar questions, then return predefined answers - I don't generate responses like ChatGPT does.",
+                            response: "No, I'm not an LLM or a clone! I'm a custom neural network Yunus designed and trained for this website. It converts your question into a vector and finds the most similar known topic, then returns a predefined answer. Nothing is downloaded from the internet and no data ever leaves your browser. The difference: LLMs generate text, while I match meaning and return curated answers.",
                             confidence: 0.9,
                         };
                     }
@@ -3548,7 +3238,7 @@
                         /(?:llm|large\s*language\s*model|chatgpt|grok|gemini)/i.test(normalizedInput)) {
                         return {
                             intent: 'bot_llm',
-                            response: "No, I'm not ChatGPT, Grok, Gemini, or any other LLM. I'm YunoBot, a specialized AI assistant built specifically for Yunus's website. I use Transformers.js with semantic embeddings (all-MiniLM-L6-v2 model) for understanding, not a large language model. I'm designed to answer questions about Yunus and help navigate his site!",
+                            response: "No, I'm not ChatGPT, Grok, Gemini, or any other LLM. I'm YunoBot, a specialized AI assistant built specifically for Yunus's website. I run on a custom neural network that Yunus trained specifically for this site — it runs entirely in your browser, with no downloads and no API calls. I'm designed to answer questions about Yunus and help navigate his site!",
                             confidence: 0.9,
                         };
                     }
@@ -3557,7 +3247,7 @@
                         normalizedInput.length <= 20) {
                         return {
                             intent: 'bot_technology',
-                            response: "I'm YunoBot, powered by Transformers.js using the all-MiniLM-L6-v2 model for semantic understanding. I use a hybrid approach: regex patterns for instant responses and semantic embeddings (vector similarity) for natural language understanding. This lets me handle typos, variations, and conversational queries!",
+                            response: "I'm YunoBot, powered by a custom neural network trained specifically for this website. I use a hybrid approach: regex patterns for instant answers and a fastText-style embedding network (vector similarity) for natural language understanding. Everything runs locally in your browser — no servers, no external models — so I load instantly and handle typos and casual phrasing!",
                             confidence: 0.9,
                         };
                     }
@@ -3594,7 +3284,7 @@
                         normalizedInput.length <= 25) {
                         return {
                             intent: 'bot_language',
-                            response: "I primarily understand English, but I can process questions in other languages too thanks to semantic embeddings! However, my responses are in English. The semantic model I use (all-MiniLM-L6-v2) is multilingual, so I can understand the meaning even if you ask in Turkish or other languages, but I'll respond in English.",
+                            response: "I primarily understand English, but my neural network was also trained on Turkish site content, so I can often understand Turkish questions too. My responses are in English, though — and everything still runs locally in your browser.",
                             confidence: 0.9,
                         };
                     }
@@ -3602,7 +3292,6 @@
             }
             
             // STEP 1: Try high-confidence regex patterns first (instant, 100% accurate for direct hits)
-            const matches = this.matchPatterns(normalizedInput);
             const highConfidenceMatch = matches.find(m => m.confidence >= 0.9);
             
             if (highConfidenceMatch) {
