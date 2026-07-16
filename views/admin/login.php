@@ -283,21 +283,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Step 2: Verify credentials (CAPTCHA already passed)
         if (empty($error)) {
-            // Verify CAPTCHA session flag is still valid (within 5 minutes)
-            if (!isset($_SESSION['captcha_passed']) || (time() - (int)($_SESSION['captcha_passed_at'] ?? 0)) > 300) {
-                $error = "Security verification expired. Please refresh and try again.";
+            // Verify CAPTCHA session flag is still valid (15 minutes)
+            if (!isset($_SESSION['captcha_passed']) || (time() - (int)($_SESSION['captcha_passed_at'] ?? 0)) > 900) {
+                $error = "Security verification expired. Please verify again below.";
                 unset($_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
             }
         }
-        
+
         if (empty($error)) {
             try {
                 require_once dirname(__DIR__, 2) . '/models/Database.php';
                 $db = Database::getInstance()->getConnection();
-                
+
                 $auth = new Auth();
                 $loginResult = $auth->login($_POST['username'], $_POST['password']);
-                
+
                 if ($loginResult) {
                     clearLoginFailures();
                     CSRFProtection::rotateToken();
@@ -305,13 +305,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('Location: ' . FULL_BASE_PATH . 'admin/dashboard');
                     exit;
                 } else {
+                    // Wrong credentials: keep captcha_passed so the user can retry
+                    // within the window — the IP throttle still applies.
                     recordLoginFailure();
-                    unset($_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
                     $error = "Invalid username or password";
                 }
             } catch (Exception $e) {
                 $error = "An error occurred during login";
-                unset($_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
                 if (getenv('MODE') === 'development') {
                     error_log("Login exception: " . $e->getMessage());
                 }
