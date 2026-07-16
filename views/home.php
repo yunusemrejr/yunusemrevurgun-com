@@ -21,9 +21,9 @@ ui_render_head(
 <body class="ui-landing">
 <div class="ui-landing-svg">
     <!-- Desktop SVG hero (navigation, portrait, background, headings, decorative elements) -->
-    <img class="ui-landing-svg-desktop" src="<?= FULL_BASE_PATH ?>assets/images/desktop.svg" alt="Yemre — The world of a developer" loading="eager">
+    <img class="ui-landing-svg-desktop" src="<?= FULL_BASE_PATH ?>assets/images/desktop.svg" alt="Yemre — The world of a developer" loading="eager" draggable="false">
     <!-- Mobile SVG hero -->
-    <img class="ui-landing-svg-mobile" src="<?= FULL_BASE_PATH ?>assets/images/mobile.svg" alt="Yemre — The world of a developer" loading="eager">
+    <img class="ui-landing-svg-mobile" src="<?= FULL_BASE_PATH ?>assets/images/mobile.svg" alt="Yemre — The world of a developer" loading="eager" draggable="false">
 </div>
 
 <div class="ui-landing-actions">

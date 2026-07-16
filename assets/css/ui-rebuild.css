@@ -2209,6 +2209,9 @@ body.ui-landing::before {
   margin: 0;
   padding: 0;
   filter: none; /* SVG already contains grayscale treatment */
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 .ui-landing-svg-mobile {
@@ -2218,6 +2221,9 @@ body.ui-landing::before {
   margin: 0;
   padding: 0;
   filter: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 /* Switch between desktop and mobile SVG at the designated breakpoint */
