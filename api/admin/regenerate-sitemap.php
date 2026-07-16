@@ -31,19 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // CSRF protection
 require_once dirname(dirname(__DIR__)) . '/includes/csrf.php';
 
-// For AJAX requests, we'll use a more lenient CSRF validation
-$csrfToken = $_POST['csrf_token'] ?? '';
-$sessionToken = $_SESSION['csrf_token'] ?? '';
-
-if (empty($csrfToken) || empty($sessionToken) || !hash_equals($sessionToken, $csrfToken)) {
+if (!CSRFProtection::validateToken($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'CSRF token validation failed']);
     exit;
 }
-
-// Generate new CSRF token for next request
-$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 header('Content-Type: application/json');
 

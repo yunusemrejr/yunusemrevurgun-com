@@ -32,16 +32,8 @@ if (!Auth::checkLogin()) {
     exit;
 }
 
-// Check CSRF token
-$csrfToken = $_POST['csrf_token'] ?? '';
-
-// Check if session is started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 // Validate CSRF token
-if (empty($csrfToken) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+if (!CSRFProtection::validateToken($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
     exit;

@@ -30,9 +30,7 @@ class CSRFProtection {
      * Validate a CSRF token
      */
     public static function validateToken($token) {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        ensureSessionStarted();
         
         if (empty($token) || empty($_SESSION[self::$tokenName])) {
             return false;

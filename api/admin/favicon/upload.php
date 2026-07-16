@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Verify CSRF token
-if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+if (!CSRFProtection::validateToken($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
     exit;

@@ -2,6 +2,7 @@
 require_once dirname(__DIR__, 2) . '/global.php';
 require_once dirname(__DIR__, 2) . '/models/Auth.php';
 require_once dirname(__DIR__, 2) . '/models/Blog.php';
+require_once dirname(__DIR__, 2) . '/includes/csrf.php';
 
 // Set JSON response header
 header('Content-Type: application/json');
@@ -24,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Verify CSRF token
-if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+if (!CSRFProtection::validateToken($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
     exit;

@@ -12,7 +12,9 @@ class DoubleSubmitProtection {
      * Check if form can be submitted (not too soon after last submission)
      */
     public static function canSubmit($formId = 'contact') {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (function_exists('ensureSessionStarted')) {
+            ensureSessionStarted();
+        } elseif (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         
@@ -39,7 +41,9 @@ class DoubleSubmitProtection {
      * Record a form submission
      */
     public static function recordSubmission($formId = 'contact') {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (function_exists('ensureSessionStarted')) {
+            ensureSessionStarted();
+        } elseif (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         
@@ -54,7 +58,9 @@ class DoubleSubmitProtection {
      * Get time remaining until next submission is allowed
      */
     public static function getTimeRemaining($formId = 'contact') {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (function_exists('ensureSessionStarted')) {
+            ensureSessionStarted();
+        } elseif (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         
@@ -80,7 +86,9 @@ class DoubleSubmitProtection {
      * Validate submission ID (one-time use)
      */
     public static function validateSubmissionId($submissionId) {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (function_exists('ensureSessionStarted')) {
+            ensureSessionStarted();
+        } elseif (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         

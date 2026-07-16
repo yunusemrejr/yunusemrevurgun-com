@@ -36,10 +36,11 @@ if (!function_exists('env')) {
     }
 }
 
-// Load environment variables FIRST (before any early returns)
+// Load environment variables (once, shared for local and production paths)
+$envLines = [];
 if (file_exists($envFile)) {
-    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
+    $envLines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($envLines as $line) {
         if (empty($line) || strpos($line, '#') === 0) continue;
         $parts = explode('=', $line, 2);
         if (count($parts) !== 2) continue;
@@ -64,9 +65,8 @@ if ($isBuiltInServer || $isLocalhost) {
     return; // Exit early for local development
 }
 
-if (file_exists($envFile)) {
-    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
+if ($envLines) {
+    foreach ($envLines as $line) {
         // Skip comments and empty lines
         if (empty($line) || strpos($line, '#') === 0) {
             continue;

@@ -11,7 +11,9 @@ class Auth {
 
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
-        if (session_status() === PHP_SESSION_NONE) {
+        if (function_exists('ensureSessionStarted')) {
+            ensureSessionStarted();
+        } elseif (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
     }
@@ -77,7 +79,9 @@ class Auth {
     }
 
     public static function checkLogin() {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (function_exists('ensureSessionStarted')) {
+            ensureSessionStarted();
+        } elseif (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
@@ -162,7 +166,9 @@ class Auth {
      * @return bool True if logged in, false otherwise
      */
     public static function isLoggedIn() {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (function_exists('ensureSessionStarted')) {
+            ensureSessionStarted();
+        } elseif (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['admin_user_agent'])) {
