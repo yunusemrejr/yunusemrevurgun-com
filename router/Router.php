@@ -28,7 +28,6 @@ class Router {
         'admin/blog' => 'views/admin/blog/index.php',
         'admin/blog/create' => 'views/admin/blog/create.php',
         'admin/blog/edit' => 'views/admin/blog/edit.php',
-        'admin/blog/delete' => 'api/blog/delete.php',
         'admin/updates' => 'views/admin/updates/index.php',
         'admin/updates/create' => 'views/admin/updates/create.php',
         'admin/updates/edit' => 'views/admin/updates/edit.php',

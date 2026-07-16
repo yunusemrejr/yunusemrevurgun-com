@@ -1,7 +1,4 @@
 <?php
-// Get the project root directory using __DIR__
-$projectRoot = dirname(__DIR__);
-
 require_once dirname(__DIR__, 3) . '/config/setPath.php';
 
 //prevent direct access to this file
@@ -9,7 +6,7 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
     header('Location: ' . FULL_BASE_PATH);
     exit;
 }
-?>  <?php
+
 // Turn off output buffering and disable error display for this script
 ob_end_clean();
 ini_set('display_errors', 0);

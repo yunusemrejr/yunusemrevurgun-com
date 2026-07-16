@@ -1,10 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../config/setPath.php';
- 
-?>  <?php
-  
-?>
-<?php
+
 require_once __DIR__ . '/../../../global.php';
 verifyAdminAction();
 require_once __DIR__ . '/../../../models/Auth.php';

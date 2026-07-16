@@ -1,18 +1,9 @@
 <?php
-// Get the project root directory using __DIR__
-$projectRoot = dirname(__DIR__);
+require_once __DIR__ . '/../../../config/setPath.php';
 
-require_once dirname(__DIR__, 3) . '/config/setPath.php';
+require_once __DIR__ . '/../../../global.php';
+restrictDirectAccess();
 
- 
-?>  <?php
-// If global.php is not included, include it and restrict direct access
-if (file_exists('../../../global.php')) {
-    require_once '../../../global.php';
-    restrictDirectAccess();
-}  
-?>
-<?php
 require_once __DIR__ . '/../../../models/Auth.php';
 require_once __DIR__ . '/../../../models/Settings.php';
 Auth::checkLogin();

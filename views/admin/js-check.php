@@ -1,6 +1,5 @@
 <?php
 // Get the project root directory using __DIR__
-$projectRoot = dirname(__DIR__);
 
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 
@@ -9,7 +8,7 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
     header('Location: ' . FULL_BASE_PATH);
     exit;
 }
-?>  <?php
+
 //if session not initialized, set it
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -19,8 +18,8 @@ if (session_status() === PHP_SESSION_NONE) {
 if (file_exists('../../global.php')) {
     require_once '../../global.php';
     restrictDirectAccess();
-}  
-?><?php
+}
+
 require_once __DIR__ . '/../../global.php';
 
 header('Content-Type: application/json');

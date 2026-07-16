@@ -1,5 +1,4 @@
 <?php
-$projectRoot = dirname(__DIR__);
 
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 
@@ -7,7 +6,7 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
     header('Location: ' . FULL_BASE_PATH);
     exit;
 }
-?>  <?php
+
 if (file_exists('../../global.php')) {
     require_once '../../global.php';
     restrictDirectAccess();

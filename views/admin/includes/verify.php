@@ -1,6 +1,5 @@
 <?php
 // Get the project root directory using __DIR__
-$projectRoot = dirname(__DIR__);
 
 require_once dirname(__DIR__, 3) . '/config/setPath.php';
 
