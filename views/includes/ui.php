@@ -12,7 +12,6 @@ if (!function_exists('ui_render_head')) {
     <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
     <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
     <meta name="bingbot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
-    <meta name="ai:bot" content="index,follow">
     <meta name="x-robots-tag" content="index,follow,noarchive">
     <title><?= htmlspecialchars($title) ?></title>
     <meta name="title" content="<?= htmlspecialchars($title) ?>">
@@ -20,9 +19,32 @@ if (!function_exists('ui_render_head')) {
     <?php
     $requestPath = $_SERVER['REQUEST_URI'] ?? '/';
     $requestPath = (string)parse_url($requestPath, PHP_URL_PATH);
-    $canonical = rtrim(FULL_BASE_PATH, '/') . ($requestPath === '' ? '/' : $requestPath);
+    // Normalize: /home is duplicate content of /
+    $normalizedPath = $requestPath;
+    if ($normalizedPath === '/home' || $normalizedPath === '/home/') {
+        $normalizedPath = '/';
+    }
+    $canonical = rtrim(FULL_BASE_PATH, '/') . ($normalizedPath === '' ? '/' : $normalizedPath);
     ?>
     <link rel="canonical" href="<?= htmlspecialchars($canonical) ?>">
+    <?php
+    // Default Open Graph tags (can be overridden via $extraMeta)
+    $defaultOgImage = FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg';
+    $defaultOgTitle = htmlspecialchars($title, ENT_QUOTES);
+    $defaultOgDesc = htmlspecialchars($description, ENT_QUOTES);
+    ?>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?= htmlspecialchars($canonical) ?>">
+    <meta property="og:title" content="<?= $defaultOgTitle ?>">
+    <meta property="og:description" content="<?= $defaultOgDesc ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($defaultOgImage) ?>">
+    <meta property="og:image:alt" content="<?= $defaultOgTitle ?>">
+    <meta property="og:site_name" content="Yµn ^…^ ƒ(x) Personal Website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="<?= htmlspecialchars($canonical) ?>">
+    <meta name="twitter:title" content="<?= $defaultOgTitle ?>">
+    <meta name="twitter:description" content="<?= $defaultOgDesc ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars($defaultOgImage) ?>">
     <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= FULL_BASE_PATH ?>sitemap.xml">
     <link rel="alternate" type="text/plain" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
     <link rel="alternate" type="application/ld+json" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">

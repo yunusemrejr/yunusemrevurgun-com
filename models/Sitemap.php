@@ -55,7 +55,6 @@ class Sitemap {
         // Add static pages with comprehensive main pages
         $staticPages = [
             '' => '1.0',           // Home page - highest priority
-            'home' => '1.0',       // Alternative home route
             'about' => '0.8',      // About page
             'portfolio' => '0.9',  // Portfolio - high priority for professional site
             'blog' => '0.8',       // Blog listing page

@@ -11,9 +11,20 @@ $allUpdates = $updates->getPaginatedUpdates($offset, $updatesPerPage);
 $totalUpdates = $updates->getTotalUpdates();
 $totalPages = (int) ceil($totalUpdates / $updatesPerPage);
 
+$pageMeta = [];
+if ($totalPages > 1) {
+    if ($currentPage > 1) {
+        $pageMeta[] = '<link rel="prev" href="' . FULL_BASE_PATH . 'updates?page=' . ($currentPage - 1) . '">';
+    }
+    if ($currentPage < $totalPages) {
+        $pageMeta[] = '<link rel="next" href="' . FULL_BASE_PATH . 'updates?page=' . ($currentPage + 1) . '">';
+    }
+}
+
 ui_render_head(
     'Journal | Updates',
-    'Short notes, timestamped updates, and rapid changes by Yunus Emre Vurgun.'
+    'Short notes, timestamped updates, and rapid changes by Yunus Emre Vurgun.',
+    $pageMeta
 );
 ?>
 <body>

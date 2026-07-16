@@ -12,9 +12,20 @@ $totalPosts = $blog->getTotalPublishedPosts();
 $totalPages = max(1, (int) ceil($totalPosts / $postsPerPage));
 $currentPage = min($currentPage, $totalPages);
 
+$pageMeta = [];
+if ($totalPages > 1) {
+    if ($currentPage > 1) {
+        $pageMeta[] = '<link rel="prev" href="' . FULL_BASE_PATH . 'blog?page=' . ($currentPage - 1) . '">';
+    }
+    if ($currentPage < $totalPages) {
+        $pageMeta[] = '<link rel="next" href="' . FULL_BASE_PATH . 'blog?page=' . ($currentPage + 1) . '">';
+    }
+}
+
 ui_render_head(
     'Journal | Blog',
-    'Long-form notes, architecture logs, and technical writing by Yunus Emre Vurgun.'
+    'Long-form notes, architecture logs, and technical writing by Yunus Emre Vurgun.',
+    $pageMeta
 );
 ?>
 <body>

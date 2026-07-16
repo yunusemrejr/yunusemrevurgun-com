@@ -3,6 +3,9 @@ Options -Indexes
 RewriteEngine On
 RewriteBase /
 
+# Canonical: resolve duplicate /home -> /
+RewriteRule ^home/?$ / [R=301,L]
+
 # Canonical host + HTTPS (keep localhost/dev untouched)
 RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
@@ -62,6 +65,7 @@ RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Robots-Tag "index,follow,noarchive"
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Cross-Origin-Resource-Policy "same-origin"

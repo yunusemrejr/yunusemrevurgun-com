@@ -5,16 +5,60 @@ require_once __DIR__ . '/includes/ui.php';
 
 $settings = new Settings();
 
+$homeSchema = [
+    '@context' => 'https://schema.org',
+    '@graph' => [
+        [
+            '@type' => 'WebSite',
+            '@id' => rtrim(FULL_BASE_PATH, '/') . '/#website',
+            'url' => rtrim(FULL_BASE_PATH, '/') . '/',
+            'name' => 'Yemre — The world of a developer',
+            'description' => 'A new form of intelligence is emerging.',
+            'inLanguage' => 'en-US',
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => [
+                    '@type' => 'EntryPoint',
+                    'urlTemplate' => rtrim(FULL_BASE_PATH, '/') . '/search?q={search_term_string}',
+                ],
+                'query-input' => 'required name=search_term_string',
+            ],
+        ],
+        [
+            '@type' => 'Person',
+            '@id' => rtrim(FULL_BASE_PATH, '/') . '/#person',
+            'name' => 'Yunus Emre Vurgun',
+            'givenName' => 'Yunus Emre',
+            'familyName' => 'Vurgun',
+            'alternateName' => 'Yemre',
+            'url' => rtrim(FULL_BASE_PATH, '/') . '/',
+            'sameAs' => [
+                'https://github.com/yunusemrejr',
+                'https://www.youtube.com/@yunusemrevurgun1',
+                'https://linkedin.com/in/yunus-emre-vurgun-49ba9a177',
+                'https://mastodon.social/@yunusemrevurgn',
+                'https://bsky.app/profile/yunusemrevurgun.bsky.social',
+                'https://x.com/yemrevu',
+                'https://instagram.com/yemrevu',
+            ],
+            'jobTitle' => 'Software Developer & IT Specialist',
+            'worksFor' => [
+                '@type' => 'Organization',
+                'name' => 'ASP Otomasyon A.Ş.',
+            ],
+        ],
+    ],
+];
+
 ui_render_head(
     'Yemre | The world of a developer',
     'A new form of intelligence is emerging. — Yemre, the world of a developer.',
     [
-        '<meta property="og:title" content="Yemre | The world of a developer">',
-        '<meta property="og:description" content="A new form of intelligence is emerging. They say you\'re the average of the five people you spend the most time with. I\'m carefully curating mine.">',
-        '<meta property="og:type" content="website">',
-        '<meta property="og:url" content="' . htmlspecialchars(rtrim(FULL_BASE_PATH, '/') . '/') . '">',
         '<meta name="author" content="Yemre">',
         '<meta name="keywords" content="Yemre, developer, software, agents, intelligence, Yunus Emre Vurgun">',
+        '<meta property="og:description" content="A new form of intelligence is emerging. They say you\'re the average of the five people you spend the most time with. I\'m carefully curating mine.">',
+        '<meta name="twitter:description" content="A new form of intelligence is emerging. They say you\'re the average of the five people you spend the most time with. I\'m carefully curating mine.">',
+        '<script type="application/ld+json">' . json_encode($homeSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>',
     ]
 );
 ?>

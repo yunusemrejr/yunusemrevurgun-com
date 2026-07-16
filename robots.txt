@@ -20,48 +20,33 @@ Disallow: /router/
 Disallow: /scripts/
 Disallow: /views/
 
-# Allow public pages
-Allow: /
-Allow: /about
-Allow: /portfolio
-Allow: /gallery
-Allow: /blog
-Allow: /updates
-Allow: /post-code
-Allow: /science-corner
-Allow: /travel
-Allow: /yunobot
-Allow: /contact
-Allow: /search
-Allow: /uploads/
-
 # AI-specific crawler rules
 User-agent: GPTBot
-Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /config/
 
 User-agent: ChatGPT-User
-Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
+User-agent: OAI-SearchBot
 Disallow: /admin/
 Disallow: /api/
 Disallow: /config/
 
 User-agent: Google-Extended
-Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /config/
 
 User-agent: CCBot
-Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /config/
 
 User-agent: anthropic-ai
-Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /config/
