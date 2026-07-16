@@ -48,12 +48,13 @@ function saveLoginGuardData(array $data): void {
     file_put_contents($file, json_encode($data), LOCK_EX);
 }
 
+/**
+ * Flat policy: 5 failed attempts -> 60 second cooldown from the last failure.
+ * After the cooldown the cycle resets (see recordLoginFailure), so every new
+ * batch of 5 failures earns exactly one 60s ban — no escalation.
+ */
 function getLoginDelaySeconds(array $record): int {
-    $failures = (int)($record['failures'] ?? 0);
-    if ($failures < 2) {
-        return 0;
-    }
-    return min(30, 2 ** min(5, $failures - 1));
+    return ((int)($record['failures'] ?? 0) >= 5) ? 60 : 0;
 }
 
 function isLoginTemporarilyBlocked(): bool {
@@ -69,7 +70,13 @@ function recordLoginFailure(): void {
     $data = loadLoginGuardData();
     $key = getLoginClientKey();
     $record = $data['admin_login'][$key] ?? ['failures' => 0, 'last_failure' => 0];
-    $record['failures'] = min(12, (int)$record['failures'] + 1);
+
+    // Previous 60s ban completed -> start a fresh 5-attempt cycle
+    if ((int)$record['failures'] >= 5 && (time() - (int)$record['last_failure']) >= 60) {
+        $record['failures'] = 0;
+    }
+
+    $record['failures'] = (int)$record['failures'] + 1;
     $record['last_failure'] = time();
     $data['admin_login'][$key] = $record;
 
@@ -240,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check the throttle first so a blocked client cannot extend its own
     // block by re-submitting with a stale CSRF token.
     if (isLoginTemporarilyBlocked()) {
-        $error = "Too many failed attempts. Please wait briefly and try again.";
+        $error = "Too many failed attempts. Please wait a minute and try again.";
     } elseif (!hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
         $error = "Security token expired. Please refresh and try again.";
         recordLoginFailure();
