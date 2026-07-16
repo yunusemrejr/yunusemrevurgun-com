@@ -174,6 +174,7 @@ include __DIR__ . '/../includes/header.php';
         <div class="admin-modal-footer">
             <div class="admin-upload-buttons">
                 <button type="button" class="admin-btn admin-btn-secondary" id="closePhotosBtn">Close</button>
+                <button type="button" class="admin-btn admin-btn-primary" id="uploadPhotosBtn" disabled>Upload Photos</button>
             </div>
         </div>
     </div>

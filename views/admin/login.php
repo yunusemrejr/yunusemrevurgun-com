@@ -363,10 +363,10 @@ if (strpos($currentPath, '/admin') !== false &&
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/variables.css">
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/base.css">
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin.css">
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-login.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/variables.css?v=<?php echo @filemtime(dirname(__DIR__, 2) . '/assets/css/variables.css') ?: '1'; ?>">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/base.css?v=<?php echo @filemtime(dirname(__DIR__, 2) . '/assets/css/base.css') ?: '1'; ?>">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin.css?v=<?php echo @filemtime(dirname(__DIR__, 2) . '/assets/css/admin.css') ?: '1'; ?>">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-login.css?v=<?php echo @filemtime(dirname(__DIR__, 2) . '/assets/css/admin-login.css') ?: '1'; ?>">
 
     <?php if (!isset($_SESSION['csrf_token'])) { $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); } ?>
     <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">

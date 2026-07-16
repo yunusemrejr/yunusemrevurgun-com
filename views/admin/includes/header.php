@@ -62,30 +62,30 @@ $faviconMime = 'image/svg+xml';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/variables.css">
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/base.css">
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin.css">
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-search.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/variables.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/variables.css') ?: '1'; ?>">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/base.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/base.css') ?: '1'; ?>">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin.css') ?: '1'; ?>">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-search.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-search.css') ?: '1'; ?>">
     <?php if (in_array($page, ['blog', 'blog-create', 'blog-edit'], true)): ?>
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-blog.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-blog.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-blog.css') ?: '1'; ?>">
     <?php endif; ?>
     <?php if ($page === 'gallery' || $page === 'music'): ?>
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-gallery.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-gallery.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-gallery.css') ?: '1'; ?>">
     <?php endif; ?>
     <?php if (in_array($page, ['portfolio', 'portfolio-create', 'portfolio-edit'], true)): ?>
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-portfolio.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-portfolio.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-portfolio.css') ?: '1'; ?>">
     <?php endif; ?>
     <?php if ($page === 'settings'): ?>
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-settings.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-settings.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-settings.css') ?: '1'; ?>">
     <?php endif; ?>
     <?php if (in_array($page, ['updates', 'updates-create', 'updates-edit'], true)): ?>
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-updates.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-updates.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-updates.css') ?: '1'; ?>">
     <?php endif; ?>
     <?php if (in_array($page, ['tracker-codes', 'tracker-codes-create', 'tracker-codes-edit'], true)): ?>
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-tracker-codes.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-tracker-codes.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-tracker-codes.css') ?: '1'; ?>">
     <?php endif; ?>
     <?php if ($page === 'travel'): ?>
-    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-travel.css">
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-travel.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-travel.css') ?: '1'; ?>">
     <?php endif; ?>
 
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-space.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-space.css') ?: '1'; ?>">

@@ -93,3 +93,8 @@ ADMIN TRAVEL PAGE — DARK THEME
     width: 100%;
   }
 }
+
+/* Bootstrap's default hot-pink <code> color is off-palette — use site body color. */
+.admin-table code {
+  color: #575757;
+}

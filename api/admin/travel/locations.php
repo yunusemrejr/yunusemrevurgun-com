@@ -47,11 +47,12 @@ try {
         case 'create':
             $country = trim($_POST['country'] ?? '');
             $city = trim($_POST['city'] ?? '');
-            $lat = $_POST['lat'] ?? '';
-            $lng = $_POST['lng'] ?? '';
+            $lat = trim((string)($_POST['lat'] ?? ''));
+            $lng = trim((string)($_POST['lng'] ?? ''));
             $visited = $_POST['visited'] ?? null;
 
-            if (empty($country) || empty($city) || empty($lat) || empty($lng)) {
+            // Note: '0' is a valid coordinate — empty() would wrongly reject it.
+            if ($country === '' || $city === '' || $lat === '' || $lng === '') {
                 throw new Exception('Country, city, latitude, and longitude are required');
             }
             if (!is_numeric($lat) || !is_numeric($lng) || abs((float)$lat) > 90 || abs((float)$lng) > 180) {

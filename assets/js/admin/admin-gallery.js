@@ -88,6 +88,7 @@
 
             $progress.show();
             this.updateProgress(0);
+            $('#startUpload').prop('disabled', true);
 
             const formData = new FormData();
             const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
@@ -144,10 +145,12 @@
                         }, failed.length > 0 ? 3000 : 1000);
                     } else {
                         AdminPanel.showNotification('Upload failed: ' + (responseData.message || 'Unknown error'), 'error');
+                        $('#startUpload').prop('disabled', false);
                     }
                 },
                 error: function(xhr, status, error) {
                     AdminPanel.updateProgress(0);
+                    $('#startUpload').prop('disabled', false);
                     let errorMessage = 'Upload failed';
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMessage = xhr.responseJSON.message;
@@ -347,6 +350,7 @@
             
             if (!name) {
                 AdminPanel.showNotification('Album name is required', 'error');
+                $('#saveAlbumBtn').prop('disabled', false);
                 return;
             }
             
@@ -365,6 +369,9 @@
                 contentType: false,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
+                },
+                complete: function() {
+                    $('#saveAlbumBtn').prop('disabled', false);
                 },
                 success: function(response) {
                     if (response.success) {
@@ -389,6 +396,7 @@
             
             if (!name) {
                 AdminPanel.showNotification('Album name is required', 'error');
+                $('#saveAlbumBtn').prop('disabled', false);
                 return;
             }
             
@@ -408,6 +416,9 @@
                 contentType: false,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
+                },
+                complete: function() {
+                    $('#saveAlbumBtn').prop('disabled', false);
                 },
                 success: function(response) {
                     if (response.success) {
@@ -510,7 +521,7 @@
                                         'max-height': '100px',
                                         'margin': '5px',
                                         'border-radius': '4px',
-                                        'border': '2px solid var(--color-green-medium)'
+                                        'border': '2px solid var(--color-border-strong)'
                                     });
                                 $preview.append($img);
                             };
@@ -546,8 +557,11 @@
                     }
                 });
                 // Click handler for desktop
-                $dropzone.on('click', function() {
-                    $('#images').click();
+                $dropzone.on('click', function(e) {
+                    // The file input lives inside the dropzone — ignore clicks
+                    // bubbling back from it or .trigger('click') recurses forever.
+                    if (e.target && e.target.type === 'file') return;
+                    $('#images').trigger('click');
                 });
                 // Touch handlers for mobile (iPhone/iPad)
                 $dropzone.on('touchstart', function(e) {
@@ -637,12 +651,21 @@
             
             // Save album button (create or edit)
             $(document).on('click', '#saveAlbumBtn', function() {
+                const $btn = $(this);
+                if ($btn.prop('disabled')) return;
+                $btn.prop('disabled', true);
                 const albumId = $('#albumId').val();
                 if (albumId) {
                     AdminPanel.editAlbum(albumId);
                 } else {
                     AdminPanel.createAlbum();
                 }
+            });
+            
+            // Enter key inside the album form = save (never a GET page reload)
+            $(document).on('submit', '#albumForm', function(e) {
+                e.preventDefault();
+                $('#saveAlbumBtn').trigger('click');
             });
             
             // Cancel album button

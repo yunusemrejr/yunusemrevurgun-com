@@ -57,6 +57,13 @@ try {
             $name = mb_substr($name, 0, 255);
             $description = mb_substr($description, 0, 2000);
 
+            // Reject duplicate names (case-insensitive, driver-portable)
+            foreach ($gallery->getAllAlbums() as $existingAlbum) {
+                if (mb_strtolower($existingAlbum['name']) === mb_strtolower($name)) {
+                    throw new Exception('An album with this name already exists');
+                }
+            }
+
             $albumId = $gallery->addAlbum($name, $description);
             
             echo json_encode([
@@ -72,6 +79,9 @@ try {
             if (!$id || !is_numeric($id)) {
                 throw new Exception('Invalid album ID');
             }
+            if (!$gallery->getAlbumById((int)$id)) {
+                throw new Exception('Album not found');
+            }
             
             $data = [];
             if (isset($_POST['name'])) {
@@ -79,10 +89,10 @@ try {
                 if (empty($name)) {
                     throw new Exception('Album name cannot be empty');
                 }
-                $data['name'] = $name;
+                $data['name'] = mb_substr($name, 0, 255);
             }
             if (isset($_POST['description'])) {
-                $data['description'] = trim($_POST['description']);
+                $data['description'] = mb_substr(trim($_POST['description']), 0, 2000);
             }
             
             if (empty($data)) {
@@ -119,11 +129,17 @@ try {
             if (!$imageId || !is_numeric($imageId)) {
                 throw new Exception('Invalid image ID');
             }
+            if (!$gallery->getImageById((int)$imageId)) {
+                throw new Exception('Image not found');
+            }
             
             // albumId can be null (to unassign), '0' or empty (to unassign), or a valid integer
             $albumIdValue = null;
             if ($albumId !== null && $albumId !== '' && $albumId !== '0') {
                 $albumIdValue = (int)$albumId;
+                if (!$gallery->getAlbumById($albumIdValue)) {
+                    throw new Exception('Album not found');
+                }
             }
             
             $result = $gallery->assignImageToAlbum((int)$imageId, $albumIdValue);

@@ -79,6 +79,15 @@
 
             if (!country || !city || !lat || !lng) {
                 AdminPanel.showNotification('Country, city, latitude, and longitude are required', 'error');
+                $('#saveLocationBtn').prop('disabled', false);
+                return;
+            }
+
+            const latNum = parseFloat(lat);
+            const lngNum = parseFloat(lng);
+            if (isNaN(latNum) || isNaN(lngNum) || Math.abs(latNum) > 90 || Math.abs(lngNum) > 180) {
+                AdminPanel.showNotification('Latitude must be -90..90 and longitude -180..180', 'error');
+                $('#saveLocationBtn').prop('disabled', false);
                 return;
             }
 
@@ -104,6 +113,9 @@
                 contentType: false,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
+                },
+                complete: function() {
+                    $('#saveLocationBtn').prop('disabled', false);
                 },
                 success: function(response) {
                     if (response.success) {
@@ -178,6 +190,8 @@
                 $('#photoLocationId').val(locationId);
                 $('#photosModalTitle').text('Manage Photos — ' + city + ', ' + country);
                 $('#photoGrid').empty();
+                $('#uploadPhotosBtn').prop('disabled', true);
+                $('#photoUploadProgress').hide();
 
                 this.loadLocationPhotos(locationId);
             }
@@ -240,10 +254,24 @@
                 AdminPanel.showNotification('Please select at least one photo', 'error');
                 return;
             }
+            if ($files[0].files.length > 12) {
+                AdminPanel.showNotification('Please upload 12 images or fewer at once', 'error');
+                return;
+            }
+
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
+            const invalidFile = Array.from($files[0].files).find((file) => {
+                return allowedTypes.indexOf(file.type) === -1 || file.size > 5 * 1024 * 1024;
+            });
+            if (invalidFile) {
+                AdminPanel.showNotification('Invalid image: ' + invalidFile.name + '. Use JPEG, PNG, GIF, WebP, or HEIC under 5MB.', 'error');
+                return;
+            }
 
             const $progress = $('#photoUploadProgress');
             $progress.show();
             this.updateTravelProgress(0);
+            $('#uploadPhotosBtn').prop('disabled', true);
 
             const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
             const formData = new FormData();
@@ -277,14 +305,17 @@
                     if (response.success) {
                         AdminPanel.showNotification('Photos uploaded successfully', 'success');
                         $('#photoFiles')[0].files = new DataTransfer().files;
+                        $('#uploadPhotosBtn').prop('disabled', true);
                         AdminPanel.loadLocationPhotos(locationId);
                     } else {
                         AdminPanel.showNotification('Upload failed: ' + (response.message || 'Unknown error'), 'error');
+                        $('#uploadPhotosBtn').prop('disabled', false);
                     }
                 },
                 error: function(xhr, status, error) {
                     AdminPanel.updateTravelProgress(0);
                     AdminPanel.showNotification('Upload failed: ' + error, 'error');
+                    $('#uploadPhotosBtn').prop('disabled', false);
                 }
             });
         },
@@ -378,7 +409,16 @@
 
             // Save location button
             $(document).on('click', '#saveLocationBtn', function() {
+                const $btn = $(this);
+                if ($btn.prop('disabled')) return;
+                $btn.prop('disabled', true);
                 AdminPanel.saveLocation();
+            });
+
+            // Enter key inside the location form = save (never a GET page reload)
+            $(document).on('submit', '#locationForm', function(e) {
+                e.preventDefault();
+                $('#saveLocationBtn').trigger('click');
             });
 
             // Close location modal
@@ -397,8 +437,17 @@
                 if (files.length > 12) {
                     AdminPanel.showNotification('Please upload 12 images or fewer at once', 'error');
                     this.value = '';
+                    $('#uploadPhotosBtn').prop('disabled', true);
                     return;
                 }
+                $('#uploadPhotosBtn').prop('disabled', files.length === 0);
+            });
+
+            // Upload photos button
+            $(document).on('click', '#uploadPhotosBtn', function() {
+                const $btn = $(this);
+                if ($btn.prop('disabled')) return;
+                AdminPanel.uploadTravelPhotos();
             });
 
             // Delete photo button
@@ -431,8 +480,11 @@
                     }
                 });
                 // Click handler for desktop
-                $dropzone.on('click', function() {
-                    $('#photoFiles').click();
+                $dropzone.on('click', function(e) {
+                    // The file input lives inside the dropzone — ignore clicks
+                    // bubbling back from it or .trigger('click') recurses forever.
+                    if (e.target && e.target.type === 'file') return;
+                    $('#photoFiles').trigger('click');
                 });
                 // Touch handlers for mobile (iPhone/iPad)
                 $dropzone.on('touchstart', function(e) {
