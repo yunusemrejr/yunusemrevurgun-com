@@ -1,7 +1,6 @@
-/* ===== CSS VARIABLES — YEV BRAND KIT DESIGN SYSTEM ===== */
+/* ===== CSS VARIABLES — YEV DESIGN SYSTEM v3.0 ===== */
 /* Single source of truth for all design tokens. */
-/* Warm charcoal base + cream surfaces + crimson accent + Fraunces/Inter */
-/* Dark-first, light-vibe editorial palette. Elegant, minimal, mobile-first. */
+/* Muted light background + soft gray text + muted teal accents. */
 
 :root {
   /* ===== RESPONSIVE BREAKPOINTS ===== */
@@ -27,60 +26,59 @@
   --space-20: 80px;
   --space-24: 96px;
 
-  /* ===== COLOR PALETTE — CRIMSON / CREAM / WARM CHARCOAL ===== */
-  /* Warm charcoal base — dark-first, never pure black (espresso warmth) */
-  --color-bg-primary: #1B1714;     /* warm charcoal — dominant background */
-  --color-bg-elevated: #241E1A;   /* lifted warm surface (panels, modals) */
-  --color-bg-card: #F4EFE6;       /* cream / smoky white — light cards */
-  --color-bg-dark: #100C0A;       /* line-art ink — deepest shadow/border base */
-  --color-bg-subtle: rgba(244, 239, 230, 0.05);
-  --color-bg-hover: rgba(244, 239, 230, 0.08);
-  --color-bg-overlay: rgba(16, 12, 10, 0.7);
+  /* ===== COLOR PALETTE — MUTED LIGHT ===== */
+  --color-bg-primary: #e3e2de;
+  --color-bg-elevated: #edeceb;
+  --color-bg-card: #f5f4f1;
+  --color-bg-dark: #d4d3cf;
+  --color-bg-subtle: rgba(132, 144, 164, 0.08);
+  --color-bg-hover: rgba(132, 144, 164, 0.12);
+  --color-bg-overlay: rgba(132, 144, 164, 0.4);
 
-  /* Text — warm off-white (smoky white) on charcoal, ink on cream */
-  --color-text-primary: #F6F1E8;
-  --color-text-secondary: rgba(246, 241, 232, 0.78);
-  --color-text-tertiary: rgba(246, 241, 232, 0.45);
-  --color-text-inverse: #1B1714;
-  --color-text-disabled: rgba(246, 241, 232, 0.3);
+  /* Text — muted gray hierarchy */
+  --color-text-primary: #a6a6a6;
+  --color-text-secondary: #8fa6a6;
+  --color-text-tertiary: #8490a4;
+  --color-text-inverse: #575757;
+  --color-text-disabled: #b5b3af;
 
-  /* Brand accents — Crimson (singular primary accent) */
-  --color-accent: #A8221E;           /* deep crimson — brand accent */
-  --color-accent-hover: #C5302A;     /* lighter crimson on hover */
-  --color-accent-secondary: #7C1815; /* darker crimson surface */
-  --color-accent-subtle: rgba(168, 34, 30, 0.15);
+  /* Brand accents — muted teal-gray */
+  --color-accent: #8490a4;
+  --color-accent-hover: #6e7a90;
+  --color-accent-secondary: #8fa6a6;
+  --color-accent-subtle: rgba(132, 144, 164, 0.15);
 
-  /* Grid / Lines — low-contrast warm (soft structural contrast) */
-  --color-grid: #2E2622;             /* warm grid lines for the signature grid */
+  /* Grid / Lines */
+  --color-grid: rgba(132, 144, 164, 0.12);
 
-  /* Borders — quiet, low-contrast against the charcoal canvas */
-  --color-border: rgba(246, 241, 232, 0.16);
-  --color-border-strong: rgba(246, 241, 232, 0.32);
-  --color-border-focus: rgba(168, 34, 30, 0.5);
+  /* Borders */
+  --color-border: rgba(132, 144, 164, 0.25);
+  --color-border-strong: rgba(132, 144, 164, 0.45);
+  --color-border-focus: rgba(132, 144, 164, 0.4);
 
   /* Surfaces */
-  --color-surface: rgba(246, 241, 232, 0.06);
-  --color-surface-hover: rgba(246, 241, 232, 0.10);
-  --color-surface-alt: rgba(16, 12, 10, 0.10);
+  --color-surface: rgba(132, 144, 164, 0.06);
+  --color-surface-hover: rgba(132, 144, 164, 0.10);
+  --color-surface-alt: rgba(132, 144, 164, 0.04);
 
   /* Semantic */
-  --color-success: #22c55e;
-  --color-success-bg: rgba(34, 197, 94, 0.15);
-  --color-success-border: rgba(34, 197, 94, 0.3);
-  --color-warning: #eab308;
-  --color-warning-bg: rgba(234, 179, 8, 0.15);
-  --color-warning-border: rgba(234, 179, 8, 0.3);
-  --color-danger: #ef4444;
-  --color-danger-bg: rgba(239, 68, 68, 0.15);
-  --color-danger-border: rgba(239, 68, 68, 0.3);
-  --color-info: #3b82f6;
-  --color-info-bg: rgba(59, 130, 246, 0.15);
-  --color-info-border: rgba(59, 130, 246, 0.3);
+  --color-success: #5a8a5a;
+  --color-success-bg: rgba(90, 138, 90, 0.15);
+  --color-success-border: rgba(90, 138, 90, 0.3);
+  --color-warning: #b89a3e;
+  --color-warning-bg: rgba(184, 154, 62, 0.15);
+  --color-warning-border: rgba(184, 154, 62, 0.3);
+  --color-danger: #a66060;
+  --color-danger-bg: rgba(166, 96, 96, 0.15);
+  --color-danger-border: rgba(166, 96, 96, 0.3);
+  --color-info: #6a8aaa;
+  --color-info-bg: rgba(106, 138, 170, 0.15);
+  --color-info-border: rgba(106, 138, 170, 0.3);
 
-  /* ===== TYPOGRAPHY (Fraunces display + Inter body) ===== */
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
+  /* ===== TYPOGRAPHY (Aileron display + Canva Sans body) ===== */
+  --font-display: 'Aileron', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Canva Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: 'Aileron', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'Roboto Mono', Menlo, Monaco, monospace;
 
   --text-xs: 0.75rem;      /* 12px */
@@ -117,12 +115,12 @@
   --radius-2xl: 16px;
   --radius-full: 9999px;
 
-  /* ===== SHADOWS (warm ink base) ===== */
-  --shadow-sm: 0 1px 3px rgba(16, 12, 10, 0.25);
-  --shadow-md: 0 4px 12px rgba(16, 12, 10, 0.30);
-  --shadow-lg: 0 8px 24px rgba(16, 12, 10, 0.35);
-  --shadow-xl: 0 16px 48px rgba(16, 12, 10, 0.40);
-  --shadow-focus: 0 0 0 3px rgba(168, 34, 30, 0.3);
+  /* ===== SHADOWS (soft, muted) ===== */
+  --shadow-sm: 0 1px 3px rgba(132, 144, 164, 0.15);
+  --shadow-md: 0 4px 12px rgba(132, 144, 164, 0.18);
+  --shadow-lg: 0 8px 24px rgba(132, 144, 164, 0.22);
+  --shadow-xl: 0 16px 48px rgba(132, 144, 164, 0.25);
+  --shadow-focus: 0 0 0 3px rgba(132, 144, 164, 0.3);
 
   /* ===== TRANSITIONS ===== */
   --transition-fast: 120ms ease;
@@ -159,13 +157,13 @@
   --color-border-default: var(--color-border);
 
   /* ===== BRAND KIT SPECIFICS ===== */
-  --brand-portrait-border: 8px solid #F4EFE6;        /* cream frame */
+  --brand-portrait-border: 4px solid #f5f4f1;
   --brand-portrait-radius: 24px;
-  --brand-portrait-shadow: 25px 25px 25px rgba(16, 12, 10, 0.45);
-  --brand-monogram-color: #A8221E;                 /* crimson monogram fill */
-  --brand-monogram-shadow: 3px 3px 0 #100C0A;
+  --brand-portrait-shadow: 12px 12px 24px rgba(132, 144, 164, 0.25);
+  --brand-monogram-color: var(--color-text-primary);
+  --brand-monogram-shadow: none;
   --brand-monogram-tracking: -4px;
   --brand-grid-size: 40px;
-  --brand-grid-color: #2E2622;
-  --brand-bg-charcoal: #1B1714;
+  --brand-grid-color: var(--color-grid);
+  --brand-bg-charcoal: var(--color-bg-primary);
 }

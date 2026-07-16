@@ -31,17 +31,19 @@ $adminNavItems = [
     ['id' => 'settings', 'label' => 'Settings', 'href' => FULL_BASE_PATH . 'admin/settings'],
     ['id' => 'tracker-codes', 'label' => 'Tracker', 'href' => FULL_BASE_PATH . 'admin/tracker-codes'],
     ['id' => 'music', 'label' => 'Music', 'href' => FULL_BASE_PATH . 'admin/music'],
+    ['id' => 'travel', 'label' => 'Travel', 'href' => FULL_BASE_PATH . 'admin/travel'],
+    ['id' => 'travel', 'label' => 'Travel', 'href' => FULL_BASE_PATH . 'admin/travel'],
 ];
 
-$faviconUrl = FULL_BASE_PATH . 'assets/images/favicon-pfp.png';
-$faviconMime = 'image/png';
+$faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg';
+$faviconMime = 'image/svg+xml';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1B1714">
+    <meta name="theme-color" content="#e3e2de">
     <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
     <meta name="description" content="Admin Panel - <?php echo htmlspecialchars($pageTitle); ?>">
     <meta name="robots" content="noindex, nofollow">
@@ -55,7 +57,7 @@ $faviconMime = 'image/png';
 
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -82,6 +84,9 @@ $faviconMime = 'image/png';
     <?php endif; ?>
     <?php if (in_array($page, ['tracker-codes', 'tracker-codes-create', 'tracker-codes-edit'], true)): ?>
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-tracker-codes.css">
+    <?php endif; ?>
+    <?php if ($page === 'travel'): ?>
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-travel.css">
     <?php endif; ?>
 
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-space.css?v=<?php echo time(); ?>">

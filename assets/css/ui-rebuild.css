@@ -1,66 +1,62 @@
 /*
 ===============================================================================
-YUNUS EMRE VURGUN — BRAND KIT DESIGN SYSTEM v2.1.0
+YUNUS EMRE VURGUN — DESIGN SYSTEM v3.0
 ===============================================================================
 
-Warm charcoal base + signature grid + crimson accent + cream contrast.
-Dark-first, light-vibe editorial palette. Elegant, minimal, mobile-first.
+Muted light background + soft gray text + muted teal accents.
+Retro, understated, photographic visual feel.
 
 COLOR SYSTEM
-- Warm charcoal background:  #1B1714  (dominant hero/background, dark-first)
-- Grid Lines:                #2E2622  (low-contrast warm grid pattern)
-- Crimson (brand accent):    #A8221E  (monogram fill, CTAs, emphasis)
-- Crimson deep (secondary): #7C1815  (darker crimson surfaces)
-- Ink (text/dark):           #100C0A  (linework, borders, shadows)
-- Cream / smoky white:       #F4EFE6  (cards, portrait frame, light surfaces)
-- Warm off-white (text):     #F6F1E8  (primary text on charcoal)
+- Page background:    #e3e2de  (dominant, warm light gray)
+- Primary text:      #a6a6a6  (heroes, major titles — Aileron Bold)
+- Secondary text:    #8fa6a6  (subheadings, labels — Aileron Bold)
+- Body text:         #575757  (paragraphs, articles — Canva Sans)
+- Borders/Decor:     #8490a4  (dividers, icons, outlines)
 
 TYPOGRAPHY
-- Display/Headings: Fraunces (400–700, optical sizing)
-- Body/UI:          Inter (400–600 weights)
-- Code:             IBM Plex Mono
+- Display/Headings: Aileron (Bold)
+- Body/UI:          Canva Sans
 
-SIGNATURE ELEMENTS
-- Signature grid: 40px squares, #1B1714 bg + #2E2622 1px lines
-- Portrait frame: 8px solid #F4EFE6, 24px radius, 25px 25px 25px shadow
-- YEMRE monogram: Fraunces 600, #A8221E, 3px 3px 0 #100C0A, -4px tracking
+MEDIA
+- All images render in soft grayscale by default
+- Original colors revealed on hover (desktop) or tap (touch)
 
 ===============================================================================
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap');
+/* Aileron and Canva Sans are brand fonts; system sans-serif fallbacks are used by default */
 
 /* ===== CSS CUSTOM PROPERTIES ===== */
 :root {
-  /* Color System — Crimson / Cream / Warm Charcoal */
-  --color-bg-primary: #1B1714;
-  --color-bg-elevated: #241E1A;
-  --color-bg-card: #F4EFE6;
-  --color-bg-dark: #100C0A;
-  --color-bg-subtle: rgba(168, 34, 30, 0.15);
-  --color-bg-hover: rgba(246, 241, 232, 0.10);
+  /* Color System — Muted Light / Developer World palette */
+  --color-bg-primary: #e3e2de;
+  --color-bg-elevated: #edeceb;
+  --color-bg-card: #f5f4f1;
+  --color-bg-dark: #d4d3cf;
+  --color-bg-subtle: rgba(132, 144, 164, 0.08);
+  --color-bg-hover: rgba(132, 144, 164, 0.12);
 
-  --color-text-primary: #F6F1E8;
-  --color-text-secondary: rgba(246, 241, 232, 0.78);
-  --color-text-tertiary: rgba(246, 241, 232, 0.5);
-  --color-text-disabled: rgba(246, 241, 232, 0.3);
+  --color-text-primary: #a6a6a6;
+  --color-text-secondary: #8fa6a6;
+  --color-text-tertiary: #8490a4;
+  --color-text-disabled: #b5b3af;
 
-  --color-accent: #A8221E;          /* Crimson — brand accent */
-  --color-accent-hover: #C5302A;
-  --color-accent-secondary: #7C1815;
+  --color-accent: #8490a4;
+  --color-accent-hover: #6e7a90;
+  --color-accent-secondary: #8fa6a6;
 
-  --color-grid: #2E2622;            /* Warm grid lines */
+  --color-grid: rgba(132, 144, 164, 0.12);
 
-  --color-border: rgba(246, 241, 232, 0.16);
-  --color-border-strong: rgba(246, 241, 232, 0.32);
-  --color-focus-ring: rgba(168, 34, 30, 0.5);
-  --color-surface: rgba(246, 241, 232, 0.06);
-  --color-surface-hover: rgba(246, 241, 232, 0.10);
+  --color-border: rgba(132, 144, 164, 0.25);
+  --color-border-strong: rgba(132, 144, 164, 0.45);
+  --color-focus-ring: rgba(132, 144, 164, 0.4);
+  --color-surface: rgba(132, 144, 164, 0.06);
+  --color-surface-hover: rgba(132, 144, 164, 0.10);
 
-  /* Typography — brand kit: Fraunces + Inter */
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
+  /* Typography — Aileron (display) + Canva Sans (body) */
+  --font-display: 'Aileron', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Canva Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: 'Aileron', 'Helvetica Neue', Arial, sans-serif;
 
   /* Type Scale */
   --text-xs: 0.75rem;
@@ -138,7 +134,7 @@ body {
   font-size: var(--text-base);
   font-weight: 400;
   line-height: 1.6;
-  color: var(--color-text-primary);
+  color: #575757;
   background-color: var(--color-bg-primary);
   background-image:
     linear-gradient(var(--color-grid) 1px, transparent 1px),
@@ -149,35 +145,75 @@ body {
   min-height: 100vh;
 }
 
-/* Text legibility lift for blueprint grid background */
+/* No dark overlay needed on light background */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: linear-gradient(180deg, rgba(27,23,20,0.35) 0%, rgba(27,23,20,0.55) 100%);
   pointer-events: none;
   z-index: 0;
 }
 
 ::selection {
-  background-color: var(--color-text-primary);
-  color: var(--color-bg-primary);
+  background-color: var(--color-border-strong);
+  color: #575757;
 }
 
 a {
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--color-accent-hover);
+  color: var(--color-text-primary);
 }
 
 img, video {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+/* ===== MEDIA GRAYSCALE TREATMENT ===== */
+/* All images render in soft, light-toned grayscale by default */
+img {
+  filter: grayscale(0.85) brightness(1.05) contrast(0.92);
+  transition: filter 400ms ease;
+}
+
+/* Interactive media: galleries, carousels, slideshows, travel photos, maps */
+/* Reveal original colors on hover (desktop) */
+.ui-slideshow-slide img,
+.ui-photo-box img,
+.ui-travel-modal-grid img,
+.ui-media,
+.ui-profile-image,
+.ui-hero-portrait {
+  filter: grayscale(0.85) brightness(1.05) contrast(0.92);
+  transition: filter 400ms ease;
+}
+
+.ui-slideshow-slide:hover img,
+.ui-slideshow-slide.is-active img,
+.ui-photo-box:hover img,
+.ui-travel-modal-grid img:hover,
+.ui-project-card:hover .ui-media,
+.ui-card:hover img,
+.ui-profile-frame:hover .ui-profile-image {
+  filter: grayscale(0) brightness(1) contrast(1);
+}
+
+/* Touch device support: reveal on tap via .is-revealed class (JS toggle) */
+@media (hover: none) and (pointer: coarse) {
+  .ui-slideshow-slide.is-revealed img,
+  .ui-photo-box.is-revealed img,
+  .ui-travel-modal-grid img.is-revealed,
+  .ui-project-card.is-revealed .ui-media,
+  .ui-card.is-revealed img,
+  .ui-profile-frame.is-revealed .ui-profile-image {
+    filter: grayscale(0) brightness(1) contrast(1);
+  }
 }
 
 button {
@@ -217,7 +253,7 @@ ul, ol {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(27,23,20,0.80) 0%, rgba(27,23,20,0.93) 100%);
+  background: transparent;
   pointer-events: none;
   z-index: 0;
 }
@@ -229,7 +265,7 @@ ul, ol {
   left: 0;
   right: 0;
   z-index: var(--z-navbar);
-  background: linear-gradient(180deg, var(--color-bg-primary) 0%, rgba(27,23,20,0.95) 100%);
+  background: var(--color-bg-primary);
   border-bottom: 1px solid var(--color-border);
   height: var(--navbar-height);
 }
@@ -408,7 +444,7 @@ body .ui-cards-section {
 .ui-mobile-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(16, 12, 10, 0.8);
+  background-color: rgba(132, 144, 164, 0.4);
   opacity: 0;
   transition: opacity var(--transition-base);
   cursor: pointer;
@@ -428,7 +464,7 @@ body .ui-cards-section {
   bottom: 0;
   width: min(85vw, 320px);
   max-width: 100%;
-  background: linear-gradient(180deg, #241E1A 0%, #1B1714 100%);
+  background: var(--color-bg-elevated);
   padding: var(--space-6);
   padding-top: calc(var(--navbar-height) + var(--space-4));
   transform: translateX(100%);
@@ -483,7 +519,7 @@ body .ui-cards-section {
   display: flex;
   flex-direction: column;
   gap: 0;
-  background-color: rgba(246, 241, 232, 0.04);
+  background-color: var(--color-surface);
   border-radius: var(--radius-md);
   overflow: hidden;
 }
@@ -591,6 +627,29 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--space-16);
 }
 
+/* ===== ALBUM HEADERS ===== */
+.ui-album-header {
+  margin-bottom: var(--space-6);
+}
+
+.ui-album-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-2);
+  letter-spacing: -0.02em;
+}
+
+.ui-album-description {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  max-width: var(--content-narrow);
+}
+
 /* ===== HERO SECTION (Blueprint + Portrait) ===== */
 .ui-hero {
   min-height: calc(100vh - var(--navbar-height));
@@ -607,12 +666,12 @@ h1, h2, h3, h4, h5, h6 {
   background-size: 40px 40px;
 }
 
-/* Subtle text legibility lift for hero (keeps grid visible) */
+/* Subtle text legibility lift for hero */
 .ui-hero::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(27,23,20,0.35) 0%, rgba(27,23,20,0.50) 100%);
+  background: transparent;
   pointer-events: none;
   z-index: 1;
 }
@@ -642,10 +701,10 @@ h1, h2, h3, h4, h5, h6 {
   background-image:
     /* Top layer: the actual image at bottom-right, full height visible */
     url('../images/hero-bg-gallery.jpg'),
-    /* Right-edge bleed: warm cream melt into the charcoal bg */
-    linear-gradient(90deg, transparent 0%, transparent 40%, rgba(244,239,230,0.10) 55%, rgba(244,239,230,0.22) 75%, rgba(244,239,230,0.32) 100%),
-    /* Bottom-edge bleed: warm charcoal melt into the bg */
-    linear-gradient(0deg, rgba(36,30,26,0.45) 0%, rgba(36,30,26,0.22) 25%, rgba(36,30,26,0.08) 40%, transparent 55%);
+    /* Right-edge bleed: subtle warm melt */
+    linear-gradient(90deg, transparent 0%, transparent 40%, rgba(132,144,164,0.05) 55%, rgba(132,144,164,0.12) 75%, rgba(132,144,164,0.18) 100%),
+    /* Bottom-edge bleed */
+    linear-gradient(0deg, rgba(132,144,164,0.08) 0%, rgba(132,144,164,0.04) 25%, transparent 55%);
   background-position:
     bottom right,
     0 0,
@@ -680,11 +739,12 @@ h1, h2, h3, h4, h5, h6 {
   width: 240px;
   height: 240px;
   border-radius: var(--brand-portrait-radius, 24px);
-  border: var(--brand-portrait-border, 8px solid #F4EFE6);
-  box-shadow: var(--brand-portrait-shadow, 25px 25px 25px rgba(16,12,10,0.45));
+  border: var(--brand-portrait-border, 4px solid #f5f4f1);
+  box-shadow: var(--brand-portrait-shadow, 12px 12px 24px rgba(132,144,164,0.25));
   object-fit: cover;
   object-position: center;
   display: block;
+  filter: grayscale(0.8) sepia(0.1);
 }
 
 /* YEMRE Monogram */
@@ -693,12 +753,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: clamp(3rem, 8vw, 5rem);
   font-weight: 700;
   line-height: 1;
-  color: #F6F1E8;
-  -webkit-text-stroke: 2.5px #A8221E;
-  paint-order: stroke fill;
-  text-shadow:
-    0 0 12px rgba(168,34,30,0.30),
-    3px 3px 0 #100C0A;
+  color: var(--color-text-primary);
   letter-spacing: var(--brand-monogram-tracking, -4px);
   text-transform: uppercase;
 }
@@ -749,14 +804,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .ui-btn-primary {
-  background-color: var(--color-accent);
-  color: #F6F1E8;
+  background-color: var(--color-text-secondary);
+  color: var(--color-bg-primary);
   border: 1px solid transparent;
 }
 
 .ui-btn-primary:hover {
-  background-color: var(--color-accent-hover);
-  color: #F6F1E8;
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-primary);
 }
 
 .ui-btn-secondary {
@@ -766,7 +821,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .ui-btn-secondary:hover {
-  background-color: var(--color-surface-hover);
+  background-color: var(--color-bg-hover);
   color: var(--color-text-primary);
 }
 
@@ -811,21 +866,21 @@ h1, h2, h3, h4, h5, h6 {
 
 .ui-card-meta {
   font-size: var(--text-xs);
-  color: rgba(27, 23, 20, 0.5);
+  color: rgba(87, 87, 87, 0.6);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .ui-card-text {
   font-size: var(--text-sm);
-  color: rgba(27, 23, 20, 0.7);
+  color: rgba(87, 87, 87, 0.8);
   line-height: 1.65;
   margin-top: var(--space-3);
 }
 
 /* Eyebrow inside a cream card needs dark muted text */
 .ui-card .ui-eyebrow {
-  color: rgba(27, 23, 20, 0.5);
+  color: rgba(87, 87, 87, 0.6);
 }
 
 /* Link Card */
@@ -1156,8 +1211,8 @@ textarea.ui-input {
   border-radius: var(--brand-portrait-radius, 24px);
   overflow: hidden;
   background-color: var(--color-surface);
-  border: var(--brand-portrait-border, 8px solid #F4EFE6);
-  box-shadow: var(--brand-portrait-shadow, 25px 25px 25px rgba(16,12,10,0.45));
+  border: var(--brand-portrait-border, 4px solid #f5f4f1);
+  box-shadow: var(--brand-portrait-shadow, 12px 12px 24px rgba(132,144,164,0.25));
 }
 
 .ui-profile-image {
@@ -1231,8 +1286,8 @@ textarea.ui-input {
   width: 240px;
   height: 240px;
   border-radius: var(--brand-portrait-radius, 24px);
-  border: var(--brand-portrait-border, 8px solid #F4EFE6);
-  box-shadow: var(--brand-portrait-shadow, 25px 25px 25px rgba(16,12,10,0.45));
+  border: var(--brand-portrait-border, 4px solid #f5f4f1);
+  box-shadow: var(--brand-portrait-shadow, 12px 12px 24px rgba(132,144,164,0.25));
   overflow: hidden;
 }
 
@@ -1783,7 +1838,7 @@ textarea.ui-input {
 .ui-travel-modal-backdrop {
   position: absolute;
   inset: 0;
-  background-color: rgba(16, 12, 10, 0.7);
+  background-color: rgba(132, 144, 164, 0.4);
 }
 
 .ui-travel-modal-panel {
@@ -2065,7 +2120,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   letter-spacing: 1.4px;
   text-transform: uppercase;
-  color: #F6F1E8;
+  color: var(--color-bg-primary);
   background-color: var(--color-accent);
   border: none;
   border-radius: var(--radius-sm);
@@ -2237,5 +2292,180 @@ textarea.ui-input {
 
   .no-print {
     display: none !important;
+  }
+}
+
+/* ===== LANDING PAGE (SVG HERO) ===== */
+/* Landing page has no navbar — SVG starts at top:0, left:0 */
+body.ui-landing {
+  background-color: #e3e2de;
+  background-image: none;
+  padding: 0;
+  margin: 0;
+}
+
+body.ui-landing::before {
+  display: none;
+}
+
+.ui-landing {
+  min-height: 100vh;
+}
+
+.ui-landing-svg {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #e3e2de;
+}
+
+.ui-landing-svg-desktop {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  filter: none; /* SVG already contains grayscale treatment */
+}
+
+.ui-landing-svg-mobile {
+  display: none;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  filter: none;
+}
+
+/* Switch between desktop and mobile SVG at the designated breakpoint */
+@media (max-width: 768px) {
+  .ui-landing-svg-desktop { display: none; }
+  .ui-landing-svg-mobile { display: block; }
+}
+
+/* Landing page action buttons — redesigned for new palette */
+.ui-landing-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: var(--space-10) var(--space-6);
+  background-color: #e3e2de;
+}
+
+.ui-landing-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 14px 36px;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.ui-landing-btn-primary {
+  background-color: var(--color-text-secondary);
+  color: #e3e2de;
+  border: 1px solid transparent;
+}
+
+.ui-landing-btn-primary:hover {
+  background-color: var(--color-text-primary);
+  color: #e3e2de;
+}
+
+.ui-landing-btn-secondary {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-strong);
+}
+
+.ui-landing-btn-secondary:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+/* ===== LANDING PAGE FOOTER ===== */
+/* Unique footer: contains all navbar links alongside social links */
+.ui-landing-footer {
+  background-color: #e3e2de;
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-8) var(--space-6);
+}
+
+.ui-landing-footer-inner {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.ui-landing-footer-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4) var(--space-5);
+  padding: 0;
+  margin: 0;
+}
+
+.ui-landing-footer-nav a {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.ui-landing-footer-nav a:hover {
+  color: var(--color-text-primary);
+}
+
+.ui-landing-footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3) var(--space-4);
+  padding: 0;
+  margin: 0;
+}
+
+.ui-landing-footer-socials a {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.ui-landing-footer-socials a:hover {
+  color: var(--color-text-secondary);
+}
+
+.ui-landing-footer-copy {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-text-disabled);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .ui-landing-footer-nav ul {
+    gap: var(--space-2) var(--space-4);
+  }
+  .ui-landing-footer-socials {
+    gap: var(--space-2) var(--space-3);
   }
 }

@@ -2,13 +2,40 @@
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
 
-$travelDataFile = dirname(__DIR__) . '/assets/data/travel-locations.json';
+// Load travel data from database
+require_once dirname(__DIR__) . '/models/Travel.php';
+$travelModel = new Travel();
+$dbLocations = $travelModel->getAllLocations();
+
+// Build the locations array in the format the JS expects
 $travelLocations = [];
-if (file_exists($travelDataFile)) {
-    $jsonContent = file_get_contents($travelDataFile);
-    $travelData = json_decode($jsonContent, true);
-    if ($travelData && isset($travelData['locations']) && is_array($travelData['locations'])) {
-        $travelLocations = $travelData['locations'];
+foreach ($dbLocations as $loc) {
+    $images = $travelModel->getImagesByLocation($loc['id']);
+    $imageFilenames = [];
+    foreach ($images as $img) {
+        $imageFilenames[] = $img['filename'];
+    }
+
+    $travelLocations[] = [
+        'id' => (int)$loc['id'],
+        'country' => $loc['country'],
+        'city' => $loc['city'],
+        'lat' => (float)$loc['lat'],
+        'lng' => (float)$loc['lng'],
+        'images' => $imageFilenames,
+        'visited' => $loc['visited'] ?? ''
+    ];
+}
+
+// Fallback: if DB is empty, try reading from JSON file (migration safety net)
+if (empty($travelLocations)) {
+    $travelDataFile = dirname(__DIR__) . '/assets/data/travel-locations.json';
+    if (file_exists($travelDataFile)) {
+        $jsonContent = file_get_contents($travelDataFile);
+        $travelData = json_decode($jsonContent, true);
+        if ($travelData && isset($travelData['locations']) && is_array($travelData['locations'])) {
+            $travelLocations = $travelData['locations'];
+        }
     }
 }
 
@@ -32,9 +59,13 @@ foreach ($travelLocations as $location) {
         $uniqueCountries[$location['country']] = true;
     }
     if (!empty($location['lat']) && !empty($location['lng'])) {
-        $totalMiles += haversineMilesPhp($hq['lat'], $hq['lng'], $location['lat'], $location['lng']);
+        $totalMiles += haversineMilesPhp($hq['lat'], $hq['lng'], (float)$location['lat'], (float)$location['lng']);
     }
 }
+
+// Image base path: uploaded images go to uploads/travel/, existing static images are in assets/images/travel/
+$imageBase = FULL_BASE_PATH . 'uploads/travel/';
+$staticImageBase = FULL_BASE_PATH . 'assets/images/travel/';
 
 ui_render_head(
     'Travel | Yunus Emre Vurgun',
@@ -304,7 +335,8 @@ ui_render_head(
 
 <script data-cfasync="false">
 window.TRAVEL_LOCATIONS = <?php echo json_encode($travelLocations, JSON_UNESCAPED_UNICODE); ?>;
-window.TRAVEL_IMAGE_BASE = <?php echo json_encode(FULL_BASE_PATH . 'assets/images/travel/'); ?>;
+window.TRAVEL_IMAGE_BASE = <?php echo json_encode($imageBase); ?>;
+window.TRAVEL_STATIC_IMAGE_BASE = <?php echo json_encode($staticImageBase); ?>;
 </script>
 <script data-cfasync="false" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script data-cfasync="false" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>

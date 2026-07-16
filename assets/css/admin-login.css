@@ -5,9 +5,9 @@ ADMIN LOGIN PAGE — POLISHED DARK THEME
 */
 
 :root {
-  --login-accent: var(--color-brand, #A8221E);
-  --login-accent-hover: var(--color-brand-hover, #C5302A);
-  --login-accent-subtle: var(--color-brand-subtle, rgba(168, 34, 30, 0.08));
+  --login-accent: var(--color-brand, #8490a4);
+  --login-accent-hover: var(--color-brand-hover, #6e7a90);
+  --login-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
 }
 
 body.admin-login-body {
@@ -25,8 +25,8 @@ body.admin-login-body::before {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(168, 34, 30, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 30% at 80% 90%, rgba(168, 34, 30, 0.04) 0%, transparent 50%);
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(132, 144, 164, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 30% at 80% 90%, rgba(132, 144, 164, 0.05) 0%, transparent 50%);
   z-index: 1;
 }
 
@@ -276,7 +276,7 @@ body.admin-login-container h1.admin-login-title,
 
 .admin-alert-info {
   background: var(--login-accent-subtle);
-  border-color: var(--color-brand-border, rgba(168, 34, 30, 0.3));
+  border-color: var(--color-brand-border, rgba(132, 144, 164, 0.3));
   color: var(--login-accent);
 }
 

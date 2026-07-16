@@ -14,6 +14,8 @@
             this.initImagePreview();
             this.initDragAndDrop();
             this.bindGalleryEvents();
+            this.initAlbumModal();
+            this.bindAlbumEvents();
         },
 
         initUploadModal: function() {
@@ -62,6 +64,7 @@
             const $form = $('#uploadForm');
             const $images = $('#images');
             const $title = $('#imageTitle');
+            const $albumSelect = $('#albumSelect');
             const $progress = $('#uploadProgress');
             const $preview = $('#uploadPreview');
 
@@ -90,6 +93,7 @@
             const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
             formData.append('csrf_token', csrfToken);
             formData.append('imageTitle', $title.val());
+            formData.append('album_id', $albumSelect.val());
 
             Array.from($images[0].files).forEach((file) => {
                 formData.append('images[]', file);
@@ -282,6 +286,208 @@
             });
         },
 
+        // ==================== ALBUM METHODS ====================
+
+        initAlbumModal: function() {
+            window.openAlbumModal = this.openAlbumModal.bind(this);
+            window.closeAlbumModal = this.closeAlbumModal.bind(this);
+            window.createAlbum = this.createAlbum.bind(this);
+            window.editAlbum = this.editAlbum.bind(this);
+            window.deleteAlbum = this.deleteAlbum.bind(this);
+            window.assignImageToAlbum = this.assignImageToAlbum.bind(this);
+        },
+
+        openAlbumModal: function(albumId, albumName, albumDescription) {
+            const $modal = $('#albumModal');
+            if ($modal.length) {
+                $modal.css('display', 'flex');
+                $('body').css('overflow', 'hidden');
+                
+                const $title = $('#albumModalTitle');
+                const $id = $('#albumId');
+                const $name = $('#albumName');
+                const $desc = $('#albumDescription');
+                
+                if (albumId) {
+                    $title.text('Edit Album');
+                    $id.val(albumId);
+                    $name.val(albumName || '');
+                    $desc.val(albumDescription || '');
+                } else {
+                    $title.text('Create Album');
+                    $id.val('');
+                    $name.val('');
+                    $desc.val('');
+                }
+                
+                setTimeout(() => $name.focus(), 100);
+            }
+        },
+
+        closeAlbumModal: function() {
+            const $modal = $('#albumModal');
+            if ($modal.length) {
+                $modal.css('display', 'none');
+                $('body').css('overflow', '');
+                const $form = $('#albumForm');
+                if ($form.length) {
+                    $form[0].reset();
+                }
+            }
+        },
+
+        createAlbum: function() {
+            const name = $('#albumName').val().trim();
+            const description = $('#albumDescription').val().trim();
+            
+            if (!name) {
+                AdminPanel.showNotification('Album name is required', 'error');
+                return;
+            }
+            
+            const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
+            const formData = new FormData();
+            formData.append('csrf_token', csrfToken);
+            formData.append('action', 'create');
+            formData.append('name', name);
+            formData.append('description', description);
+            
+            $.ajax({
+                url: window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/api/admin/gallery/albums.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        AdminPanel.showNotification('Album created successfully', 'success');
+                        AdminPanel.closeAlbumModal();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        AdminPanel.showNotification('Failed to create album: ' + (response.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    AdminPanel.showNotification('Failed to create album: ' + error, 'error');
+                }
+            });
+        },
+
+        editAlbum: function(albumId) {
+            const name = $('#albumName').val().trim();
+            const description = $('#albumDescription').val().trim();
+            
+            if (!name) {
+                AdminPanel.showNotification('Album name is required', 'error');
+                return;
+            }
+            
+            const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
+            const formData = new FormData();
+            formData.append('csrf_token', csrfToken);
+            formData.append('action', 'update');
+            formData.append('id', albumId);
+            formData.append('name', name);
+            formData.append('description', description);
+            
+            $.ajax({
+                url: window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/api/admin/gallery/albums.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        AdminPanel.showNotification('Album updated successfully', 'success');
+                        AdminPanel.closeAlbumModal();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        AdminPanel.showNotification('Failed to update album: ' + (response.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    AdminPanel.showNotification('Failed to update album: ' + error, 'error');
+                }
+            });
+        },
+
+        deleteAlbum: function(albumId) {
+            if (!albumId) return;
+            if (!confirm('Delete this album? Images in this album will become unassigned but will not be deleted.')) {
+                return;
+            }
+            
+            const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
+            const formData = new FormData();
+            formData.append('csrf_token', csrfToken);
+            formData.append('action', 'delete');
+            formData.append('id', albumId);
+            
+            $.ajax({
+                url: window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/api/admin/gallery/albums.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        AdminPanel.showNotification('Album deleted successfully', 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        AdminPanel.showNotification('Failed to delete album: ' + (response.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    AdminPanel.showNotification('Failed to delete album: ' + error, 'error');
+                }
+            });
+        },
+
+        assignImageToAlbum: function(imageId, albumId) {
+            const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
+            const formData = new FormData();
+            formData.append('csrf_token', csrfToken);
+            formData.append('action', 'assign');
+            formData.append('image_id', imageId);
+            formData.append('album_id', albumId);
+            
+            $.ajax({
+                url: window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/api/admin/gallery/albums.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        AdminPanel.showNotification('Image album assignment updated', 'success');
+                    } else {
+                        AdminPanel.showNotification('Failed to update assignment: ' + (response.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    AdminPanel.showNotification('Failed to update assignment: ' + error, 'error');
+                }
+            });
+        },
+
         initImagePreview: function() {
             $(document).on('change', '#images', function() {
                 const files = this.files;
@@ -372,6 +578,61 @@
             $(document).on('click', '[data-action="delete"]', function(e) {
                 e.preventDefault();
                 AdminPanel.deleteImage($(this).data('id'));
+            });
+            
+            // Album select change for images
+            $(document).on('change', '.admin-album-select', function() {
+                const imageId = $(this).data('image-id');
+                const albumId = $(this).val();
+                AdminPanel.assignImageToAlbum(imageId, albumId);
+            });
+        },
+
+        bindAlbumEvents: function() {
+            // Create album button
+            $(document).on('click', '#createAlbumBtn, #emptyCreateAlbumBtn', function() {
+                AdminPanel.openAlbumModal();
+            });
+            
+            // Edit album button
+            $(document).on('click', '[data-action="edit-album"]', function() {
+                const id = $(this).data('id');
+                const name = $(this).data('name');
+                const description = $(this).data('description');
+                AdminPanel.openAlbumModal(id, name, description);
+            });
+            
+            // Delete album button
+            $(document).on('click', '[data-action="delete-album"]', function() {
+                const id = $(this).data('id');
+                AdminPanel.deleteAlbum(id);
+            });
+            
+            // Close album modal
+            $(document).on('click', '#albumModal', function(e) {
+                if (e.target === this) {
+                    AdminPanel.closeAlbumModal();
+                }
+            });
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $('#albumModal').is(':visible')) {
+                    AdminPanel.closeAlbumModal();
+                }
+            });
+            
+            // Save album button (create or edit)
+            $(document).on('click', '#saveAlbumBtn', function() {
+                const albumId = $('#albumId').val();
+                if (albumId) {
+                    AdminPanel.editAlbum(albumId);
+                } else {
+                    AdminPanel.createAlbum();
+                }
+            });
+            
+            // Cancel album button
+            $(document).on('click', '#cancelAlbumBtn, #closeAlbumModalBtn', function() {
+                AdminPanel.closeAlbumModal();
             });
         }
         });

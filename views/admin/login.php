@@ -328,15 +328,15 @@ if (strpos($currentPath, '/admin') !== false &&
     <meta name="description" content="Admin Login - Yunus Emre Vurgun Personal Website Administration">
     <meta name="robots" content="noindex, nofollow">
     <title>Admin Login | Yunus Emre Vurgun</title>
-    <link id="appFavicon32" rel="icon" type="image/png" sizes="32x32" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon-pfp-32.png">
-    <link id="appFavicon16" rel="icon" type="image/png" sizes="16x16" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon-pfp-32.png">
-    <link id="appFaviconShortcut" rel="shortcut icon" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon-pfp.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon-pfp.png">
-    <meta name="msapplication-TileImage" content="<?php echo FULL_BASE_PATH; ?>assets/images/favicon-pfp.png">
+    <link id="appFavicon32" rel="icon" type="image/svg+xml" sizes="32x32" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
+    <link id="appFavicon16" rel="icon" type="image/svg+xml" sizes="16x16" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
+    <link id="appFaviconShortcut" rel="shortcut icon" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
+    <meta name="msapplication-TileImage" content="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -354,7 +354,7 @@ if (strpos($currentPath, '/admin') !== false &&
     <noscript>
         <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1B1714; color: #F6F1E8; display: flex; align-items: center; justify-content: center; z-index: 9999;">
             <div style="text-align: center; padding: 2rem;">
-                <h1 style="font-family: 'Fraunces', 'Inter', serif;">JavaScript Required</h1>
+                <h1 style="font-family: 'Aileron', 'Helvetica Neue', Arial, sans-serif;">JavaScript Required</h1>
                 <p>This page requires JavaScript to function properly.</p>
                 <p>Please enable JavaScript in your browser and refresh the page.</p>
                 <a href="<?php echo FULL_BASE_PATH; ?>403.php?error=javascript_required" style="color: rgba(234,234,234,0.7); text-decoration: underline;">Click here if you cannot enable JavaScript</a>

@@ -21,14 +21,21 @@ try {
 }
 
 echo "# llms.txt for yunusemrevurgun.com\n";
+echo "# Brand: Yemre — The world of a developer\n";
 echo "# Canonical machine-readable source: {$base}/llms.txt\n";
 echo "# Generated: " . date('c') . "\n\n";
 
 echo "site: {$base}\n";
+echo "brand: Yemre\n";
+echo "slogan: The world of a developer\n";
 echo "owner: Yunus Emre Vurgun\n";
 echo "owner_url: {$base}/about\n";
 echo "primary_language: en\n";
 echo "content_type: personal_portfolio, technical_blog, project_archive\n\n";
+
+echo "taglines:\n";
+echo "- A new form of intelligence is emerging.\n";
+echo "- They say you're the average of the five people you spend the most time with. I'm carefully curating mine.\n\n";
 
 echo "description: |\n";
 echo "  Personal website of Yunus Emre Vurgun, a software developer and IT specialist\n";

@@ -7,7 +7,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 :root {
   --settings-accent: var(--color-brand, #4A7C59);
   --settings-accent-hover: var(--color-brand-hover, #5d9369);
-  --settings-accent-subtle: var(--color-brand-subtle, rgba(168, 34, 30, 0.08));
+  --settings-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
 }
 
 /* ===== LAYOUT ===== */

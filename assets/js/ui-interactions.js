@@ -206,63 +206,41 @@
 
   // Dynamic favicon — cycles the three landing-page portraits.
   function initDynamicFavicon() {
-    const links = qa('link[rel~="icon"]');
+    var links = qa('link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');
     if (!links.length) return;
-    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const sources = [
-      BASE_PATH + 'assets/images/portrait-3.png',
-      BASE_PATH + 'assets/images/real-pfp.png',
-      BASE_PATH + 'assets/images/yunus-emre-vurgun-portrait.jpg'
+    /* Weighted favicon rotation: 5 slots, default (favicon.svg) = 2/5 (40%),
+       each alternative = 1/5 (20%) */
+    var favicons = [
+      { src: BASE_PATH + 'assets/images/favicon.svg',         weight: 2 },
+      { src: BASE_PATH + 'assets/images/favicon-blackhole.svg',  weight: 1 },
+      { src: BASE_PATH + 'assets/images/favicon-editorial.svg',  weight: 1 },
+      { src: BASE_PATH + 'assets/images/favicon-pfp.png',        weight: 1 }
     ];
 
-    const size = 64;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const images = sources.map(function (src) {
-      const img = new Image();
-      img.src = src;
-      img.decoding = 'async';
-      return img;
+    // Build weighted array: each src repeated weight times
+    var weighted = [];
+    favicons.forEach(function (f) {
+      for (var i = 0; i < f.weight; i++) weighted.push(f.src);
     });
 
-    function drawOne(img) {
-      if (!img.naturalWidth) return false;
-      ctx.clearRect(0, 0, size, size);
-      // object-fit: cover crop into square
-      const ratio = Math.max(size / img.naturalWidth, size / img.naturalHeight);
-      const w = img.naturalWidth * ratio;
-      const h = img.naturalHeight * ratio;
-      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
-      return true;
+    function pickRandom() {
+      return weighted[Math.floor(Math.random() * weighted.length)];
     }
 
-    function setFavicon(img) {
-      if (!drawOne(img)) return false;
-      let url;
-      try { url = canvas.toDataURL('image/png'); } catch (e) { return false; }
-      links.forEach(function (l) { l.href = url; });
-      return true;
+    function setFavicon(src) {
+      links.forEach(function (l) { l.href = src; });
     }
 
-    function applyIndex(i) {
-      const img = images[i];
-      if (img.naturalWidth) { setFavicon(img); }
-      else { img.addEventListener('load', function () { setFavicon(img); }, { once: true }); }
-      img.addEventListener('error', function () {}, { once: true });
-    }
+    // Set initial favicon (default has highest probability)
+    setFavicon(favicons[0].src);
 
-    applyIndex(0);
-    if (reducedMotion || sources.length < 2) return;
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
 
-    let idx = 0;
+    // Rotate every 5 seconds with weighted randomization
     setInterval(function () {
-      idx = (idx + 1) % images.length;
-      applyIndex(idx);
+      setFavicon(pickRandom());
     }, 5000);
   }
 
@@ -633,6 +611,29 @@
     });
   }
 
+  function initGrayscaleTapReveal() {
+    // On touch devices, toggle .is-revealed on tap for interactive media
+    var isTouch = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    if (!isTouch) return;
+
+    var selectors = [
+      '.ui-slideshow-slide',
+      '.ui-photo-box',
+      '.ui-travel-modal-grid img',
+      '.ui-project-card',
+      '.ui-card',
+      '.ui-profile-frame'
+    ];
+
+    selectors.forEach(function (sel) {
+      qa(sel).forEach(function (el) {
+        el.addEventListener('click', function () {
+          el.classList.toggle('is-revealed');
+        });
+      });
+    });
+  }
+
   function init() {
     initMobileMenu();
     initAboutCommandCenter();
@@ -641,6 +642,7 @@
     initDynamicFavicon();
     initYunobotArchitectureModal();
     initYunobotTerminal();
+    initGrayscaleTapReveal();
   }
 
   if (document.readyState === 'loading') {

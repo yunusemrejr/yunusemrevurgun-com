@@ -59,6 +59,7 @@ class Router {
         'admin/api/search' => 'views/admin/api/search.php',
         'music' => 'views/music.php',
         'admin/music' => 'views/admin/music/index.php',
+        'admin/travel' => 'views/admin/travel/index.php',
     ];
 
     public function __construct() {

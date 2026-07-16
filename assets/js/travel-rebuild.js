@@ -4,6 +4,7 @@
     const HQ = { lat: 41.0082, lng: 28.9784, city: 'Istanbul', country: 'Turkey' };
     const locations = window.TRAVEL_LOCATIONS || [];
     const imageBase = window.TRAVEL_IMAGE_BASE || '';
+    const staticImageBase = window.TRAVEL_STATIC_IMAGE_BASE || '';
 
     // UI Elements
     const mapEl = document.getElementById('travelMap');
@@ -47,7 +48,7 @@
             } else {
                 grid.innerHTML = images.map(img => `
                     <div class="ui-travel-image-wrap">
-                        <img src="${imageBase}${img}" alt="${location.city}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="${imageBase}${img}" alt="${location.city}" loading="lazy" onerror="if(this.src!=='${staticImageBase}${img}'){this.src='${staticImageBase}${img}';this.onerror=null;}else{this.parentElement.style.display='none';}">
                     </div>
                 `).join('');
             }

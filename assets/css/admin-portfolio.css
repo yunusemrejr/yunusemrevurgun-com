@@ -7,7 +7,7 @@ ADMIN PORTFOLIO PAGES — POLISHED DARK THEME
 :root {
   --portfolio-accent: var(--color-brand, #4A7C59);
   --portfolio-accent-hover: var(--color-brand-hover, #5d9369);
-  --portfolio-accent-subtle: var(--color-brand-subtle, rgba(168, 34, 30, 0.08));
+  --portfolio-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
 }
 
 /* ===== CARDS ===== */

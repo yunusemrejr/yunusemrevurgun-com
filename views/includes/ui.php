@@ -8,7 +8,7 @@ if (!function_exists('ui_render_head')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1B1714">
+    <meta name="theme-color" content="#e3e2de">
     <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
     <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
     <meta name="bingbot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
@@ -26,11 +26,11 @@ if (!function_exists('ui_render_head')) {
     <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= FULL_BASE_PATH ?>sitemap.xml">
     <link rel="alternate" type="text/plain" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
     <link rel="alternate" type="application/ld+json" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?= FULL_BASE_PATH ?>assets/images/favicon-pfp.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?= FULL_BASE_PATH ?>assets/images/favicon-pfp.png">
-    <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon-pfp.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?= FULL_BASE_PATH ?>assets/images/favicon-pfp.png">
-    <meta name="msapplication-TileImage" content="<?= FULL_BASE_PATH ?>assets/images/favicon-pfp.png">
+    <link rel="icon" type="image/svg+xml" sizes="32x32" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
+    <link rel="icon" type="image/svg+xml" sizes="16x16" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
+    <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
+    <meta name="msapplication-TileImage" content="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ui-rebuild.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ui-rebuild.css') ?>">
     <?php if (isset($extraMeta['yunobot']) && $extraMeta['yunobot']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/yunobot.css?v=<?= filemtime(__DIR__ . '/../../assets/css/yunobot.css') ?>">
