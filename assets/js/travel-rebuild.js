@@ -44,7 +44,7 @@
 
         if (grid) {
             if (images.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--color-text-muted, rgba(255,255,255,0.5));">No images for this location yet.</p>';
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #8fa6a6;">No images for this location yet.</p>';
             } else {
                 grid.innerHTML = images.map(img => `
                     <div class="ui-travel-image-wrap">
@@ -82,7 +82,7 @@
             scrollWheelZoom: false
         });
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap &copy; CARTO',
             subdomains: 'abcd',
             maxZoom: 19
@@ -149,7 +149,7 @@
         // Procedural dot pattern for globe
         const globeGeom = new THREE.SphereGeometry(radius, segments, segments);
         const globeMat = new THREE.PointsMaterial({
-            color: 0x4A90E2,
+            color: 0x8490a4,
             size: 1.5,
             transparent: true,
             opacity: 0.4
@@ -160,7 +160,7 @@
         // 2. Atmosphere / Glow
         const glowGeom = new THREE.SphereGeometry(radius * 1.02, segments, segments);
         const glowMat = new THREE.MeshBasicMaterial({
-            color: 0x4A90E2,
+            color: 0x8490a4,
             transparent: true,
             opacity: 0.05,
             side: THREE.BackSide
@@ -203,7 +203,7 @@
             
             // Pulsing marker
             const markerGeom = new THREE.SphereGeometry(2, 8, 8);
-            const markerMat = new THREE.MeshBasicMaterial({ color: 0x4A90E2 });
+            const markerMat = new THREE.MeshBasicMaterial({ color: 0x8490a4 });
             const marker = new THREE.Mesh(markerGeom, markerMat);
             marker.position.copy(pos);
             marker.userData = { location: loc };
@@ -212,7 +212,7 @@
 
             // Add a small aura
             const auraGeom = new THREE.SphereGeometry(4, 8, 8);
-            const auraMat = new THREE.MeshBasicMaterial({ color: 0x4A90E2, transparent: true, opacity: 0.2 });
+            const auraMat = new THREE.MeshBasicMaterial({ color: 0x8490a4, transparent: true, opacity: 0.2 });
             const aura = new THREE.Mesh(auraGeom, auraMat);
             aura.position.copy(pos);
             markersGroup.add(aura);

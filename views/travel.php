@@ -82,9 +82,9 @@ ui_render_head(
             .ui-toggle-btn {
                 padding: 0.5rem 1.25rem;
                 border-radius: 0;
-                border: 1px solid var(--color-border, rgba(255,255,255,0.1));
+                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
                 background: transparent;
-                color: var(--color-text-secondary, rgba(255,255,255,0.6));
+                color: var(--color-text-secondary, #8fa6a6);
                 cursor: pointer;
                 font-size: 0.75rem;
                 font-weight: 500;
@@ -94,21 +94,21 @@ ui_render_head(
                 transition: all 0.2s ease;
             }
             .ui-toggle-btn:hover {
-                background: rgba(255,255,255,0.05);
-                color: var(--color-text-primary, #ffffff);
+                background: rgba(132,144,164,0.08);
+                color: var(--color-text-primary, #a6a6a6);
             }
             .ui-toggle-btn.is-active {
-                background: var(--color-text-primary, #EAEAEA);
-                color: var(--color-bg-primary, #1B1714);
-                border-color: var(--color-text-primary, #EAEAEA);
+                background: var(--color-text-primary, #a6a6a6);
+                color: var(--color-bg-primary, #e3e2de);
+                border-color: var(--color-text-primary, #a6a6a6);
             }
             .ui-map-view-container {
                 position: relative;
                 width: 100%;
                 height: 65vh;
                 min-height: 450px;
-                border: 1px solid var(--color-border, rgba(42, 54, 66, 0.7));
-                background: var(--color-bg-primary, #1B1714);
+                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
+                background: var(--color-bg-primary, #e3e2de);
             }
             .ui-map-view {
                 position: absolute;
@@ -137,10 +137,10 @@ ui_render_head(
                 z-index: 10;
                 display: flex;
                 gap: 2rem;
-                background: rgba(0,0,0,0.6);
+                background: rgba(227,226,222,0.85);
                 backdrop-filter: blur(10px);
                 padding: 1rem 1.5rem;
-                border: 1px solid rgba(255,255,255,0.1);
+                border: 1px solid var(--color-border-strong, rgba(132,144,164,0.45));
             }
             .ui-overlay-stat-item {
                 display: flex;
@@ -149,12 +149,12 @@ ui_render_head(
             .ui-overlay-stat-value {
                 font-size: 1.25rem;
                 font-weight: 700;
-                color: var(--color-text-primary, #ffffff);
+                color: #575757;
                 font-family: var(--font-mono, ui-monospace, monospace);
             }
             .ui-overlay-stat-label {
                 font-size: 0.7rem;
-                color: var(--color-text-muted, rgba(255,255,255,0.5));
+                color: var(--color-text-secondary, #8fa6a6);
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
                 font-family: var(--font-mono, ui-monospace, monospace);
@@ -167,22 +167,22 @@ ui_render_head(
                 display: block;
                 width: 10px;
                 height: 10px;
-                background: var(--color-text-primary, #ffffff);
+                background: #8490a4;
                 border-radius: 0;
-                border: 2px solid var(--color-bg-primary, #1B1714);
+                border: 2px solid var(--color-bg-primary, #e3e2de);
                 transition: transform 0.2s ease;
             }
             .ui-map-dot:hover .ui-map-dot-core {
                 transform: scale(1.5);
             }
             .leaflet-popup-content-wrapper {
-                background: var(--color-bg-secondary, #2a2d35) !important;
-                color: var(--color-text-primary, #ffffff) !important;
+                background: var(--color-bg-elevated, #edeceb) !important;
+                color: #575757 !important;
                 border-radius: 0 !important;
-                border: 1px solid var(--color-border, rgba(255,255,255,0.1));
+                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
             }
             .leaflet-popup-tip {
-                background: var(--color-bg-secondary, #2a2d35) !important;
+                background: var(--color-bg-elevated, #edeceb) !important;
             }
             .ui-travel-modal-grid {
                 display: grid;
@@ -194,8 +194,8 @@ ui_render_head(
                 aspect-ratio: 4/3;
                 border-radius: 0;
                 overflow: hidden;
-                border: 1px solid var(--color-border, rgba(255,255,255,0.1));
-                background: var(--color-bg-primary, #111);
+                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
+                background: var(--color-bg-card, #f5f4f1);
             }
             .ui-travel-image-wrap img {
                 width: 100%;
@@ -230,12 +230,12 @@ ui_render_head(
             .ui-travel-modal-backdrop {
                 position: absolute;
                 inset: 0;
-                background: rgba(0,0,0,0.6);
+                background: rgba(227,226,222,0.7);
             }
             .ui-travel-modal-panel {
                 position: relative;
-                background: var(--color-bg-secondary, #2a2d35);
-                border: 1px solid var(--color-border, rgba(255,255,255,0.1));
+                background: var(--color-bg-elevated, #edeceb);
+                border: 1px solid var(--color-border-strong, rgba(132,144,164,0.45));
                 padding: 2rem;
                 max-width: 560px;
                 width: 90%;
@@ -249,8 +249,8 @@ ui_render_head(
                 width: 28px;
                 height: 28px;
                 background: transparent;
-                border: 1px solid var(--color-border, rgba(255,255,255,0.1));
-                color: var(--color-text-secondary, rgba(255,255,255,0.7));
+                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
+                color: var(--color-text-secondary, #8fa6a6);
                 cursor: pointer;
                 font-size: 1.1rem;
                 display: flex;
@@ -259,19 +259,19 @@ ui_render_head(
                 transition: all 0.2s ease;
             }
             .ui-travel-modal-close:hover {
-                background: rgba(255,255,255,0.05);
-                color: var(--color-text-primary, #ffffff);
+                background: rgba(132,144,164,0.08);
+                color: #575757;
             }
             .ui-card-title {
                 font-size: 1.25rem;
                 font-weight: 600;
-                color: var(--color-text-primary, #ffffff);
+                color: #575757;
                 margin-bottom: 0.25rem;
                 font-family: var(--font-mono, ui-monospace, monospace);
             }
             .ui-card-meta {
                 font-size: 0.8rem;
-                color: var(--color-text-muted, rgba(255,255,255,0.5));
+                color: var(--color-text-secondary, #8fa6a6);
                 font-family: var(--font-mono, ui-monospace, monospace);
                 margin-bottom: 1rem;
             }

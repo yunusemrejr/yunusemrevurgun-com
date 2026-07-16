@@ -19,8 +19,7 @@ ui_render_head(
         </section>
 
         <section class="ui-section">
-            <div class="ui-about-grid">
-                <div class="ui-command-center">
+            <div class="ui-command-center" style="max-width: 800px;">
                     <article class="ui-command-card">
                         <button class="ui-command-trigger" type="button" aria-expanded="false">Summary</button>
                         <div class="ui-command-panel">
@@ -107,35 +106,6 @@ ui_render_head(
                         </div>
                     </article>
                 </div>
-
-                <aside class="ui-photo-box" style="position: sticky; top: calc(var(--navbar-height) + 2rem);">
-                    <div class="ui-profile-frame">
-                        <img
-                            class="ui-profile-image ui-portrait-crossfade-base"
-                            src="<?= FULL_BASE_PATH ?>assets/images/portrait-3.png"
-                            alt="Yunus Emre Vurgun"
-                            loading="eager"
-                        >
-                        <img
-                            class="ui-profile-image ui-portrait-crossfade-alt"
-                            src="<?= FULL_BASE_PATH ?>assets/images/real-pfp.png"
-                            alt="Yunus Emre Vurgun"
-                            loading="eager"
-                        >
-                        <img
-                            class="ui-profile-image ui-portrait-crossfade-tert"
-                            src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg"
-                            alt="Yunus Emre Vurgun"
-                            loading="eager"
-                        >
-                    </div>
-                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border);">
-                        <p style="font-size: var(--text-sm); color: var(--color-text-secondary); line-height: 1.6;">
-                            Based in Istanbul, Turkey. Currently building systems at ASP Otomasyon A.Ş.
-                        </p>
-                    </div>
-                </aside>
-            </div>
         </section>
     </main>
 
