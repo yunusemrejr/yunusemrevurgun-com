@@ -223,12 +223,15 @@ if (!isset($_SESSION['captcha_question']) || isset($_GET['refresh_captcha'])) {
     $_SESSION['captcha_issued_at'] = time();
 }
 
+// Two-step login: Step 1 = CAPTCHA gate, Step 2 = credentials
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $captchaValid = false;
     $error = '';
     $csrfToken = $_POST['csrf_token'] ?? '';
     $formStartedAt = (int)($_POST['form_started_at'] ?? 0);
     $elapsed = $formStartedAt > 0 ? time() - $formStartedAt : 0;
+
+    // Check if this is a CAPTCHA-only submission (Step 1)
+    $isCaptchaStep = !isset($_POST['captcha_verified']);
 
     if (!hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
         $error = "Security token expired. Please refresh and try again.";
@@ -242,68 +245,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isLoginTemporarilyBlocked()) {
         $error = "Too many failed attempts. Please wait briefly and try again.";
     }
-    
-    // Check if CAPTCHA answer is present
-    if (empty($error) && (!isset($_POST['captcha_answer']) || empty(trim($_POST['captcha_answer'])))) {
-        $error = "Please complete the security verification.";
-        $captchaValid = false;
-    } 
-    // Verify CAPTCHA answer
-    elseif (empty($error) && (!isset($_SESSION['captcha_answer_hash']) || !isset($_POST['captcha_hash']) || (time() - (int)($_SESSION['captcha_issued_at'] ?? 0)) > 900)) {
-        $error = "Security verification expired. Please refresh the page.";
-        $captchaValid = false;
-        // Regenerate CAPTCHA
-        $captcha = generateCaptcha();
-        $_SESSION['captcha_question'] = $captcha['question'];
-        $_SESSION['captcha_answer_hash'] = $captcha['hash'];
-        $_SESSION['captcha_issued_at'] = time();
-    }
-    elseif (empty($error)) {
-        $userAnswer = trim($_POST['captcha_answer']);
-        $answerHash = $_POST['captcha_hash'];
-        
-        // Verify the hash matches
-        if (hash_equals($_SESSION['captcha_answer_hash'], $answerHash)) {
-            $captchaValid = verifyCaptcha($userAnswer, $answerHash);
-        } else {
-            $captchaValid = false;
-        }
-        
-        if (!$captchaValid) {
-            $error = "Incorrect answer. Please try again.";
-            recordLoginFailure();
-            // Regenerate CAPTCHA on failure
-            $captcha = generateCaptcha();
-            $_SESSION['captcha_question'] = $captcha['question'];
-            $_SESSION['captcha_answer_hash'] = $captcha['hash'];
-            $_SESSION['captcha_issued_at'] = time();
-        }
-    }
-    
-    // Proceed with login if CAPTCHA verification passed
-    if ($captchaValid) {
-        try {
-            require_once dirname(__DIR__, 2) . '/models/Database.php';
-            $db = Database::getInstance()->getConnection();
-            
-            $auth = new Auth();
-            $loginResult = $auth->login($_POST['username'], $_POST['password']);
-            
-            if ($loginResult) {
-                clearLoginFailures();
-                CSRFProtection::rotateToken();
-                unset($_SESSION['captcha_question'], $_SESSION['captcha_answer_hash'], $_SESSION['captcha_issued_at']);
-                header('Location: ' . FULL_BASE_PATH . 'admin/dashboard');
-                exit;
+
+    if ($isCaptchaStep) {
+        // Step 1: Verify CAPTCHA only
+        if (empty($error)) {
+            if (!isset($_POST['captcha_answer']) || empty(trim($_POST['captcha_answer']))) {
+                $error = "Please complete the security verification.";
+            } elseif (!isset($_SESSION['captcha_answer_hash']) || !isset($_POST['captcha_hash']) || (time() - (int)($_SESSION['captcha_issued_at'] ?? 0)) > 900) {
+                $error = "Security verification expired. Please refresh the page.";
+                $captcha = generateCaptcha();
+                $_SESSION['captcha_question'] = $captcha['question'];
+                $_SESSION['captcha_answer_hash'] = $captcha['hash'];
+                $_SESSION['captcha_issued_at'] = time();
             } else {
-                recordLoginFailure();
-                $error = "Invalid username or password";
+                $userAnswer = trim($_POST['captcha_answer']);
+                $answerHash = $_POST['captcha_hash'];
+                
+                if (hash_equals($_SESSION['captcha_answer_hash'], $answerHash) && verifyCaptcha($userAnswer, $answerHash)) {
+                    // CAPTCHA passed — set session flag and regenerate for next step
+                    $_SESSION['captcha_passed'] = true;
+                    $_SESSION['captcha_passed_at'] = time();
+                    $captcha = generateCaptcha();
+                    $_SESSION['captcha_question'] = $captcha['question'];
+                    $_SESSION['captcha_answer_hash'] = $captcha['hash'];
+                    $_SESSION['captcha_issued_at'] = time();
+                } else {
+                    $error = "Incorrect answer. Please try again.";
+                    recordLoginFailure();
+                    $captcha = generateCaptcha();
+                    $_SESSION['captcha_question'] = $captcha['question'];
+                    $_SESSION['captcha_answer_hash'] = $captcha['hash'];
+                    $_SESSION['captcha_issued_at'] = time();
+                }
             }
-        } catch (Exception $e) {
-            $error = "An error occurred during login";
-            // Log exception in development mode
-            if (getenv('MODE') === 'development') {
-                error_log("Login exception: " . $e->getMessage());
+        }
+    } else {
+        // Step 2: Verify credentials (CAPTCHA already passed)
+        if (empty($error)) {
+            // Verify CAPTCHA session flag is still valid (within 5 minutes)
+            if (!isset($_SESSION['captcha_passed']) || (time() - (int)($_SESSION['captcha_passed_at'] ?? 0)) > 300) {
+                $error = "Security verification expired. Please refresh and try again.";
+                unset($_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
+            }
+        }
+        
+        if (empty($error)) {
+            try {
+                require_once dirname(__DIR__, 2) . '/models/Database.php';
+                $db = Database::getInstance()->getConnection();
+                
+                $auth = new Auth();
+                $loginResult = $auth->login($_POST['username'], $_POST['password']);
+                
+                if ($loginResult) {
+                    clearLoginFailures();
+                    CSRFProtection::rotateToken();
+                    unset($_SESSION['captcha_question'], $_SESSION['captcha_answer_hash'], $_SESSION['captcha_issued_at'], $_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
+                    header('Location: ' . FULL_BASE_PATH . 'admin/dashboard');
+                    exit;
+                } else {
+                    recordLoginFailure();
+                    unset($_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
+                    $error = "Invalid username or password";
+                }
+            } catch (Exception $e) {
+                $error = "An error occurred during login";
+                unset($_SESSION['captcha_passed'], $_SESSION['captcha_passed_at']);
+                if (getenv('MODE') === 'development') {
+                    error_log("Login exception: " . $e->getMessage());
+                }
             }
         }
     }
@@ -376,8 +386,6 @@ if (strpos($currentPath, '/admin') !== false &&
     <div class="admin-login-container">
         <!-- Site Title -->
         <div class="admin-login-identity">
-            <img src="<?php echo FULL_BASE_PATH; ?>assets/images/favicon-pfp.png" alt="" class="admin-login-avatar" loading="eager">
-            <p class="admin-login-kicker">Private console</p>
             <h1 class="admin-login-title">Admin Login</h1>
         </div>
 
@@ -406,72 +414,88 @@ if (strpos($currentPath, '/admin') !== false &&
                         <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
                     </div>
                     
-                    <div class="admin-form-group">
-                        <label for="username" class="admin-form-label">
-                            <i class="bi bi-person"></i> Username
-                        </label>
-                        <input type="text" 
-                               class="admin-form-control" 
-                               id="username" 
-                               name="username" 
-                               placeholder="admin_user" 
-                               required 
-                               autocomplete="username">
-                    </div>
-
-                    <div class="admin-form-group">
-                        <label for="password" class="admin-form-label">
-                            <i class="bi bi-lock"></i> Password
-                        </label>
-                        <div class="admin-password-container">
-                            <input type="password" 
-                                   class="admin-form-control" 
-                                   id="password" 
-                                   name="password" 
-                                   placeholder="••••••••••••" 
-                                   required 
-                                   autocomplete="current-password">
-                            <button type="button" class="admin-password-toggle" id="password-toggle" aria-label="Toggle password visibility">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="admin-form-group">
-                        <label for="captcha_answer" class="admin-form-label">
-                            <i class="bi bi-shield-check"></i> Security Verification
-                        </label>
-                        <div class="captcha-container">
-                            <div class="captcha-question">
-                                <?php echo htmlspecialchars($_SESSION['captcha_question'] ?? '? + ?'); ?> = ?
+                    <!-- Step 1: CAPTCHA Gate -->
+                    <div id="captcha-step"<?php echo isset($_SESSION['captcha_passed']) ? ' style="display:none;"' : ''; ?>>
+                        <div class="admin-form-group">
+                            <label class="admin-form-label">
+                                <i class="bi bi-shield-check"></i> Security Verification
+                            </label>
+                            <p class="admin-text-muted" style="margin-bottom: 1rem; font-size: 0.875rem;">
+                                Solve the math problem to proceed.
+                            </p>
+                            <div class="captcha-container">
+                                <div class="captcha-question">
+                                    <?php echo htmlspecialchars($_SESSION['captcha_question'] ?? '? + ?'); ?> = ?
+                                </div>
+                                <button type="button" id="refresh-captcha" class="admin-btn admin-btn-secondary admin-btn-sm" title="Get a new question" aria-label="Refresh CAPTCHA">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
                             </div>
-                            <button type="button" id="refresh-captcha" class="admin-btn admin-btn-secondary admin-btn-sm" title="Get a new question" aria-label="Refresh CAPTCHA">
-                                <i class="bi bi-arrow-clockwise"></i>
-                            </button>
+                            <input type="number" 
+                                   class="admin-form-control" 
+                                   id="captcha_answer" 
+                                   name="captcha_answer" 
+                                   placeholder="Enter answer" 
+                                   required 
+                                   autocomplete="off"
+                                   min="0"
+                                   max="20"
+                                   style="max-width: 200px; margin-top: 0.5rem;">
+                            <input type="hidden" name="captcha_hash" value="<?php echo htmlspecialchars($_SESSION['captcha_answer_hash'] ?? ''); ?>">
                         </div>
-                        <input type="number" 
-                               class="admin-form-control" 
-                               id="captcha_answer" 
-                               name="captcha_answer" 
-                               placeholder="Enter answer" 
-                               required 
-                               autocomplete="off"
-                               min="0"
-                               max="20"
-                               style="max-width: 200px; margin-top: 0.5rem;">
-                        <input type="hidden" name="captcha_hash" value="<?php echo htmlspecialchars($_SESSION['captcha_answer_hash'] ?? ''); ?>">
-                        <small class="admin-text-muted" style="display: block; margin-top: 0.5rem; font-size: 0.875rem;">
-                            Please solve the math problem above
-                        </small>
+                        <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit" id="captcha-submit-btn">
+                            <span class="btn-text">Verify</span>
+                            <span class="btn-loading">
+                                <i class="bi bi-arrow-repeat"></i>
+                                Processing...
+                            </span>
+                        </button>
                     </div>
 
-                <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit">
-                    <span class="btn-text">Login</span>
-                    <span class="btn-loading">
-                        <i class="bi bi-arrow-repeat"></i>
-                        Processing...
-                    </span>
-                </button>
+                    <!-- Step 2: Credentials (shown after CAPTCHA passed) -->
+                    <div id="credentials-step"<?php echo isset($_SESSION['captcha_passed']) ? '' : ' style="display:none;"'; ?>>
+                        <div class="admin-form-group">
+                            <label for="username" class="admin-form-label">
+                                <i class="bi bi-person"></i> Username
+                            </label>
+                            <input type="text" 
+                                   class="admin-form-control" 
+                                   id="username" 
+                                   name="username" 
+                                   placeholder="admin_user" 
+                                   autocomplete="username">
+                        </div>
+
+                        <div class="admin-form-group">
+                            <label for="password" class="admin-form-label">
+                                <i class="bi bi-lock"></i> Password
+                            </label>
+                            <div class="admin-password-container">
+                                <input type="password" 
+                                       class="admin-form-control" 
+                                       id="password" 
+                                       name="password" 
+                                       placeholder="••••••••••••" 
+                                       autocomplete="current-password">
+                                <button type="button" class="admin-password-toggle" id="password-toggle" aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Hidden CAPTCHA fields for final submit -->
+                        <input type="hidden" name="captcha_verified" value="1">
+                        <input type="hidden" name="captcha_answer" id="captcha_answer_final" value="">
+                        <input type="hidden" name="captcha_hash" id="captcha_hash_final" value="">
+
+                        <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit">
+                            <span class="btn-text">Login</span>
+                            <span class="btn-loading">
+                                <i class="bi bi-arrow-repeat"></i>
+                                Processing...
+                            </span>
+                        </button>
+                    </div>
             </form>
         </div>
     </div>

@@ -3,7 +3,8 @@
 
     var state = {
         submitting: false,
-        passwordVisible: false
+        passwordVisible: false,
+        isCaptchaStep: true
     };
 
     function $(selector) {
@@ -90,46 +91,105 @@
 
     function initForm() {
         var form = $('#admin-login-form');
-        var username = $('#username');
-        var password = $('#password');
-        var captcha = $('#captcha_answer');
-        var submit = $('.admin-login-submit');
-        if (!form || !username || !password || !captcha || !submit) return;
+        if (!form) return;
 
-        [username, password, captcha].forEach(function (field) {
-            field.addEventListener('input', function () {
-                clearFieldError(field);
+        // Detect which step we're on
+        var captchaStep = $('#captcha-step');
+        var credentialsStep = $('#credentials-step');
+        state.isCaptchaStep = captchaStep && captchaStep.style.display !== 'none';
+
+        var submit = form.querySelector('.admin-login-submit');
+        if (!submit) return;
+
+        if (state.isCaptchaStep) {
+            // Step 1: CAPTCHA only
+            var captcha = $('#captcha_answer');
+            if (captcha) {
+                captcha.addEventListener('input', function () {
+                    clearFieldError(captcha);
+                });
+            }
+
+            form.addEventListener('submit', function (event) {
+                if (state.submitting) {
+                    event.preventDefault();
+                    return;
+                }
+
+                var valid = true;
+                if (captcha) {
+                    valid = validateCaptcha(captcha) && valid;
+                }
+
+                if (!valid) {
+                    event.preventDefault();
+                    return;
+                }
+
+                state.submitting = true;
+                setLoading(submit, true);
             });
-        });
+        } else {
+            // Step 2: Credentials
+            var username = $('#username');
+            var password = $('#password');
+            var captchaAnswerHidden = $('#captcha_answer_final');
+            var captchaHashHidden = $('#captcha_hash_final');
 
-        form.addEventListener('submit', function (event) {
-            if (state.submitting) {
-                event.preventDefault();
-                return;
+            // Copy CAPTCHA values to hidden fields before submit
+            if (captchaAnswerHidden) {
+                var captchaInput = $('#captcha_answer');
+                if (captchaInput) {
+                    captchaAnswerHidden.value = captchaInput.value;
+                }
+            }
+            if (captchaHashHidden) {
+                var captchaHashInput = form.querySelector('input[name="captcha_hash"]');
+                if (captchaHashInput) {
+                    captchaHashHidden.value = captchaHashInput.value;
+                }
             }
 
-            var valid = true;
-            valid = validateField(username, 3, 'Username') && valid;
-            valid = validateField(password, 6, 'Password') && valid;
-            valid = validateCaptcha(captcha) && valid;
-
-            if (!valid) {
-                event.preventDefault();
-                return;
+            if (username) {
+                username.addEventListener('input', function () {
+                    clearFieldError(username);
+                });
+            }
+            if (password) {
+                password.addEventListener('input', function () {
+                    clearFieldError(password);
+                });
             }
 
-            state.submitting = true;
-            setLoading(submit, true);
-        });
+            form.addEventListener('submit', function (event) {
+                if (state.submitting) {
+                    event.preventDefault();
+                    return;
+                }
+
+                var valid = true;
+                if (username) valid = validateField(username, 3, 'Username') && valid;
+                if (password) valid = validateField(password, 6, 'Password') && valid;
+
+                if (!valid) {
+                    event.preventDefault();
+                    return;
+                }
+
+                state.submitting = true;
+                setLoading(submit, true);
+            });
+        }
     }
 
     function initFocus() {
-        var username = $('#username');
         var captcha = $('#captcha_answer');
-        if (username && !username.value) {
-            username.focus();
-        } else if (captcha) {
+        var username = $('#username');
+        
+        if (captcha && !captcha.value) {
             captcha.focus();
+        } else if (username && !username.value) {
+            username.focus();
         }
     }
 
