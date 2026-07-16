@@ -19,7 +19,7 @@ $publishedDate = date('c', strtotime($post['created_at'] ?? 'now'));
 $modifiedDate = date('c', strtotime($post['updated_at'] ?? $post['created_at'] ?? 'now'));
 $postUrl = rtrim(FULL_BASE_PATH, '/') . '/blog/' . rawurlencode($slug);
 $ogImage = !empty($post['featured_image'])
-    ? rtrim(FULL_BASE_PATH, '/') . htmlspecialchars($post['featured_image'])
+    ? FULL_BASE_PATH . ltrim(htmlspecialchars($post['featured_image']), '/')
     : FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg';
 
 $extraMeta = [
