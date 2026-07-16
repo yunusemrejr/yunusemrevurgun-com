@@ -209,6 +209,9 @@
         loadLocationPhotos: function(locationId) {
             const $grid = $('#photoGrid');
             const imageBase = window.FULL_BASE_PATH + 'uploads/travel/';
+            // Photos migrated from the legacy JSON live in the static dir —
+            // fall back to it when the file is not in uploads/.
+            const staticBase = window.FULL_BASE_PATH + 'assets/images/travel/';
 
             // For now, we load from the static JSON as a fallback since we don't have a photos API endpoint
             // In a real implementation, we'd fetch from an API
@@ -227,7 +230,7 @@
                             $item.html(
                                 '<div class="admin-card">' +
                                 '<div class="admin-gallery-image-container">' +
-                                '<img class="admin-gallery-image" src="' + imageBase + photo.filename + '" alt="' + photo.title + '" loading="lazy">' +
+                                '<img class="admin-gallery-image" src="' + imageBase + photo.filename + '" alt="' + photo.title + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + staticBase + photo.filename + '\';">' +
                                 '</div>' +
                                 '<div class="admin-card-body">' +
                                 '<button class="admin-btn admin-btn-danger admin-btn-sm" data-action="delete-photo" data-id="' + photo.id + '"><i class="bi bi-trash"></i> Delete</button>' +

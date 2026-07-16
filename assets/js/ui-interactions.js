@@ -144,66 +144,87 @@
   }
 
   function initSlideshow() {
-    const root = q('[data-slideshow]');
-    if (!root) return;
+    const roots = qa('[data-slideshow]');
+    if (!roots.length) return;
 
-    const track = q('.ui-slideshow-track', root);
-    const prevBtn = q('[data-slideshow-prev]', root);
-    const nextBtn = q('[data-slideshow-next]', root);
-    const currentEl = q('[data-slideshow-current]', root);
-    const captionEl = q('[data-slideshow-caption]', root);
-    const slides = qa('.ui-slideshow-slide', track);
-    const total = slides.length;
-    if (!track || total === 0) return;
+    const instances = [];
 
-    let index = 0;
-    const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    roots.forEach(function (root) {
+      const track = q('.ui-slideshow-track', root);
+      const prevBtn = q('[data-slideshow-prev]', root);
+      const nextBtn = q('[data-slideshow-next]', root);
+      const currentEl = q('[data-slideshow-current]', root);
+      const captionEl = q('[data-slideshow-caption]', root);
+      const slides = track ? qa('.ui-slideshow-slide', track) : [];
+      const total = slides.length;
+      if (!track || total === 0) return;
 
-    function render() {
-      index = (index + total) % total;
-      track.style.transform = 'translateX(-' + index * 100 + '%)';
-      if (currentEl) currentEl.textContent = String(index + 1);
-      if (captionEl) captionEl.textContent = slides[index].dataset.title || '';
-      if (prevBtn) prevBtn.disabled = false;
-      if (nextBtn) nextBtn.disabled = false;
-    }
+      let index = 0;
 
-    function go(dir) {
-      index += dir;
+      function render() {
+        index = (index + total) % total;
+        track.style.transform = 'translateX(-' + index * 100 + '%)';
+        if (currentEl) currentEl.textContent = String(index + 1);
+        if (captionEl) captionEl.textContent = slides[index].dataset.title || '';
+        if (prevBtn) prevBtn.disabled = false;
+        if (nextBtn) nextBtn.disabled = false;
+      }
+
+      function go(dir) {
+        index += dir;
+        render();
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
+      if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
+
+      // Touch swipe (mobile)
+      let startX = 0, startY = 0, touching = false;
+      const viewport = q('.ui-slideshow-viewport', root);
+      if (viewport) {
+        viewport.addEventListener('touchstart', function (e) {
+          if (e.touches.length !== 1) return;
+          touching = true;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+        }, { passive: true });
+        viewport.addEventListener('touchend', function (e) {
+          if (!touching) return;
+          touching = false;
+          const dx = (e.changedTouches[0] ? e.changedTouches[0].clientX : 0) - startX;
+          const dy = (e.changedTouches[0] ? e.changedTouches[0].clientY : 0) - startY;
+          if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
+        }, { passive: true });
+      }
+
       render();
-    }
-
-    if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
-    if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
-
-    document.addEventListener('keydown', function (event) {
-      // Only react when the slideshow is in view (avoid hijacking global keys)
-      if (!root.getBoundingClientRect || root.getBoundingClientRect().bottom < 0 || root.getBoundingClientRect().top > window.innerHeight) return;
-      if (event.key === 'ArrowLeft') { go(-1); }
-      else if (event.key === 'ArrowRight') { go(1); }
+      instances.push({ root: root, go: go });
     });
 
-    // Touch swipe (mobile)
-    let startX = 0, startY = 0, touching = false;
-    const viewport = q('.ui-slideshow-viewport', root);
-    if (viewport) {
-      viewport.addEventListener('touchstart', function (e) {
-        if (e.touches.length !== 1) return;
-        touching = true;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-      }, { passive: true });
-      viewport.addEventListener('touchend', function (e) {
-        if (!touching) return;
-        touching = false;
-        const dx = (e.changedTouches[0] ? e.changedTouches[0].clientX : 0) - startX;
-        const dy = (e.changedTouches[0] ? e.changedTouches[0].clientY : 0) - startY;
-        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1);
-      }, { passive: true });
-    }
+    // Arrow keys: drive the slideshow that is most visible in the viewport
+    // (never hijacks keys while typing in a form field).
+    if (instances.length) {
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        const target = event.target;
+        if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable)) return;
 
-    render();
-    void reducedMotion;
+        let best = null;
+        let bestVisible = 0;
+        instances.forEach(function (inst) {
+          if (!inst.root.getBoundingClientRect) return;
+          const rect = inst.root.getBoundingClientRect();
+          const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+          if (visible > bestVisible) {
+            bestVisible = visible;
+            best = inst;
+          }
+        });
+        if (!best) return;
+        if (event.key === 'ArrowLeft') { best.go(-1); }
+        else { best.go(1); }
+      });
+    }
   }
 
   // Dynamic favicon — cycles the three landing-page portraits.
