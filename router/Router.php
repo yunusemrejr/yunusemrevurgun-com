@@ -54,7 +54,6 @@ class Router {
         'search' => 'views/search.php',
         'api/search' => 'api/search.php',
         'api/llms' => 'api/llms.php',
-        'api/diag_updates' => 'api/diag_updates.php',
         'api/contact' => 'api/contact.php',
         'admin/search' => 'views/admin/search.php',
         'admin/api/search' => 'views/admin/api/search.php',

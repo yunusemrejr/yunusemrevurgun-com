@@ -2,6 +2,7 @@
 .env.*
 !.env.example
 *.log
+*.jsonl
 .DS_Store
 
 _backups/
@@ -18,6 +19,7 @@ tmp/
 logs/
 
 node_modules/
+.kilo/node_modules/
 vendor/
 
 .playwright-cli/
