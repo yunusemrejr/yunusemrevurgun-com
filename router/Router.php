@@ -41,7 +41,6 @@ class Router {
         'sitemap' => 'views/sitemap.php',
         'sitemap.xml' => 'api/sitemap.php',
         'llms.txt' => 'api/llms.php',
-        'diag-updates' => 'views/diag_updates.php',
         'privacy' => 'views/legal/privacy.php',
         'terms' => 'views/legal/terms.php',
         'cookies' => 'views/legal/cookies.php',
@@ -234,7 +233,7 @@ class Router {
         }
 
         // Pages that manage their own layout via ui.php functions
-        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'science-corner', 'yunobot', 'search', 'privacy', 'terms', 'cookies', 'more', 'diag_updates', 'sitemap', 'llms', 'music'];
+        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'science-corner', 'yunobot', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
         $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
 
         // Layout is self-contained via ui.php functions; no separate header/footer files

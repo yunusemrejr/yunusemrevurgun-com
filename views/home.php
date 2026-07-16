@@ -57,10 +57,5 @@ ui_render_head(
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../assets/js/ui-interactions.js') ?>"></script>
-<script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('<?= FULL_BASE_PATH ?>assets/js/sw.js');
-}
-</script>
 </body>
 </html>

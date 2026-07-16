@@ -171,11 +171,6 @@ if (!function_exists('ui_render_footer')) {
     </div>
 </footer>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../../assets/js/ui-interactions.js') ?>"></script>
-<script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('<?= FULL_BASE_PATH ?>assets/js/sw.js');
-}
-</script>
 <?php
     }
 }

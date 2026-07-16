@@ -273,23 +273,6 @@ class Blog {
         }
     }
 
-    private function uploadFeaturedImage($file) {
-        $uploadDir = __DIR__ . '/../uploads/blog/';
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-        
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = uniqid() . '.' . $extension;
-        $destination = $uploadDir . $filename;
-        
-        if (move_uploaded_file($file['tmp_name'], $destination)) {
-            return 'uploads/blog/' . $filename;
-        }
-        
-        return null;
-    }
-
     public function updatePost($id, $data) {
         requireAdminSession(true);
         try {
