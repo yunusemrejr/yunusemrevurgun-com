@@ -218,6 +218,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formStartedAt = (int)($_POST['form_started_at'] ?? 0);
     $elapsed = $formStartedAt > 0 ? time() - $formStartedAt : 0;
 
+    // DIAGNOSTIC: Log session state on POST
+    error_log('LOGIN_DIAG: POST request, session_id=' . session_id() . ', captcha_answer=' . (isset($_SESSION['captcha_answer']) ? var_export($_SESSION['captcha_answer'], true) : 'NOT_SET') . ', captcha_issued_at=' . (isset($_SESSION['captcha_issued_at']) ? var_export($_SESSION['captcha_issued_at'], true) : 'NOT_SET') . ', time_diff=' . (isset($_SESSION['captcha_issued_at']) ? (time() - (int)$_SESSION['captcha_issued_at']) : 'N/A') . ', user_answer=' . var_export($_POST['captcha_answer'] ?? 'NOT_SENT', true));
+
     // Check if this is a CAPTCHA-only submission (Step 1)
     $isCaptchaStep = !isset($_POST['captcha_verified']);
 
