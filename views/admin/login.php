@@ -244,6 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "Please complete the security verification.";
             } elseif (!isset($_SESSION['captcha_answer']) || (time() - (int)($_SESSION['captcha_issued_at'] ?? 0)) > 900) {
                 $error = "Security verification expired. Please refresh the page.";
+                error_log('LOGIN_DIAG: CAPTCHA_EXPIRED - captcha_answer=' . (isset($_SESSION['captcha_answer']) ? 'SET' : 'NOT_SET') . ', time_diff=' . (isset($_SESSION['captcha_issued_at']) ? (time() - (int)$_SESSION['captcha_issued_at']) : 'N/A'));
                 $captcha = generateCaptcha();
                 $_SESSION['captcha_question'] = $captcha['question'];
                 $_SESSION['captcha_answer'] = $captcha['answer'];
@@ -255,12 +256,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // CAPTCHA passed — set session flag and regenerate for next step
                     $_SESSION['captcha_passed'] = true;
                     $_SESSION['captcha_passed_at'] = time();
+                    error_log('LOGIN_DIAG: CAPTCHA_PASSED');
                     $captcha = generateCaptcha();
                     $_SESSION['captcha_question'] = $captcha['question'];
                     $_SESSION['captcha_answer'] = $captcha['answer'];
                     $_SESSION['captcha_issued_at'] = time();
                 } else {
                     $error = "Incorrect answer. Please try again.";
+                    error_log('LOGIN_DIAG: CAPTCHA_WRONG - expected=' . $_SESSION['captcha_answer'] . ', got=' . $userAnswer);
                     recordLoginFailure();
                     $captcha = generateCaptcha();
                     $_SESSION['captcha_question'] = $captcha['question'];
