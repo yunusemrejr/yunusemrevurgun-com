@@ -30,7 +30,7 @@
 
 .ui-music-track:hover {
   background: var(--color-bg-hover);
-  border-color: var(--color-text-tertiary);
+  border-color: #8490a4;
 }
 
 .ui-music-track.is-active {
@@ -53,7 +53,7 @@
 .ui-music-track-number {
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
 }
 
 .ui-music-track-info {
@@ -67,7 +67,7 @@
 .ui-music-track-title {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: var(--color-text-primary);
+  color: #575757;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -77,7 +77,7 @@
 .ui-music-track-desc {
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -86,7 +86,7 @@
 .ui-music-track-date {
   font-family: var(--font-display);
   font-size: 0.6rem;
-  color: var(--color-text-disabled);
+  color: #b5b3af;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -98,7 +98,7 @@
 .ui-music-track-duration {
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   font-variant-numeric: tabular-nums;
 }
 
@@ -111,7 +111,7 @@
   background: transparent;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   cursor: pointer;
   flex-shrink: 0;
   transition: all var(--transition-fast);
@@ -120,7 +120,7 @@
 .ui-music-play-btn:hover {
   background: var(--color-accent);
   border-color: var(--color-accent);
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 .ui-music-track.is-active .ui-music-play-btn {
@@ -149,7 +149,7 @@
 .ui-music-player-title {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: var(--color-text-primary);
+  color: #575757;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -173,7 +173,7 @@
   background: transparent;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-text-secondary);
+  color: #8fa6a6;
   cursor: pointer;
   transition: all var(--transition-fast);
   flex-shrink: 0;
@@ -181,8 +181,8 @@
 
 .ui-music-player-btn:hover {
   background: var(--color-bg-hover);
-  border-color: var(--color-text-tertiary);
-  color: var(--color-text-primary);
+  border-color: #8490a4;
+  color: #575757;
 }
 
 .ui-music-player-btn-play {
@@ -194,7 +194,7 @@
 
 .ui-music-player-btn-play:hover {
   background: var(--color-accent);
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 .ui-music-player-progress {
@@ -208,7 +208,7 @@
 .ui-music-player-time {
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   min-width: 3ch;
@@ -269,7 +269,7 @@
 }
 
 .ui-music-player-btn.is-muted {
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   opacity: 0.5;
 }
 
@@ -277,7 +277,7 @@
 .ui-music-empty {
   text-align: center;
   padding: var(--space-12) var(--space-4);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   font-family: var(--font-display);
   font-size: var(--text-sm);
 }

@@ -173,12 +173,12 @@ ui_render_head(
                 <div class="ui-glass-panel">
                     <?php if ($success): ?>
                         <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(168,34,30,0.2) 0%, rgba(246,241,232,0.06) 100%); border: 1px solid var(--color-accent); border-radius: var(--radius-lg);">
-                            <p style="color: var(--color-text-primary);">Thank you. Your message has been sent.</p>
+                            <p style="color: #575757;">Thank you. Your message has been sent.</p>
                         </div>
                     <?php endif; ?>
                     <?php if ($error): ?>
                         <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(246,241,232,0.06) 100%); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-lg);">
-                            <p style="color: var(--color-text-primary);"><?= htmlspecialchars($error) ?></p>
+                            <p style="color: #575757;"><?= htmlspecialchars($error) ?></p>
                         </div>
                     <?php endif; ?>
 
@@ -240,35 +240,35 @@ ui_render_head(
                 <div>
                     <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Response Time</p>
-                        <p style="font-size: var(--text-sm); color: var(--color-text-secondary);">I typically respond within 24-48 hours on weekdays.</p>
+                        <p style="font-size: var(--text-sm); color: #575757;">I typically respond within 24-48 hours on weekdays.</p>
                     </div>
                     <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">YouTube</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://www.youtube.com/@yunusemrevurgun1" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yunusemrevurgun1</a></p>
+                        <p style="font-size: var(--text-sm);"><a href="https://www.youtube.com/@yunusemrevurgun1" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yunusemrevurgun1</a></p>
                     </div>
                     <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">GitHub</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://github.com/yunusemrejr" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yunusemrejr</a></p>
+                        <p style="font-size: var(--text-sm);"><a href="https://github.com/yunusemrejr" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yunusemrejr</a></p>
                     </div>
                     <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">LinkedIn</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://linkedin.com/in/yunus-emre-vurgun-49ba9a177" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">Profile</a></p>
+                        <p style="font-size: var(--text-sm);"><a href="https://linkedin.com/in/yunus-emre-vurgun-49ba9a177" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">Profile</a></p>
                     </div>
                     <div class="ui-glass-panel" style="margin-bottom: 1rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Bluesky</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://bsky.app/profile/yunusemrevurgun.bsky.social" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yunusemrevurgun</a></p>
+                        <p style="font-size: var(--text-sm);"><a href="https://bsky.app/profile/yunusemrevurgun.bsky.social" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yunusemrevurgun</a></p>
                     </div>
                     <div class="ui-glass-panel" style="margin-bottom: 1rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Threads</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://www.threads.com/@yemrevu" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yemrevu</a></p>
+                        <p style="font-size: var(--text-sm);"><a href="https://www.threads.com/@yemrevu" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yemrevu</a></p>
                     </div>
                     <div class="ui-glass-panel">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">X / Twitter</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://x.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yemrevu</a></p>
+                        <p style="font-size: var(--text-sm);"><a href="https://x.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yemrevu</a></p>
                     </div>
                     <div class="ui-glass-panel">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Instagram</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://instagram.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: var(--color-text-primary);">@yemrevu</a></p>
+                        <p style="font-size: var(--text-sm);"><a href="https://instagram.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yemrevu</a></p>
                     </div>
                 </div>
             </div>

@@ -377,38 +377,40 @@ body .ui-cards-section {
 
 .ui-mobile-toggle span {
   display: block;
-  width: 18px;
-  height: 1.75px;
+  width: 20px;
+  height: 2px;
   background-color: #575757;
   position: absolute;
   left: 50%;
-  top: 50%;
   transition: background-color var(--transition-fast), opacity var(--transition-fast), transform var(--transition-fast);
 }
 
 .ui-mobile-toggle span:nth-child(1) {
-  transform: translate(-50%, -6px);
+  top: 32%;
 }
 
 .ui-mobile-toggle span:nth-child(2) {
-  transform: translate(-50%, calc(-50% - 0.875px));
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .ui-mobile-toggle span:nth-child(3) {
-  transform: translate(-50%, 4.25px);
+  top: 68%;
 }
 
 .ui-mobile-toggle[aria-expanded="true"] span:nth-child(1) {
-  transform: translate(-50%, calc(-50% - 0.875px)) rotate(45deg);
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
 }
 
 .ui-mobile-toggle[aria-expanded="true"] span:nth-child(2) {
   opacity: 0;
-  transform: translate(-50%, -50%) scaleX(0);
+  transform: translateX(-20px);
 }
 
 .ui-mobile-toggle[aria-expanded="true"] span:nth-child(3) {
-  transform: translate(-50%, calc(-50% - 0.875px)) rotate(-45deg);
+  top: 50%;
+  transform: translateY(-50%) rotate(-45deg);
 }
 
 /* Mobile Menu */

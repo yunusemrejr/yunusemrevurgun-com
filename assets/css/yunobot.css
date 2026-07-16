@@ -8,9 +8,9 @@
   --yuno-bg: var(--color-bg-primary);
   --yuno-surface: var(--color-bg-elevated);
   --yuno-border: var(--color-border);
-  --yuno-text: var(--color-text-primary);
-  --yuno-text-secondary: var(--color-text-secondary);
-  --yuno-text-muted: var(--color-text-tertiary);
+  --yuno-text: #575757;
+  --yuno-text-secondary: #8fa6a6;
+  --yuno-text-muted: #8490a4;
   --yuno-accent: var(--color-accent);
   --yuno-surface-hover: var(--color-bg-subtle);
 
@@ -54,7 +54,7 @@
   border-radius: var(--radius-full);
 }
 .ui-yunobot-messages::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-tertiary);
+  background: #8490a4;
 }
 
 /* ============================================================
@@ -127,7 +127,7 @@
 .chat-status-text {
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -169,7 +169,7 @@
   font-size: 0.65rem;
   font-weight: 500;
   background: var(--color-bg-subtle);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   border: 1px solid var(--color-border);
 }
 
@@ -198,19 +198,19 @@
 .user-message .message-content {
   background: var(--msg-user-bg);
   border: 1px solid var(--msg-user-border);
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 .bot-message .message-content {
   background: var(--msg-bot-bg);
   border: 1px solid var(--msg-bot-border);
-  color: var(--color-text-secondary);
+  color: #8fa6a6;
 }
 
 /* Typography in messages */
 .message-content strong,
 .message-content b {
-  color: var(--color-text-primary);
+  color: #575757;
   font-weight: 600;
 }
 
@@ -224,7 +224,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 0.1rem 0.35rem;
-  color: var(--color-text-secondary);
+  color: #8fa6a6;
 }
 
 .message-content pre {
@@ -242,7 +242,7 @@
   padding: 0;
   font-size: var(--text-xs);
   line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: #8fa6a6;
 }
 
 .message-content ul,
@@ -254,7 +254,7 @@
 .message-content li { margin: var(--space-1) 0; line-height: 1.6; }
 
 .message-content a {
-  color: var(--color-text-primary);
+  color: #575757;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -267,7 +267,7 @@
   align-items: center;
   gap: var(--space-2);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   font-family: var(--font-display);
   padding: 0 var(--space-1);
 }
@@ -281,14 +281,14 @@
   height: 20px;
   border: none;
   background: transparent;
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   cursor: pointer;
   border-radius: var(--radius-sm);
   transition: color var(--transition-fast);
   padding: 0;
 }
 
-.message-copy-btn:hover { color: var(--color-text-primary); }
+.message-copy-btn:hover { color: #575757; }
 .message-copy-btn:active { transform: scale(0.9); }
 .message-copy-btn.copied { color: var(--status-ready); }
 .message-copy-btn svg { width: 12px; height: 12px; }
@@ -310,7 +310,7 @@
 .typing-dot {
   width: 5px;
   height: 5px;
-  background: var(--color-text-tertiary);
+  background: #8490a4;
   border-radius: var(--radius-full);
   animation: yunobot-typingWave 1.2s ease-in-out infinite;
   opacity: 0.5;
@@ -338,7 +338,7 @@
 .example-questions-label {
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: var(--space-3);
@@ -360,7 +360,7 @@
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   cursor: pointer;
   transition: all var(--transition-fast);
   min-height: 32px;
@@ -368,8 +368,8 @@
 
 .example-question-chip:hover {
   background: var(--color-bg-hover);
-  border-color: var(--color-text-tertiary);
-  color: var(--color-text-primary);
+  border-color: #8490a4;
+  color: #575757;
 }
 
 .example-question-chip:active { transform: translateY(0); }
@@ -396,7 +396,7 @@
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   cursor: pointer;
   transition: all var(--transition-fast);
   text-transform: uppercase;
@@ -406,8 +406,8 @@
 
 .chat-action-btn:hover {
   background: var(--color-bg-hover);
-  border-color: var(--color-text-tertiary);
-  color: var(--color-text-secondary);
+  border-color: #8490a4;
+  color: #8fa6a6;
 }
 
 .chat-action-btn:active { transform: scale(0.96); }
@@ -438,7 +438,7 @@
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
+  color: #575757;
   font-family: var(--font-body);
   font-size: var(--text-sm);
   transition: border-color var(--transition-fast);
@@ -456,13 +456,13 @@
 }
 
 .chat-input::placeholder {
-  color: var(--color-text-disabled);
+  color: #b5b3af;
 }
 
 .chat-input-hint {
   font-family: var(--font-display);
   font-size: 0.6rem;
-  color: var(--color-text-disabled);
+  color: #b5b3af;
   margin-top: var(--space-1);
 }
 
@@ -473,7 +473,7 @@
   background: var(--color-accent);
   border: none;
   border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
+  color: #575757;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -546,7 +546,7 @@
   background: transparent;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -556,7 +556,7 @@
 
 .ui-modal-close:hover {
   background: var(--color-bg-hover);
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 /* Info button */
@@ -574,7 +574,7 @@
   background: transparent;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   cursor: pointer;
   font-family: var(--font-display);
   display: flex;
@@ -585,14 +585,14 @@
 
 .ui-yunobot-info-btn:hover {
   background: var(--color-bg-hover);
-  color: var(--color-text-primary);
-  border-color: var(--color-text-tertiary);
+  color: #575757;
+  border-color: #8490a4;
 }
 
 .ui-yunobot-info-text {
   font-family: var(--font-display);
   font-size: var(--text-xs);
-  color: var(--color-text-disabled);
+  color: #b5b3af;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
