@@ -21,8 +21,6 @@ ADMIN TRAVEL PAGE — DARK THEME
 
 #photoGrid .admin-gallery-item .admin-card {
   background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
@@ -76,7 +74,7 @@ ADMIN TRAVEL PAGE — DARK THEME
   grid-column: 1 / -1;
   text-align: center;
   padding: var(--space-8);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   font-family: var(--font-body);
   font-size: var(--text-sm);
 }

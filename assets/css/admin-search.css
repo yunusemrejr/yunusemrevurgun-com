@@ -19,14 +19,11 @@ ADMIN SEARCH — POLISHED DARK THEME
   display: flex;
   align-items: center;
   background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
   padding: 0.125rem;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .admin-search-input-group:focus-within {
-  border-color: var(--color-border-focus);
   box-shadow: var(--shadow-focus);
 }
 
@@ -35,7 +32,7 @@ ADMIN SEARCH — POLISHED DARK THEME
   background: transparent;
   border: none;
   outline: none;
-  color: var(--color-text-primary);
+  color: #575757;
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   font-size: var(--text-sm);
@@ -44,25 +41,24 @@ ADMIN SEARCH — POLISHED DARK THEME
 }
 
 .admin-search-input::placeholder {
-  color: var(--color-text-tertiary);
+  color: #8490a4;
 }
 
 .admin-search-button {
   background: transparent;
   border: none;
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   cursor: pointer;
   padding: 0.3125rem 0.375rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: color var(--transition-fast);
-  border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
 
 .admin-search-button:hover {
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 /* ===== DROPDOWN RESULTS ===== */
@@ -72,8 +68,6 @@ ADMIN SEARCH — POLISHED DARK THEME
   left: 0;
   right: 0;
   background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   z-index: var(--z-dropdown);
   max-height: 380px;
@@ -96,7 +90,6 @@ ADMIN SEARCH — POLISHED DARK THEME
 
 .admin-search-results::-webkit-scrollbar-thumb {
   background: var(--color-border-strong);
-  border-radius: var(--radius-full);
 }
 
 /* ===== SEARCH SECTIONS ===== */
@@ -120,7 +113,7 @@ ADMIN SEARCH — POLISHED DARK THEME
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   margin: 0 0 var(--space-2);
   padding-bottom: var(--space-2);
   border-bottom: 1px solid var(--color-border);
@@ -139,13 +132,11 @@ ADMIN SEARCH — POLISHED DARK THEME
 .search-section li.search-item-published {
   background: rgba(34, 197, 94, 0.06);
   border-left: 2px solid rgba(34, 197, 94, 0.4);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .search-section li.search-item-draft {
   background: rgba(234, 179, 8, 0.06);
   border-left: 2px solid rgba(234, 179, 8, 0.4);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .search-section a {
@@ -154,9 +145,8 @@ ADMIN SEARCH — POLISHED DARK THEME
   justify-content: space-between;
   gap: var(--space-2);
   padding: 0.4375rem 0.625rem;
-  color: var(--color-text-primary);
+  color: #575757;
   text-decoration: none;
-  border-radius: var(--radius-sm);
   transition: background-color var(--transition-fast);
   font-family: var(--font-body);
   font-weight: var(--font-normal);
@@ -174,24 +164,24 @@ ADMIN SEARCH — POLISHED DARK THEME
 
 .search-section li.search-item-published a:hover {
   background: rgba(34, 197, 94, 0.12);
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 .search-section li.search-item-draft a:hover {
   background: rgba(234, 179, 8, 0.12);
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 .search-section a:hover {
   background: var(--search-accent-subtle);
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 /* ===== LOADING ===== */
 .admin-search-loading {
   padding: var(--space-6);
   text-align: center;
-  color: var(--color-text-secondary);
+  color: #8fa6a6;
   font-family: var(--font-body);
   font-weight: var(--font-normal);
 }
@@ -203,8 +193,7 @@ ADMIN SEARCH — POLISHED DARK THEME
   height: 14px;
   margin-left: var(--space-2);
   border: 2px solid var(--color-border);
-  border-radius: 50%;
-  border-top-color: var(--color-text-secondary);
+  border-top-color: #8fa6a6;
   animation: spin 0.8s linear infinite;
   vertical-align: middle;
 }
@@ -214,7 +203,6 @@ ADMIN SEARCH — POLISHED DARK THEME
   padding: var(--space-4);
   background: var(--color-danger-bg);
   color: var(--color-danger);
-  border-radius: var(--radius-sm);
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   text-align: center;
@@ -225,7 +213,7 @@ ADMIN SEARCH — POLISHED DARK THEME
 .admin-search-no-results {
   padding: var(--space-6);
   text-align: center;
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   font-style: italic;
@@ -239,7 +227,6 @@ ADMIN SEARCH — POLISHED DARK THEME
   padding: 0.125rem 0.375rem;
   font-size: 0.6rem;
   font-weight: var(--font-normal);
-  border-radius: var(--radius-sm);
   white-space: nowrap;
   flex-shrink: 0;
   font-family: var(--font-display);

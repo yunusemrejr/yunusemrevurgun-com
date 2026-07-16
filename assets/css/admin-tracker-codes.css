@@ -32,14 +32,14 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: var(--color-text-primary) !important;
+  color: #575757 !important;
   margin: 0 0 var(--space-1) 0;
 }
 
 .admin-content .admin-page-subtitle {
   font-family: var(--font-body);
   font-weight: var(--font-normal);
-  color: var(--color-text-tertiary) !important;
+  color: #8490a4 !important;
   margin: 0;
   font-size: var(--text-sm);
 }
@@ -47,14 +47,11 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 /* ===== CARDS ===== */
 .admin-content .admin-card {
   background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   overflow: hidden;
   transition: border-color var(--transition-base);
 }
 
 .admin-content .admin-card:hover {
-  border-color: var(--color-border-default);
 }
 
 .admin-content .admin-card-header {
@@ -67,7 +64,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-normal);
   font-size: var(--text-md);
-  color: var(--color-text-primary) !important;
+  color: #575757 !important;
   margin: 0;
 }
 
@@ -78,7 +75,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 
 .admin-content .admin-card-body {
   padding: var(--space-6);
-  color: var(--color-text-secondary) !important;
+  color: #8fa6a6 !important;
   background: transparent;
   font-family: var(--font-body);
 }
@@ -96,12 +93,10 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 
 .admin-tracker-table::-webkit-scrollbar-track {
   background: var(--color-bg-elevated);
-  border-radius: var(--radius-full);
 }
 
 .admin-tracker-table::-webkit-scrollbar-thumb {
   background: var(--color-border-strong);
-  border-radius: var(--radius-full);
 }
 
 .admin-tracker-table::-webkit-scrollbar-thumb:hover {
@@ -116,7 +111,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 
 .admin-tracker-table th {
   background: var(--color-bg-elevated);
-  color: var(--color-text-tertiary) !important;
+  color: #8490a4 !important;
   font-family: var(--font-display);
   font-weight: var(--font-normal);
   font-size: 0.675rem;
@@ -129,7 +124,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 }
 
 .admin-tracker-table td {
-  color: var(--color-text-secondary) !important;
+  color: #8fa6a6 !important;
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   padding: 0.875rem 1rem;
@@ -163,7 +158,6 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
   font-size: 0.625rem;
   font-weight: var(--font-normal);
   line-height: 1;
-  border-radius: var(--radius-sm);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-family: var(--font-display);
@@ -177,14 +171,12 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 
 .admin-badge-secondary {
   background: rgba(138, 133, 128, 0.1);
-  color: var(--color-text-tertiary);
-  border: 1px solid var(--color-border);
+  color: #8490a4;
 }
 
 /* ===== ALERTS ===== */
 .admin-alert {
   padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-md);
   margin-bottom: var(--space-4);
   border: 1px solid;
   font-family: var(--font-body);
@@ -211,7 +203,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 .admin-empty-state {
   text-align: center;
   padding: var(--space-10) var(--space-6);
-  color: var(--color-text-tertiary) !important;
+  color: #8490a4 !important;
   font-family: var(--font-body);
   display: flex;
   flex-direction: column;

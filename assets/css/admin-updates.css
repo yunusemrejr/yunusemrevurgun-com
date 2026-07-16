@@ -33,7 +33,7 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
   font-family: var(--font-display) !important;
   font-weight: var(--font-light) !important;
   font-size: var(--text-3xl) !important;
-  color: var(--color-text-primary) !important;
+  color: #575757 !important;
   letter-spacing: var(--text-tracking-tight) !important;
   margin: 0 !important;
 }
@@ -41,7 +41,7 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 .admin-page-subtitle {
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal);
-  color: var(--color-text-tertiary) !important;
+  color: #8490a4 !important;
   font-size: var(--text-sm);
   margin: 0;
 }
@@ -49,13 +49,10 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 /* ===== CARDS ===== */
 .admin-card {
   background: var(--color-bg-subtle) !important;
-  border: 1px solid var(--color-border) !important;
-  border-radius: var(--radius-md) !important;
   transition: border-color var(--transition-base);
 }
 
 .admin-card:hover {
-  border-color: var(--color-border-default);
 }
 
 .admin-card-header {
@@ -67,14 +64,14 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 .admin-card-title {
   font-family: var(--font-display) !important;
   font-weight: var(--font-normal) !important;
-  color: var(--color-text-primary) !important;
+  color: #575757 !important;
   font-size: var(--text-md) !important;
   margin: 0 !important;
 }
 
 .admin-card-body {
   padding: var(--space-6) !important;
-  color: var(--color-text-secondary) !important;
+  color: #8fa6a6 !important;
   background: transparent !important;
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal);
@@ -95,12 +92,10 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 
 .admin-table-scroll::-webkit-scrollbar-track {
   background: var(--color-bg-elevated);
-  border-radius: var(--radius-full);
 }
 
 .admin-table-scroll::-webkit-scrollbar-thumb {
   background: var(--color-border-strong);
-  border-radius: var(--radius-full);
 }
 
 .admin-table-scroll::-webkit-scrollbar-thumb:hover {
@@ -121,7 +116,7 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 
 .admin-updates-table th {
   background: var(--color-bg-elevated) !important;
-  color: var(--color-text-tertiary) !important;
+  color: #8490a4 !important;
   font-family: var(--font-display) !important;
   font-weight: var(--font-normal);
   font-size: 0.675rem;
@@ -134,7 +129,7 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 }
 
 .admin-updates-table td {
-  color: var(--color-text-secondary) !important;
+  color: #8fa6a6 !important;
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal);
   padding: 0.875rem 1rem;
@@ -163,7 +158,6 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
   padding: 0.25rem 0.5rem;
   font-size: 0.625rem;
   line-height: 1;
-  border-radius: var(--radius-sm);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   display: inline-flex;
@@ -193,7 +187,6 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal);
   padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-md);
   margin-bottom: var(--space-4);
   border: 1px solid;
   display: flex;
@@ -211,7 +204,7 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 .admin-empty-state {
   text-align: center;
   padding: var(--space-10) var(--space-6);
-  color: var(--color-text-tertiary) !important;
+  color: #8490a4 !important;
   font-family: var(--font-body) !important;
 }
 
@@ -234,10 +227,8 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 
 .admin-content .pagination .page-link {
   background: var(--color-bg-subtle) !important;
-  border: 1px solid var(--color-border) !important;
-  color: var(--color-text-primary) !important;
+  color: #575757 !important;
   padding: 0.4375rem 0.75rem !important;
-  border-radius: var(--radius-sm) !important;
   transition: all var(--transition-fast) !important;
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal) !important;
@@ -256,8 +247,8 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
 }
 
 .admin-content .pagination .page-item.active .page-link {
-  background: var(--color-text-primary) !important;
-  border-color: var(--color-text-primary) !important;
+  background: #8fa6a6 !important;
+  border-color: #575757 !important;
   color: var(--color-bg) !important;
 }
 
@@ -265,7 +256,7 @@ ADMIN UPDATES PAGE — POLISHED DARK THEME
   opacity: 0.4;
   cursor: not-allowed;
   background: var(--color-bg-subtle) !important;
-  color: var(--color-text-tertiary) !important;
+  color: #8490a4 !important;
 }
 
 /* ===== ACTION BUTTONS ===== */

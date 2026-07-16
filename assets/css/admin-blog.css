@@ -14,7 +14,7 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: var(--color-text-primary) !important;
+  color: #575757 !important;
   letter-spacing: var(--text-tracking-tight);
   margin: 0;
 }
@@ -28,8 +28,6 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
 
 .blog-admin-form {
   background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   padding: var(--space-8);
 }
 
@@ -46,16 +44,14 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
   font-family: var(--font-body);
   font-weight: var(--font-medium);
   font-size: var(--text-sm);
-  color: var(--color-text-primary);
+  color: #575757;
   margin-bottom: var(--space-2);
 }
 
 .blog-admin-form-control {
   width: 100%;
   background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
+  color: #575757;
   padding: 0.5625rem 0.875rem;
   font-family: var(--font-body);
   font-size: var(--text-md);
@@ -69,7 +65,7 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
 }
 
 .blog-admin-form-control::placeholder {
-  color: var(--color-text-tertiary);
+  color: #8490a4;
 }
 
 textarea.blog-admin-form-control,
@@ -91,7 +87,7 @@ select.blog-admin-form-control {
 .blog-admin-form-text {
   font-family: var(--font-body);
   font-size: 0.775rem;
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   margin-top: var(--space-1);
   line-height: var(--text-leading-normal);
 }
@@ -106,8 +102,6 @@ select.blog-admin-form-control {
   font-family: var(--font-body);
   font-size: var(--text-md);
   background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
@@ -119,7 +113,7 @@ select.blog-admin-form-control {
 
 .blog-admin-content-editor:empty:before {
   content: attr(data-placeholder);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   font-style: italic;
 }
 
@@ -131,7 +125,7 @@ select.blog-admin-form-control {
   font-family: var(--font-display);
   font-weight: var(--font-medium);
   margin: 1.25rem 0 0.5rem;
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 .blog-admin-content-editor a {
@@ -142,7 +136,6 @@ select.blog-admin-form-control {
 .blog-admin-content-editor img {
   max-width: 100%;
   height: auto;
-  border-radius: var(--radius-md);
   margin: 1rem 0;
 }
 
@@ -152,22 +145,18 @@ select.blog-admin-form-control {
   gap: var(--space-1);
   padding: var(--space-3);
   background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   border-bottom: none;
 }
 
 .blog-admin-editor-toolbar .btn-group {
   display: flex;
   gap: 1px;
-  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
 .blog-admin-editor-toolbar button {
   background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+  color: #8fa6a6;
   padding: 0.4375rem 0.6875rem;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -195,16 +184,14 @@ select.blog-admin-form-control {
   overflow-y: auto;
   padding: var(--space-4);
   background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
   font-family: var(--font-body);
   line-height: var(--text-leading-relaxed);
-  color: var(--color-text-primary);
+  color: #575757;
 }
 
 .blog-admin-preview:empty:before {
   content: "Preview will appear here as you type...";
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   font-style: italic;
 }
 
@@ -217,16 +204,12 @@ select.blog-admin-form-control {
   max-width: 100%;
   max-height: 180px;
   object-fit: cover;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
 }
 
 .featured-image-preview {
   max-width: 200px;
   max-height: 140px;
   object-fit: cover;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
   margin-bottom: var(--space-3);
 }
 
@@ -235,8 +218,6 @@ select.blog-admin-form-control {
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   padding: 0.5rem 1.125rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
@@ -246,7 +227,7 @@ select.blog-admin-form-control {
   transition: all var(--transition-fast);
   font-size: var(--text-sm);
   background: transparent;
-  color: var(--color-text-primary);
+  color: #575757;
   min-height: 36px;
   white-space: nowrap;
 }
@@ -257,25 +238,23 @@ select.blog-admin-form-control {
 }
 
 .blog-admin-btn-primary {
-  background: var(--color-text-primary);
+  background: #8fa6a6;
   color: var(--color-bg);
-  border-color: var(--color-text-primary);
+  border-color: #575757;
 }
 
 .blog-admin-btn-primary:hover {
-  background: var(--color-text-secondary);
-  border-color: var(--color-text-secondary);
+  background: #8490a4;
+  border-color: #8fa6a6;
   color: var(--color-bg);
 }
 
 .blog-admin-btn-secondary {
   background: transparent;
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
+  color: #575757;
 }
 
 .blog-admin-btn-secondary:hover {
-  border-color: var(--color-border-strong);
   background: var(--blog-accent-subtle);
 }
 
@@ -302,7 +281,6 @@ select.blog-admin-form-control {
 /* ===== ALERTS ===== */
 .blog-admin-alert {
   padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-md);
   margin-bottom: var(--space-4);
   border: 1px solid;
   font-family: var(--font-body);
@@ -334,8 +312,6 @@ select.blog-admin-form-control {
   width: 100%;
   border-collapse: collapse;
   background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
@@ -349,7 +325,7 @@ select.blog-admin-form-control {
   font-size: 0.675rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--color-text-tertiary);
+  color: #8490a4;
   padding: 0.875rem 1rem;
   text-align: left;
   border-bottom: 1px solid var(--color-border);
@@ -358,7 +334,7 @@ select.blog-admin-form-control {
 
 .blog-admin-table td {
   font-family: var(--font-body);
-  color: var(--color-text-secondary);
+  color: #8fa6a6;
   padding: 0.875rem 1rem;
   border-bottom: 1px solid var(--color-border);
   font-size: var(--text-sm);
@@ -378,13 +354,13 @@ select.blog-admin-form-control {
 }
 
 .blog-admin-table strong {
-  color: var(--color-text-primary);
+  color: #575757;
   font-weight: var(--font-medium);
 }
 
 .blog-admin-table small {
   font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
+  color: #8490a4;
 }
 
 /* ===== BADGES ===== */
@@ -396,7 +372,6 @@ select.blog-admin-form-control {
   font-weight: var(--font-normal);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  border-radius: var(--radius-sm);
   font-family: var(--font-display);
   white-space: nowrap;
 }
@@ -440,10 +415,8 @@ select.blog-admin-form-control {
 
 .blog-admin-pagination .page-link {
   background: var(--color-bg-subtle) !important;
-  border: 1px solid var(--color-border) !important;
-  color: var(--color-text-primary) !important;
+  color: #575757 !important;
   padding: 0.4375rem 0.75rem !important;
-  border-radius: var(--radius-sm) !important;
   transition: all var(--transition-fast) !important;
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal) !important;
@@ -462,8 +435,8 @@ select.blog-admin-form-control {
 }
 
 .blog-admin-pagination .page-item.active .page-link {
-  background: var(--color-text-primary) !important;
-  border-color: var(--color-text-primary) !important;
+  background: #8fa6a6 !important;
+  border-color: #575757 !important;
   color: var(--color-bg) !important;
 }
 
@@ -504,7 +477,6 @@ select.blog-admin-form-control {
   }
 
   .blog-admin-table {
-    border-radius: 0;
     min-width: 600px;
   }
 

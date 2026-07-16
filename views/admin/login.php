@@ -215,8 +215,8 @@ function verifyCaptcha($userAnswer, $answerHash) {
     return hash_equals($answerHash, $userAnswerHash);
 }
 
-// Generate CAPTCHA if not already set or if regenerating
-if (!isset($_SESSION['captcha_question']) || isset($_GET['refresh_captcha'])) {
+// Generate CAPTCHA if not already set or if explicitly refreshing (GET only, not on POST)
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && (!isset($_SESSION['captcha_question']) || isset($_GET['refresh_captcha']))) {
     $captcha = generateCaptcha();
     $_SESSION['captcha_question'] = $captcha['question'];
     $_SESSION['captcha_answer_hash'] = $captcha['hash'];

@@ -430,7 +430,17 @@
                         $fileInput.trigger('change');
                     }
                 });
+                // Click handler for desktop
                 $dropzone.on('click', function() {
+                    $('#photoFiles').click();
+                });
+                // Touch handlers for mobile (iPhone/iPad)
+                $dropzone.on('touchstart', function(e) {
+                    $(this).addClass('dragover');
+                });
+                $dropzone.on('touchend', function(e) {
+                    e.preventDefault();
+                    $(this).removeClass('dragover');
                     $('#photoFiles').click();
                 });
             }
