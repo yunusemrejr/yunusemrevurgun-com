@@ -150,7 +150,7 @@ class Gallery {
         $query = "DELETE FROM gallery_albums WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->rowCount() > 0;
     }
 
     public function getImagesByAlbum($albumId) {

@@ -21,12 +21,14 @@ $tracker = new Tracker();
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
-        'name' => $_POST['name'],
-        'code' => $_POST['code'],
+        'name' => trim($_POST['name'] ?? ''),
+        'code' => trim($_POST['code'] ?? ''),
         'is_active' => isset($_POST['is_active']) ? 1 : 0
     ];
-    
-    if ($tracker->createTrackerCode($data)) {
+
+    if ($data['name'] === '' || $data['code'] === '') {
+        $_SESSION['error'] = "Name and code are required.";
+    } elseif ($tracker->createTrackerCode($data)) {
         $_SESSION['success'] = "Tracker code created successfully.";
         // Use proper admin path with FULL_BASE_PATH
         header("Location: " . FULL_BASE_PATH . "admin/tracker-codes");

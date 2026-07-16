@@ -6,8 +6,8 @@
 $projectRoot = dirname(__DIR__);
 
 require_once $projectRoot . '/config/setPath.php';
+require_once $projectRoot . '/global.php';
 require_once $projectRoot . '/models/Contact.php';
-require_once $projectRoot . '/includes/csrf.php';
 require_once $projectRoot . '/includes/rate_limiter.php';
 require_once $projectRoot . '/includes/double_submit_protection.php';
 

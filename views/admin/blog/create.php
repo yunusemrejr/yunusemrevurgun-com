@@ -61,8 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('Image size must be less than 5MB.');
             }
             $originalName = basename($_FILES['featured_image']['name']);
-            $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '-', $originalName);
-            $filename = uniqid('', true) . '_' . $sanitizedName;
+            $sanitizedName = preg_replace('/[^a-zA-Z0-9_-]/', '-', pathinfo($originalName, PATHINFO_FILENAME));
+            // Extension comes from the detected MIME, never from the client filename
+            $extByMime = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
+            $filename = uniqid('', true) . '_' . $sanitizedName . '.' . $extByMime[$mime];
             $upload_file = $upload_dir . $filename;
             
             if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $upload_file)) {

@@ -140,7 +140,7 @@ class Travel {
         $query = "DELETE FROM travel_locations WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->rowCount() > 0;
     }
 
     public function getTotalLocations() {

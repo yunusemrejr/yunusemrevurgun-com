@@ -54,7 +54,9 @@ try {
             if (empty($name)) {
                 throw new Exception('Album name is required');
             }
-            
+            $name = mb_substr($name, 0, 255);
+            $description = mb_substr($description, 0, 2000);
+
             $albumId = $gallery->addAlbum($name, $description);
             
             echo json_encode([

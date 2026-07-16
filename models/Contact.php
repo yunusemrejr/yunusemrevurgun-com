@@ -39,16 +39,30 @@ class Contact {
     }
 
     private function createTableIfNotExists() {
-        $query = "CREATE TABLE IF NOT EXISTS contact_messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            subject VARCHAR(255) NOT NULL,
-            message TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            status ENUM('new', 'read', 'replied') DEFAULT 'new'
-        )";
-        
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        if ($driver === 'sqlite') {
+            $query = "CREATE TABLE IF NOT EXISTS contact_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                message TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                status TEXT DEFAULT 'new'
+            )";
+        } else {
+            $query = "CREATE TABLE IF NOT EXISTS contact_messages (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                subject VARCHAR(255) NOT NULL,
+                message TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                status ENUM('new', 'read', 'replied') DEFAULT 'new'
+            )";
+        }
+
         $this->db->exec($query);
     }
 

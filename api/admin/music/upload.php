@@ -27,6 +27,14 @@ if (!Auth::checkLogin()) {
     exit;
 }
 
+// PHP silently empties $_POST/$_FILES when the body exceeds post_max_size —
+// detect it so users get a clear message instead of a bogus CSRF error.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES)) {
+    http_response_code(413);
+    echo json_encode(['success' => false, 'message' => 'Upload too large for server limits. Try fewer or smaller files.']);
+    exit;
+}
+
 if (!CSRFProtection::validateToken($_POST['csrf_token'] ?? '')) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);

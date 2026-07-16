@@ -51,9 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $excerpt = $_POST['excerpt'] ?? '';
     // Ensure status is explicitly captured from form submission
     $rawStatus = $_POST['status'] ?? null;
-    error_log('[BLOG_EDIT] POST status raw: ' . var_export($rawStatus, true));
     $status = ($rawStatus === 'published') ? 'published' : 'draft';
-    error_log('[BLOG_EDIT] Status after processing: ' . $status);
     
     // Ensure we have a slug or generate one
     if (empty($_POST['slug'])) {
@@ -91,8 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         if (empty($error)) {
             $originalName = basename($_FILES['featured_image']['name']);
-            $sanitizedName = preg_replace('/[^a-zA-Z0-9._-]/', '-', $originalName);
-            $filename = uniqid('', true) . '_' . $sanitizedName;
+            $sanitizedName = preg_replace('/[^a-zA-Z0-9_-]/', '-', pathinfo($originalName, PATHINFO_FILENAME));
+            // Extension comes from the detected MIME, never from the client filename
+            $extByMime = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
+            $filename = uniqid('', true) . '_' . $sanitizedName . '.' . $extByMime[$mime];
             $upload_file = $upload_dir . $filename;
             
             if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $upload_file)) {

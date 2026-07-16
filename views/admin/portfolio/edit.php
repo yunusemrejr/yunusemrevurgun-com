@@ -98,14 +98,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && hash
     if ($image) {
         $data['image'] = $image;
     }
-    
-    $result = $portfolio->updateProject($id, $data);
-    if ($result) {
-        $success = true;
-        // Refresh project data
-        $project = $portfolio->getProjectById($id);
-    } else {
-        $error = 'Failed to update project.';
+
+    if (empty($error)) {
+        $result = $portfolio->updateProject($id, $data);
+        if ($result) {
+            $success = true;
+            // Refresh project data
+            $project = $portfolio->getProjectById($id);
+        } else {
+            $error = 'Failed to update project.';
+        }
     }
 }
 ?>

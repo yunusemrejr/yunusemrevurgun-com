@@ -378,22 +378,21 @@ class Blog {
         try {
             // Get the post to retrieve the featured image path
             $post = $this->getPostById($id);
-            
-            // Debug logging
-            
-            if ($post && $post['featured_image']) {
+
+            $query = "DELETE FROM blog_posts WHERE id = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+            $result = $stmt->execute() && $stmt->rowCount() > 0;
+
+            // Remove the featured image only after the row is actually gone
+            if ($result && $post && $post['featured_image']) {
                 $imagePath = __DIR__ . '/../' . $post['featured_image'];
                 if (file_exists($imagePath)) {
                     unlink($imagePath); // Delete the featured image
                 }
             }
 
-            $query = "DELETE FROM blog_posts WHERE id = :id";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-            
-            $result = $stmt->execute();
-            
             if ($result) {
                 // Generate new sitemap after successful deletion
                 try {

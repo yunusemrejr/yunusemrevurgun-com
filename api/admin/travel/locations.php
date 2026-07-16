@@ -54,6 +54,9 @@ try {
             if (empty($country) || empty($city) || empty($lat) || empty($lng)) {
                 throw new Exception('Country, city, latitude, and longitude are required');
             }
+            if (!is_numeric($lat) || !is_numeric($lng) || abs((float)$lat) > 90 || abs((float)$lng) > 180) {
+                throw new Exception('Latitude/longitude must be numeric (lat -90..90, lng -180..180)');
+            }
 
             $id = $travel->addLocation($country, $city, (float)$lat, (float)$lng, $visited ?: null);
 
@@ -81,8 +84,14 @@ try {
                 if (empty($city)) throw new Exception('City cannot be empty');
                 $data['city'] = $city;
             }
-            if (isset($_POST['lat'])) $data['lat'] = $_POST['lat'];
-            if (isset($_POST['lng'])) $data['lng'] = $_POST['lng'];
+            if (isset($_POST['lat'])) {
+                if (!is_numeric($_POST['lat']) || abs((float)$_POST['lat']) > 90) throw new Exception('Latitude must be numeric (-90..90)');
+                $data['lat'] = (float)$_POST['lat'];
+            }
+            if (isset($_POST['lng'])) {
+                if (!is_numeric($_POST['lng']) || abs((float)$_POST['lng']) > 180) throw new Exception('Longitude must be numeric (-180..180)');
+                $data['lng'] = (float)$_POST['lng'];
+            }
             if (isset($_POST['visited'])) $data['visited'] = $_POST['visited'] ?: null;
 
             if (empty($data)) throw new Exception('No data to update');

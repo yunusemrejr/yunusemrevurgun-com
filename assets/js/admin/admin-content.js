@@ -52,11 +52,12 @@
                 const originalText = $deleteBtn.text();
                 $deleteBtn.text('Deleting...').prop('disabled', true);
                 
-                // Make AJAX request to delete
+                // Make AJAX request to delete (routed admin endpoint)
                 $.ajax({
-                    url: window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/api/blog/delete.php',
+                    url: (window.FULL_BASE_PATH || (window.location.origin + '/')) + 'admin/blog',
                     method: 'POST',
                     data: {
+                        delete: 'yes',
                         id: postId,
                         csrf_token: $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val()
                     },

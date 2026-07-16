@@ -132,11 +132,16 @@
                         }
                     }
                     if (responseData.success) {
-                        AdminPanel.showNotification('Images uploaded successfully', 'success');
+                        const failed = Array.isArray(responseData.errors) ? responseData.errors : [];
+                        if (failed.length > 0) {
+                            AdminPanel.showNotification('Uploaded with ' + failed.length + ' failed file(s): ' + failed.join('; '), 'error');
+                        } else {
+                            AdminPanel.showNotification('Images uploaded successfully', 'success');
+                        }
                         AdminPanel.closeUploadModal();
                         setTimeout(() => {
                             window.location.reload();
-                        }, 1000);
+                        }, failed.length > 0 ? 3000 : 1000);
                     } else {
                         AdminPanel.showNotification('Upload failed: ' + (responseData.message || 'Unknown error'), 'error');
                     }

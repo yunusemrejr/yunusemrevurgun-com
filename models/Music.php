@@ -11,23 +11,45 @@ class Music {
     }
 
     private function createTableIfNotExists() {
-        $query = "CREATE TABLE IF NOT EXISTS music_tracks (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            filename VARCHAR(255) NOT NULL,
-            original_filename VARCHAR(255),
-            title VARCHAR(255) NOT NULL DEFAULT 'Untitled',
-            description TEXT,
-            recorded_at DATE DEFAULT NULL,
-            duration FLOAT DEFAULT 0,
-            file_size INT DEFAULT 0,
-            uploaded_by INT,
-            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-            sort_order INT DEFAULT 0,
-            is_archived TINYINT(1) NOT NULL DEFAULT 0,
-            archived_at TIMESTAMP NULL DEFAULT NULL,
-            FOREIGN KEY (uploaded_by) REFERENCES users(id)
-        )";
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        if ($driver === 'sqlite') {
+            $query = "CREATE TABLE IF NOT EXISTS music_tracks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                filename TEXT NOT NULL,
+                original_filename TEXT,
+                title TEXT NOT NULL DEFAULT 'Untitled',
+                description TEXT,
+                recorded_at TEXT DEFAULT NULL,
+                duration REAL DEFAULT 0,
+                file_size INTEGER DEFAULT 0,
+                uploaded_by INTEGER,
+                uploaded_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT NULL,
+                sort_order INTEGER DEFAULT 0,
+                is_archived INTEGER NOT NULL DEFAULT 0,
+                archived_at TEXT DEFAULT NULL,
+                FOREIGN KEY (uploaded_by) REFERENCES users(id)
+            )";
+        } else {
+            $query = "CREATE TABLE IF NOT EXISTS music_tracks (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                filename VARCHAR(255) NOT NULL,
+                original_filename VARCHAR(255),
+                title VARCHAR(255) NOT NULL DEFAULT 'Untitled',
+                description TEXT,
+                recorded_at DATE DEFAULT NULL,
+                duration FLOAT DEFAULT 0,
+                file_size INT DEFAULT 0,
+                uploaded_by INT,
+                uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+                sort_order INT DEFAULT 0,
+                is_archived TINYINT(1) NOT NULL DEFAULT 0,
+                archived_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (uploaded_by) REFERENCES users(id)
+            )";
+        }
         $this->db->exec($query);
 
         // Add columns if missing (existing tables)
@@ -39,9 +61,11 @@ class Music {
                 // Column already exists - ignore
             }
         }
-        try {
-            $this->db->exec("ALTER TABLE music_tracks ADD COLUMN updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP");
-        } catch (PDOException $e) {}
+        if ($driver !== 'sqlite') {
+            try {
+                $this->db->exec("ALTER TABLE music_tracks ADD COLUMN updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP");
+            } catch (PDOException $e) {}
+        }
         try {
             $this->db->exec("ALTER TABLE music_tracks ADD COLUMN is_archived TINYINT(1) NOT NULL DEFAULT 0");
         } catch (PDOException $e) {}
