@@ -238,9 +238,7 @@ class Router {
         $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'science-corner', 'yunobot', 'search', 'privacy', 'terms', 'cookies', 'more', 'diag_updates', 'sitemap', 'llms', 'music'];
         $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
 
-        if (!$skipLayout) {
-            require_once dirname(__DIR__) . '/views/includes/header.php';
-        }
+        // Layout is self-contained via ui.php functions; no separate header/footer files
 
         // Continue routing for non-admin pages
         if (array_key_exists($url, $this->routes)) {
@@ -253,23 +251,9 @@ class Router {
             require_once dirname(__DIR__) . '/views/404.php';
         }
 
-        if (!$skipLayout) {
-            require_once dirname(__DIR__) . '/views/includes/footer.php';
-        }
+
     }
 
-    protected function processMiddleware($route) {
-        // Removed any CSRF-specific middleware checks
-        // ... existing code ...
-    }
+
 }
 
-// If global.php is not included, include it and restrict direct access
-if (file_exists('../global.php')) {
-    require_once '../global.php';
-    restrictDirectAccess();
-
-}  
- 
-
-?> 

@@ -21,13 +21,6 @@ require_once $docRoot . $projectFolder . '/config/setPath.php';
 
 
 
-// If global.php is not included, include it and restrict direct access
-if (file_exists('../global.php')) {
-    require_once '../global.php';
-    restrictDirectAccess();
-    
-}  
-
 function renderPagination($currentPage, $totalPages, $urlPattern = '?page=%d') {
     if ($totalPages <= 1) return;
     ?>

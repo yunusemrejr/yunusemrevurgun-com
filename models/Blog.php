@@ -620,8 +620,3 @@ class Blog {
 }
 
 
-// If global.php is not included, include it and restrict direct access
-if (file_exists('../global.php')) {
-    require_once '../global.php';
-    restrictDirectAccess();
-}

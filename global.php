@@ -7,14 +7,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-function isAdminPage() {
-    $basePath = parse_url(FULL_BASE_PATH, PHP_URL_PATH) ?: '/';
-    $basePath = rtrim($basePath, '/');
-    $adminPath = $basePath . '/admin';
-    $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    return $requestPath === $adminPath || strpos($requestPath, $adminPath . '/') === 0;
-}
-
 function restrictDirectAccess() {
     if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
@@ -35,11 +27,7 @@ function restrictDirectAccess() {
     }
 }
 
-function generateCsrfToken() {
-    return CSRFProtection::generateToken();
-}
-
-generateCsrfToken();
+CSRFProtection::generateToken();
 
 function isAdminRequestUri(string $uri): bool {
     $basePath = parse_url(FULL_BASE_PATH, PHP_URL_PATH) ?: '/';

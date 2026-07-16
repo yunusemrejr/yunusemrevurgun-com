@@ -9,13 +9,6 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
 
 <?php
 
-// If global.php is not included, include it and restrict direct access
-if (file_exists('../global.php')) {
-    require_once '../global.php';
-    restrictDirectAccess();
-    
-}  
-
 $mode = env('MODE') ?: 'development';
 $driver = env('DB_CONNECTION');
 

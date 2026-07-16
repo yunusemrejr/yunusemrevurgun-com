@@ -202,8 +202,3 @@ class Music {
         return $this->getTotalTracks(true);
     }
 }
-
-if (file_exists('../global.php')) {
-    require_once '../global.php';
-    restrictDirectAccess();
-}

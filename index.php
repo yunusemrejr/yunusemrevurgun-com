@@ -16,7 +16,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once 'global.php';
-require_once 'middleware/SecurityMiddleware.php';
 require_once 'middleware/SessionAdminSecurityMiddleware.php';
 
 // Create request array
@@ -27,14 +26,9 @@ $request = [
     'post' => $_POST
 ];
 
-// Apply security middleware
-$security = new SecurityMiddleware($request);
-$security->handle();
-
-// Apply the middleware for admin routes
+// Apply admin security middleware (includes auth + CSRF checks)
 $middleware = new SessionAdminSecurityMiddleware($request);
 if (!$middleware->handle()) {
-    // If middleware fails, stop further processing
     exit;
 }
 
