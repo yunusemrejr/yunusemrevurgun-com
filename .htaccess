@@ -23,15 +23,15 @@ RewriteRule ^index/?$ / [R=301,L]
 <FilesMatch "^(\.env|\.env\.example|composer\.(json|lock)|phpunit\.xml|\.gitignore|env\.clone|\.ftpquota|\.user\.ini)$">
     Require all denied
 </FilesMatch>
-<FilesMatch "\.(sql|log|bak|ini|sh|phar|lock|dist|yml|yaml|sqlite|sqlite3|db)$">
+<FilesMatch "\.(sql|log|bak|ini|sh|phar|lock|dist|yml|yaml|sqlite|sqlite3|db|jsonl)$">
     Require all denied
 </FilesMatch>
 # Block debug, development, and utility files
 <FilesMatch "^(debug(_[a-z0-9_-]+)?|gallerymaster|galleryrequests|get_math_token)\.(php|txt|sh)$">
     Require all denied
 </FilesMatch>
-# Block runtime data files
-<FilesMatch "^(csrf_log|login_attempts|rate_limit_storage)\.(txt|json)$">
+# Block runtime data files (error logs may contain session IDs and must never be public)
+<FilesMatch "^(csrf_log|login_attempts|rate_limit_storage|error_log|sessionlog)\.(txt|json|log)$">
     Require all denied
 </FilesMatch>
 RewriteRule ^(config|dev|includes|middleware|models|router|scripts|\.git|\.codex|\.agent-logs|\.claude|\.qwen|\.backup|_backups)/ - [F,L,NC]
@@ -67,7 +67,7 @@ RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
     Header always set Cross-Origin-Resource-Policy "same-origin"
     Header always set Cross-Origin-Opener-Policy "same-origin"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-    Header always set Content-Security-Policy "default-src 'self'; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdnjs.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://mc.yandex.com https://mc.yandex.ru https://gor.bio; img-src 'self' data: blob: https://basemaps.cartocdn.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://www.google-analytics.com https://mc.yandex.com https://mc.yandex.ru; connect-src 'self' https://huggingface.co https://*.huggingface.co https://*.xethub.hf.co https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://basemaps.cartocdn.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://www.google-analytics.com https://mc.yandex.com https://mc.yandex.ru https://region1.google-analytics.com https://region1.googletagmanager.com https://gor.bio; worker-src 'self' blob:; frame-src 'self' https://www.google.com https://www.youtube.com; frame-ancestors 'none';"
+    Header always set Content-Security-Policy "default-src 'self'; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://cdnjs.cloudflare.com https://challenges.cloudflare.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://mc.yandex.com https://mc.yandex.ru https://gor.bio; img-src 'self' data: blob: https://basemaps.cartocdn.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://www.google-analytics.com https://mc.yandex.com https://mc.yandex.ru; connect-src 'self' https://huggingface.co https://*.huggingface.co https://*.xethub.hf.co https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://basemaps.cartocdn.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://www.google-analytics.com https://mc.yandex.com https://mc.yandex.ru https://region1.google-analytics.com https://region1.googletagmanager.com https://gor.bio; worker-src 'self' blob:; frame-src 'self' https://challenges.cloudflare.com https://www.google.com https://www.youtube.com; frame-ancestors 'none';"
 </IfModule>
 
 ErrorDocument 403 /403.php

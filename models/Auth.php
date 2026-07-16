@@ -6,8 +6,6 @@ require_once __DIR__ . '/Database.php';
 
 class Auth {
     private $db;
-    private $maxAttempts = 5; // Maximum login attempts
-    private $lockoutTime = 300; // Lockout time in seconds (5 minutes)
 
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
@@ -20,55 +18,24 @@ class Auth {
 
     public function login($username, $password) {
         try {
-            // Initialize login attempts if not set
-            if (!isset($_SESSION['login_attempts'])) {
-                $_SESSION['login_attempts'] = 0;
-                $_SESSION['lockout_time'] = null;
-            }
-
-            // Check if the user is locked out
-            if ($_SESSION['lockout_time'] && time() < $_SESSION['lockout_time']) {
-                error_log("User is locked out until " . date('Y-m-d H:i:s', $_SESSION['lockout_time']));
-                return false; // User is locked out
-            }
-
-            if (getenv('MODE') === 'development') {
-                error_log("Login attempt for username: " . $username);
-            }
-            
+            // Brute-force throttling is handled by the login page's IP-based
+            // guard (rate_limit_storage.json) — session-based lockouts are
+            // trivially bypassed with a fresh session cookie, so none here.
             $query = "SELECT id, username, password FROM users WHERE username = :username";
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':username', $username, PDO::PARAM_STR);
             $stmt->execute();
-            
+
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if ($user && password_verify($password, $user['password'])) {
-                if (getenv('MODE') === 'development') {
-                    error_log("Password verified successfully for user: " . $username);
-                }
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['admin_logged_in'] = true;
                 $_SESSION['last_activity'] = time();
                 $_SESSION['admin_user_agent'] = hash('sha256', $_SERVER['HTTP_USER_AGENT'] ?? '');
-                $_SESSION['login_attempts'] = 0;
                 return true;
-            }
-            
-            // Increment login attempts
-            $_SESSION['login_attempts']++;
-            if (getenv('MODE') === 'development') {
-                error_log("Login failed for username: " . $username);
-            }
-
-            // Lock the user out if max attempts reached
-            if ($_SESSION['login_attempts'] >= $this->maxAttempts) {
-                $_SESSION['lockout_time'] = time() + $this->lockoutTime; // Set lockout time
-                if (getenv('MODE') === 'development') {
-                    error_log("User locked out due to too many failed attempts.");
-                }
             }
 
             return false;
@@ -140,24 +107,6 @@ class Auth {
         session_destroy();
         header('Location: ' . FULL_BASE_PATH . 'admin/login');
         exit;
-    }
-
-    public function verifyAdminPageAccess() {
-        // Skip for login page
-        if (strpos($_SERVER['REQUEST_URI'], FULL_BASE_PATH . 'admin/login') !== false) {
-            return;
-        }
-
-        // Check for token in various places
-        $pageToken = $_SERVER['HTTP_X_ADMIN_VERIFY'] ?? $_GET['admin_token'] ?? null;
-        $sessionToken = $_SESSION['admin_page_token'] ?? null;
-
-        if (!$pageToken || !$sessionToken || $pageToken !== $sessionToken) {
-            error_log('Admin access denied: Invalid or missing token');
-            http_response_code(403);
-            include __DIR__ . '/403.php';
-            exit;
-        }
     }
 
     /**

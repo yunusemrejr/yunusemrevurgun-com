@@ -102,6 +102,16 @@ class Sitemap {
             $this->addUrl($xml, $urlset, 'updates/' . $update['id'], '0.6', $update['lastmod']);
         }
 
+        // Guardrail: never overwrite the tracked sitemap files from a local
+        // request — localhost URLs would poison the prod sitemap on commit.
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        if (php_sapi_name() === 'cli'
+            || strpos($host, 'localhost') !== false
+            || strpos($host, '127.0.0.1') !== false
+            || strpos($host, '192.168.') !== false) {
+            return true;
+        }
+
         // Save the sitemap to both locations for compatibility
         $publicPath = __DIR__ . '/../public/sitemap.xml';
         $rootPath = __DIR__ . '/../sitemap.xml';

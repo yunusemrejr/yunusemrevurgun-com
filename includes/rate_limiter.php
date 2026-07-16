@@ -125,9 +125,9 @@ class RateLimiter {
     }
     
     /**
-     * Get client IP address
+     * Get client IP address (Cloudflare-aware)
      */
-    private static function getClientIP() {
+    public static function getClientIP() {
         $ipKeys = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'];
         
         foreach ($ipKeys as $key) {

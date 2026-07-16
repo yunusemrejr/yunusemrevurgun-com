@@ -21,11 +21,13 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once dirname(__DIR__, 2) . '/global.php';
 require_once dirname(__DIR__, 2) . '/models/Auth.php';
+require_once dirname(__DIR__, 2) . '/includes/rate_limiter.php';
 require_once __DIR__ . '/includes/verify.php';
 
 function getLoginClientKey(): string {
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    return hash('sha256', $ip . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? 'unknown'));
+    // Key on the real client IP only (Cloudflare-aware). Keying on
+    // IP+User-Agent let attackers reset the throttle by rotating UAs.
+    return hash('sha256', RateLimiter::getClientIP());
 }
 
 function loadLoginGuardData(): array {
@@ -153,58 +155,69 @@ if (getenv('MODE') !== 'development') {
 }
 
 /**
- * Generate a simple math CAPTCHA challenge
- * @return array ['question' => string, 'answer' => int, 'hash' => string]
+ * Generate a simple math CAPTCHA challenge (fallback when Turnstile is not configured)
+ * @return array ['question' => string, 'answer' => int]
  */
 function generateCaptcha() {
-    $num1 = rand(1, 10);
-    $num2 = rand(1, 10);
-    $operation = rand(0, 1); // 0 = addition, 1 = subtraction
-    
-    if ($operation === 0) {
-        $answer = $num1 + $num2;
-        $question = "$num1 + $num2";
-    } else {
-        // Ensure positive result
-        if ($num1 < $num2) {
-            $temp = $num1;
-            $num1 = $num2;
-            $num2 = $temp;
-        }
-        $answer = $num1 - $num2;
-        $question = "$num1 - $num2";
+    $num1 = random_int(1, 10);
+    $num2 = random_int(1, 10);
+
+    if (random_int(0, 1) === 0) {
+        return ['question' => "$num1 + $num2", 'answer' => $num1 + $num2];
     }
-    
-    // Create a hash of the answer with a session-based secret
-    if (!isset($_SESSION['captcha_secret'])) {
-        $_SESSION['captcha_secret'] = bin2hex(random_bytes(16));
+    if ($num1 < $num2) {
+        [$num1, $num2] = [$num2, $num1];
     }
-    $hash = hash_hmac('sha256', (string)$answer, $_SESSION['captcha_secret']);
-    
-    return [
-        'question' => $question,
-        'answer' => $answer,
-        'hash' => $hash
-    ];
+    return ['question' => "$num1 - $num2", 'answer' => $num1 - $num2];
 }
 
 /**
- * Verify CAPTCHA answer
- * @param string $userAnswer The user's answer
- * @param string $answerHash The hash of the correct answer
- * @return bool True if correct, false otherwise
+ * Verify CAPTCHA answer against the server-side session answer
  */
 function verifyCaptcha($userAnswer) {
     if (!isset($_SESSION['captcha_answer'])) {
         return false;
     }
-    
-    $userAnswerInt = (int)trim($userAnswer);
-    return $userAnswerInt === (int)$_SESSION['captcha_answer'];
+    $userAnswer = trim((string)$userAnswer);
+    if (!preg_match('/^-?\d{1,3}$/', $userAnswer)) {
+        return false;
+    }
+    return hash_equals((string)$_SESSION['captcha_answer'], $userAnswer);
 }
 
-// Generate CAPTCHA if not already set or if explicitly refreshing (GET only, not on POST)
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' && (!isset($_SESSION['captcha_question']) || isset($_GET['refresh_captcha']))) {
+/**
+ * Cloudflare Turnstile is used when both keys are configured (.env)
+ */
+function turnstileEnabled(): bool {
+    return (bool)(getenv('TURNSTILE_SITEKEY') && getenv('TURNSTILE_SECRET'));
+}
+
+function verifyTurnstile(string $token): bool {
+    if ($token === '') {
+        return false;
+    }
+    $ch = curl_init('https://challenges.cloudflare.com/turnstile/v0/siteverify');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_POSTFIELDS => http_build_query([
+            'secret' => getenv('TURNSTILE_SECRET'),
+            'response' => $token,
+            'remoteip' => RateLimiter::getClientIP(),
+        ]),
+    ]);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    if ($response === false) {
+        return false;
+    }
+    $data = json_decode($response, true);
+    return !empty($data['success']);
+}
+
+// Generate fallback CAPTCHA if not already set or if explicitly refreshing (GET only, not on POST)
+if (!turnstileEnabled() && $_SERVER['REQUEST_METHOD'] !== 'POST' && (!isset($_SESSION['captcha_question']) || isset($_GET['refresh_captcha']))) {
     $captcha = generateCaptcha();
     $_SESSION['captcha_question'] = $captcha['question'];
     $_SESSION['captcha_answer'] = $captcha['answer'];
@@ -218,13 +231,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formStartedAt = (int)($_POST['form_started_at'] ?? 0);
     $elapsed = $formStartedAt > 0 ? time() - $formStartedAt : 0;
 
-    // DIAGNOSTIC: Log session state on POST
-    error_log('LOGIN_DIAG: POST request, session_id=' . session_id() . ', captcha_answer=' . (isset($_SESSION['captcha_answer']) ? var_export($_SESSION['captcha_answer'], true) : 'NOT_SET') . ', captcha_issued_at=' . (isset($_SESSION['captcha_issued_at']) ? var_export($_SESSION['captcha_issued_at'], true) : 'NOT_SET') . ', time_diff=' . (isset($_SESSION['captcha_issued_at']) ? (time() - (int)$_SESSION['captcha_issued_at']) : 'N/A') . ', user_answer=' . var_export($_POST['captcha_answer'] ?? 'NOT_SENT', true));
-
     // Check if this is a CAPTCHA-only submission (Step 1)
     $isCaptchaStep = !isset($_POST['captcha_verified']);
 
-    if (!hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
+    // Check the throttle first so a blocked client cannot extend its own
+    // block by re-submitting with a stale CSRF token.
+    if (isLoginTemporarilyBlocked()) {
+        $error = "Too many failed attempts. Please wait briefly and try again.";
+    } elseif (!hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
         $error = "Security token expired. Please refresh and try again.";
         recordLoginFailure();
     } elseif (!empty($_POST['website'])) {
@@ -233,44 +247,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($elapsed > 0 && $elapsed < 2) {
         $error = "Please wait a moment and try again.";
         recordLoginFailure();
-    } elseif (isLoginTemporarilyBlocked()) {
-        $error = "Too many failed attempts. Please wait briefly and try again.";
     }
 
     if ($isCaptchaStep) {
-        // Step 1: Verify CAPTCHA only
+        // Step 1: Verify the bot challenge only
         if (empty($error)) {
-            if (!isset($_POST['captcha_answer']) || empty(trim($_POST['captcha_answer']))) {
+            if (turnstileEnabled()) {
+                if (verifyTurnstile(trim((string)($_POST['cf-turnstile-response'] ?? '')))) {
+                    $_SESSION['captcha_passed'] = true;
+                    $_SESSION['captcha_passed_at'] = time();
+                } else {
+                    $error = "Security verification failed. Please try again.";
+                    recordLoginFailure();
+                }
+            } elseif (!isset($_POST['captcha_answer']) || trim((string)$_POST['captcha_answer']) === '') {
                 $error = "Please complete the security verification.";
             } elseif (!isset($_SESSION['captcha_answer']) || (time() - (int)($_SESSION['captcha_issued_at'] ?? 0)) > 900) {
                 $error = "Security verification expired. Please refresh the page.";
-                error_log('LOGIN_DIAG: CAPTCHA_EXPIRED - captcha_answer=' . (isset($_SESSION['captcha_answer']) ? 'SET' : 'NOT_SET') . ', time_diff=' . (isset($_SESSION['captcha_issued_at']) ? (time() - (int)$_SESSION['captcha_issued_at']) : 'N/A'));
+            } elseif (verifyCaptcha($_POST['captcha_answer'])) {
+                $_SESSION['captcha_passed'] = true;
+                $_SESSION['captcha_passed_at'] = time();
+            } else {
+                $error = "Incorrect answer. Please try again.";
+                recordLoginFailure();
+            }
+
+            // Always issue a fresh fallback challenge after a step-1 attempt
+            if (!turnstileEnabled()) {
                 $captcha = generateCaptcha();
                 $_SESSION['captcha_question'] = $captcha['question'];
                 $_SESSION['captcha_answer'] = $captcha['answer'];
                 $_SESSION['captcha_issued_at'] = time();
-            } else {
-                $userAnswer = trim($_POST['captcha_answer']);
-                error_log('LOGIN_DIAG: About to verify captcha - answer=' . $_SESSION['captcha_answer'] . ', user_input=' . $userAnswer);
-                
-                if (verifyCaptcha($userAnswer)) {
-                    // CAPTCHA passed — set session flag and regenerate for next step
-                    $_SESSION['captcha_passed'] = true;
-                    $_SESSION['captcha_passed_at'] = time();
-                    error_log('LOGIN_DIAG: CAPTCHA_PASSED');
-                    $captcha = generateCaptcha();
-                    $_SESSION['captcha_question'] = $captcha['question'];
-                    $_SESSION['captcha_answer'] = $captcha['answer'];
-                    $_SESSION['captcha_issued_at'] = time();
-                } else {
-                    $error = "Incorrect answer. Please try again.";
-                    error_log('LOGIN_DIAG: CAPTCHA_WRONG - expected=' . $_SESSION['captcha_answer'] . ', got=' . $userAnswer);
-                    recordLoginFailure();
-                    $captcha = generateCaptcha();
-                    $_SESSION['captcha_question'] = $captcha['question'];
-                    $_SESSION['captcha_answer'] = $captcha['answer'];
-                    $_SESSION['captcha_issued_at'] = time();
-                }
             }
         }
     } else {
@@ -386,7 +393,7 @@ if (strpos($currentPath, '/admin') !== false &&
         <!-- Login Form Container -->
         <div class="admin-login-form-container">
 
-            <?php if (isset($error)): ?>
+            <?php if (!empty($error)): ?>
                 <div class="admin-alert admin-alert-danger">
                     <i class="bi bi-exclamation-triangle"></i>
                     <?= htmlspecialchars($error) ?>
@@ -408,12 +415,15 @@ if (strpos($currentPath, '/admin') !== false &&
                         <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
                     </div>
                     
-                    <!-- Step 1: CAPTCHA Gate -->
+                    <!-- Step 1: Bot Challenge Gate -->
                     <div id="captcha-step"<?php echo isset($_SESSION['captcha_passed']) ? ' style="display:none;"' : ''; ?>>
                         <div class="admin-form-group">
                             <label class="admin-form-label">
                                 <i class="bi bi-shield-check"></i> Security Verification
                             </label>
+                            <?php if (turnstileEnabled()): ?>
+                                <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars(getenv('TURNSTILE_SITEKEY')); ?>" data-theme="light"></div>
+                            <?php else: ?>
                             <p class="admin-text-muted" style="margin-bottom: 1rem; font-size: 0.875rem;">
                                 Solve the math problem to proceed.
                             </p>
@@ -425,17 +435,15 @@ if (strpos($currentPath, '/admin') !== false &&
                                     <i class="bi bi-arrow-clockwise"></i>
                                 </button>
                             </div>
-                            <input type="number" 
-                                   class="admin-form-control" 
-                                   id="captcha_answer" 
-                                   name="captcha_answer" 
-                                   placeholder="Enter answer" 
-                                   required 
+                            <input type="number"
+                                   class="admin-form-control"
+                                   id="captcha_answer"
+                                   name="captcha_answer"
+                                   placeholder="Enter answer"
+                                   required
                                    autocomplete="off"
-                                   min="0"
-                                   max="20"
                                    style="max-width: 200px; margin-top: 0.5rem;">
-                            
+                            <?php endif; ?>
                         </div>
                         <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit" id="captcha-submit-btn">
                             <span class="btn-text">Verify</span>
@@ -499,6 +507,9 @@ if (strpos($currentPath, '/admin') !== false &&
     </script>
     
     <script src="<?php echo FULL_BASE_PATH; ?>assets/js/admin-login.js"></script>
+    <?php if (turnstileEnabled()): ?>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <?php endif; ?>
 
 
 

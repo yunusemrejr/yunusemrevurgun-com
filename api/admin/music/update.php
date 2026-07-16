@@ -12,6 +12,7 @@ require_once dirname(__DIR__, 3) . '/config/setPath.php';
 require_once dirname(__DIR__, 3) . '/global.php';
 require_once dirname(__DIR__, 3) . '/models/Auth.php';
 require_once dirname(__DIR__, 3) . '/models/Music.php';
+require_once dirname(__DIR__, 3) . '/includes/csrf.php';
 
 header('Content-Type: application/json');
 
@@ -21,7 +22,11 @@ if (!Auth::checkLogin()) {
     exit;
 }
 
-if (session_status() === PHP_SESSION_NONE) session_start();
+if (!CSRFProtection::validateToken($_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
