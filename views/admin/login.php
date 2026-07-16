@@ -251,6 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['captcha_issued_at'] = time();
             } else {
                 $userAnswer = trim($_POST['captcha_answer']);
+                error_log('LOGIN_DIAG: About to verify captcha - answer=' . $_SESSION['captcha_answer'] . ', user_input=' . $userAnswer);
                 
                 if (verifyCaptcha($userAnswer)) {
                     // CAPTCHA passed — set session flag and regenerate for next step
