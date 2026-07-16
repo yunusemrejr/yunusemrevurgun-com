@@ -1,6 +1,29 @@
 (function () {
     'use strict';
 
+    // Turnstile callbacks (must exist before the widget can succeed).
+    // On success the challenge auto-submits so the user lands directly on
+    // the credentials step — no manual Verify click needed. The server
+    // still validates the token; these callbacks are pure UX.
+    window.yevTurnstileSuccess = function () {
+        var btn = document.getElementById('captcha-submit-btn');
+        if (!btn) return;
+        btn.disabled = false;
+        btn.click();
+    };
+    window.yevTurnstileReset = function () {
+        var btn = document.getElementById('captcha-submit-btn');
+        if (btn) btn.disabled = true;
+    };
+    // If the widget never loads (blocked network/CSP), don't trap the user —
+    // enable the button after a grace period; server-side verification still applies.
+    window.setTimeout(function () {
+        var btn = document.getElementById('captcha-submit-btn');
+        if (btn && btn.disabled && !document.querySelector('.cf-turnstile iframe')) {
+            btn.disabled = false;
+        }
+    }, 8000);
+
     var state = {
         submitting: false,
         passwordVisible: false,

@@ -231,8 +231,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formStartedAt = (int)($_POST['form_started_at'] ?? 0);
     $elapsed = $formStartedAt > 0 ? time() - $formStartedAt : 0;
 
-    // Check if this is a CAPTCHA-only submission (Step 1)
-    $isCaptchaStep = !isset($_POST['captcha_verified']);
+    // Step 1 submissions carry a non-empty bot challenge and no username;
+    // step 2 carries a non-empty username. CSS-hidden fields ARE submitted
+    // (empty), so discriminate on non-empty values, not field presence.
+    $hasUsername = isset($_POST['username']) && trim((string)$_POST['username']) !== '';
+    $isCaptchaStep = !$hasUsername;
 
     // Check the throttle first so a blocked client cannot extend its own
     // block by re-submitting with a stale CSRF token.
@@ -422,7 +425,9 @@ if (strpos($currentPath, '/admin') !== false &&
                                 <i class="bi bi-shield-check"></i> Security Verification
                             </label>
                             <?php if (turnstileEnabled()): ?>
-                                <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars(getenv('TURNSTILE_SITEKEY')); ?>" data-theme="light"></div>
+                                <?php if (!isset($_SESSION['captcha_passed'])): ?>
+                                <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars(getenv('TURNSTILE_SITEKEY')); ?>" data-theme="light" data-callback="yevTurnstileSuccess" data-expired-callback="yevTurnstileReset" data-error-callback="yevTurnstileReset"></div>
+                                <?php endif; ?>
                             <?php else: ?>
                             <p class="admin-text-muted" style="margin-bottom: 1rem; font-size: 0.875rem;">
                                 Solve the math problem to proceed.
@@ -445,7 +450,7 @@ if (strpos($currentPath, '/admin') !== false &&
                                    style="max-width: 200px; margin-top: 0.5rem;">
                             <?php endif; ?>
                         </div>
-                        <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit" id="captcha-submit-btn">
+                        <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit" id="captcha-submit-btn"<?php echo (turnstileEnabled() && !isset($_SESSION['captcha_passed'])) ? ' disabled' : ''; ?>>
                             <span class="btn-text">Verify</span>
                             <span class="btn-loading">
                                 <i class="bi bi-arrow-repeat"></i>
@@ -485,9 +490,6 @@ if (strpos($currentPath, '/admin') !== false &&
                             </div>
                         </div>
 
-                        <!-- Hidden CAPTCHA fields for final submit -->
-                        <input type="hidden" name="captcha_verified" value="1">
-
                         <button type="submit" class="admin-btn admin-btn-primary admin-btn-lg admin-login-submit">
                             <span class="btn-text">Login</span>
                             <span class="btn-loading">
@@ -507,7 +509,7 @@ if (strpos($currentPath, '/admin') !== false &&
     </script>
     
     <script src="<?php echo FULL_BASE_PATH; ?>assets/js/admin-login.js"></script>
-    <?php if (turnstileEnabled()): ?>
+    <?php if (turnstileEnabled() && !isset($_SESSION['captcha_passed'])): ?>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <?php endif; ?>
 
