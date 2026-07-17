@@ -8,6 +8,7 @@ class Music {
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
         $this->createTableIfNotExists();
+        $this->createLinksTableIfNotExists();
     }
 
     private function createTableIfNotExists() {
@@ -226,5 +227,103 @@ class Music {
 
     public function getTotalArchivedTracks() {
         return $this->getTotalTracks(true);
+    }
+
+    // ==================== MUSIC LINK METHODS ====================
+
+    private function createLinksTableIfNotExists() {
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        if ($driver === 'sqlite') {
+            $query = "CREATE TABLE IF NOT EXISTS music_links (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title VARCHAR(255) NOT NULL,
+                url VARCHAR(500) NOT NULL,
+                platform VARCHAR(50) NOT NULL DEFAULT 'other',
+                description TEXT,
+                sort_order INTEGER DEFAULT 0,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )";
+        } else {
+            $query = "CREATE TABLE IF NOT EXISTS music_links (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                url VARCHAR(500) NOT NULL,
+                platform VARCHAR(50) NOT NULL DEFAULT 'other',
+                description TEXT,
+                sort_order INT DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )";
+        }
+        $this->db->exec($query);
+    }
+
+    public function getAllLinks() {
+        $query = "SELECT * FROM music_links ORDER BY sort_order ASC, id ASC";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getLinkById($id) {
+        $query = "SELECT * FROM music_links WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function addLink($data) {
+        requireAdminSession(false);
+        $query = "INSERT INTO music_links (title, url, platform, description, sort_order) 
+                  VALUES (:title, :url, :platform, :description, :sort_order)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':title', $data['title'], PDO::PARAM_STR);
+        $stmt->bindValue(':url', $data['url'], PDO::PARAM_STR);
+        $stmt->bindValue(':platform', $data['platform'] ?? 'other', PDO::PARAM_STR);
+        $stmt->bindValue(':description', $data['description'] ?? '', PDO::PARAM_STR);
+        $stmt->bindValue(':sort_order', $data['sort_order'] ?? 0, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function updateLink($id, $data) {
+        requireAdminSession(false);
+        $fields = [];
+        $params = [':id' => $id];
+
+        $allowedFields = ['title', 'url', 'platform', 'description', 'sort_order'];
+        foreach ($allowedFields as $field) {
+            if (isset($data[$field])) {
+                $fields[] = "$field = :$field";
+                $params[":$field"] = $data[$field];
+            }
+        }
+
+        if (empty($fields)) return false;
+
+        $query = "UPDATE music_links SET " . implode(', ', $fields) . " WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute($params);
+    }
+
+    public function deleteLink($id) {
+        requireAdminSession(false);
+        $query = "DELETE FROM music_links WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute() && $stmt->rowCount() > 0;
+    }
+
+    public function getTotalLinks() {
+        try {
+            $query = "SELECT COUNT(*) FROM music_links";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchColumn();
+        } catch (Exception $e) {
+            return 0;
+        }
     }
 }

@@ -1447,3 +1447,41 @@ select.admin-form-control {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ===== ADMIN LINK CARDS (for music links, etc.) ===== */
+.admin-link-card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.admin-link-platform-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-card, #f5f4f1);
+  border: 1px solid rgba(132,144,164,0.2);
+  padding: 0.25rem;
+}
+
+.admin-link-platform-icon svg {
+  display: block;
+}
+
+.admin-link-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-link-info .admin-card-title {
+  margin-bottom: 0.15rem;
+  font-size: 0.9rem;
+}
+
+.admin-link-info .admin-card-text {
+  margin-bottom: 0;
+}

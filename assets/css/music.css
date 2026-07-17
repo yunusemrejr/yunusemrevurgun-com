@@ -330,3 +330,66 @@
     transition: none;
   }
 }
+
+/* ===== MUSIC LINK CARDS ===== */
+.ui-music-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.ui-music-link-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-border, rgba(132,144,164,0.25));
+  background: var(--color-bg-card, #f5f4f1);
+  text-decoration: none;
+  color: var(--color-text-primary, #575757);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.ui-music-link-card:hover {
+  border-color: rgba(132,144,164,0.5);
+  background: var(--color-bg-elevated, #edeceb);
+}
+
+.ui-music-link-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.ui-music-link-icon svg {
+  display: block;
+}
+
+.ui-music-link-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: #575757;
+}
+
+.ui-music-link-desc {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #8fa6a6);
+  line-height: 1.4;
+}
+
+.ui-music-link-platform {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #8fa6a6);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  margin-top: 0.15rem;
+}
+
+@media (max-width: 768px) {
+  .ui-music-links-grid {
+    grid-template-columns: 1fr;
+  }
+}

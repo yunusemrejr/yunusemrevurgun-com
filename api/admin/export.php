@@ -84,6 +84,9 @@ try {
     $allTracks = $music->getAllTracks(true);
     file_put_contents($dataDir . '/music-tracks.json', json_encode($allTracks, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
+    $allLinks = $music->getAllLinks();
+    file_put_contents($dataDir . '/music-links.json', json_encode($allLinks, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
     // Videos
     $allVideos = $videos->getAllVideos(true);
     file_put_contents($dataDir . '/videos.json', json_encode($allVideos, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
