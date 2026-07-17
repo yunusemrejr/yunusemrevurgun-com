@@ -120,6 +120,17 @@ include __DIR__ . '/includes/header.php';
                         </a>
                     </div>
                 </div>
+                <div class="system-item">
+                    <i class="bi bi-download system-item-icon"></i>
+                    <div class="system-item-content">
+                        <h6 class="system-item-title">Export Data</h6>
+                        <p class="system-item-desc">Download all website data as a ZIP archive (content, images, settings)</p>
+                        <a href="<?= FULL_BASE_PATH ?>api/admin/export.php" class="admin-btn admin-btn-secondary admin-btn-sm" download>
+                            <i class="bi bi-file-zip"></i>
+                            Download Export
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

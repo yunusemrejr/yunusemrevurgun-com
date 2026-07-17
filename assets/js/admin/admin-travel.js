@@ -12,6 +12,7 @@
         initTravel: function() {
             this.initLocationModal();
             this.initPhotosModal();
+            this.initGalleryPicker();
             this.bindTravelEvents();
         },
 
@@ -179,6 +180,7 @@
             window.loadLocationPhotos = this.loadLocationPhotos.bind(this);
             window.uploadTravelPhotos = this.uploadTravelPhotos.bind(this);
             window.deleteTravelPhoto = this.deleteTravelPhoto.bind(this);
+            window.openGalleryPicker = this.openGalleryPicker.bind(this);
         },
 
         openPhotosModal: function(locationId, country, city) {
@@ -209,12 +211,9 @@
         loadLocationPhotos: function(locationId) {
             const $grid = $('#photoGrid');
             const imageBase = window.FULL_BASE_PATH + 'uploads/travel/';
-            // Photos migrated from the legacy JSON live in the static dir —
-            // fall back to it when the file is not in uploads/.
             const staticBase = window.FULL_BASE_PATH + 'assets/images/travel/';
+            const galleryBase = window.FULL_BASE_PATH + 'uploads/gallery/';
 
-            // For now, we load from the static JSON as a fallback since we don't have a photos API endpoint
-            // In a real implementation, we'd fetch from an API
             $.ajax({
                 url: window.FULL_BASE_PATH + 'api/admin/travel/photos.php',
                 method: 'GET',
@@ -226,11 +225,21 @@
                     $grid.empty();
                     if (response.success && response.photos.length > 0) {
                         response.photos.forEach(function(photo) {
+                            // Determine image source based on photo.source
+                            var imgSrc;
+                            if (photo.source === 'gallery') {
+                                imgSrc = galleryBase + photo.filename;
+                            } else {
+                                imgSrc = imageBase + photo.filename;
+                            }
+                            var sourceLabel = photo.source === 'gallery' ? '<span class="admin-badge" style="background:#8490a4;color:#fff;font-size:0.65rem;padding:0.1rem 0.4rem;">Gallery</span>' : '';
+
                             const $item = $('<div>').addClass('admin-gallery-item').attr('data-photo-id', photo.id);
                             $item.html(
                                 '<div class="admin-card">' +
                                 '<div class="admin-gallery-image-container">' +
-                                '<img class="admin-gallery-image" src="' + imageBase + photo.filename + '" alt="' + photo.title + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + staticBase + photo.filename + '\';">' +
+                                '<img class="admin-gallery-image" src="' + imgSrc + '" alt="' + photo.title + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + staticBase + photo.filename + '\';">' +
+                                sourceLabel +
                                 '</div>' +
                                 '<div class="admin-card-body">' +
                                 '<button class="admin-btn admin-btn-danger admin-btn-sm" data-action="delete-photo" data-id="' + photo.id + '"><i class="bi bi-trash"></i> Delete</button>' +
@@ -364,6 +373,123 @@
             }
         },
 
+        // ==================== GALLERY PICKER METHODS ====================
+
+        initGalleryPicker: function() {
+            window.selectGalleryImage = this.selectGalleryImage.bind(this);
+            window.loadGalleryPickerPage = this.loadGalleryPickerPage.bind(this);
+        },
+
+        openGalleryPicker: function() {
+            const $modal = $('#galleryPickerModal');
+            if (!$modal.length) return;
+
+            $modal.css('display', 'flex');
+            $('body').css('overflow', 'hidden');
+
+            $('#galleryPickerGrid').html('<div class="admin-empty-photos">Loading gallery images...</div>');
+            this.loadGalleryPickerPage(1);
+        },
+
+        closeGalleryPicker: function() {
+            const $modal = $('#galleryPickerModal');
+            if ($modal.length) {
+                $modal.css('display', 'none');
+                $('body').css('overflow', '');
+            }
+        },
+
+        loadGalleryPickerPage: function(page) {
+            const $grid = $('#galleryPickerGrid');
+            const galleryBase = window.FULL_BASE_PATH + 'uploads/gallery/';
+
+            $.ajax({
+                url: window.FULL_BASE_PATH + 'api/admin/gallery-images.php',
+                method: 'GET',
+                data: { page: page, limit: 24 },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    $grid.empty();
+                    if (response.success && response.images.length > 0) {
+                        response.images.forEach(function(img) {
+                            const $item = $('<div>').addClass('admin-gallery-item gallery-picker-item').attr('data-image-id', img.id).attr('data-filename', img.filename);
+                            $item.html(
+                                '<div class="admin-card" style="cursor:pointer;">' +
+                                '<div class="admin-gallery-image-container">' +
+                                '<img class="admin-gallery-image" src="' + galleryBase + img.filename + '" alt="' + (img.title || '') + '" loading="lazy">' +
+                                '</div>' +
+                                '<div class="admin-card-body">' +
+                                '<p style="font-size:0.75rem;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (img.title || 'Untitled') + '</p>' +
+                                '</div>' +
+                                '</div>'
+                            );
+                            $grid.append($item);
+                        });
+
+                        // Pagination
+                        var $pagination = $('<div>').addClass('gallery-pagination').css({'display':'flex','gap':'0.5rem','justify-content':'center','margin-top':'1rem'});
+                        if (response.page > 1) {
+                            $pagination.append('<button class="admin-btn admin-btn-secondary admin-btn-sm" data-gallery-page="' + (response.page - 1) + '">Previous</button>');
+                        }
+                        $pagination.append('<span style="padding:0.25rem 0.5rem;font-size:0.8rem;">Page ' + response.page + ' of ' + response.total_pages + '</span>');
+                        if (response.page < response.total_pages) {
+                            $pagination.append('<button class="admin-btn admin-btn-secondary admin-btn-sm" data-gallery-page="' + (response.page + 1) + '">Next</button>');
+                        }
+                        $grid.append($pagination);
+                    } else {
+                        $grid.html('<div class="admin-empty-photos">No gallery images available.</div>');
+                    }
+                },
+                error: function() {
+                    $grid.html('<div class="admin-empty-photos">Failed to load gallery images.</div>');
+                }
+            });
+        },
+
+        selectGalleryImage: function(imageId, filename) {
+            if (!imageId || !filename) return;
+            if (!confirm('Link this gallery image to the current travel location? The file will not be copied.')) return;
+
+            const locationId = $('#photoLocationId').val();
+            if (!locationId) {
+                AdminPanel.showNotification('No travel location selected', 'error');
+                return;
+            }
+
+            const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
+            const formData = new FormData();
+            formData.append('csrf_token', csrfToken);
+            formData.append('location_id', locationId);
+            formData.append('image_id', imageId);
+
+            $.ajax({
+                url: window.FULL_BASE_PATH + 'api/admin/travel/link-gallery-image.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        AdminPanel.showNotification('Gallery image linked successfully', 'success');
+                        AdminPanel.closeGalleryPicker();
+                        AdminPanel.loadLocationPhotos(locationId);
+                    } else {
+                        AdminPanel.showNotification('Failed to link: ' + (response.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    AdminPanel.showNotification('Failed to link: ' + error, 'error');
+                }
+            });
+        },
+
+        // ==================== EVENT BINDINGS ====================
+
         bindTravelEvents: function() {
             // Location modal events
             $(document).on('click', '#locationModal', function(e) {
@@ -379,6 +505,14 @@
             });
             $(document).on('keydown', function(e) {
                 if (e.key === 'Escape' && $('#photosModal').is(':visible')) AdminPanel.closePhotosModal();
+            });
+
+            // Gallery picker modal events
+            $(document).on('click', '#galleryPickerModal', function(e) {
+                if (e.target === this) AdminPanel.closeGalleryPicker();
+            });
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $('#galleryPickerModal').is(':visible')) AdminPanel.closeGalleryPicker();
             });
 
             // Add location button
@@ -434,6 +568,29 @@
                 AdminPanel.closePhotosModal();
             });
 
+            // Link from Gallery button
+            $(document).on('click', '#linkFromGalleryBtn', function() {
+                AdminPanel.openGalleryPicker();
+            });
+
+            // Gallery picker: close
+            $(document).on('click', '#closeGalleryPickerBtn', function() {
+                AdminPanel.closeGalleryPicker();
+            });
+
+            // Gallery picker: select image
+            $(document).on('click', '.gallery-picker-item', function() {
+                const imageId = $(this).data('image-id');
+                const filename = $(this).data('filename');
+                AdminPanel.selectGalleryImage(imageId, filename);
+            });
+
+            // Gallery picker: pagination
+            $(document).on('click', '[data-gallery-page]', function() {
+                const page = $(this).data('gallery-page');
+                AdminPanel.loadGalleryPickerPage(page);
+            });
+
             // Photo file preview
             $(document).on('change', '#photoFiles', function() {
                 const files = this.files;
@@ -482,14 +639,10 @@
                         $fileInput.trigger('change');
                     }
                 });
-                // Click handler for desktop
                 $dropzone.on('click', function(e) {
-                    // The file input lives inside the dropzone — ignore clicks
-                    // bubbling back from it or .trigger('click') recurses forever.
                     if (e.target && e.target.type === 'file') return;
                     $('#photoFiles').trigger('click');
                 });
-                // Touch handlers for mobile (iPhone/iPad)
                 $dropzone.on('touchstart', function(e) {
                     $(this).addClass('dragover');
                 });

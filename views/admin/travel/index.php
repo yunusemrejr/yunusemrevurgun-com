@@ -173,8 +173,24 @@ include __DIR__ . '/../includes/header.php';
         </div>
         <div class="admin-modal-footer">
             <div class="admin-upload-buttons">
+                <button type="button" class="admin-btn" id="linkFromGalleryBtn" style="background:#e3e2de;color:#575757;border:1px solid rgba(132,144,164,0.25);"><i class="bi bi-link-45deg"></i> Link from Gallery</button>
                 <button type="button" class="admin-btn admin-btn-secondary" id="closePhotosBtn">Close</button>
                 <button type="button" class="admin-btn admin-btn-primary" id="uploadPhotosBtn" disabled>Upload Photos</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gallery Picker Modal -->
+<div class="admin-upload-modal" id="galleryPickerModal" tabindex="-1">
+    <div class="admin-upload-modal-content" style="max-width:720px;">
+        <div class="admin-modal-header">
+            <h5 class="admin-modal-title">Select Gallery Image</h5>
+            <button type="button" class="admin-btn-close" id="closeGalleryPickerBtn">&times;</button>
+        </div>
+        <div class="admin-modal-body">
+            <p style="font-size:0.85rem;color:#8fa6a6;margin-bottom:1rem;">Click an image to link it to this travel location. The file is not copied — it remains in the gallery.</p>
+            <div class="admin-gallery-grid" id="galleryPickerGrid" style="margin-top:0;">
             </div>
         </div>
     </div>

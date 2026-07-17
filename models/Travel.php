@@ -30,6 +30,8 @@ class Travel {
                 location_id INTEGER NOT NULL,
                 filename VARCHAR(255) NOT NULL,
                 title VARCHAR(255),
+                source VARCHAR(20) DEFAULT 'upload',
+                gallery_image_id INTEGER DEFAULT NULL,
                 sort_order INTEGER DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (location_id) REFERENCES travel_locations(id)
@@ -50,6 +52,8 @@ class Travel {
                 location_id INT NOT NULL,
                 filename VARCHAR(255) NOT NULL,
                 title VARCHAR(255),
+                source VARCHAR(20) DEFAULT 'upload',
+                gallery_image_id INT DEFAULT NULL,
                 sort_order INT DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (location_id) REFERENCES travel_locations(id)
@@ -159,7 +163,38 @@ class Travel {
 
     // ==================== IMAGE METHODS ====================
 
+    private function migrateSourceColumn() {
+        try {
+            $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+            if ($driver === 'sqlite') {
+                $columns = [];
+                $result = $this->db->query("PRAGMA table_info(travel_location_images)");
+                foreach ($result as $row) {
+                    $columns[$row['name']] = $row;
+                }
+                if (!isset($columns['source'])) {
+                    $this->db->exec("ALTER TABLE travel_location_images ADD COLUMN source TEXT DEFAULT 'upload'");
+                }
+                if (!isset($columns['gallery_image_id'])) {
+                    $this->db->exec("ALTER TABLE travel_location_images ADD COLUMN gallery_image_id INTEGER DEFAULT NULL");
+                }
+            } else {
+                try {
+                    $this->db->exec("ALTER TABLE travel_location_images ADD COLUMN source VARCHAR(20) DEFAULT 'upload'");
+                } catch (PDOException $e) {}
+                try {
+                    $this->db->exec("ALTER TABLE travel_location_images ADD COLUMN gallery_image_id INT DEFAULT NULL");
+                } catch (PDOException $e) {}
+            }
+        } catch (PDOException $e) {
+            if (getenv('MODE') === 'development') {
+                error_log("travel_location_images migration: " . $e->getMessage());
+            }
+        }
+    }
+
     public function getImagesByLocation($locationId) {
+        $this->migrateSourceColumn();
         $query = "SELECT * FROM travel_location_images WHERE location_id = :location_id ORDER BY sort_order ASC, id ASC";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':location_id', $locationId, PDO::PARAM_INT);
@@ -173,7 +208,8 @@ class Travel {
         $title = $title !== null ? trim($title) : null;
         $title = ($title === '' || $title === null) ? 'Untitled' : $title;
 
-        $query = "INSERT INTO travel_location_images (location_id, filename, title, sort_order) VALUES (:location_id, :filename, :title, :sort_order)";
+        $this->migrateSourceColumn();
+        $query = "INSERT INTO travel_location_images (location_id, filename, title, source, sort_order) VALUES (:location_id, :filename, :title, 'upload', :sort_order)";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':location_id', $locationId, PDO::PARAM_INT);
         $stmt->bindValue(':filename', $filename, PDO::PARAM_STR);
@@ -182,10 +218,25 @@ class Travel {
         return $stmt->execute();
     }
 
+    public function addGalleryImageRef($locationId, $galleryImageId, $galleryFilename) {
+        requireAdminSession(false);
+
+        $this->migrateSourceColumn();
+        $query = "INSERT INTO travel_location_images (location_id, filename, title, source, gallery_image_id, sort_order) 
+                  VALUES (:location_id, :filename, :title, 'gallery', :gallery_image_id, :sort_order)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':location_id', $locationId, PDO::PARAM_INT);
+        $stmt->bindValue(':filename', $galleryFilename, PDO::PARAM_STR);
+        $stmt->bindValue(':title', 'Gallery image', PDO::PARAM_STR);
+        $stmt->bindValue(':gallery_image_id', $galleryImageId, PDO::PARAM_INT);
+        $stmt->bindValue(':sort_order', 0, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
     public function deleteImage($imageId) {
         requireAdminSession(false);
 
-        $query = "SELECT filename FROM travel_location_images WHERE id = :id";
+        $query = "SELECT filename, source FROM travel_location_images WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $imageId, PDO::PARAM_INT);
         $stmt->execute();
@@ -200,7 +251,8 @@ class Travel {
         $stmt->bindValue(':id', $imageId, PDO::PARAM_INT);
         $result = $stmt->execute();
 
-        if ($result && !empty($image['filename'])) {
+        // Only delete the physical file if it was an uploaded image (not a gallery reference)
+        if ($result && !empty($image['filename']) && ($image['source'] ?? 'upload') === 'upload') {
             $filepath = dirname(__DIR__) . '/uploads/travel/' . $image['filename'];
             if (file_exists($filepath)) {
                 unlink($filepath);

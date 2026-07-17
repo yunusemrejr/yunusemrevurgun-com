@@ -33,6 +33,7 @@ $adminNavItems = [
     ['id' => 'music', 'label' => 'Music', 'href' => FULL_BASE_PATH . 'admin/music'],
     ['id' => 'videos', 'label' => 'Videos', 'href' => FULL_BASE_PATH . 'admin/videos'],
     ['id' => 'travel', 'label' => 'Travel', 'href' => FULL_BASE_PATH . 'admin/travel'],
+    ['id' => 'export', 'label' => 'Export', 'href' => FULL_BASE_PATH . 'api/admin/export.php', 'download' => true],
 ];
 
 $faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg';
@@ -109,7 +110,7 @@ $faviconMime = 'image/svg+xml';
                 <?php foreach ($adminNavItems as $item):
                     $isActive = $page === $item['id'] || str_starts_with($page, $item['id'] . '-');
                     ?>
-                    <a class="admin-ui-nav-link<?php echo $isActive ? ' is-active' : ''; ?>" href="<?php echo htmlspecialchars($item['href']); ?>"><?php echo htmlspecialchars($item['label']); ?></a>
+                    <a class="admin-ui-nav-link<?php echo $isActive ? ' is-active' : ''; ?>" href="<?php echo htmlspecialchars($item['href']); ?>"<?php echo !empty($item['download']) ? ' download' : ''; ?>><?php echo htmlspecialchars($item['label']); ?></a>
                 <?php endforeach; ?>
             </nav>
 
@@ -127,7 +128,7 @@ $faviconMime = 'image/svg+xml';
             <button type="button" class="admin-ui-mobile-close" data-admin-menu-close aria-label="Close">×</button>
             <nav class="admin-ui-mobile-links" aria-label="Admin mobile navigation">
                 <?php foreach ($adminNavItems as $item): ?>
-                    <a href="<?php echo htmlspecialchars($item['href']); ?>" data-admin-menu-close><?php echo htmlspecialchars($item['label']); ?></a>
+                    <a href="<?php echo htmlspecialchars($item['href']); ?>" data-admin-menu-close<?php echo !empty($item['download']) ? ' download' : ''; ?>><?php echo htmlspecialchars($item['label']); ?></a>
                 <?php endforeach; ?>
                 <a href="<?php echo FULL_BASE_PATH; ?>" target="_blank" rel="noopener noreferrer" data-admin-menu-close>View Site</a>
                 <a href="<?php echo FULL_BASE_PATH; ?>admin/logout" data-admin-menu-close>Logout</a>
