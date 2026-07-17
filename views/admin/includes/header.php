@@ -31,6 +31,7 @@ $adminNavItems = [
     ['id' => 'settings', 'label' => 'Settings', 'href' => FULL_BASE_PATH . 'admin/settings'],
     ['id' => 'tracker-codes', 'label' => 'Tracker', 'href' => FULL_BASE_PATH . 'admin/tracker-codes'],
     ['id' => 'music', 'label' => 'Music', 'href' => FULL_BASE_PATH . 'admin/music'],
+    ['id' => 'videos', 'label' => 'Videos', 'href' => FULL_BASE_PATH . 'admin/videos'],
     ['id' => 'travel', 'label' => 'Travel', 'href' => FULL_BASE_PATH . 'admin/travel'],
 ];
 
@@ -69,7 +70,7 @@ $faviconMime = 'image/svg+xml';
     <?php if (in_array($page, ['blog', 'blog-create', 'blog-edit'], true)): ?>
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-blog.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-blog.css') ?: '1'; ?>">
     <?php endif; ?>
-    <?php if ($page === 'gallery' || $page === 'music'): ?>
+    <?php if ($page === 'gallery' || $page === 'music' || $page === 'videos'): ?>
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-gallery.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-gallery.css') ?: '1'; ?>">
     <?php endif; ?>
     <?php if (in_array($page, ['portfolio', 'portfolio-create', 'portfolio-edit'], true)): ?>

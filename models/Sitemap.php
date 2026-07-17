@@ -64,6 +64,7 @@ class Sitemap {
             'sitemap' => '0.3',    // HTML sitemap page
             'post-code' => '0.6',  // Post-code feed
             'science-corner' => '0.6', // Science Corner
+            'videos' => '0.6',   // Videos page
             'privacy' => '0.3',    // Privacy policy
             'terms' => '0.3',      // Terms of service
             'cookies' => '0.3'     // Cookie policy
@@ -184,7 +185,7 @@ class Sitemap {
         if (strpos($path, 'updates/') === 0) return 'monthly';
         
         // More pages
-        if (in_array($path, ['post-code', 'science-corner'])) return 'monthly';
+        if (in_array($path, ['post-code', 'science-corner', 'videos'])) return 'monthly';
 
         // Legal/static pages
         if (in_array($path, ['privacy', 'terms', 'cookies', 'sitemap'])) return 'yearly';

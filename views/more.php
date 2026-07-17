@@ -27,6 +27,12 @@ $morePages = [
         'description' => 'Audio tracks with an in-browser music player.',
         'icon' => '♪',
     ],
+    [
+        'title' => 'Videos',
+        'href' => FULL_BASE_PATH . 'videos',
+        'description' => 'Video uploads, YouTube embeds, and Odysee clips.',
+        'icon' => '▶',
+    ],
 ];
 
 $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');

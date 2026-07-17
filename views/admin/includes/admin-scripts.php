@@ -93,6 +93,7 @@ function getRequiredAdminModules() {
         'tracker-codes-edit' => ['admin-forms.js'],
         'search' => [],
         'music' => ['admin-forms.js', 'admin-tables.js'],
+        'videos' => ['admin-forms.js', 'admin-tables.js'],
         'travel' => ['admin-forms.js', 'admin-tables.js', 'admin-travel.js'],
     ];
     

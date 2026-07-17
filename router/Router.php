@@ -20,6 +20,7 @@ class Router {
         'post-code' => 'views/post-code/index.php',
         'science-corner' => 'views/science-corner/index.php',
         'yunobot' => 'views/yunobot/index.php',
+        'videos' => 'views/videos/index.php',
         'more' => 'views/more.php',
         'admin/login' => 'views/admin/login.php',
         'admin' => 'views/admin/login.php',
@@ -59,6 +60,7 @@ class Router {
         'music' => 'views/music.php',
         'admin/music' => 'views/admin/music/index.php',
         'admin/travel' => 'views/admin/travel/index.php',
+        'admin/videos' => 'views/admin/videos/index.php',
     ];
 
     public function __construct() {
@@ -233,7 +235,7 @@ class Router {
         }
 
         // Pages that manage their own layout via ui.php functions
-        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'science-corner', 'yunobot', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
+        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'science-corner', 'yunobot', 'videos', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
         $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
 
         // Layout is self-contained via ui.php functions; no separate header/footer files

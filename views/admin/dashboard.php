@@ -18,6 +18,7 @@ require_once __DIR__ . '/../../models/Updates.php';
 require_once __DIR__ . '/../../models/Gallery.php';
 require_once __DIR__ . '/../../models/Portfolio.php';
 require_once __DIR__ . '/../../models/Music.php';
+require_once __DIR__ . '/../../models/Videos.php';
 Auth::checkLogin();
 
 $blog = new Blog();
@@ -25,18 +26,21 @@ $updates = new Updates();
 $gallery = new Gallery();
 $portfolio = new Portfolio();
 $music = new Music();
+$videos = new Videos();
 
 $recentPosts = $blog->getRecentPosts(5);
 $recentUpdates = $updates->getUpdates(5);
 $recentImages = $gallery->getRecentImages(5);
 $recentProjects = $portfolio->getRecentProjects(5);
 $recentTracks = $music->getRecentTracks(5);
+$recentVideos = $videos->getRecentVideos(5);
 
 $totalPosts = $blog->getTotalPosts();
 $totalUpdates = $updates->getTotalUpdates();
 $totalImages = $gallery->getTotalImages();
 $totalProjects = $portfolio->getTotalProjects();
 $totalTracks = $music->getTotalActiveTracks();
+$totalVideos = $videos->getTotalActiveVideos();
 
 $page = "dashboard";
 $pageTitle = "Dashboard";
@@ -78,6 +82,13 @@ include __DIR__ . '/includes/header.php';
             <h3 class="admin-stat-number"><?= $totalTracks ?></h3>
             <p class="admin-stat-label">Music Tracks</p>
             <a href="<?= FULL_BASE_PATH ?>admin/music" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
+        </div>
+        
+        <div class="admin-stat-card">
+            <i class="bi bi-camera-reel admin-stat-icon"></i>
+            <h3 class="admin-stat-number"><?= $totalVideos ?></h3>
+            <p class="admin-stat-label">Videos</p>
+            <a href="<?= FULL_BASE_PATH ?>admin/videos" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
     </div>
 
