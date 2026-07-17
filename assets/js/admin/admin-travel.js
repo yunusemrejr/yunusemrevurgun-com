@@ -180,6 +180,7 @@
             window.loadLocationPhotos = this.loadLocationPhotos.bind(this);
             window.uploadTravelPhotos = this.uploadTravelPhotos.bind(this);
             window.deleteTravelPhoto = this.deleteTravelPhoto.bind(this);
+            window.unlinkTravelPhoto = this.unlinkTravelPhoto.bind(this);
             window.openGalleryPicker = this.openGalleryPicker.bind(this);
         },
 
@@ -232,7 +233,15 @@
                             } else {
                                 imgSrc = imageBase + photo.filename;
                             }
-                            var sourceLabel = photo.source === 'gallery' ? '<span class="admin-badge" style="background:#8490a4;color:#fff;font-size:0.65rem;padding:0.1rem 0.4rem;">Gallery</span>' : '';
+                            var isGallery = photo.source === 'gallery';
+                            var sourceLabel = isGallery ? '<span class="admin-badge" style="background:#8490a4;color:#fff;font-size:0.65rem;padding:0.1rem 0.4rem;">Gallery</span>' : '';
+
+                            var actionBtn;
+                            if (isGallery) {
+                                actionBtn = '<button class="admin-btn admin-btn-sm" style="background:#e3e2de;color:#575757;border:1px solid rgba(132,144,164,0.25);" data-action="unlink-photo" data-id="' + photo.id + '"><i class="bi bi-link-45deg"></i> Unlink</button>';
+                            } else {
+                                actionBtn = actionBtn;
+                            }
 
                             const $item = $('<div>').addClass('admin-gallery-item').attr('data-photo-id', photo.id);
                             $item.html(
@@ -242,7 +251,7 @@
                                 sourceLabel +
                                 '</div>' +
                                 '<div class="admin-card-body">' +
-                                '<button class="admin-btn admin-btn-danger admin-btn-sm" data-action="delete-photo" data-id="' + photo.id + '"><i class="bi bi-trash"></i> Delete</button>' +
+                                actionBtn +
                                 '</div>' +
                                 '</div>'
                             );
@@ -328,6 +337,39 @@
                     AdminPanel.updateTravelProgress(0);
                     AdminPanel.showNotification('Upload failed: ' + error, 'error');
                     $('#uploadPhotosBtn').prop('disabled', false);
+                }
+            });
+        },
+
+        unlinkTravelPhoto: function(imageId) {
+            if (!imageId) return;
+            if (!confirm('Unlink this gallery image from this travel location? The original file stays in the gallery.')) return;
+
+            const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
+            const formData = new FormData();
+            formData.append('csrf_token', csrfToken);
+            formData.append('id', imageId);
+
+            $.ajax({
+                url: window.FULL_BASE_PATH + 'api/admin/travel/delete-image.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        AdminPanel.showNotification('Gallery image unlinked', 'success');
+                        const locationId = $('#photoLocationId').val();
+                        AdminPanel.loadLocationPhotos(locationId);
+                    } else {
+                        AdminPanel.showNotification('Failed to unlink: ' + (response.message || 'Unknown error'), 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    AdminPanel.showNotification('Failed to unlink: ' + error, 'error');
                 }
             });
         },
@@ -613,6 +655,11 @@
             // Delete photo button
             $(document).on('click', '[data-action="delete-photo"]', function() {
                 AdminPanel.deleteTravelPhoto($(this).data('id'));
+            });
+
+            // Unlink photo button (gallery-sourced images only)
+            $(document).on('click', '[data-action="unlink-photo"]', function() {
+                AdminPanel.unlinkTravelPhoto($(this).data('id'));
             });
 
             // Drag & drop for photos
