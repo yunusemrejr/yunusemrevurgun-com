@@ -59,13 +59,17 @@ class Sitemap {
             'portfolio' => '0.9',  // Portfolio - high priority for professional site
             'blog' => '0.8',       // Blog listing page
             'gallery' => '0.7',    // Gallery page
+            'travel' => '0.7',     // Travel map page
             'updates' => '0.6',    // Updates page
             'contact' => '0.6',    // Contact page
-            'sitemap' => '0.3',    // HTML sitemap page
+            'music' => '0.6',      // Music page
+            'videos' => '0.6',     // Videos page
+            'yunobot' => '0.6',    // YunoBot AI assistant page
             'post-code' => '0.6',  // Post-code feed
             'science-corner' => '0.6', // Science Corner
-            'videos' => '0.6',   // Videos page
             'comedy' => '0.5',     // Comedy page
+            'more' => '0.5',       // More pages hub
+            'sitemap' => '0.3',    // HTML sitemap page
             'privacy' => '0.3',    // Privacy policy
             'terms' => '0.3',      // Terms of service
             'cookies' => '0.3'     // Cookie policy
@@ -186,7 +190,10 @@ class Sitemap {
         if (strpos($path, 'updates/') === 0) return 'monthly';
         
         // More pages
-        if (in_array($path, ['post-code', 'science-corner', 'videos'])) return 'monthly';
+        if (in_array($path, ['post-code', 'science-corner', 'videos', 'travel', 'music', 'yunobot'])) return 'monthly';
+
+        // Hub pages
+        if (in_array($path, ['comedy', 'more'])) return 'monthly';
 
         // Legal/static pages
         if (in_array($path, ['privacy', 'terms', 'cookies', 'sitemap'])) return 'yearly';
