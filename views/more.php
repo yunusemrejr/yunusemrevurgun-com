@@ -31,7 +31,7 @@ $morePages = [
         'title' => 'Comedy',
         'href' => FULL_BASE_PATH . 'comedy',
         'description' => 'Shower thoughts and memes from @showerthoughtsamp.',
-        'icon' => '😂',
+        'icon' => '☺',
     ],
     [
         'title' => 'Videos',

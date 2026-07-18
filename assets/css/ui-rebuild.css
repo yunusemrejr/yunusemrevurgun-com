@@ -2401,8 +2401,10 @@ body.ui-landing::before {
 }
 
 .comedy-social-icon {
-  font-size: 1.5rem;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
+  color: #8490a4;
 }
 
 .comedy-social-name {
