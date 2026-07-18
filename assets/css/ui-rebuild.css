@@ -2375,3 +2375,66 @@ body.ui-landing::before {
     gap: var(--space-2) var(--space-3);
   }
 }
+
+/* ===== COMEDY PAGE ===== */
+.comedy-socials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.comedy-social-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comedy-social-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.comedy-social-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.comedy-social-name {
+  display: block;
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: #1a1a1a;
+}
+
+.comedy-social-handle {
+  display: block;
+  font-size: var(--text-sm);
+  color: #575757;
+  margin-top: 2px;
+}
+
+.comedy-memes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.comedy-memes .tenor-gif-embed {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .comedy-socials {
+    grid-template-columns: 1fr;
+  }
+  .comedy-memes {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}

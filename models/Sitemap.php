@@ -65,6 +65,7 @@ class Sitemap {
             'post-code' => '0.6',  // Post-code feed
             'science-corner' => '0.6', // Science Corner
             'videos' => '0.6',   // Videos page
+            'comedy' => '0.5',     // Comedy page
             'privacy' => '0.3',    // Privacy policy
             'terms' => '0.3',      // Terms of service
             'cookies' => '0.3'     // Cookie policy

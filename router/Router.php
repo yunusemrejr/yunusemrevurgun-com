@@ -58,6 +58,7 @@ class Router {
         'admin/search' => 'views/admin/search.php',
         'admin/api/search' => 'views/admin/api/search.php',
         'music' => 'views/music.php',
+        'comedy' => 'views/comedy.php',
         'admin/music' => 'views/admin/music/index.php',
         'admin/travel' => 'views/admin/travel/index.php',
         'admin/videos' => 'views/admin/videos/index.php',
