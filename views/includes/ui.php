@@ -48,6 +48,7 @@ if (!function_exists('ui_render_head')) {
     <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= FULL_BASE_PATH ?>sitemap.xml">
     <link rel="alternate" type="text/plain" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
     <link rel="alternate" type="application/ld+json" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
+    <link rel="manifest" href="<?= FULL_BASE_PATH ?>manifest.json">
     <link rel="icon" type="image/svg+xml" sizes="32x32" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
     <link rel="icon" type="image/svg+xml" sizes="16x16" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
     <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
