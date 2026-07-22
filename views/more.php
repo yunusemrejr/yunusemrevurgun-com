@@ -39,6 +39,12 @@ $morePages = [
         'description' => 'Video uploads, YouTube embeds, and Odysee clips.',
         'icon' => '▶',
     ],
+    [
+        'title' => 'Downloads',
+        'href' => FULL_BASE_PATH . 'downloads',
+        'description' => 'Desktop and offline apps from my personal projects, hosted on GitHub.',
+        'icon' => '↓',
+    ],
 ];
 
 $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');

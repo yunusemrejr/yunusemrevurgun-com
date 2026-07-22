@@ -28,8 +28,10 @@ if (!function_exists('ui_render_head')) {
     ?>
     <link rel="canonical" href="<?= htmlspecialchars($canonical) ?>">
     <?php
-    // Default Open Graph tags (can be overridden via $extraMeta)
-    $defaultOgImage = FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg';
+    // Default Open Graph / social-share image: the home hero rendered to a
+    // 1200x630 PNG (social platforms don't render SVG). Regenerate with
+    // dev/scripts/build-og-image.sh when assets/images/desktop.svg changes.
+    $defaultOgImage = FULL_BASE_PATH . 'assets/images/og-image.png';
     $defaultOgTitle = htmlspecialchars($title, ENT_QUOTES);
     $defaultOgDesc = htmlspecialchars($description, ENT_QUOTES);
     ?>
@@ -61,9 +63,12 @@ if (!function_exists('ui_render_head')) {
     <?php if (isset($extraMeta['music']) && $extraMeta['music']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/music.css?v=<?= filemtime(__DIR__ . '/../../assets/css/music.css') ?>">
     <?php endif; ?>
+    <?php if (isset($extraMeta['downloads']) && $extraMeta['downloads']): ?>
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/downloads.css?v=<?= filemtime(__DIR__ . '/../../assets/css/downloads.css') ?>">
+    <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot', 'music'], true)) continue;
+        if (is_string($key) && in_array($key, ['yunobot', 'music', 'downloads'], true)) continue;
         if (!empty($value) && is_string($value)) echo $value . "\n";
     endforeach; ?>
 </head>

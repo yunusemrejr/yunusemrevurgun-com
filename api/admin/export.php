@@ -31,6 +31,7 @@ require_once dirname(__DIR__, 2) . '/models/Portfolio.php';
 require_once dirname(__DIR__, 2) . '/models/Music.php';
 require_once dirname(__DIR__, 2) . '/models/Travel.php';
 require_once dirname(__DIR__, 2) . '/models/Videos.php';
+require_once dirname(__DIR__, 2) . '/models/Downloads.php';
 require_once dirname(__DIR__, 2) . '/models/Settings.php';
 
 $blog = new Blog();
@@ -40,6 +41,7 @@ $portfolio = new Portfolio();
 $music = new Music();
 $travel = new Travel();
 $videos = new Videos();
+$downloads = new Downloads();
 $settings = new Settings();
 
 // Create a temp directory for the export
@@ -90,6 +92,10 @@ try {
     // Videos
     $allVideos = $videos->getAllVideos(true);
     file_put_contents($dataDir . '/videos.json', json_encode($allVideos, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+    // Downloads (metadata only — binaries live on GitHub)
+    $allDownloads = $downloads->getAllDownloads();
+    file_put_contents($dataDir . '/downloads.json', json_encode($allDownloads, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
     // Travel
     $travelLocations = $travel->getAllLocations();
@@ -156,6 +162,11 @@ try {
     // Videos (uploaded files only, not URL references)
     if (is_dir($rootDir . '/uploads/videos')) {
         copyDir($rootDir . '/uploads/videos', $exportDir . '/uploads/videos');
+    }
+
+    // Download thumbnails
+    if (is_dir($rootDir . '/uploads/downloads')) {
+        copyDir($rootDir . '/uploads/downloads', $exportDir . '/uploads/downloads');
     }
 
     // Static assets (only travel images that might be referenced)

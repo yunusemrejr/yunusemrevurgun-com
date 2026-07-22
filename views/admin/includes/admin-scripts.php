@@ -61,6 +61,7 @@ function getCurrentAdminPageContext() {
         return 'tracker-codes';
     }
     if (strpos($path, '/admin/music') !== false) return 'music';
+    if (strpos($path, '/admin/downloads') !== false) return 'downloads';
     if (strpos($path, '/admin/travel') !== false) return 'travel';
     if (strpos($path, '/admin/search') !== false) return 'search';
     
@@ -94,6 +95,7 @@ function getRequiredAdminModules() {
         'search' => [],
         'music' => ['admin-forms.js', 'admin-tables.js'],
         'videos' => ['admin-forms.js', 'admin-tables.js'],
+        'downloads' => ['admin-forms.js', 'admin-tables.js'],
         'travel' => ['admin-forms.js', 'admin-tables.js', 'admin-travel.js'],
     ];
     

@@ -64,6 +64,7 @@ class Sitemap {
             'contact' => '0.6',    // Contact page
             'music' => '0.6',      // Music page
             'videos' => '0.6',     // Videos page
+            'downloads' => '0.6',  // Downloads page
             'yunobot' => '0.6',    // YunoBot AI assistant page
             'post-code' => '0.6',  // Post-code feed
             'science-corner' => '0.6', // Science Corner
@@ -190,7 +191,7 @@ class Sitemap {
         if (strpos($path, 'updates/') === 0) return 'monthly';
         
         // More pages
-        if (in_array($path, ['post-code', 'science-corner', 'videos', 'travel', 'music', 'yunobot'])) return 'monthly';
+        if (in_array($path, ['post-code', 'science-corner', 'videos', 'downloads', 'travel', 'music', 'yunobot'])) return 'monthly';
 
         // Hub pages
         if (in_array($path, ['comedy', 'more'])) return 'monthly';
