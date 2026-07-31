@@ -63,11 +63,28 @@ ui_render_head(
 );
 ?>
 <body class="ui-landing">
-<div class="ui-landing-svg">
+<?php
+// Rotating SVG hero variants (desktop set + matching mobile set). One random
+// variant renders on first paint; ui-interactions.js auto-rotates the rest.
+$heroFiles = [
+    ['desktop.svg', 'mobile.svg'],
+    ['desktop2.svg', 'mobile2.svg'],
+    ['desktop3.svg', 'mobile3.svg'],
+    ['desktop4.svg', 'mobile4.svg'],
+];
+$heroIdx = array_rand($heroFiles);
+$heroDesktopSrc = [];
+$heroMobileSrc = [];
+foreach ($heroFiles as $heroPair) {
+    $heroDesktopSrc[] = FULL_BASE_PATH . 'assets/images/' . $heroPair[0] . '?v=' . filemtime(__DIR__ . '/../assets/images/' . $heroPair[0]);
+    $heroMobileSrc[] = FULL_BASE_PATH . 'assets/images/' . $heroPair[1] . '?v=' . filemtime(__DIR__ . '/../assets/images/' . $heroPair[1]);
+}
+?>
+<div class="ui-landing-svg" data-hero-current="<?= $heroIdx ?>" data-hero-desktop="<?= htmlspecialchars(implode('|', $heroDesktopSrc), ENT_QUOTES) ?>" data-hero-mobile="<?= htmlspecialchars(implode('|', $heroMobileSrc), ENT_QUOTES) ?>">
     <!-- Desktop SVG hero (navigation, portrait, background, headings, decorative elements) -->
-    <img class="ui-landing-svg-desktop" src="<?= FULL_BASE_PATH ?>assets/images/desktop.svg" alt="Yemre — The world of a developer" loading="eager" draggable="false">
+    <img class="ui-landing-svg-desktop" src="<?= $heroDesktopSrc[$heroIdx] ?>" alt="Yemre — The world of a developer" loading="eager" draggable="false">
     <!-- Mobile SVG hero -->
-    <img class="ui-landing-svg-mobile" src="<?= FULL_BASE_PATH ?>assets/images/mobile.svg" alt="Yemre — The world of a developer" loading="eager" draggable="false">
+    <img class="ui-landing-svg-mobile" src="<?= $heroMobileSrc[$heroIdx] ?>" alt="Yemre — The world of a developer" loading="eager" draggable="false">
 </div>
 
 <div class="ui-landing-actions">

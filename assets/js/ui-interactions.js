@@ -657,6 +657,103 @@
     });
   }
 
+  /* Landing hero: auto-rotating SVG variants (desktop + mobile sets stay in
+     sync). Initial variant is chosen server-side; this rotates the rest on a
+     timer forever, fading between SVGs and never repeating a recently-shown
+     variant. Only the currently-visible img is swapped (the other set loads
+     lazily on breakpoint change) to avoid double downloads. */
+  function initLandingHero() {
+    var hero = q('.ui-landing-svg');
+    if (!hero) return;
+    var desktop = q('.ui-landing-svg-desktop', hero);
+    var mobile = q('.ui-landing-svg-mobile', hero);
+    if (!desktop || !mobile) return;
+
+    var desktopSrcs = (hero.getAttribute('data-hero-desktop') || '').split('|').filter(Boolean);
+    var mobileSrcs = (hero.getAttribute('data-hero-mobile') || '').split('|').filter(Boolean);
+    if (!desktopSrcs.length || desktopSrcs.length !== mobileSrcs.length) return;
+
+    var current = parseInt(hero.getAttribute('data-hero-current') || '0', 10);
+    if (isNaN(current) || current < 0 || current >= desktopSrcs.length) current = 0;
+
+    var SHOW_MS = 7000;   // how long each variant stays visible
+    var FADE_MS = 650;    // matches the 0.6s CSS transition
+    var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var recent = [current]; // last shown indexes — never pick from here
+    var failed = {};        // variants that failed to load are excluded
+    var stopped = false;
+
+    function visibleImg() {
+      return desktop.offsetParent !== null ? desktop : mobile;
+    }
+
+    function srcsFor(img, index) {
+      return (img === desktop ? desktopSrcs : mobileSrcs)[index];
+    }
+
+    function prefetch(src) {
+      return new Promise(function (resolve, reject) {
+        var img = new Image();
+        img.onload = resolve;
+        img.onerror = function () { reject(new Error('failed to load ' + src)); };
+        img.src = src;
+      });
+    }
+
+    function pickNext() {
+      var pool = [];
+      desktopSrcs.forEach(function (_, i) {
+        if (recent.indexOf(i) === -1 && !failed[i]) pool.push(i);
+      });
+      if (!pool.length) {
+        desktopSrcs.forEach(function (_, i) {
+          if (i !== current && !failed[i]) pool.push(i);
+        });
+      }
+      if (!pool.length) return -1;
+      var next = pool[Math.floor(Math.random() * pool.length)];
+      recent.push(next);
+      if (recent.length > 2) recent.shift();
+      return next;
+    }
+
+    function rotate() {
+      if (stopped) return;
+      var next = pickNext();
+      if (next === -1) { stopped = true; return; } // all variants failed — keep current
+      var img = visibleImg();
+      var nextSrc = srcsFor(img, next);
+
+      prefetch(nextSrc).then(function () {
+        img.classList.add('is-fading');
+        setTimeout(function () {
+          img.src = nextSrc;
+          img.classList.remove('is-fading');
+          schedule();
+        }, REDUCED ? 0 : FADE_MS);
+      }).catch(function () {
+        failed[next] = true;
+        schedule(); // skip the broken variant and try again next cycle
+      });
+    }
+
+    function schedule() {
+      if (stopped) return;
+      setTimeout(rotate, SHOW_MS);
+    }
+
+    // Keep the newly-visible img in sync with the current variant after a
+    // desktop/mobile breakpoint change (only one img is loaded per rotation).
+    var mq = window.matchMedia('(max-width: 768px)');
+    function onBreakpoint() {
+      visibleImg().src = srcsFor(visibleImg(), current);
+    }
+    if (mq.addEventListener) mq.addEventListener('change', onBreakpoint);
+    else if (mq.addListener) mq.addListener(onBreakpoint);
+
+    schedule();
+  }
+
   function init() {
     initMobileMenu();
     initAboutCommandCenter();
@@ -666,6 +763,7 @@
     initYunobotArchitectureModal();
     initYunobotTerminal();
     initGrayscaleTapReveal();
+    initLandingHero();
   }
 
   if (document.readyState === 'loading') {

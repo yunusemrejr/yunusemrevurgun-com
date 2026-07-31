@@ -2255,6 +2255,21 @@ body.ui-landing::before {
   .ui-landing-svg-mobile { display: block; }
 }
 
+/* Rotating hero variants: fade between SVGs (ui-interactions.js toggles .is-fading) */
+.ui-landing-svg img {
+  transition: opacity 0.6s ease;
+}
+
+.ui-landing-svg img.is-fading {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-landing-svg img {
+    transition: none;
+  }
+}
+
 /* Landing page action buttons — redesigned for new palette */
 .ui-landing-actions {
   display: flex;
