@@ -118,6 +118,5 @@ foreach ($heroFiles as $heroPair) {
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../assets/js/ui-interactions.js') ?>"></script>
-<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>
