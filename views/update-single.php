@@ -68,5 +68,6 @@ ui_render_head(
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
+<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>

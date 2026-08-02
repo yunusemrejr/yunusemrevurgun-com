@@ -32,5 +32,6 @@ http_response_code(500);
     <h1>500</h1>
     <p>Temporary server error. Please refresh in a moment.</p>
   </div>
+<?php readfile(__DIR__ . '/views/includes/gumroad-widget.php'); ?>
 </body>
 </html>

@@ -291,5 +291,6 @@ ui_render_head(
     }
 })();
 </script>
+<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>

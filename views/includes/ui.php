@@ -244,6 +244,19 @@ if (!function_exists('ui_sanitize_html')) {
     }
 }
 
+if (!function_exists('ui_render_gumroad_widget')) {
+    // Gumroad Products Promoter Widget (floating books button + panel).
+    // Markup lives in gumroad-widget.php (pure HTML, no PHP tags) so standalone
+    // pages that don't load ui.php (403/500/admin) can readfile() it directly.
+    function ui_render_gumroad_widget(): void
+    {
+        $widgetFile = __DIR__ . '/gumroad-widget.php';
+        if (file_exists($widgetFile)) {
+            readfile($widgetFile);
+        }
+    }
+}
+
 if (!function_exists('ui_render_tracker_codes')) {
     function ui_render_tracker_codes(string $baseDir): void
     {

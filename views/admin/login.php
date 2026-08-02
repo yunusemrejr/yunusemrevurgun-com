@@ -530,5 +530,6 @@ if (strpos($currentPath, '/admin') !== false &&
         }
     }
     ?>
+<?php readfile(dirname(__DIR__) . '/includes/gumroad-widget.php'); ?>
 </body>
 </html> 

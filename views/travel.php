@@ -444,5 +444,6 @@ window.TRAVEL_GALLERY_IMAGE_BASE = <?php echo json_encode($galleryImageBase); ?>
 <script data-cfasync="false" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/travel-rebuild.js?v=<?= filemtime(realpath(__DIR__ . '/../assets/js/travel-rebuild.js') ?: __DIR__ . '/../assets/js/travel-rebuild.js') ?>"></script>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
+<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>

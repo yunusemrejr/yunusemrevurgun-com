@@ -243,5 +243,6 @@ ui_render_head(
 <?php endif; ?>
 
 <?php ui_render_tracker_codes(dirname(__DIR__, 2)); ?>
+<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>

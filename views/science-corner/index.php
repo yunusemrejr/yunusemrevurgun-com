@@ -327,5 +327,6 @@ window.MathJax = {
 </script>
 <script data-cfasync="false" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/post-code.js?v=<?= filemtime(__DIR__ . '/../../assets/js/post-code.js') ?>"></script>
+<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>

@@ -105,5 +105,6 @@ if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
 </script>
 
 <?php ui_render_tracker_codes(dirname(__DIR__, 2)); ?>
+<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>

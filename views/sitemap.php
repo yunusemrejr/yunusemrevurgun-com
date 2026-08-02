@@ -50,5 +50,6 @@ ui_render_head('Sitemap | Navigation', 'Structured links for all primary website
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
+<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>

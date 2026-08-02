@@ -54,5 +54,6 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
         });
     })();
     </script>
+<?php readfile(dirname(__DIR__, 2) . '/includes/gumroad-widget.php'); ?>
 </body>
 </html> 

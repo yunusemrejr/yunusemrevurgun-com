@@ -32,5 +32,6 @@ http_response_code(403);
     <h1>403</h1>
     <p>Access Denied</p>
   </div>
+<?php readfile(__DIR__ . '/views/includes/gumroad-widget.php'); ?>
 </body>
 </html>

@@ -19,5 +19,6 @@ ui_render_head('Site Maintenance', 'Temporary maintenance mode.');
         </section>
     </main>
 </div>
+<?php ui_render_gumroad_widget(); ?>
 </body>
 </html>
