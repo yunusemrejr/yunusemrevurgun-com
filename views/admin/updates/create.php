@@ -32,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
     $title = trim((string)($_POST['title'] ?? ''));
     $content = trim((string)($_POST['content'] ?? ''));
-    $content = strip_tags($content);
     $date = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)($_POST['date'] ?? '')) ? $_POST['date'] : date('Y-m-d');
     $category = mb_substr(trim(strip_tags((string)($_POST['category'] ?? ''))), 0, 50);
     $importance = in_array(($_POST['importance'] ?? 'medium'), ['low', 'medium', 'high'], true) ? $_POST['importance'] : 'medium';
@@ -115,7 +114,27 @@ include __DIR__ . '/../includes/header.php';
                     
                     <div class="admin-form-group">
                         <label for="content" class="admin-form-label">Description</label>
-                        <textarea class="admin-form-control" id="content" name="content" rows="6" placeholder="Enter update description or content"></textarea>
+                        <div class="updates-md-editor">
+                            <div class="updates-md-toolbar" role="toolbar" aria-label="Formatting toolbar">
+                                <button type="button" data-md="bold" title="Bold" aria-label="Bold"><i class="bi bi-type-bold"></i></button>
+                                <button type="button" data-md="italic" title="Italic" aria-label="Italic"><i class="bi bi-type-italic"></i></button>
+                                <button type="button" data-md="link" title="Insert link" aria-label="Insert link"><i class="bi bi-link-45deg"></i></button>
+                                <span class="updates-md-sep" aria-hidden="true"></span>
+                                <button type="button" data-md="heading" title="Heading" aria-label="Heading"><i class="bi bi-heading"></i></button>
+                                <button type="button" data-md="bullet" title="Bullet list" aria-label="Bullet list"><i class="bi bi-list-ul"></i></button>
+                                <button type="button" data-md="quote" title="Quote" aria-label="Quote"><i class="bi bi-quote"></i></button>
+                                <span class="updates-md-sep" aria-hidden="true"></span>
+                                <button type="button" data-md="code" title="Inline code" aria-label="Inline code"><i class="bi bi-code-slash"></i></button>
+                                <button type="button" data-md="hr" title="Horizontal rule" aria-label="Horizontal rule"><i class="bi bi-hr"></i></button>
+                            </div>
+                            <textarea class="admin-form-control" id="content" name="content" rows="10" placeholder="Write your update in markdown — **bold**, *italic*, [links](https://…), lists, quotes, headings."></textarea>
+                            <div class="updates-md-preview" aria-live="polite"></div>
+                        </div>
+                        <div class="updates-md-help">
+                            Markdown supported: <code>**bold**</code>, <code>*italic*</code>, <code>[label](https://…)</code>,
+                            <code># Heading</code>, <code>- list</code>, <code>&gt; quote</code>, <code>`code`</code>.
+                            Single Enter = line skip, blank line = new paragraph. Links open in a new tab.
+                        </div>
                     </div>
                     
                     <div class="admin-form-group">

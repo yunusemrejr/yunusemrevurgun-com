@@ -5,9 +5,6 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
     header('Location: ' . FULL_BASE_PATH);
     exit;
 }
-?>
-
-<?php
 
 $mode = env('MODE') ?: 'development';
 $driver = env('DB_CONNECTION');
@@ -44,4 +41,3 @@ return [
     'dbname' => $dbPath
 ];
 
-?> 
