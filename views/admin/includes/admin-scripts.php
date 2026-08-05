@@ -54,6 +54,11 @@ function getCurrentAdminPageContext() {
         if (strpos($path, '/edit') !== false) return 'updates-edit';
         return 'updates';
     }
+    if (strpos($path, '/admin/rmrp') !== false) {
+        if (strpos($path, '/create') !== false) return 'rmrp-create';
+        if (strpos($path, '/edit') !== false) return 'rmrp-edit';
+        return 'rmrp';
+    }
     if (strpos($path, '/admin/settings') !== false) return 'settings';
     if (strpos($path, '/admin/tracker-codes') !== false) {
         if (strpos($path, '/create') !== false) return 'tracker-codes-create';
@@ -88,6 +93,9 @@ function getRequiredAdminModules() {
         'updates' => ['admin-forms.js', 'admin-tables.js'],
         'updates-create' => ['admin-forms.js', 'admin-editor.js', 'updates-editor.js'],
         'updates-edit' => ['admin-forms.js', 'admin-editor.js', 'updates-editor.js'],
+        'rmrp' => ['admin-forms.js', 'admin-tables.js'],
+        'rmrp-create' => ['admin-forms.js', 'admin-editor.js', 'rmrp-editor.js'],
+        'rmrp-edit' => ['admin-forms.js', 'admin-editor.js', 'rmrp-editor.js'],
         'settings' => ['admin-forms.js'],
         'tracker-codes' => ['admin-forms.js', 'admin-tables.js'],
         'tracker-codes-create' => ['admin-forms.js'],

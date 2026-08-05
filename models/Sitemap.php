@@ -61,6 +61,7 @@ class Sitemap {
             'gallery' => '0.7',    // Gallery page
             'travel' => '0.7',     // Travel map page
             'updates' => '0.6',    // Updates page
+            'rmrp' => '0.6',       // Random memories page
             'contact' => '0.6',    // Contact page
             'music' => '0.6',      // Music page
             'videos' => '0.6',     // Videos page
@@ -106,6 +107,25 @@ class Sitemap {
 
         foreach ($updates as $update) {
             $this->addUrl($xml, $urlset, 'updates/' . $update['id'], '0.6', $update['lastmod']);
+        }
+
+        // Add individual memories (RMRP). Guarded: the table is created lazily
+        // by models/Rmrp.php on first use, so on a fresh deploy it may not
+        // exist yet — skip the block instead of failing the whole sitemap.
+        try {
+            $query = "SELECT id,
+                             COALESCE(updated_at, created_at) as lastmod
+                      FROM rmrp_memories
+                      ORDER BY created_at DESC";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            $memories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($memories as $memory) {
+                $this->addUrl($xml, $urlset, 'rmrp/' . $memory['id'], '0.6', $memory['lastmod']);
+            }
+        } catch (Exception $e) {
+            error_log('Sitemap: rmrp_memories table not available yet: ' . $e->getMessage());
         }
 
         // Guardrail: never overwrite the tracked sitemap files from a local
@@ -181,6 +201,7 @@ class Sitemap {
         if ($path == '' || $path == 'home') return 'daily';
         if ($path == 'blog') return 'daily';
         if ($path == 'updates') return 'weekly';
+        if ($path == 'rmrp') return 'weekly';
         if ($path == 'portfolio') return 'monthly';
         if ($path == 'gallery') return 'weekly';
         
@@ -189,6 +210,9 @@ class Sitemap {
         
         // Individual updates
         if (strpos($path, 'updates/') === 0) return 'monthly';
+
+        // Individual memories (RMRP)
+        if (strpos($path, 'rmrp/') === 0) return 'monthly';
         
         // More pages
         if (in_array($path, ['post-code', 'science-corner', 'videos', 'downloads', 'travel', 'music', 'yunobot'])) return 'monthly';

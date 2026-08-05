@@ -40,6 +40,12 @@ $morePages = [
         'icon' => '▶',
     ],
     [
+        'title' => 'Random Memories',
+        'href' => FULL_BASE_PATH . 'rmrp',
+        'description' => 'Fragments, fleeting thoughts, and small moments worth keeping — random memories for random people.',
+        'icon' => '✳',
+    ],
+    [
         'title' => 'Downloads',
         'href' => FULL_BASE_PATH . 'downloads',
         'description' => 'Desktop and offline apps from my personal projects, hosted on GitHub.',

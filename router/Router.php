@@ -16,6 +16,7 @@ class Router {
         'gallery' => 'views/gallery.php',
         'blog' => 'views/blog.php',
         'updates' => 'views/updates.php',
+        'rmrp' => 'views/rmrp.php',
         'travel' => 'views/travel.php',
         'post-code' => 'views/post-code/index.php',
         'science-corner' => 'views/science-corner/index.php',
@@ -33,6 +34,10 @@ class Router {
         'admin/updates' => 'views/admin/updates/index.php',
         'admin/updates/create' => 'views/admin/updates/create.php',
         'admin/updates/edit' => 'views/admin/updates/edit.php',
+        'admin/rmrp' => 'views/admin/rmrp/index.php',
+        'admin/rmrp/create' => 'views/admin/rmrp/create.php',
+        'admin/rmrp/edit' => 'views/admin/rmrp/edit.php',
+        'admin/rmrp/delete' => 'views/admin/rmrp/delete.php',
         'admin/gallery' => 'views/admin/gallery/index.php',
         'admin/updates/delete' => 'views/admin/updates/delete.php',
         'admin/portfolio' => 'views/admin/portfolio/index.php',
@@ -172,6 +177,42 @@ class Router {
             }
         }
 
+        // Check if this is an individual RMRP memory URL
+        if (strpos($url, 'rmrp/') === 0) {
+            $memoryId = substr($url, strlen('rmrp/')); // Get everything after rmrp/
+
+            if (!empty($memoryId) && is_numeric($memoryId)) {
+                require_once dirname(__DIR__) . '/models/Rmrp.php';
+                $rmrp = new Rmrp();
+
+                if (getenv('MODE') === 'development') {
+                    error_log("Router: Processing individual memory URL");
+                    error_log("Full URL: " . $_SERVER['REQUEST_URI']);
+                    error_log("Processed URL: " . $url);
+                    error_log("Extracted memory ID: " . $memoryId);
+                }
+
+                // Get the memory
+                $memory = $rmrp->getMemoryById($memoryId);
+
+                if ($memory) {
+                    if (getenv('MODE') === 'development') {
+                        error_log("Router: Found memory with title: " . $memory['title']);
+                    }
+                    $GLOBALS['current_rmrp'] = $memory;
+                    require_once dirname(__DIR__) . '/views/rmrp-single.php';
+                    return;
+                }
+
+                if (getenv('MODE') === 'development') {
+                    error_log("Router: No memory found with ID: " . $memoryId);
+                }
+                $notFoundPath = dirname(__DIR__) . '/' . $this->routes['404'];
+                require_once $notFoundPath;
+                return;
+            }
+        }
+
         // Check if this is an individual update URL
         if (strpos($url, 'updates/') === 0) {
             $updateId = substr($url, strlen('updates/')); // Get everything after updates/
@@ -238,7 +279,7 @@ class Router {
         }
 
         // Pages that manage their own layout via ui.php functions
-        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'blog', 'post-code', 'science-corner', 'yunobot', 'videos', 'downloads', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
+        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'rmrp', 'blog', 'post-code', 'science-corner', 'yunobot', 'videos', 'downloads', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
         $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
 
         // Layout is self-contained via ui.php functions; no separate header/footer files

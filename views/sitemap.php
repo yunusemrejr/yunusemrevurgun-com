@@ -32,6 +32,7 @@ ui_render_head('Sitemap | Navigation', 'Structured links for all primary website
                     <ul class="ui-card-list" style="margin-top: 0.75rem;">
                         <li><a href="<?= FULL_BASE_PATH ?>gallery">Gallery</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>updates">Updates</a></li>
+                        <li><a href="<?= FULL_BASE_PATH ?>rmrp">Random Memories</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>travel">Travel</a></li>
                     </ul>
                 </article>

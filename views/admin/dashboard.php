@@ -15,6 +15,7 @@ if (file_exists('../../global.php')) {
 require_once __DIR__ . '/../../models/Auth.php';
 require_once __DIR__ . '/../../models/Blog.php';
 require_once __DIR__ . '/../../models/Updates.php';
+require_once __DIR__ . '/../../models/Rmrp.php';
 require_once __DIR__ . '/../../models/Gallery.php';
 require_once __DIR__ . '/../../models/Portfolio.php';
 require_once __DIR__ . '/../../models/Music.php';
@@ -24,6 +25,7 @@ Auth::checkLogin();
 
 $blog = new Blog();
 $updates = new Updates();
+$rmrp = new Rmrp();
 $gallery = new Gallery();
 $portfolio = new Portfolio();
 $music = new Music();
@@ -39,6 +41,7 @@ $recentVideos = $videos->getRecentVideos(5);
 
 $totalPosts = $blog->getTotalPosts();
 $totalUpdates = $updates->getTotalUpdates();
+$totalMemories = $rmrp->getTotalMemories();
 $totalImages = $gallery->getTotalImages();
 $totalProjects = $portfolio->getTotalProjects();
 $totalTracks = $music->getTotalActiveTracks();
@@ -64,6 +67,13 @@ include __DIR__ . '/includes/header.php';
             <h3 class="admin-stat-number"><?= $totalUpdates ?></h3>
             <p class="admin-stat-label">Updates</p>
             <a href="<?= FULL_BASE_PATH ?>admin/updates" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
+        </div>
+        
+        <div class="admin-stat-card">
+            <i class="bi bi-dice-5 admin-stat-icon"></i>
+            <h3 class="admin-stat-number"><?= $totalMemories ?></h3>
+            <p class="admin-stat-label">Memories</p>
+            <a href="<?= FULL_BASE_PATH ?>admin/rmrp" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
         
         <div class="admin-stat-card">

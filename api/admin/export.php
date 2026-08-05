@@ -26,6 +26,7 @@ ini_set('memory_limit', '256M');
 // Load all models
 require_once dirname(__DIR__, 2) . '/models/Blog.php';
 require_once dirname(__DIR__, 2) . '/models/Updates.php';
+require_once dirname(__DIR__, 2) . '/models/Rmrp.php';
 require_once dirname(__DIR__, 2) . '/models/Gallery.php';
 require_once dirname(__DIR__, 2) . '/models/Portfolio.php';
 require_once dirname(__DIR__, 2) . '/models/Music.php';
@@ -36,6 +37,7 @@ require_once dirname(__DIR__, 2) . '/models/Settings.php';
 
 $blog = new Blog();
 $updates = new Updates();
+$rmrp = new Rmrp();
 $gallery = new Gallery();
 $portfolio = new Portfolio();
 $music = new Music();
@@ -71,6 +73,10 @@ try {
     // Updates
     $allUpdates = $updates->getAllUpdates();
     file_put_contents($dataDir . '/updates.json', json_encode($allUpdates, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+    // Random Memories (RMRP)
+    $allMemories = $rmrp->getAllMemories();
+    file_put_contents($dataDir . '/rmrp-memories.json', json_encode($allMemories, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
     // Gallery
     $galleryImages = $gallery->getAllImages(true);

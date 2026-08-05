@@ -19,6 +19,7 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 RewriteRule ^sitemap\.xml$ api/sitemap.php [L,QSA]
 RewriteRule ^llms\.txt$ api/llms.php [L,QSA]
 RewriteRule ^updates\.xml$ api/updates-feed.php [L,QSA]
+RewriteRule ^rmrp\.xml$ api/rmrp-feed.php [L,QSA]
 
 # Normalize /index
 RewriteRule ^index/?$ / [R=301,L]

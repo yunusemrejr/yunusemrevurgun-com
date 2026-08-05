@@ -28,6 +28,7 @@ $adminNavItems = [
     ['id' => 'portfolio', 'label' => 'Portfolio', 'href' => FULL_BASE_PATH . 'admin/portfolio'],
     ['id' => 'gallery', 'label' => 'Gallery', 'href' => FULL_BASE_PATH . 'admin/gallery'],
     ['id' => 'updates', 'label' => 'Updates', 'href' => FULL_BASE_PATH . 'admin/updates'],
+    ['id' => 'rmrp', 'label' => 'RMRP', 'href' => FULL_BASE_PATH . 'admin/rmrp'],
     ['id' => 'settings', 'label' => 'Settings', 'href' => FULL_BASE_PATH . 'admin/settings'],
     ['id' => 'tracker-codes', 'label' => 'Tracker', 'href' => FULL_BASE_PATH . 'admin/tracker-codes'],
     ['id' => 'music', 'label' => 'Music', 'href' => FULL_BASE_PATH . 'admin/music'],
@@ -83,6 +84,9 @@ $faviconMime = 'image/svg+xml';
     <?php endif; ?>
     <?php if (in_array($page, ['updates', 'updates-create', 'updates-edit'], true)): ?>
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-updates.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-updates.css') ?: '1'; ?>">
+    <?php endif; ?>
+    <?php if (in_array($page, ['rmrp', 'rmrp-create', 'rmrp-edit'], true)): ?>
+    <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-rmrp.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-rmrp.css') ?: '1'; ?>">
     <?php endif; ?>
     <?php if (in_array($page, ['tracker-codes', 'tracker-codes-create', 'tracker-codes-edit'], true)): ?>
     <link rel="stylesheet" href="<?php echo FULL_BASE_PATH; ?>assets/css/admin-tracker-codes.css?v=<?php echo @filemtime(dirname(__DIR__, 3) . '/assets/css/admin-tracker-codes.css') ?: '1'; ?>">

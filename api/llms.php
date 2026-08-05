@@ -59,6 +59,7 @@ echo "- {$base}/about\n";
 echo "- {$base}/portfolio\n";
 echo "- {$base}/blog\n";
 echo "- {$base}/updates\n";
+echo "- {$base}/rmrp\n";
 echo "- {$base}/travel\n";
 echo "- {$base}/gallery\n";
 echo "- {$base}/yunobot\n";
