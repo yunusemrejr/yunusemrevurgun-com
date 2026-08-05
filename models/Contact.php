@@ -10,6 +10,7 @@ require_once __DIR__ . '/Database.php';
 class Contact {
     private $db;
     private $recipientEmail = 'yunus@yunus.email';
+    private $senderEmail = 'yunus@yunusemrevurgun.com';
     private $useMailer = false;
 
     // SMTP settings
@@ -83,15 +84,20 @@ class Contact {
             ':message' => $data['message']
         ]);
 
-        // Try sending via PHP mail() as primary (works on Namecheap shared hosting)
+        // Try sending via PHP mail() as primary (works on Namecheap shared hosting).
+        // Namecheap's Exim REJECTS outbound mail whose From domain is not hosted
+        // on the account (mail() returns false) — using the visitor's address as
+        // From silently fails every send. Always send from an account-local
+        // address and keep the visitor as Reply-To. The -f envelope sender matches
+        // the From domain so DKIM/DMARC alignment can pass at the recipient.
         try {
             $to = $this->recipientEmail;
             $subject = '[Website Contact] ' . $data['subject'];
-            $headers = "From: " . $data['name'] . " <" . $data['email'] . ">\r\n";
+            $headers = "From: Yunus Emre Vurgun <" . $this->senderEmail . ">\r\n";
             $headers .= "Reply-To: " . $data['email'] . "\r\n";
             $headers .= "MIME-Version: 1.0\r\n";
             $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-            
+
             $body = "
                 <h2>New Contact Form Submission</h2>
                 <p><strong>From:</strong> " . htmlspecialchars($data['name']) . " (" . htmlspecialchars($data['email']) . ")</p>
@@ -99,8 +105,11 @@ class Contact {
                 <p><strong>Message:</strong></p>
                 <p>" . nl2br(htmlspecialchars($data['message'])) . "</p>
             ";
-            
-            @mail($to, $subject, $body, $headers);
+
+            $mailSent = @mail($to, $subject, $body, $headers, '-f ' . $this->senderEmail);
+            if (!$mailSent) {
+                error_log("Contact mail() failed to send to {$to} (message still stored in contact_messages)");
+            }
         } catch (Exception $e) {
             error_log("mail() Error: " . $e->getMessage());
         }
