@@ -86,7 +86,6 @@ ui_render_head(
                                     <li><strong>Mastodon</strong><br><a href="https://mastodon.social/@yunusemrevurgn" target="_blank" rel="noopener noreferrer">@yunusemrevurgn</a></li>
                                     <li><strong>Bluesky</strong><br><a href="https://bsky.app/profile/yunusemrevurgun.bsky.social" target="_blank" rel="noopener noreferrer">@yunusemrevurgun</a></li>
                                     <li><strong>Threads</strong><br><a href="https://www.threads.com/@yemrevu" target="_blank" rel="noopener noreferrer">@yemrevu</a></li>
-                                    <li><strong>X / Twitter</strong><br><a href="https://x.com/yemrevu" target="_blank" rel="noopener noreferrer">@yemrevu</a></li>
                                     <li><strong>Instagram</strong><br><a href="https://instagram.com/yemrevu" target="_blank" rel="noopener noreferrer">@yemrevu</a></li>
                                 </ul>
                             </div>

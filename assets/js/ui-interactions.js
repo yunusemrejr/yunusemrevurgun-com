@@ -754,6 +754,44 @@
     schedule();
   }
 
+  function initXPopup() {
+    const trigger = q('[data-x-popup-trigger]');
+    const popup = q('#uiXPopup');
+    if (!trigger || !popup) return;
+
+    const closeItems = qa('[data-x-popup-close]', popup);
+    let previousOverflow = '';
+    let lastFocused = null;
+
+    function open() {
+      lastFocused = document.activeElement;
+      previousOverflow = document.body.style.overflow;
+      popup.classList.add('is-open');
+      popup.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      const closeBtn = q('.ui-x-popup-close', popup);
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function close() {
+      popup.classList.remove('is-open');
+      popup.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = previousOverflow || '';
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+    }
+
+    trigger.addEventListener('click', open);
+    closeItems.forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && popup.classList.contains('is-open')) {
+        close();
+      }
+    });
+  }
+
   function init() {
     initMobileMenu();
     initAboutCommandCenter();
@@ -764,6 +802,7 @@
     initYunobotTerminal();
     initGrayscaleTapReveal();
     initLandingHero();
+    initXPopup();
   }
 
   if (document.readyState === 'loading') {

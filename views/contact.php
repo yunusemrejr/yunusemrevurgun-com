@@ -263,10 +263,6 @@ ui_render_head(
                         <p style="font-size: var(--text-sm);"><a href="https://www.threads.com/@yemrevu" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yemrevu</a></p>
                     </div>
                     <div class="ui-glass-panel">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">X / Twitter</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://x.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yemrevu</a></p>
-                    </div>
-                    <div class="ui-glass-panel">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Instagram</p>
                         <p style="font-size: var(--text-sm);"><a href="https://instagram.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yemrevu</a></p>
                     </div>

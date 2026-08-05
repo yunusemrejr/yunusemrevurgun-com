@@ -38,7 +38,6 @@ $homeSchema = [
                 'https://linkedin.com/in/yunus-emre-vurgun-49ba9a177',
                 'https://mastodon.social/@yunusemrevurgn',
                 'https://bsky.app/profile/yunusemrevurgun.bsky.social',
-                'https://x.com/yemrevu',
                 'https://instagram.com/yemrevu',
             ],
             'jobTitle' => 'Software Developer & IT Specialist',
@@ -110,7 +109,6 @@ foreach ($heroFiles as $heroPair) {
             <li><a href="https://bsky.app/profile/yunusemrevurgun.bsky.social" target="_blank" rel="noopener noreferrer">Bluesky</a></li>
             <li><a href="https://www.threads.com/@yemrevu" target="_blank" rel="noopener noreferrer">Threads</a></li>
             <li><a href="https://instagram.com/yemrevu" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-            <li><a href="https://x.com/yemrevu" target="_blank" rel="noopener noreferrer">X / Twitter</a></li>
         </ul>
         <p class="ui-landing-footer-copy">© <?= date('Y') ?> Yemre. All rights reserved.</p>
     </div>
