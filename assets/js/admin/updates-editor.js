@@ -124,12 +124,12 @@
                 if (!block) return;
                 var lines = block.split('\n');
 
-                if (/^(#{1,3})[ \t]+/.test(lines[0])) {
+                if (/^(#{1,3})(#*)(.*)$/.test(lines[0]) && lines[0].match(/^(#{1,3})(#*)(.*)$/)[2] === '' && lines[0].match(/^(#{1,3})(#*)(.*)$/)[3].trim() !== '') {
                     lines.forEach(function(line) {
-                        var m = line.match(/^(#{1,3})[ \t]+(.*)$/);
-                        if (m) {
+                        var m = line.match(/^(#{1,3})(#*)(.*)$/);
+                        if (m && m[2] === '' && m[3].trim() !== '') {
                             var level = Math.min(m[1].length + 1, 4);
-                            out.push('<h' + level + '>' + self.mdInline(m[2]) + '</h' + level + '>');
+                            out.push('<h' + level + '>' + self.mdInline(m[3].trim()) + '</h' + level + '>');
                         } else {
                             out.push('<p>' + self.mdInline(line.trim()) + '</p>');
                         }

@@ -44,13 +44,14 @@ final class RichText
 
             $lines = preg_split('/\n/', $block) ?: [];
 
-            if (preg_match('/^(#{1,3})[ \t]+/', $lines[0])) {
+            if (preg_match('/^(#{1,3})(#*)(.*)$/', $lines[0], $m) && $m[2] === '' && trim($m[3]) !== '') {
                 // h1 is the update title on the single page, so # maps to h2.
-                // ATX headings need no blank line between them or following text.
+                // ATX headings need no blank line between them or following text;
+                // a space after the #s is optional ("##Title" works too).
                 foreach ($lines as $line) {
-                    if (preg_match('/^(#{1,3})[ \t]+(.*)$/', $line, $m)) {
+                    if (preg_match('/^(#{1,3})(#*)(.*)$/', $line, $m) && $m[2] === '' && trim($m[3]) !== '') {
                         $level = min(strlen($m[1]) + 1, 4);
-                        $html[] = '<h' . $level . '>' . self::inline($m[2]) . '</h' . $level . '>';
+                        $html[] = '<h' . $level . '>' . self::inline(trim($m[3])) . '</h' . $level . '>';
                     } else {
                         $html[] = '<p>' . self::inline(trim($line)) . '</p>';
                     }
@@ -94,7 +95,7 @@ final class RichText
         $text = str_replace('*', '', $text);
 
         // Block markers.
-        $text = preg_replace('/^#{1,6}[ \t]+/m', '', $text);
+        $text = preg_replace('/^#{1,6}[ \t]*/m', '', $text);
         $text = preg_replace('/^>[ \t]?/m', '', $text);
         $text = preg_replace('/^[ \t]*[-*][ \t]+/m', '', $text);
         $text = preg_replace('/^[ \t]*\d+[.][ \t]+/m', '', $text);
