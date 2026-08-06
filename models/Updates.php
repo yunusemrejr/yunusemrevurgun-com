@@ -2,8 +2,9 @@
 require_once __DIR__ . '/../config/setPath.php';
  
 require_once __DIR__ . '/Database.php';
-// createUpdate() assigns a stable Mastodon idempotency key for cross-posting.
+// createUpdate() assigns stable idempotency keys for cross-posting.
 require_once __DIR__ . '/../services/MastodonService.php';
+require_once __DIR__ . '/../services/BlueskyService.php';
 
 class Updates {
     private $db;
@@ -33,7 +34,14 @@ class Updates {
                 mastodon_last_error TEXT,
                 mastodon_attempt_count INTEGER DEFAULT 0,
                 mastodon_published_at TEXT,
-                mastodon_idempotency_key TEXT
+                mastodon_idempotency_key TEXT,
+                bluesky_status_uri TEXT,
+                bluesky_status_url TEXT,
+                bluesky_sync_status TEXT DEFAULT 'not_requested',
+                bluesky_last_error TEXT,
+                bluesky_attempt_count INTEGER DEFAULT 0,
+                bluesky_published_at TEXT,
+                bluesky_idempotency_key TEXT
             )";
         } else {
             $query = "CREATE TABLE IF NOT EXISTS updates (
@@ -52,7 +60,14 @@ class Updates {
                 mastodon_last_error TEXT,
                 mastodon_attempt_count INT DEFAULT 0,
                 mastodon_published_at DATETIME NULL,
-                mastodon_idempotency_key VARCHAR(64)
+                mastodon_idempotency_key VARCHAR(64),
+                bluesky_status_uri VARCHAR(500),
+                bluesky_status_url VARCHAR(500),
+                bluesky_sync_status ENUM('not_requested', 'pending', 'published', 'failed') DEFAULT 'not_requested',
+                bluesky_last_error TEXT,
+                bluesky_attempt_count INT DEFAULT 0,
+                bluesky_published_at DATETIME NULL,
+                bluesky_idempotency_key VARCHAR(64)
             )";
         }
         
@@ -110,10 +125,17 @@ class Updates {
                 'mastodon_attempt_count' => "ALTER TABLE updates ADD COLUMN mastodon_attempt_count %s DEFAULT 0",
                 'mastodon_published_at' => "ALTER TABLE updates ADD COLUMN mastodon_published_at %s",
                 'mastodon_idempotency_key' => "ALTER TABLE updates ADD COLUMN mastodon_idempotency_key %s",
+                'bluesky_status_uri' => "ALTER TABLE updates ADD COLUMN bluesky_status_uri %s",
+                'bluesky_status_url' => "ALTER TABLE updates ADD COLUMN bluesky_status_url %s",
+                'bluesky_sync_status' => "ALTER TABLE updates ADD COLUMN bluesky_sync_status %s DEFAULT 'not_requested'",
+                'bluesky_last_error' => "ALTER TABLE updates ADD COLUMN bluesky_last_error %s",
+                'bluesky_attempt_count' => "ALTER TABLE updates ADD COLUMN bluesky_attempt_count %s DEFAULT 0",
+                'bluesky_published_at' => "ALTER TABLE updates ADD COLUMN bluesky_published_at %s",
+                'bluesky_idempotency_key' => "ALTER TABLE updates ADD COLUMN bluesky_idempotency_key %s",
             ];
             $types = ($driver === 'sqlite')
-                ? ['TEXT', 'TEXT', 'TEXT', 'TEXT', 'INTEGER', 'TEXT', 'TEXT']
-                : ['VARCHAR(255)', 'VARCHAR(500)', "ENUM('not_requested','pending','published','failed')", 'TEXT', 'INT', 'DATETIME NULL', 'VARCHAR(64)'];
+                ? ['TEXT', 'TEXT', 'TEXT', 'TEXT', 'INTEGER', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'TEXT', 'INTEGER', 'TEXT', 'TEXT']
+                : ['VARCHAR(255)', 'VARCHAR(500)', "ENUM('not_requested','pending','published','failed')", 'TEXT', 'INT', 'DATETIME NULL', 'VARCHAR(64)', 'VARCHAR(500)', 'VARCHAR(500)', "ENUM('not_requested','pending','published','failed')", 'TEXT', 'INT', 'DATETIME NULL', 'VARCHAR(64)'];
 
             if ($driver === 'sqlite') {
                 $cols = [];
@@ -170,14 +192,16 @@ class Updates {
     public function createUpdate($data) {
         requireAdminSession(true);
         $postToMastodon = !empty($data['post_to_mastodon']);
-        $syncStatus = $postToMastodon ? 'pending' : 'not_requested';
+        $postToBluesky = !empty($data['post_to_bluesky']);
 
         $query = "INSERT INTO updates (
                     title, description, update_date, category, importance, created_by,
-                    mastodon_sync_status, mastodon_attempt_count
+                    mastodon_sync_status, mastodon_attempt_count,
+                    bluesky_sync_status, bluesky_attempt_count
                 ) VALUES (
                     :title, :description, :update_date, :category, :importance, :created_by,
-                    :sync_status, 0
+                    :mastodon_sync, 0,
+                    :bluesky_sync, 0
                 )";
 
         $stmt = $this->db->prepare($query);
@@ -188,15 +212,19 @@ class Updates {
         $stmt->bindValue(':category', $data['category'] ?? '', PDO::PARAM_STR);
         $stmt->bindValue(':importance', $data['importance'] ?? 'medium', PDO::PARAM_STR);
         $stmt->bindValue(':created_by', $_SESSION['user_id'] ?? 1, PDO::PARAM_INT);
-        $stmt->bindValue(':sync_status', $syncStatus, PDO::PARAM_STR);
+        $stmt->bindValue(':mastodon_sync', $postToMastodon ? 'pending' : 'not_requested', PDO::PARAM_STR);
+        $stmt->bindValue(':bluesky_sync', $postToBluesky ? 'pending' : 'not_requested', PDO::PARAM_STR);
 
         $result = $stmt->execute();
 
         if ($result) {
             $id = (int) $this->db->lastInsertId();
-            // Stable idempotency key derived from the update id — set once, reused on retries.
+            // Stable idempotency keys derived from the update id — set once, reused on retries.
             if ($postToMastodon) {
                 $this->setMastodonIdempotencyKey($id, \MastodonService::idempotencyKeyForUpdate($id));
+            }
+            if ($postToBluesky) {
+                $this->setBlueskyIdempotencyKey($id, \BlueskyService::rkeyForUpdate($id));
             }
             $this->regenerateSitemap();
             return $id;
@@ -213,6 +241,42 @@ class Updates {
         return $stmt->execute();
     }
 
+    /** Set the Bluesky record key (rkey) for an update — deterministic, reused on retries. */
+    public function setBlueskyIdempotencyKey($id, string $key): bool {
+        $stmt = $this->db->prepare('UPDATE updates SET bluesky_idempotency_key = :key WHERE id = :id');
+        $stmt->bindValue(':key', $key, PDO::PARAM_STR);
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    /** Record the outcome of a Bluesky publish attempt (whitelisted fields only). */
+    public function updateBlueskySync($id, array $fields): bool {
+        requireAdminSession(true);
+        $allowed = [
+            'bluesky_status_uri', 'bluesky_status_url', 'bluesky_sync_status',
+            'bluesky_last_error', 'bluesky_published_at',
+        ];
+        $sets = [];
+        $params = [':id' => (int) $id];
+        foreach ($allowed as $col) {
+            if (array_key_exists($col, $fields)) {
+                $sets[] = "$col = :$col";
+                $params[":$col"] = $fields[$col];
+            }
+        }
+        if (empty($sets)) return false;
+        $stmt = $this->db->prepare('UPDATE updates SET ' . implode(', ', $sets) . ' WHERE id = :id');
+        return $stmt->execute($params);
+    }
+
+    /** Increment the Bluesky publish-attempt counter. */
+    public function incrementBlueskyAttempt($id): bool {
+        $stmt = $this->db->prepare(
+            'UPDATE updates SET bluesky_attempt_count = COALESCE(bluesky_attempt_count, 0) + 1 WHERE id = :id'
+        );
+        $stmt->bindValue(':id', (int) $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
     /**
      * Record the outcome of a Mastodon publish attempt.
      * Whitelisted fields only; never accepts arbitrary columns.

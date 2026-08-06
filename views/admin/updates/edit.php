@@ -184,25 +184,43 @@ include __DIR__ . '/../includes/header.php';
                         $mSync = $update['mastodon_sync_status'] ?? 'not_requested';
                         $mUrl = $update['mastodon_status_url'] ?? '';
                         $mErr = $update['mastodon_last_error'] ?? '';
+                        $bSync = $update['bluesky_sync_status'] ?? 'not_requested';
+                        $bUrl = $update['bluesky_status_url'] ?? '';
+                        $bErr = $update['bluesky_last_error'] ?? '';
                         ?>
                         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                            <span class="admin-form-text" style="margin:0;">Mastodon:</span>
                             <?php if ($mSync === 'published'): ?>
                                 <span class="admin-badge admin-badge-success">Published</span>
                                 <?php if ($mUrl !== ''): ?>
-                                    <a class="dl-source-link" href="<?= htmlspecialchars($mUrl, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">Open Mastodon post ↗</a>
+                                    <a class="dl-source-link" href="<?= htmlspecialchars($mUrl, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">Open post ↗</a>
                                 <?php endif; ?>
                             <?php elseif ($mSync === 'pending'): ?>
                                 <span class="admin-badge admin-badge-info">Pending</span>
                             <?php elseif ($mSync === 'failed'): ?>
                                 <span class="admin-badge admin-badge-danger" title="<?= htmlspecialchars($mErr, ENT_QUOTES) ?>">Failed</span>
-                                <?php if ($mErr !== ''): ?><span class="admin-form-text" style="color:#a66060;"><?= htmlspecialchars(mb_strimwidth($mErr, 0, 140, '…')) ?></span><?php endif; ?>
+                                <?php if ($mErr !== ''): ?><span class="admin-form-text" style="color:#a66060;"><?= htmlspecialchars(mb_strimwidth($mErr, 0, 100, '…')) ?></span><?php endif; ?>
+                            <?php else: ?>
+                                <span class="admin-badge admin-badge-secondary">Not posted</span>
+                            <?php endif; ?>
+                            <span class="admin-form-text" style="margin:0;margin-left:12px;">Bluesky:</span>
+                            <?php if ($bSync === 'published'): ?>
+                                <span class="admin-badge admin-badge-success">Published</span>
+                                <?php if ($bUrl !== ''): ?>
+                                    <a class="dl-source-link" href="<?= htmlspecialchars($bUrl, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">Open post ↗</a>
+                                <?php endif; ?>
+                            <?php elseif ($bSync === 'pending'): ?>
+                                <span class="admin-badge admin-badge-info">Pending</span>
+                            <?php elseif ($bSync === 'failed'): ?>
+                                <span class="admin-badge admin-badge-danger" title="<?= htmlspecialchars($bErr, ENT_QUOTES) ?>">Failed</span>
+                                <?php if ($bErr !== ''): ?><span class="admin-form-text" style="color:#a66060;"><?= htmlspecialchars(mb_strimwidth($bErr, 0, 100, '…')) ?></span><?php endif; ?>
                             <?php else: ?>
                                 <span class="admin-badge admin-badge-secondary">Not posted</span>
                             <?php endif; ?>
                         </div>
                         <div class="admin-alert admin-alert-warning" style="margin:0;">
                             <i class="bi bi-exclamation-triangle me-2"></i>
-                            Editing this website update will not automatically edit the existing Mastodon post.
+                            Editing this website update will not automatically edit the existing Mastodon or Bluesky post.
                         </div>
                         <div class="admin-form-text" style="margin-top:6px;">To re-publish (e.g. after a failed attempt), use the Retry button on the Updates list.</div>
                     </div>

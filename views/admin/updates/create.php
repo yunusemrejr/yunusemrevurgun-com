@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'category' => $category,
         'importance' => $importance,
         'post_to_mastodon' => isset($_POST['post_to_mastodon']),
+        'post_to_bluesky' => isset($_POST['post_to_bluesky']),
     ];
 
     if (!$error) {
@@ -55,8 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $updates->createUpdate($data);
             if ($result) {
                 $success = true;
+                $flashSuccess = [];
+                $flashError = [];
+
                 // Mastodon cross-posting — the update is already saved locally;
-                // a Mastodon failure never rolls back or deletes the update.
+                // a failure never rolls back or deletes the update.
                 if (!empty($data['post_to_mastodon'])) {
                     $mastodon = new MastodonService();
                     $updates->incrementMastodonAttempt($result);
@@ -78,21 +82,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 'mastodon_last_error' => null,
                                 'mastodon_published_at' => date('Y-m-d H:i:s'),
                             ]);
-                            $_SESSION['success'] = 'Update created and published to Mastodon.';
+                            $flashSuccess[] = 'Mastodon';
                         } else {
                             $updates->updateMastodonSync($result, [
                                 'mastodon_sync_status' => 'failed',
                                 'mastodon_last_error' => $pub['error'],
                             ]);
-                            $_SESSION['error'] = 'Update saved, but the Mastodon post failed: ' . $pub['error'];
+                            $flashError[] = 'Mastodon: ' . $pub['error'];
                         }
                     } else {
                         $updates->updateMastodonSync($result, [
                             'mastodon_sync_status' => 'failed',
                             'mastodon_last_error' => 'Mastodon is not configured (MASTODON_BASE_URL / MASTODON_ACCESS_TOKEN missing).',
                         ]);
-                        $_SESSION['error'] = 'Update saved, but Mastodon is not configured — set MASTODON_BASE_URL and MASTODON_ACCESS_TOKEN to cross-post.';
+                        $flashError[] = 'Mastodon is not configured (MASTODON_BASE_URL / MASTODON_ACCESS_TOKEN).';
                     }
+                }
+
+                // Bluesky cross-posting — independent of the Mastodon result.
+                if (!empty($data['post_to_bluesky'])) {
+                    $bluesky = new BlueskyService();
+                    $updates->incrementBlueskyAttempt($result);
+                    if ($bluesky->isConfigured()) {
+                        $pub = $bluesky->publish(
+                            $title,
+                            $content,
+                            Updates::canonicalUpdateUrl($result),
+                            BlueskyService::rkeyForUpdate($result)
+                        );
+                        if ($pub['success']) {
+                            $updates->updateBlueskySync($result, [
+                                'bluesky_status_uri' => $pub['status_uri'],
+                                'bluesky_status_url' => $pub['status_url'],
+                                'bluesky_sync_status' => 'published',
+                                'bluesky_last_error' => null,
+                                'bluesky_published_at' => date('Y-m-d H:i:s'),
+                            ]);
+                            $flashSuccess[] = 'Bluesky';
+                        } else {
+                            $updates->updateBlueskySync($result, [
+                                'bluesky_sync_status' => 'failed',
+                                'bluesky_last_error' => $pub['error'],
+                            ]);
+                            $flashError[] = 'Bluesky: ' . $pub['error'];
+                        }
+                    } else {
+                        $updates->updateBlueskySync($result, [
+                            'bluesky_sync_status' => 'failed',
+                            'bluesky_last_error' => 'Bluesky is not configured (BLUESKY_HANDLE / BLUESKY_APP_PASSWORD missing).',
+                        ]);
+                        $flashError[] = 'Bluesky is not configured (BLUESKY_HANDLE / BLUESKY_APP_PASSWORD).';
+                    }
+                }
+
+                if ($flashSuccess) {
+                    $_SESSION['success'] = 'Update created and published to ' . implode(' and ', $flashSuccess) . '.';
+                }
+                if ($flashError) {
+                    $_SESSION['error'] = 'Update saved, but cross-posting failed: ' . implode(' | ', $flashError);
+                }
+                if (!$flashSuccess && !$flashError) {
+                    $_SESSION['success'] = 'Update created successfully.';
                 }
                 // Redirect to updates list after successful creation
                 header('Location: ' . FULL_BASE_PATH . 'admin/updates');
@@ -223,6 +273,22 @@ include __DIR__ . '/../includes/header.php';
                         <div class="admin-form-text">The update is always saved on the website first. If Mastodon is unavailable, the post can be retried later from the Updates list.</div>
                     </div>
 
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Bluesky cross-posting</label>
+                        <div class="admin-form-check" style="margin-bottom: 0.75rem;">
+                            <input type="checkbox" id="post_to_bluesky" name="post_to_bluesky" value="1" checked class="admin-form-check-input">
+                            <label for="post_to_bluesky" class="admin-form-check-label">Post to Bluesky</label>
+                        </div>
+                        <div id="blueskyOptions">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label">Bluesky preview</label>
+                                <div class="admin-mastodon-preview" id="blueskyPreview" data-limit="300">—</div>
+                                <div class="admin-form-text" id="blueskyCharCount"></div>
+                            </div>
+                        </div>
+                        <div class="admin-form-text">The update is always saved on the website first. If Bluesky is unavailable, the post can be retried later from the Updates list.</div>
+                    </div>
+
                     <div class="admin-form-actions">
                         <button type="submit" class="admin-btn admin-btn-primary">
                             <i class="bi bi-check-circle me-2"></i>Create Update
@@ -262,11 +328,10 @@ $pageScripts = '
     "use strict";
     var titleEl = document.getElementById("title");
     var contentEl = document.getElementById("content");
-    var previewEl = document.getElementById("mastodonPreview");
-    var countEl = document.getElementById("mastodonCharCount");
     var postChk = document.getElementById("post_to_mastodon");
     var optionsEl = document.getElementById("mastodonOptions");
-    var LIMIT = parseInt(previewEl.getAttribute("data-limit") || "500", 10);
+    var postBsky = document.getElementById("post_to_bluesky");
+    var optionsBsky = document.getElementById("blueskyOptions");
     // Canonical base matches Updates::canonicalUpdateUrl() (production domain).
     var CANONICAL_BASE = "https://yunusemrevurgun.com/updates/";
 
@@ -287,8 +352,8 @@ $pageScripts = '
         return t.trim();
     }
 
-    function renderPreview() {
-        if (!postChk || !postChk.checked) {
+    function renderPreview(previewEl, countEl, checked, limit) {
+        if (!checked) {
             previewEl.textContent = "—";
             countEl.textContent = "";
             return;
@@ -302,20 +367,42 @@ $pageScripts = '
         if (!full.trim()) full = "—";
         previewEl.textContent = full;
         var len = full.length;
-        countEl.textContent = "≈ " + len + " / " + LIMIT + " characters" + (len > LIMIT ? " — will be truncated to fit" : "");
-        previewEl.classList.toggle("is-over", len > LIMIT);
+        countEl.textContent = "≈ " + len + " / " + limit + " characters" + (len > limit ? " — will be truncated to fit" : "");
+        previewEl.classList.toggle("is-over", len > limit);
+    }
+
+    function renderAll() {
+        renderPreview(
+            document.getElementById("mastodonPreview"),
+            document.getElementById("mastodonCharCount"),
+            postChk ? postChk.checked : false,
+            parseInt((document.getElementById("mastodonPreview") || {}).getAttribute ? (document.getElementById("mastodonPreview").getAttribute("data-limit") || "500") : "500", 10)
+        );
+        renderPreview(
+            document.getElementById("blueskyPreview"),
+            document.getElementById("blueskyCharCount"),
+            postBsky ? postBsky.checked : false,
+            parseInt((document.getElementById("blueskyPreview") || {}).getAttribute ? (document.getElementById("blueskyPreview").getAttribute("data-limit") || "300") : "300", 10)
+        );
     }
 
     if (postChk && optionsEl) {
         postChk.addEventListener("change", function() {
             optionsEl.style.display = postChk.checked ? "" : "none";
-            renderPreview();
+            renderAll();
         });
         optionsEl.style.display = postChk.checked ? "" : "none";
     }
-    if (titleEl) titleEl.addEventListener("input", renderPreview);
-    if (contentEl) contentEl.addEventListener("input", renderPreview);
-    renderPreview();
+    if (postBsky && optionsBsky) {
+        postBsky.addEventListener("change", function() {
+            optionsBsky.style.display = postBsky.checked ? "" : "none";
+            renderAll();
+        });
+        optionsBsky.style.display = postBsky.checked ? "" : "none";
+    }
+    if (titleEl) titleEl.addEventListener("input", renderAll);
+    if (contentEl) contentEl.addEventListener("input", renderAll);
+    renderAll();
 })();
 </script>';
 include __DIR__ . '/../includes/footer.php';

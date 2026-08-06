@@ -48,7 +48,7 @@ if (file_exists($envFile)) {
         $value = trim($parts[1], " \t\n\r\0\x0B'\"");
         
         // Load critical env vars that may be needed even in localhost mode
-        if (in_array($name, ['MODE', 'TURNSTILE_SITEKEY', 'TURNSTILE_SECRET', 'DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'DB_PORT', 'DB_CONNECTION', 'MASTODON_BASE_URL', 'MASTODON_ACCESS_TOKEN', 'MASTODON_DEFAULT_VISIBILITY', 'MASTODON_DEFAULT_LANGUAGE'], true) && getenv($name) === false) {
+        if (in_array($name, ['MODE', 'TURNSTILE_SITEKEY', 'TURNSTILE_SECRET', 'DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'DB_PORT', 'DB_CONNECTION', 'MASTODON_BASE_URL', 'MASTODON_ACCESS_TOKEN', 'MASTODON_DEFAULT_VISIBILITY', 'MASTODON_DEFAULT_LANGUAGE', 'BLUESKY_HANDLE', 'BLUESKY_APP_PASSWORD', 'BLUESKY_SERVICE_URL'], true) && getenv($name) === false) {
             putenv("$name=$value");
             $_ENV[$name] = $value;
         }
@@ -105,6 +105,12 @@ if ($envLines) {
             if (env('MASTODON_DEFAULT_VISIBILITY') === null) { putenv("MASTODON_DEFAULT_VISIBILITY=$value"); $_ENV['MASTODON_DEFAULT_VISIBILITY'] = $value; }
         } elseif ($name === 'MASTODON_DEFAULT_LANGUAGE') {
             if (env('MASTODON_DEFAULT_LANGUAGE') === null) { putenv("MASTODON_DEFAULT_LANGUAGE=$value"); $_ENV['MASTODON_DEFAULT_LANGUAGE'] = $value; }
+        } elseif ($name === 'BLUESKY_HANDLE') {
+            if (env('BLUESKY_HANDLE') === null) { putenv("BLUESKY_HANDLE=$value"); $_ENV['BLUESKY_HANDLE'] = $value; }
+        } elseif ($name === 'BLUESKY_APP_PASSWORD') {
+            if (env('BLUESKY_APP_PASSWORD') === null) { putenv("BLUESKY_APP_PASSWORD=$value"); $_ENV['BLUESKY_APP_PASSWORD'] = $value; }
+        } elseif ($name === 'BLUESKY_SERVICE_URL') {
+            if (env('BLUESKY_SERVICE_URL') === null) { putenv("BLUESKY_SERVICE_URL=$value"); $_ENV['BLUESKY_SERVICE_URL'] = $value; }
         } elseif ($name === 'DB_HOST') {
             if (env('DB_HOST') === null) { putenv("DB_HOST=$value"); $_ENV['DB_HOST'] = $value; }
         } elseif ($name === 'DB_NAME') {

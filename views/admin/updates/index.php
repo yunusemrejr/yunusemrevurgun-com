@@ -90,6 +90,7 @@ include __DIR__ . '/../includes/header.php';
                                     <th>Category</th>
                                     <th>Importance</th>
                                     <th>Mastodon</th>
+                                    <th>Bluesky</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -125,6 +126,27 @@ include __DIR__ . '/../includes/header.php';
                                             <?php elseif ($mSync === 'failed'): ?>
                                                 <span class="admin-badge admin-badge-danger" title="<?= htmlspecialchars($mErr, ENT_QUOTES) ?>">Failed</span>
                                                 <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" style="display:block;margin-top:4px;" data-mastodon-retry="<?= $update['id'] ?>" title="Retry Mastodon posting">Retry</button>
+                                            <?php else: ?>
+                                                <span class="admin-badge admin-badge-secondary">Not posted</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $bSync = $update['bluesky_sync_status'] ?? 'not_requested';
+                                            $bUrl = $update['bluesky_status_url'] ?? '';
+                                            $bErr = $update['bluesky_last_error'] ?? '';
+                                            ?>
+                                            <?php if ($bSync === 'published'): ?>
+                                                <span class="admin-badge admin-badge-success">Published</span>
+                                                <?php if ($bUrl !== ''): ?>
+                                                    <a class="dl-source-link" style="display:block;margin-top:4px;" href="<?= htmlspecialchars($bUrl, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" title="Open Bluesky post">Bluesky ↗</a>
+                                                <?php endif; ?>
+                                            <?php elseif ($bSync === 'pending'): ?>
+                                                <span class="admin-badge admin-badge-info">Pending</span>
+                                                <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" style="display:block;margin-top:4px;" data-bluesky-retry="<?= $update['id'] ?>" title="Publish to Bluesky now">Retry</button>
+                                            <?php elseif ($bSync === 'failed'): ?>
+                                                <span class="admin-badge admin-badge-danger" title="<?= htmlspecialchars($bErr, ENT_QUOTES) ?>">Failed</span>
+                                                <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" style="display:block;margin-top:4px;" data-bluesky-retry="<?= $update['id'] ?>" title="Retry Bluesky posting">Retry</button>
                                             <?php else: ?>
                                                 <span class="admin-badge admin-badge-secondary">Not posted</span>
                                             <?php endif; ?>
@@ -171,28 +193,33 @@ $pageScripts = '
     var csrfMeta = document.querySelector("meta[name=\'csrf-token\']");
     var csrfToken = csrfMeta ? csrfMeta.getAttribute("content") : "";
     var RETRY_URL = "' . FULL_BASE_PATH . 'api/admin/mastodon/retry.php";
-    document.querySelectorAll("[data-mastodon-retry]").forEach(function(btn) {
-        btn.addEventListener("click", function() {
-            var id = this.getAttribute("data-mastodon-retry");
-            if (!confirm("Publish update #" + id + " to Mastodon now?")) return;
-            this.disabled = true;
-            this.textContent = "Posting...";
-            var fd = new FormData();
-            fd.append("id", id);
-            fd.append("csrf_token", csrfToken);
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", RETRY_URL, true);
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            xhr.addEventListener("load", function() {
-                var resp;
-                try { resp = JSON.parse(xhr.responseText); } catch (e) { resp = null; }
-                if (resp && resp.success) { location.reload(); }
-                else { alert("Mastodon posting failed: " + ((resp && resp.message) || "Unknown error")); location.reload(); }
+    var RETRY_URL_BSKY = "' . FULL_BASE_PATH . 'api/admin/bluesky/retry.php";
+    function bindRetry(selector, url, label) {
+        document.querySelectorAll(selector).forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                var id = this.getAttribute("data-" + label + "-retry");
+                if (!confirm("Publish update #" + id + " to " + label + " now?")) return;
+                this.disabled = true;
+                this.textContent = "Posting...";
+                var fd = new FormData();
+                fd.append("id", id);
+                fd.append("csrf_token", csrfToken);
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", url, true);
+                xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                xhr.addEventListener("load", function() {
+                    var resp;
+                    try { resp = JSON.parse(xhr.responseText); } catch (e) { resp = null; }
+                    if (resp && resp.success) { location.reload(); }
+                    else { alert(label + " posting failed: " + ((resp && resp.message) || "Unknown error")); location.reload(); }
+                });
+                xhr.addEventListener("error", function() { alert("Network error while posting to " + label + "."); location.reload(); });
+                xhr.send(fd);
             });
-            xhr.addEventListener("error", function() { alert("Network error while posting to Mastodon."); location.reload(); });
-            xhr.send(fd);
         });
-    });
+    }
+    bindRetry("[data-mastodon-retry]", RETRY_URL, "mastodon");
+    bindRetry("[data-bluesky-retry]", RETRY_URL_BSKY, "bluesky");
 })();
 </script>';
 include __DIR__ . '/../includes/footer.php';
