@@ -31,8 +31,19 @@ $homeSchema = [
             'name' => 'Yunus Emre Vurgun',
             'givenName' => 'Yunus Emre',
             'familyName' => 'Vurgun',
-            'alternateName' => 'Yemre',
+            'additionalName' => 'Yemre',
+            'alternateName' => ['Yemre', 'YEV', 'yunusemrejr', 'Yemrevu'],
             'url' => rtrim(FULL_BASE_PATH, '/') . '/',
+            'image' => FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg',
+            'description' => 'Software developer and IT specialist (Yemre, YEV, yunusemrejr) focusing on computational intelligence, AI/ML systems, operational technology, and industrial automation.',
+            'knowsAbout' => [
+                'software development',
+                'AI/ML systems',
+                'operational technology',
+                'industrial automation',
+                'full-stack web development',
+                'computational intelligence',
+            ],
             'sameAs' => array_values(array_filter(array_map(
                 fn($s) => !empty($s['url']) ? $s['url'] : null,
                 (new Socials())->getActiveLinks()
@@ -47,11 +58,11 @@ $homeSchema = [
 ];
 
 ui_render_head(
-    'Yemre | The world of a developer',
-    'A new form of intelligence is emerging. — Yemre, the world of a developer.',
+    'Yunus Emre Vurgun (Yemre) — Software Developer & IT Specialist',
+    'A new form of intelligence is emerging. — Yunus Emre Vurgun (Yemre), software developer and IT specialist.',
     [
-        '<meta name="author" content="Yemre">',
-        '<meta name="keywords" content="Yemre, developer, software, agents, intelligence, Yunus Emre Vurgun">',
+        '<meta name="author" content="Yunus Emre Vurgun">',
+        '<meta name="keywords" content="Yunus Emre Vurgun, Yemre, YEV, yunusemrejr, Yemrevu, software developer, developer, IT specialist, computational intelligence, operational technology">',
         '<meta property="og:description" content="A new form of intelligence is emerging. They say you\'re the average of the five people you spend the most time with. I\'m carefully curating mine.">',
         '<meta name="twitter:description" content="A new form of intelligence is emerging. They say you\'re the average of the five people you spend the most time with. I\'m carefully curating mine.">',
         '<script type="application/ld+json">' . json_encode($homeSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>',

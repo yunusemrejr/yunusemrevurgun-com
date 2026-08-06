@@ -37,8 +37,8 @@ if ($isValidQuery && strlen($sanitizedQuery) >= 2) {
 }
 
 ui_render_head(
-    'Search' . (!empty($query) ? ' | ' . htmlspecialchars($query) : ''),
-    'Search results across blog posts, updates, and portfolio.',
+    'Search' . (!empty($query) ? ' — ' . htmlspecialchars($query) : '') . ' | Yunus Emre Vurgun',
+    'Search results across blog posts, updates, and portfolio of Yunus Emre Vurgun.',
 );
 ?>
 <body>

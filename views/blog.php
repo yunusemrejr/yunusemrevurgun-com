@@ -23,8 +23,8 @@ if ($totalPages > 1) {
 }
 
 ui_render_head(
-    'Journal | Blog',
-    'Long-form notes, architecture logs, and technical writing by Yunus Emre Vurgun.',
+    'Blog — Journal | Yunus Emre Vurgun, Developer',
+    'Long-form notes, architecture logs, and technical writing by Yunus Emre Vurgun (Yemre, YEV).',
     $pageMeta
 );
 ?>

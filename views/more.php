@@ -57,8 +57,8 @@ $morePages = [
 $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');
 
 ui_render_head(
-    'More | Yunus Emre Vurgun',
-    'Additional projects and pages.',
+    'More — Yunus Emre Vurgun | Developer',
+    'Additional projects and pages by Yunus Emre Vurgun (Yemre) — socials, tools, and experiments.',
 );
 ?>
 <body>

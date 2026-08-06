@@ -2,7 +2,7 @@
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
 
-ui_render_head('Sitemap | Navigation', 'Structured links for all primary website routes.');
+ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primary routes on yunusemrevurgun.com.');
 ?>
 <body>
 <div class="ui-page">

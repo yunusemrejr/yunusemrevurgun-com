@@ -27,9 +27,7 @@ $extraMeta = [
     '<meta property="og:url" content="' . htmlspecialchars($postUrl) . '">',
     '<meta property="og:title" content="' . htmlspecialchars($title, ENT_QUOTES) . '">',
     '<meta property="og:description" content="' . htmlspecialchars($description, ENT_QUOTES) . '">',
-    '<meta property="og:image" content="' . htmlspecialchars($ogImage) . '">',
-    '<meta property="og:image:alt" content="' . htmlspecialchars($title, ENT_QUOTES) . '">',
-    '<meta property="og:site_name" content="Yµn ^…^ ƒ(x) Personal Website">',
+    'og_image' => $ogImage,
     '<meta property="article:published_time" content="' . $publishedDate . '">',
     '<meta property="article:modified_time" content="' . $modifiedDate . '">',
     '<meta property="article:author" content="' . FULL_BASE_PATH . 'about">',
@@ -65,11 +63,10 @@ $extraMeta = [
             '@type' => 'Person',
             'name' => 'Yunus Emre Vurgun',
             'url' => FULL_BASE_PATH . 'about',
-            'sameAs' => [
-                'https://github.com/yunusemrejr',
-                'https://linkedin.com/in/yunus-emre-vurgun-49ba9a177',
-                'https://instagram.com/yemrevu',
-            ],
+            'sameAs' => array_values(array_filter(array_map(
+                fn($s) => !empty($s['url']) ? $s['url'] : null,
+                (new Socials())->getActiveLinks()
+            ))),
         ],
         'publisher' => [
             '@type' => 'Person',

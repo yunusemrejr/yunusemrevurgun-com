@@ -158,8 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 ui_render_head(
-    'Contact | Connect',
-    'Send a message to Yunus Emre Vurgun for projects, collaborations, or technical consulting.'
+    'Contact — Yunus Emre Vurgun | Developer & IT Specialist',
+    'Send a message to Yunus Emre Vurgun (Yemre, yunusemrejr) for projects, collaborations, or technical consulting.'
 );
 ?>
 <body>

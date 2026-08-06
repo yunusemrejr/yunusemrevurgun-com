@@ -37,6 +37,30 @@ echo "taglines:\n";
 echo "- A new form of intelligence is emerging.\n";
 echo "- They say you're the average of the five people you spend the most time with. I'm carefully curating mine.\n\n";
 
+echo "entity:\n";
+echo "  type: person\n";
+echo "  full_name: Yunus Emre Vurgun\n";
+echo "  name_variants:\n";
+echo "  - Yunus E. Vurgun\n";
+echo "  - Yunus Emre Vurgun\n";
+echo "  - yunus vurgun\n";
+echo "  - Yemre\n";
+echo "  - yunusemrejr\n";
+echo "  - Yemrevu\n";
+echo "  - YEV\n";
+echo "  - Dev YEV\n";
+echo "  - developer yemre\n";
+echo "  - developer yunus emre\n";
+echo "  - developer yunus emre vurgun\n";
+echo "  role: software_developer, it_specialist\n";
+echo "  works_for: ASP Otomasyon A.Ş.\n";
+echo "  handles:\n";
+echo "    github: yunusemrejr\n";
+echo "    instagram: yemrevu\n";
+echo "    threads: yemrevu\n";
+echo "    mastodon: @yunusemrevurgn\n";
+echo "    bluesky: @yunusemrevurgun\n\n";
+
 echo "description: |\n";
 echo "  Personal website of Yunus Emre Vurgun, a software developer and IT specialist\n";
 echo "  at ASP Otomasyon A.Ş. in Istanbul, Turkey. Focus areas include computational\n";
@@ -64,6 +88,13 @@ echo "- {$base}/travel\n";
 echo "- {$base}/gallery\n";
 echo "- {$base}/yunobot\n";
 echo "- {$base}/contact\n";
+echo "- {$base}/more\n";
+echo "- {$base}/downloads\n";
+echo "- {$base}/music\n";
+echo "- {$base}/videos\n";
+echo "- {$base}/comedy\n";
+echo "- {$base}/post-code\n";
+echo "- {$base}/science-corner\n";
 echo "- {$base}/search\n\n";
 
 echo "ai_crawler_guidance:\n";
@@ -92,13 +123,23 @@ echo "  deployment: FTP sync to Namecheap shared hosting\n";
 echo "  pwa: Service workers, Web App Manifest\n\n";
 
 echo "social_profiles:\n";
-echo "- YouTube: https://www.youtube.com/@yunusemrevurgun1\n";
-echo "- GitHub: https://github.com/yunusemrejr\n";
-echo "- LinkedIn: https://linkedin.com/in/yunus-emre-vurgun-49ba9a177\n";
-echo "- Mastodon: https://mastodon.social/@yunusemrevurgn\n";
-echo "- Bluesky: https://bsky.app/profile/yunusemrevurgun.bsky.social\n";
-echo "- Threads: https://www.threads.com/@yemrevu\n";
-echo "- Instagram: https://instagram.com/yemrevu\n\n";
+try {
+    require_once dirname(__DIR__) . '/models/Socials.php';
+    $socialLinks = (new Socials())->getActiveLinks();
+} catch (Throwable $e) {
+    $socialLinks = [];
+}
+if (!$socialLinks) {
+    echo "- none\n";
+} else {
+    foreach ($socialLinks as $soc) {
+        $socName = trim((string)($soc['name'] ?? ''));
+        $socUrl = trim((string)($soc['url'] ?? ''));
+        if ($socName === '' || $socUrl === '') continue;
+        echo "- {$socName}: {$socUrl}\n";
+    }
+}
+echo "\n";
 
 echo "structured_data:\n";
 echo "  types_present:\n";

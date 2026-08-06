@@ -9,8 +9,8 @@ $years = $portfolio->getDistinctYears();
 $categories = $portfolio->getDistinctCategories();
 
 ui_render_head(
-    'Work | Project Archive',
-    'Chronological showcase of development work across AI/ML, operational technology, and systems architecture.'
+    'Portfolio — Work | Yunus Emre Vurgun, Developer',
+    'Project archive by Yunus Emre Vurgun (Yemre, yunusemrejr) — development work across AI/ML, operational technology, and systems architecture.'
 );
 ?>
 <body>

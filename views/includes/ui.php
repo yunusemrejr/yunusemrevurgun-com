@@ -35,7 +35,12 @@ if (!function_exists('ui_render_head')) {
     // Default Open Graph / social-share image: the home hero rendered to a
     // 1200x630 PNG (social platforms don't render SVG). Regenerate with
     // dev/scripts/build-og-image.sh when assets/images/desktop.svg changes.
-    $defaultOgImage = FULL_BASE_PATH . 'assets/images/og-image.png';
+    // Pages may override the social-share image via extraMeta['og_image']
+    // (emitted BEFORE any page-specific og:image tag so it wins for crawlers
+    // that use the first tag). Default: the home hero rendered to 1200x630 PNG.
+    $defaultOgImage = (is_string($extraMeta['og_image'] ?? null) && $extraMeta['og_image'] !== '')
+        ? $extraMeta['og_image']
+        : FULL_BASE_PATH . 'assets/images/og-image.png';
     $defaultOgTitle = htmlspecialchars($title, ENT_QUOTES);
     $defaultOgDesc = htmlspecialchars($description, ENT_QUOTES);
     ?>
@@ -45,7 +50,8 @@ if (!function_exists('ui_render_head')) {
     <meta property="og:description" content="<?= $defaultOgDesc ?>">
     <meta property="og:image" content="<?= htmlspecialchars($defaultOgImage) ?>">
     <meta property="og:image:alt" content="<?= $defaultOgTitle ?>">
-    <meta property="og:site_name" content="Yµn ^…^ ƒ(x) Personal Website">
+    <meta property="og:site_name" content="Yunus Emre Vurgun">
+    <meta name="author" content="Yunus Emre Vurgun">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="<?= htmlspecialchars($canonical) ?>">
     <meta name="twitter:title" content="<?= $defaultOgTitle ?>">
@@ -54,7 +60,7 @@ if (!function_exists('ui_render_head')) {
     <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= FULL_BASE_PATH ?>sitemap.xml">
     <link rel="alternate" type="text/plain" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
     <link rel="alternate" type="application/ld+json" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
-    <link rel="manifest" href="<?= FULL_BASE_PATH ?>manifest.json">
+    <link rel="manifest" href="<?= FULL_BASE_PATH ?>manifest.json?v=<?= filemtime(__DIR__ . '/../../manifest.json') ?>">
     <link rel="icon" type="image/svg+xml" sizes="32x32" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
     <link rel="icon" type="image/svg+xml" sizes="16x16" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
     <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
@@ -72,7 +78,7 @@ if (!function_exists('ui_render_head')) {
     <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot', 'music', 'downloads'], true)) continue;
+        if (is_string($key) && in_array($key, ['yunobot', 'music', 'downloads', 'og_image'], true)) continue;
         if (!empty($value) && is_string($value)) echo $value . "\n";
     endforeach; ?>
 </head>

@@ -30,8 +30,8 @@ if ($useSingleSlideshow) {
 }
 
 ui_render_head(
-    'Experiments | Gallery',
-    'Visual archive of projects, processes, and technical explorations.'
+    'Gallery — Experiments | Yunus Emre Vurgun, Developer',
+    'Visual archive by Yunus Emre Vurgun — projects, processes, and technical explorations.'
 );
 ?>
 <body>

@@ -51,5 +51,20 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /config/
 
+User-agent: ClaudeBot
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
+User-agent: PerplexityBot
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
+User-agent: Applebot-Extended
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+
 # Crawl delay
 Crawl-delay: 1

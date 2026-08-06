@@ -1,10 +1,42 @@
 <?php
 require_once dirname(__DIR__) . '/config/setPath.php';
+require_once dirname(__DIR__) . '/models/Socials.php';
 require_once __DIR__ . '/includes/ui.php';
 
+$aboutSchema = [
+    '@context' => 'https://schema.org',
+    '@graph' => [
+        [
+            '@type' => 'ProfilePage',
+            '@id' => rtrim(FULL_BASE_PATH, '/') . '/about#profile',
+            'url' => rtrim(FULL_BASE_PATH, '/') . '/about',
+            'name' => 'About — Yunus Emre Vurgun',
+            'inLanguage' => 'en-US',
+            'mainEntity' => [
+                '@type' => 'Person',
+                'name' => 'Yunus Emre Vurgun',
+                'givenName' => 'Yunus Emre',
+                'familyName' => 'Vurgun',
+                'additionalName' => 'Yemre',
+                'alternateName' => ['Yemre', 'YEV', 'yunusemrejr', 'Yemrevu'],
+                'url' => rtrim(FULL_BASE_PATH, '/') . '/',
+                'image' => FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg',
+                'description' => 'Developer and IT specialist based in Istanbul, specializing in computational intelligence, AI/ML systems, and operational technology.',
+                'jobTitle' => 'Software Developer & IT Specialist',
+                'worksFor' => ['@type' => 'Organization', 'name' => 'ASP Otomasyon A.Ş.'],
+                'sameAs' => array_values(array_filter(array_map(
+                    fn($s) => !empty($s['url']) ? $s['url'] : null,
+                    (new Socials())->getActiveLinks()
+                ))),
+            ],
+        ],
+    ],
+];
+
 ui_render_head(
-    'About | Yunus Emre Vurgun',
-    'Developer and IT specialist based in Istanbul, specializing in computational intelligence and operational technology.'
+    'About — Yunus Emre Vurgun | Software Developer & IT Specialist',
+    'About Yunus Emre Vurgun (Yemre, YEV, yunusemrejr) — software developer and IT specialist in Istanbul, building AI/ML systems and operational technology solutions.',
+    ['<script type="application/ld+json">' . json_encode($aboutSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>']
 );
 ?>
 <body>
@@ -14,7 +46,7 @@ ui_render_head(
     <main class="ui-main">
         <section class="ui-section">
             <p class="ui-eyebrow">Profile</p>
-            <h1 class="ui-section-title">Developer & IT Specialist</h1>
+            <h1 class="ui-section-title">Yunus Emre Vurgun — Developer &amp; IT Specialist</h1>
             <p class="ui-section-text">Based in Istanbul, working at the intersection of computational intelligence and operational technology.</p>
         </section>
 
