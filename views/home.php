@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once dirname(__DIR__) . '/models/Settings.php';
+require_once dirname(__DIR__) . '/models/Socials.php';
 require_once __DIR__ . '/includes/ui.php';
 
 $settings = new Settings();
@@ -32,14 +33,10 @@ $homeSchema = [
             'familyName' => 'Vurgun',
             'alternateName' => 'Yemre',
             'url' => rtrim(FULL_BASE_PATH, '/') . '/',
-            'sameAs' => [
-                'https://github.com/yunusemrejr',
-                'https://www.youtube.com/@yunusemrevurgun1',
-                'https://linkedin.com/in/yunus-emre-vurgun-49ba9a177',
-                'https://mastodon.social/@yunusemrevurgn',
-                'https://bsky.app/profile/yunusemrevurgun.bsky.social',
-                'https://instagram.com/yemrevu',
-            ],
+            'sameAs' => array_values(array_filter(array_map(
+                fn($s) => !empty($s['url']) ? $s['url'] : null,
+                (new Socials())->getActiveLinks()
+            ))),
             'jobTitle' => 'Software Developer & IT Specialist',
             'worksFor' => [
                 '@type' => 'Organization',
@@ -101,15 +98,6 @@ foreach ($heroFiles as $heroPair) {
                 <li><a href="<?= FULL_BASE_PATH ?>more">+</a></li>
             </ul>
         </nav>
-        <ul class="ui-landing-footer-socials" role="list">
-            <li><a href="https://github.com/yunusemrejr" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-            <li><a href="https://www.youtube.com/@yunusemrevurgun1" target="_blank" rel="noopener noreferrer">YouTube</a></li>
-            <li><a href="https://linkedin.com/in/yunus-emre-vurgun-49ba9a177" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-            <li><a href="https://mastodon.social/@yunusemrevurgn" target="_blank" rel="noopener noreferrer">Mastodon</a></li>
-            <li><a href="https://bsky.app/profile/yunusemrevurgun.bsky.social" target="_blank" rel="noopener noreferrer">Bluesky</a></li>
-            <li><a href="https://www.threads.com/@yemrevu" target="_blank" rel="noopener noreferrer">Threads</a></li>
-            <li><a href="https://instagram.com/yemrevu" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-        </ul>
         <p class="ui-landing-footer-copy">© <?= date('Y') ?> Yemre. All rights reserved.</p>
     </div>
 </footer>

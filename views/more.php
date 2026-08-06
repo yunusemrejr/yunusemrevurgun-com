@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/config/setPath.php';
+require_once dirname(__DIR__) . '/models/Socials.php';
 require_once __DIR__ . '/includes/ui.php';
 
 $morePages = [
@@ -82,6 +83,31 @@ ui_render_head(
                 <?php endforeach; ?>
             </div>
         </section>
+
+        <?php
+        $allSocials = array_values(array_filter(
+            (new Socials())->getActive(),
+            fn($s) => $s['kind'] === Socials::KIND_LINK && !empty($s['url'])
+        ));
+        ?>
+        <?php if (!empty($allSocials)): ?>
+        <section class="ui-section">
+            <p class="ui-eyebrow">Socials</p>
+            <h2 class="ui-section-title">Socials</h2>
+            <p class="ui-section-text">Where to find me around the internet.</p>
+            <ul class="ui-socials-list" role="list">
+                <?php foreach ($allSocials as $s): ?>
+                <li class="ui-socials-item">
+                    <a class="ui-socials-link" href="<?= htmlspecialchars($s['url'], ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">
+                        <?= Socials::iconSvg($s['icon'] ?? 'link', 'ui-socials-icon') ?>
+                        <span class="ui-socials-name"><?= htmlspecialchars($s['name'] ?? '', ENT_QUOTES) ?></span>
+                        <span class="ui-socials-handle"><?= htmlspecialchars(($s['handle'] ?? '') !== '' ? $s['handle'] : ($s['name'] ?? ''), ENT_QUOTES) ?></span>
+                    </a>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </section>
+        <?php endif; ?>
     </main>
 
     <?php ui_render_footer(); ?>

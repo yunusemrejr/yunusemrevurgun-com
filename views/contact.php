@@ -1,11 +1,16 @@
 <?php
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once dirname(__DIR__) . '/models/Contact.php';
+require_once dirname(__DIR__) . '/models/Socials.php';
 require_once dirname(__DIR__) . '/includes/csrf.php';
 require_once dirname(__DIR__) . '/includes/rate_limiter.php';
 require_once dirname(__DIR__) . '/includes/double_submit_protection.php';
 require_once __DIR__ . '/includes/ui.php';
 
+$contactSocials = array_values(array_filter(
+    (new Socials())->getActiveByLocation('contact'),
+    fn($s) => $s['kind'] === Socials::KIND_LINK && !empty($s['url'])
+));
 $success = false;
 $error = null;
 $captchaError = null;
@@ -242,30 +247,17 @@ ui_render_head(
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Response Time</p>
                         <p style="font-size: var(--text-sm); color: #575757;">I typically respond within 24-48 hours on weekdays.</p>
                     </div>
+                    <?php if (!empty($contactSocials)): ?>
+                    <?php foreach ($contactSocials as $cs):
+                        $csName = htmlspecialchars($cs['name'] ?? '', ENT_QUOTES);
+                        $csHandle = htmlspecialchars(($cs['handle'] ?? '') !== '' ? $cs['handle'] : ($cs['name'] ?? ''), ENT_QUOTES);
+                    ?>
                     <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">YouTube</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://www.youtube.com/@yunusemrevurgun1" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yunusemrevurgun1</a></p>
+                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;"><?= $csName ?></p>
+                        <p style="font-size: var(--text-sm);"><a href="<?= htmlspecialchars($cs['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;"><?= $csHandle ?></a></p>
                     </div>
-                    <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">GitHub</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://github.com/yunusemrejr" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yunusemrejr</a></p>
-                    </div>
-                    <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">LinkedIn</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://linkedin.com/in/yunus-emre-vurgun-49ba9a177" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">Profile</a></p>
-                    </div>
-                    <div class="ui-glass-panel" style="margin-bottom: 1rem;">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Bluesky</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://bsky.app/profile/yunusemrevurgun.bsky.social" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yunusemrevurgun</a></p>
-                    </div>
-                    <div class="ui-glass-panel" style="margin-bottom: 1rem;">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Threads</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://www.threads.com/@yemrevu" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yemrevu</a></p>
-                    </div>
-                    <div class="ui-glass-panel">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Instagram</p>
-                        <p style="font-size: var(--text-sm);"><a href="https://instagram.com/yemrevu" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;">@yemrevu</a></p>
-                    </div>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>

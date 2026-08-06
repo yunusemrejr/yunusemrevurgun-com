@@ -21,6 +21,7 @@ require_once __DIR__ . '/../../models/Portfolio.php';
 require_once __DIR__ . '/../../models/Music.php';
 require_once __DIR__ . '/../../models/Videos.php';
 require_once __DIR__ . '/../../models/Downloads.php';
+require_once __DIR__ . '/../../models/Socials.php';
 Auth::checkLogin();
 
 $blog = new Blog();
@@ -31,6 +32,7 @@ $portfolio = new Portfolio();
 $music = new Music();
 $videos = new Videos();
 $downloads = new Downloads();
+$socials = new Socials();
 
 $recentPosts = $blog->getRecentPosts(5);
 $recentUpdates = $updates->getUpdates(5);
@@ -47,6 +49,7 @@ $totalProjects = $portfolio->getTotalProjects();
 $totalTracks = $music->getTotalActiveTracks();
 $totalVideos = $videos->getTotalActiveVideos();
 $totalDownloads = $downloads->getTotalDownloads();
+$totalSocials = $socials->getTotal();
 
 $page = "dashboard";
 $pageTitle = "Dashboard";
@@ -109,6 +112,13 @@ include __DIR__ . '/includes/header.php';
             <h3 class="admin-stat-number"><?= $totalDownloads ?></h3>
             <p class="admin-stat-label">Downloads</p>
             <a href="<?= FULL_BASE_PATH ?>admin/downloads" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
+        </div>
+
+        <div class="admin-stat-card">
+            <i class="bi bi-share admin-stat-icon"></i>
+            <h3 class="admin-stat-number"><?= $totalSocials ?></h3>
+            <p class="admin-stat-label">Socials</p>
+            <a href="<?= FULL_BASE_PATH ?>admin/socials" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
     </div>
 

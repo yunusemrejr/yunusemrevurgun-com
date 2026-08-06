@@ -34,6 +34,7 @@ $adminNavItems = [
     ['id' => 'music', 'label' => 'Music', 'href' => FULL_BASE_PATH . 'admin/music'],
     ['id' => 'videos', 'label' => 'Videos', 'href' => FULL_BASE_PATH . 'admin/videos'],
     ['id' => 'downloads', 'label' => 'Downloads', 'href' => FULL_BASE_PATH . 'admin/downloads'],
+    ['id' => 'socials', 'label' => 'Socials', 'href' => FULL_BASE_PATH . 'admin/socials'],
     ['id' => 'travel', 'label' => 'Travel', 'href' => FULL_BASE_PATH . 'admin/travel'],
     ['id' => 'export', 'label' => 'Export', 'href' => FULL_BASE_PATH . 'api/admin/export.php', 'download' => true],
 ];

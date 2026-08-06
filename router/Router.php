@@ -69,6 +69,7 @@ class Router {
         'admin/travel' => 'views/admin/travel/index.php',
         'admin/videos' => 'views/admin/videos/index.php',
         'admin/downloads' => 'views/admin/downloads/index.php',
+        'admin/socials' => 'views/admin/socials/index.php',
     ];
 
     public function __construct() {
