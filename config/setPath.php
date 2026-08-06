@@ -48,7 +48,7 @@ if (file_exists($envFile)) {
         $value = trim($parts[1], " \t\n\r\0\x0B'\"");
         
         // Load critical env vars that may be needed even in localhost mode
-        if (in_array($name, ['MODE', 'TURNSTILE_SITEKEY', 'TURNSTILE_SECRET', 'DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'DB_PORT', 'DB_CONNECTION'], true) && getenv($name) === false) {
+        if (in_array($name, ['MODE', 'TURNSTILE_SITEKEY', 'TURNSTILE_SECRET', 'DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'DB_PORT', 'DB_CONNECTION', 'MASTODON_BASE_URL', 'MASTODON_ACCESS_TOKEN', 'MASTODON_DEFAULT_VISIBILITY', 'MASTODON_DEFAULT_LANGUAGE'], true) && getenv($name) === false) {
             putenv("$name=$value");
             $_ENV[$name] = $value;
         }
@@ -97,6 +97,14 @@ if ($envLines) {
             if (env('TURNSTILE_SITEKEY') === null) { putenv("TURNSTILE_SITEKEY=$value"); $_ENV['TURNSTILE_SITEKEY'] = $value; }
         } elseif ($name === 'TURNSTILE_SECRET') {
             if (env('TURNSTILE_SECRET') === null) { putenv("TURNSTILE_SECRET=$value"); $_ENV['TURNSTILE_SECRET'] = $value; }
+        } elseif ($name === 'MASTODON_BASE_URL') {
+            if (env('MASTODON_BASE_URL') === null) { putenv("MASTODON_BASE_URL=$value"); $_ENV['MASTODON_BASE_URL'] = $value; }
+        } elseif ($name === 'MASTODON_ACCESS_TOKEN') {
+            if (env('MASTODON_ACCESS_TOKEN') === null) { putenv("MASTODON_ACCESS_TOKEN=$value"); $_ENV['MASTODON_ACCESS_TOKEN'] = $value; }
+        } elseif ($name === 'MASTODON_DEFAULT_VISIBILITY') {
+            if (env('MASTODON_DEFAULT_VISIBILITY') === null) { putenv("MASTODON_DEFAULT_VISIBILITY=$value"); $_ENV['MASTODON_DEFAULT_VISIBILITY'] = $value; }
+        } elseif ($name === 'MASTODON_DEFAULT_LANGUAGE') {
+            if (env('MASTODON_DEFAULT_LANGUAGE') === null) { putenv("MASTODON_DEFAULT_LANGUAGE=$value"); $_ENV['MASTODON_DEFAULT_LANGUAGE'] = $value; }
         } elseif ($name === 'DB_HOST') {
             if (env('DB_HOST') === null) { putenv("DB_HOST=$value"); $_ENV['DB_HOST'] = $value; }
         } elseif ($name === 'DB_NAME') {

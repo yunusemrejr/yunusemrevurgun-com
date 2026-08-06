@@ -14,6 +14,7 @@ require_once __DIR__ . '/../../../global.php';
 verifyAdminAction();
 require_once __DIR__ . '/../../../models/Auth.php';
 require_once __DIR__ . '/../../../models/Updates.php';
+require_once dirname(__DIR__, 3) . '/services/MastodonService.php';
 Auth::checkLogin();
 
 $updates = new Updates();
@@ -45,14 +46,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'content' => $content,
         'date' => $date,
         'category' => $category,
-        'importance' => $importance
+        'importance' => $importance,
+        'post_to_mastodon' => isset($_POST['post_to_mastodon']),
     ];
-    
+
     if (!$error) {
         try {
             $result = $updates->createUpdate($data);
             if ($result) {
                 $success = true;
+                // Mastodon cross-posting — the update is already saved locally;
+                // a Mastodon failure never rolls back or deletes the update.
+                if (!empty($data['post_to_mastodon'])) {
+                    $mastodon = new MastodonService();
+                    $updates->incrementMastodonAttempt($result);
+                    if ($mastodon->isConfigured()) {
+                        $visibility = in_array(($_POST['mastodon_visibility'] ?? ''), ['public', 'unlisted', 'private'], true)
+                            ? $_POST['mastodon_visibility'] : null;
+                        $pub = $mastodon->publish(
+                            $title,
+                            $content,
+                            Updates::canonicalUpdateUrl($result),
+                            MastodonService::idempotencyKeyForUpdate($result),
+                            $visibility
+                        );
+                        if ($pub['success']) {
+                            $updates->updateMastodonSync($result, [
+                                'mastodon_status_id' => $pub['status_id'],
+                                'mastodon_status_url' => $pub['status_url'],
+                                'mastodon_sync_status' => 'published',
+                                'mastodon_last_error' => null,
+                                'mastodon_published_at' => date('Y-m-d H:i:s'),
+                            ]);
+                            $_SESSION['success'] = 'Update created and published to Mastodon.';
+                        } else {
+                            $updates->updateMastodonSync($result, [
+                                'mastodon_sync_status' => 'failed',
+                                'mastodon_last_error' => $pub['error'],
+                            ]);
+                            $_SESSION['error'] = 'Update saved, but the Mastodon post failed: ' . $pub['error'];
+                        }
+                    } else {
+                        $updates->updateMastodonSync($result, [
+                            'mastodon_sync_status' => 'failed',
+                            'mastodon_last_error' => 'Mastodon is not configured (MASTODON_BASE_URL / MASTODON_ACCESS_TOKEN missing).',
+                        ]);
+                        $_SESSION['error'] = 'Update saved, but Mastodon is not configured — set MASTODON_BASE_URL and MASTODON_ACCESS_TOKEN to cross-post.';
+                    }
+                }
                 // Redirect to updates list after successful creation
                 header('Location: ' . FULL_BASE_PATH . 'admin/updates');
                 exit;
@@ -158,6 +199,30 @@ include __DIR__ . '/../includes/header.php';
                         <div class="admin-form-text">Set the importance level for this update</div>
                     </div>
                     
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Mastodon cross-posting</label>
+                        <div class="admin-form-check" style="margin-bottom: 0.75rem;">
+                            <input type="checkbox" id="post_to_mastodon" name="post_to_mastodon" value="1" checked class="admin-form-check-input">
+                            <label for="post_to_mastodon" class="admin-form-check-label">Post to Mastodon</label>
+                        </div>
+                        <div id="mastodonOptions">
+                            <div class="admin-form-group">
+                                <label for="mastodon_visibility" class="admin-form-label">Visibility</label>
+                                <select class="admin-form-control" id="mastodon_visibility" name="mastodon_visibility">
+                                    <option value="public">Public</option>
+                                    <option value="unlisted">Unlisted</option>
+                                    <option value="private">Private (followers only)</option>
+                                </select>
+                            </div>
+                            <div class="admin-form-group">
+                                <label class="admin-form-label">Mastodon preview</label>
+                                <div class="admin-mastodon-preview" id="mastodonPreview" data-limit="500">—</div>
+                                <div class="admin-form-text" id="mastodonCharCount"></div>
+                            </div>
+                        </div>
+                        <div class="admin-form-text">The update is always saved on the website first. If Mastodon is unavailable, the post can be retried later from the Updates list.</div>
+                    </div>
+
                     <div class="admin-form-actions">
                         <button type="submit" class="admin-btn admin-btn-primary">
                             <i class="bi bi-check-circle me-2"></i>Create Update
@@ -174,6 +239,84 @@ include __DIR__ . '/../includes/header.php';
 
 
      <?php
-// Include footer
+$pageScripts = '
+<style>
+.admin-mastodon-preview {
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  padding: 12px 14px;
+  font-size: 0.875rem;
+  color: #575757;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 70px;
+  margin-top: 6px;
+}
+.admin-mastodon-preview.is-over {
+  border-color: #a66060;
+  color: #a66060;
+}
+</style>
+<script>
+(function() {
+    "use strict";
+    var titleEl = document.getElementById("title");
+    var contentEl = document.getElementById("content");
+    var previewEl = document.getElementById("mastodonPreview");
+    var countEl = document.getElementById("mastodonCharCount");
+    var postChk = document.getElementById("post_to_mastodon");
+    var optionsEl = document.getElementById("mastodonOptions");
+    var LIMIT = parseInt(previewEl.getAttribute("data-limit") || "500", 10);
+    // Canonical base matches Updates::canonicalUpdateUrl() (production domain).
+    var CANONICAL_BASE = "https://yunusemrevurgun.com/updates/";
+
+    function mdToPlain(md) {
+        var t = String(md || "");
+        t = t.replace(/```[a-z]*\n?/gi, "");
+        t = t.replace(/`([^`]+)`/g, "$1");
+        t = t.replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1");
+        t = t.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+        t = t.replace(/^#{1,6}\s+/gm, "");
+        t = t.replace(/^>\s?/gm, "");
+        t = t.replace(/^\s*[-*+]\s+/gm, "• ");
+        t = t.replace(/\*\*([^*]+)\*\*/g, "$1");
+        t = t.replace(/__([^_]+)__/g, "$1");
+        t = t.replace(/\*([^*]+)\*/g, "$1");
+        t = t.replace(/_([^_]+)_/g, "$1");
+        t = t.replace(/\n{3,}/g, "\n\n");
+        return t.trim();
+    }
+
+    function renderPreview() {
+        if (!postChk || !postChk.checked) {
+            previewEl.textContent = "—";
+            countEl.textContent = "";
+            return;
+        }
+        var title = (titleEl.value || "").trim();
+        var body = mdToPlain(contentEl.value);
+        var text = title + (title && body ? "\n\n" : "") + body;
+        var hasUrl = body.indexOf(CANONICAL_BASE) !== -1;
+        var link = hasUrl ? "" : "Read more:\n" + CANONICAL_BASE + "{id}";
+        var full = text + (text && link ? "\n\n" : "") + link;
+        if (!full.trim()) full = "—";
+        previewEl.textContent = full;
+        var len = full.length;
+        countEl.textContent = "≈ " + len + " / " + LIMIT + " characters" + (len > LIMIT ? " — will be truncated to fit" : "");
+        previewEl.classList.toggle("is-over", len > LIMIT);
+    }
+
+    if (postChk && optionsEl) {
+        postChk.addEventListener("change", function() {
+            optionsEl.style.display = postChk.checked ? "" : "none";
+            renderPreview();
+        });
+        optionsEl.style.display = postChk.checked ? "" : "none";
+    }
+    if (titleEl) titleEl.addEventListener("input", renderPreview);
+    if (contentEl) contentEl.addEventListener("input", renderPreview);
+    renderPreview();
+})();
+</script>';
 include __DIR__ . '/../includes/footer.php';
 ?>

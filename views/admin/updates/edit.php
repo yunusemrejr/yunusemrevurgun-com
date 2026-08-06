@@ -178,6 +178,35 @@ include __DIR__ . '/../includes/header.php';
                             <option value="high" <?= $update['importance'] === 'high' ? 'selected' : '' ?>>High</option>
                         </select>
                         <div class="admin-form-text">Set the importance level for this update</div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Mastodon cross-posting</label>
+                        <?php
+                        $mSync = $update['mastodon_sync_status'] ?? 'not_requested';
+                        $mUrl = $update['mastodon_status_url'] ?? '';
+                        $mErr = $update['mastodon_last_error'] ?? '';
+                        ?>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                            <?php if ($mSync === 'published'): ?>
+                                <span class="admin-badge admin-badge-success">Published</span>
+                                <?php if ($mUrl !== ''): ?>
+                                    <a class="dl-source-link" href="<?= htmlspecialchars($mUrl, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">Open Mastodon post ↗</a>
+                                <?php endif; ?>
+                            <?php elseif ($mSync === 'pending'): ?>
+                                <span class="admin-badge admin-badge-info">Pending</span>
+                            <?php elseif ($mSync === 'failed'): ?>
+                                <span class="admin-badge admin-badge-danger" title="<?= htmlspecialchars($mErr, ENT_QUOTES) ?>">Failed</span>
+                                <?php if ($mErr !== ''): ?><span class="admin-form-text" style="color:#a66060;"><?= htmlspecialchars(mb_strimwidth($mErr, 0, 140, '…')) ?></span><?php endif; ?>
+                            <?php else: ?>
+                                <span class="admin-badge admin-badge-secondary">Not posted</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="admin-alert admin-alert-warning" style="margin:0;">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Editing this website update will not automatically edit the existing Mastodon post.
+                        </div>
+                        <div class="admin-form-text" style="margin-top:6px;">To re-publish (e.g. after a failed attempt), use the Retry button on the Updates list.</div>
+                    </div>
+
                     </div>
                     
                     <div class="admin-form-actions">

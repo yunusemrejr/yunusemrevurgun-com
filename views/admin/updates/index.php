@@ -89,6 +89,7 @@ include __DIR__ . '/../includes/header.php';
                                     <th>Date</th>
                                     <th>Category</th>
                                     <th>Importance</th>
+                                    <th>Mastodon</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -105,6 +106,27 @@ include __DIR__ . '/../includes/header.php';
                                                 <span class="admin-badge admin-badge-warning">Medium</span>
                                             <?php else: ?>
                                                 <span class="admin-badge admin-badge-info">Low</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $mSync = $update['mastodon_sync_status'] ?? 'not_requested';
+                                            $mUrl = $update['mastodon_status_url'] ?? '';
+                                            $mErr = $update['mastodon_last_error'] ?? '';
+                                            ?>
+                                            <?php if ($mSync === 'published'): ?>
+                                                <span class="admin-badge admin-badge-success">Published</span>
+                                                <?php if ($mUrl !== ''): ?>
+                                                    <a class="dl-source-link" style="display:block;margin-top:4px;" href="<?= htmlspecialchars($mUrl, ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" title="Open Mastodon post">Mastodon ↗</a>
+                                                <?php endif; ?>
+                                            <?php elseif ($mSync === 'pending'): ?>
+                                                <span class="admin-badge admin-badge-info">Pending</span>
+                                                <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" style="display:block;margin-top:4px;" data-mastodon-retry="<?= $update['id'] ?>" title="Publish to Mastodon now">Retry</button>
+                                            <?php elseif ($mSync === 'failed'): ?>
+                                                <span class="admin-badge admin-badge-danger" title="<?= htmlspecialchars($mErr, ENT_QUOTES) ?>">Failed</span>
+                                                <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" style="display:block;margin-top:4px;" data-mastodon-retry="<?= $update['id'] ?>" title="Retry Mastodon posting">Retry</button>
+                                            <?php else: ?>
+                                                <span class="admin-badge admin-badge-secondary">Not posted</span>
                                             <?php endif; ?>
                                         </td>
                                         <td>
@@ -142,6 +164,36 @@ include __DIR__ . '/../includes/header.php';
         
 
      <?php
-// Include footer
+$pageScripts = '
+<script>
+(function() {
+    "use strict";
+    var csrfMeta = document.querySelector("meta[name=\'csrf-token\']");
+    var csrfToken = csrfMeta ? csrfMeta.getAttribute("content") : "";
+    var RETRY_URL = "' . FULL_BASE_PATH . 'api/admin/mastodon/retry.php";
+    document.querySelectorAll("[data-mastodon-retry]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            var id = this.getAttribute("data-mastodon-retry");
+            if (!confirm("Publish update #" + id + " to Mastodon now?")) return;
+            this.disabled = true;
+            this.textContent = "Posting...";
+            var fd = new FormData();
+            fd.append("id", id);
+            fd.append("csrf_token", csrfToken);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", RETRY_URL, true);
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            xhr.addEventListener("load", function() {
+                var resp;
+                try { resp = JSON.parse(xhr.responseText); } catch (e) { resp = null; }
+                if (resp && resp.success) { location.reload(); }
+                else { alert("Mastodon posting failed: " + ((resp && resp.message) || "Unknown error")); location.reload(); }
+            });
+            xhr.addEventListener("error", function() { alert("Network error while posting to Mastodon."); location.reload(); });
+            xhr.send(fd);
+        });
+    });
+})();
+</script>';
 include __DIR__ . '/../includes/footer.php';
 ?>  
