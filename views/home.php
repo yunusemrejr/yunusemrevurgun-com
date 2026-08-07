@@ -78,6 +78,9 @@ $heroFiles = [
     ['desktop2.svg', 'mobile2.svg'],
     ['desktop3.svg', 'mobile3.svg'],
     ['desktop4.svg', 'mobile4.svg'],
+    ['desktop5.svg', 'mobile5.svg'],
+    ['desktop6.svg', 'mobile6.svg'],
+    ['desktop7.svg', 'mobile7.svg'],
 ];
 $heroIdx = array_rand($heroFiles);
 $heroDesktopSrc = [];
