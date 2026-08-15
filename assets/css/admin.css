@@ -722,6 +722,57 @@ select.admin-form-control {
   color: #575757;
 }
 
+/* ===== NOTIFICATIONS (toasts) =====
+   Base + semantic variants. Error type must be styled explicitly — the old
+   code relied on .admin-alert-error which had no rule, so error toasts were
+   transparent, borderless, and effectively invisible on the light theme. */
+.admin-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  max-width: 320px;
+  padding: 10px 14px;
+  border: 1px solid;
+  font-size: 13px;
+  line-height: 1.45;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  color: #575757;
+}
+
+.admin-notification.admin-alert-success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border-color: var(--color-success-border);
+}
+
+.admin-notification.admin-alert-error,
+.admin-notification.admin-alert-danger {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border-color: var(--color-danger-border);
+}
+
+.admin-notification.admin-alert-warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border-color: var(--color-warning-border);
+}
+
+.admin-notification.admin-alert-info {
+  background-color: var(--color-bg-subtle);
+  border-color: var(--color-border);
+}
+
+@media (max-width: 480px) {
+  .admin-notification {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+  }
+}
+
 /* ===== LIST GROUPS ===== */
 .list-group {
   list-style: none;
@@ -1389,7 +1440,7 @@ select.admin-form-control {
 
 .admin-upload-progress {
   width: 100%;
-  height: 4px;
+  height: 20px;
   background: var(--color-bg-elevated);
   overflow: hidden;
   margin-top: var(--space-3);
@@ -1399,6 +1450,22 @@ select.admin-form-control {
   height: 100%;
   background: var(--color-accent);
   transition: width var(--transition-base);
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 20px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.admin-upload-progress-text {
+  margin-top: 6px;
+  font-size: var(--text-sm);
+  color: #575757;
+  min-height: 1.2em;
+}
+
+.admin-upload-progress-text.is-error {
+  color: var(--color-danger);
 }
 
 /* ===== SHARED MODAL FOOTER ===== */

@@ -18,6 +18,23 @@
             this.bindAlbumEvents();
         },
 
+        // In-flight upload XHR so Cancel/close actually aborts the request.
+        currentUploadXhr: null,
+
+        setUploadStatus: function(text, isError) {
+            const $status = $('#uploadProgressText');
+            if ($status.length) {
+                $status.text(text || '').toggleClass('is-error', !!isError);
+            }
+        },
+
+        abortCurrentUpload: function() {
+            if (this.currentUploadXhr) {
+                try { this.currentUploadXhr.abort(); } catch (e) { /* already finished */ }
+                this.currentUploadXhr = null;
+            }
+        },
+
         initUploadModal: function() {
             window.openUploadModal = this.openUploadModal.bind(this);
             window.closeUploadModal = this.closeUploadModal.bind(this);
@@ -33,6 +50,7 @@
             if ($modal.length) {
                 $modal.css('display', 'flex');
                 $('body').css('overflow', 'hidden');
+                AdminPanel.setUploadStatus('');
                 const $firstInput = $modal.find('input[type="file"]');
                 if ($firstInput.length) {
                     setTimeout(() => $firstInput.focus(), 100);
@@ -41,6 +59,10 @@
         },
 
         closeUploadModal: function() {
+            // If an upload is in flight, Cancel must actually stop it — a
+            // hidden request kept the modal's button disabled and the
+            // server busy (see abortCurrentUpload).
+            AdminPanel.abortCurrentUpload();
             const $modal = $('#uploadModal');
             if ($modal.length) {
                 $modal.css('display', 'none');
@@ -57,6 +79,7 @@
                 if ($progress.length) {
                     $progress.hide();
                 }
+                AdminPanel.setUploadStatus('');
             }
         },
 
@@ -88,6 +111,7 @@
 
             $progress.show();
             this.updateProgress(0);
+            AdminPanel.setUploadStatus('Uploading 0%…');
             $('#startUpload').prop('disabled', true);
 
             const formData = new FormData();
@@ -113,14 +137,22 @@
                 },
                 xhr: function() {
                     const xhr = new window.XMLHttpRequest();
+                    AdminPanel.currentUploadXhr = xhr;
                     xhr.upload.addEventListener("progress", function(evt) {
                         if (evt.lengthComputable) {
                             const percentComplete = evt.loaded / evt.total * 100;
                             AdminPanel.updateProgress(percentComplete);
+                            AdminPanel.setUploadStatus('Uploading ' + Math.round(percentComplete) + '%…');
                         }
+                    }, false);
+                    // Transfer finished — the server is now validating + processing
+                    // the files (HEIC conversion can take a while on shared hosting).
+                    xhr.upload.addEventListener("load", function() {
+                        AdminPanel.setUploadStatus('Uploading complete — processing images on the server…');
                     }, false);
                     return xhr;
                 },
+                timeout: 180000,
                 success: function(response) {
                     AdminPanel.updateProgress(100);
                     let responseData = response;
@@ -129,6 +161,8 @@
                             responseData = JSON.parse(response);
                         } catch (e) {
                             AdminPanel.showNotification('Upload failed: Invalid response format', 'error');
+                            AdminPanel.setUploadStatus('Upload failed: the server returned an unreadable response. Please try again.', true);
+                            $('#startUpload').prop('disabled', false);
                             return;
                         }
                     }
@@ -145,26 +179,40 @@
                         }, failed.length > 0 ? 3000 : 1000);
                     } else {
                         AdminPanel.showNotification('Upload failed: ' + (responseData.message || 'Unknown error'), 'error');
+                        AdminPanel.setUploadStatus('Upload failed: ' + (responseData.message || 'Unknown error') + ' Your files are still selected — fix the issue and try again.', true);
+                        AdminPanel.updateProgress(0);
                         $('#startUpload').prop('disabled', false);
                     }
                 },
                 error: function(xhr, status, error) {
+                    // A request we aborted ourselves (Cancel/close) is not an error.
+                    if (status === 'abort') {
+                        AdminPanel.setUploadStatus('Upload cancelled.', true);
+                        return;
+                    }
                     AdminPanel.updateProgress(0);
                     $('#startUpload').prop('disabled', false);
                     let errorMessage = 'Upload failed';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                    if (xhr.status === 401) {
+                        errorMessage = 'Your session expired. Please refresh the page and log in again.';
+                    } else if (xhr.status === 403) {
+                        errorMessage = 'Security check failed (stale page). Please refresh and try again.';
+                    } else if (status === 'timeout') {
+                        errorMessage = 'Upload timed out after 3 minutes. Try fewer or smaller files.';
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMessage = xhr.responseJSON.message;
                     } else if (xhr.responseText) {
                         try {
                             const errorResponse = JSON.parse(xhr.responseText);
                             errorMessage = errorResponse.message || errorMessage;
                         } catch (e) {
-                            errorMessage += ': ' + xhr.responseText;
+                            errorMessage += ': ' + xhr.responseText.slice(0, 200);
                         }
                     } else if (error) {
                         errorMessage += ': ' + error;
                     }
                     AdminPanel.showNotification(errorMessage, 'error');
+                    AdminPanel.setUploadStatus(errorMessage + ' Your files are still selected — try again.', true);
                 }
             });
         },

@@ -7,6 +7,31 @@ require_once __DIR__ . '/Database.php';
 class Auth {
     private $db;
 
+    /** Admin session idle timeout (seconds): 60 minutes. */
+    private const SESSION_IDLE_TIMEOUT = 3600;
+
+    /**
+     * Stable session-binding fingerprint: browser family only.
+     * The raw UA string changes on iOS Safari (version bumps, desktop-site
+     * toggle, in-app webviews), which previously destroyed admin sessions
+     * mid-use on iPhones. Family still blocks cookie replay from a
+     * different browser class.
+     */
+    public static function uaFingerprint(?string $ua): string {
+        $ua = $ua ?? '';
+        $family = 'other';
+        if (preg_match('/(?:FxiOS|Firefox)/i', $ua)) {
+            $family = 'firefox';
+        } elseif (preg_match('/(?:CriOS|Chrome|Chromium)/i', $ua)) {
+            $family = 'chrome';
+        } elseif (preg_match('/(?:EdgiOS|Edg\/)/i', $ua)) {
+            $family = 'edge';
+        } elseif (preg_match('/Safari/i', $ua)) {
+            $family = 'safari';
+        }
+        return hash('sha256', $family);
+    }
+
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
         if (function_exists('ensureSessionStarted')) {
@@ -34,7 +59,7 @@ class Auth {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['admin_logged_in'] = true;
                 $_SESSION['last_activity'] = time();
-                $_SESSION['admin_user_agent'] = hash('sha256', $_SERVER['HTTP_USER_AGENT'] ?? '');
+                $_SESSION['admin_user_agent'] = self::uaFingerprint($_SERVER['HTTP_USER_AGENT'] ?? '');
                 return true;
             }
 
@@ -58,15 +83,15 @@ class Auth {
             return false;
         }
 
-        $currentAgent = hash('sha256', $_SERVER['HTTP_USER_AGENT'] ?? '');
+        $currentAgent = self::uaFingerprint($_SERVER['HTTP_USER_AGENT'] ?? '');
         if (isset($_SESSION['admin_user_agent']) && !hash_equals($_SESSION['admin_user_agent'], $currentAgent)) {
             session_destroy();
             self::redirectToLoginIfWeb();
             return false;
         }
 
-        // Check session timeout (30 minutes)
-        if (time() - $_SESSION['last_activity'] > 1800) {
+        // Check session timeout
+        if (time() - $_SESSION['last_activity'] > self::SESSION_IDLE_TIMEOUT) {
             session_destroy();
             self::redirectToLoginIfWeb(true);
             return false;
@@ -123,11 +148,11 @@ class Auth {
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['admin_user_agent'])) {
             return false;
         }
-        $currentUA = hash('sha256', $_SERVER['HTTP_USER_AGENT'] ?? '');
+        $currentUA = self::uaFingerprint($_SERVER['HTTP_USER_AGENT'] ?? '');
         if (!hash_equals($_SESSION['admin_user_agent'], $currentUA)) {
             return false;
         }
-        if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > 1800) {
+        if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > self::SESSION_IDLE_TIMEOUT) {
             unset($_SESSION['user_id']);
             return false;
         }

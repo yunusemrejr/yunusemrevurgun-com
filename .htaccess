@@ -57,6 +57,12 @@ RewriteRule .* - [F,L]
 RewriteCond %{REQUEST_URI} ^/uploads/ [NC]
 RewriteRule \.(php|phtml|php3|php4|php5|php7|php8|phar)$ - [F,L]
 
+# Admin + admin API responses are session/CSRF sensitive — never cache
+# (browser back/forward cache or a proxy serving stale HTML caused stale
+# CSRF tokens and "session expired" loops on mobile).
+RewriteCond %{REQUEST_URI} ^/(admin|api/admin)(/|$)
+RewriteRule ^ - [E=YEV_ADMIN_NO_CACHE:1]
+
 # Route app requests
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -70,6 +76,7 @@ RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
     Header always set X-Robots-Tag "index,follow,noarchive"
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
     Header always set X-XSS-Protection "1; mode=block"
+    Header always set Cache-Control "no-cache, no-store, must-revalidate" env=YEV_ADMIN_NO_CACHE
     Header always set Cross-Origin-Resource-Policy "same-origin"
     Header always set Cross-Origin-Opener-Policy "same-origin"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"

@@ -12,36 +12,21 @@
         
         // Show notification
         showNotification: function(message, type = 'info') {
-            const $notification = $('<div class="admin-notification"></div>')
-                .addClass(`admin-alert-${type}`)
+            // Visual styling lives in .admin-notification + .admin-alert-* in
+            // admin.css (the old inline styles + missing .admin-alert-error
+            // rule made error toasts transparent/invisible on the light theme).
+            const $notification = $('<div class="admin-notification admin-alert-' + type + '"></div>')
                 .text(message)
-                .appendTo('body');
-            
-            // Position and show
-            $notification.css({
-                position: 'fixed',
-                top: '20px',
-                right: '20px',
-                zIndex: 10000,
-                padding: 'var(--space-sm)',
-                borderRadius: '4px',
-                maxWidth: '300px',
-                opacity: 0,
-                transform: 'translateX(100%)'
-            }).animate({
-                opacity: 1,
-                transform: 'translateX(0)'
-            }, 300);
-            
-            // Auto-hide after 5 seconds
+                .appendTo('body')
+                .css('opacity', 0)
+                .animate({ opacity: 1 }, 200);
+
+            // Auto-hide after 6 seconds (5s was too short to read on mobile)
             setTimeout(function() {
-                $notification.animate({
-                    opacity: 0,
-                    transform: 'translateX(100%)'
-                }, 300, function() {
+                $notification.animate({ opacity: 0 }, 300, function() {
                     $(this).remove();
                 });
-            }, 5000);
+            }, 6000);
         },
 
         // Show auto-save indicator

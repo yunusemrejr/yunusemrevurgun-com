@@ -213,6 +213,7 @@ include __DIR__ . '/../includes/header.php';
             <div class="admin-upload-preview" id="uploadPreview"></div>
             <div class="admin-upload-progress" id="uploadProgress" style="display: none;">
                 <div class="admin-upload-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="admin-upload-progress-text" id="uploadProgressText" aria-live="polite"></div>
             </div>
         </div>
         <div class="admin-modal-footer">

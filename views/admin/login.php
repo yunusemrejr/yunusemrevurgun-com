@@ -235,8 +235,6 @@ if (!turnstileEnabled() && $_SERVER['REQUEST_METHOD'] !== 'POST' && (!isset($_SE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $error = '';
     $csrfToken = $_POST['csrf_token'] ?? '';
-    $formStartedAt = (int)($_POST['form_started_at'] ?? 0);
-    $elapsed = $formStartedAt > 0 ? time() - $formStartedAt : 0;
 
     // Step 1 submissions carry a non-empty bot challenge and no username;
     // step 2 carries a non-empty username. CSS-hidden fields ARE submitted
@@ -247,15 +245,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check the throttle first so a blocked client cannot extend its own
     // block by re-submitting with a stale CSRF token.
     if (isLoginTemporarilyBlocked()) {
-        $error = "Too many failed attempts. Please wait a minute and try again.";
+        $data = loadLoginGuardData();
+        $record = $data['admin_login'][getLoginClientKey()] ?? [];
+        $remaining = getLoginDelaySeconds($record) - (time() - (int)($record['last_failure'] ?? time()));
+        $remaining = max(1, $remaining);
+        $error = "Too many failed attempts. Please wait about " . $remaining . " seconds and try again.";
     } elseif (!hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
-        $error = "Security token expired. Please refresh and try again.";
-        recordLoginFailure();
+        // A stale token means the page and the session are out of sync
+        // (cached/back-forward page, new session, second tab) — the fix is a
+        // reload, not a penalty. Counting this as a login failure turned a
+        // mobile page/session desync into a 5-strike throttle lockout loop.
+        $error = "Security token expired. Please refresh the page and try again.";
     } elseif (!empty($_POST['website'])) {
         $error = "Security verification failed. Please try again.";
-        recordLoginFailure();
-    } elseif ($elapsed > 0 && $elapsed < 2) {
-        $error = "Please wait a moment and try again.";
         recordLoginFailure();
     }
 
@@ -419,7 +421,6 @@ if (strpos($currentPath, '/admin') !== false &&
 
             <form method="POST" action="<?php echo FULL_BASE_PATH; ?>admin/login" id="admin-login-form" class="admin-login-form">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                    <input type="hidden" name="form_started_at" value="<?php echo time(); ?>">
                     <div class="admin-login-trap" aria-hidden="true">
                         <label for="website">Website</label>
                         <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">

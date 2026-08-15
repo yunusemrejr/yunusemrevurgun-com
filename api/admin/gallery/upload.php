@@ -54,6 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// The slow work below (upload + HEIC conversion on shared hosting) can run
+// for minutes. Release the session lock and lift the time cap so the request
+// (a) cannot hold other page loads hostage via the PHP session lock, and
+// (b) is not killed mid-batch by max_execution_time.
+session_write_close();
+@set_time_limit(300);
+
 try {
     // Check if files were uploaded
     if (!isset($_FILES['images']) || empty($_FILES['images']['name'][0])) {
