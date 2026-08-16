@@ -35,6 +35,66 @@
             }
         },
 
+        // Oversized images are compressed in the browser before upload instead
+        // of being rejected with a "under 5MB" error. HEIC/other decode
+        // failures and GIFs fall back to the original file; the server
+        // re-compresses those (and GIFs are exempt there too).
+        MAX_UPLOAD_BYTES: 5 * 1024 * 1024,
+        MAX_IMAGE_EDGE: 2560,
+
+        compressImageFile: function(file) {
+            if (file.size <= AdminPanel.MAX_UPLOAD_BYTES || file.type === 'image/gif') {
+                return Promise.resolve(file);
+            }
+            return new Promise(function(resolve) {
+                const url = URL.createObjectURL(file);
+                const img = new Image();
+                img.onload = function() {
+                    URL.revokeObjectURL(url);
+                    const base = (file.name || 'image').replace(/\.[^.]+$/, '');
+                    const scale = Math.min(1, AdminPanel.MAX_IMAGE_EDGE / Math.max(img.naturalWidth || 1, img.naturalHeight || 1));
+                    const w = Math.max(1, Math.round((img.naturalWidth || 1) * scale));
+                    const h = Math.max(1, Math.round((img.naturalHeight || 1) * scale));
+                    let canvas, ctx;
+                    try {
+                        canvas = document.createElement('canvas');
+                        canvas.width = w;
+                        canvas.height = h;
+                        ctx = canvas.getContext('2d');
+                        // White backdrop: PNG transparency cannot survive JPEG.
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.drawImage(img, 0, 0, w, h);
+                    } catch (e) {
+                        resolve(file);
+                        return;
+                    }
+                    const toJpeg = function(q) {
+                        return new Promise(function(res) {
+                            canvas.toBlob(function(blob) { res(blob); }, 'image/jpeg', q);
+                        });
+                    };
+                    toJpeg(0.85).then(function(blob) {
+                        if (!blob) { resolve(file); return; }
+                        if (blob.size > AdminPanel.MAX_UPLOAD_BYTES) {
+                            // One retry at lower quality before giving up to the server.
+                            toJpeg(0.65).then(function(blob2) {
+                                if (!blob2) { resolve(new File([blob], base + '.jpg', { type: 'image/jpeg' })); return; }
+                                resolve(new File([blob2.size < blob.size ? blob2 : blob], base + '.jpg', { type: 'image/jpeg' }));
+                            });
+                            return;
+                        }
+                        resolve(new File([blob], base + '.jpg', { type: 'image/jpeg' }));
+                    });
+                };
+                img.onerror = function() {
+                    URL.revokeObjectURL(url);
+                    resolve(file);
+                };
+                img.src = url;
+            });
+        },
+
         initUploadModal: function() {
             window.openUploadModal = this.openUploadModal.bind(this);
             window.closeUploadModal = this.closeUploadModal.bind(this);
@@ -51,6 +111,7 @@
                 $modal.css('display', 'flex');
                 $('body').css('overflow', 'hidden');
                 AdminPanel.setUploadStatus('');
+                AdminPanel.uploadAborted = false;
                 const $firstInput = $modal.find('input[type="file"]');
                 if ($firstInput.length) {
                     setTimeout(() => $firstInput.focus(), 100);
@@ -61,7 +122,9 @@
         closeUploadModal: function() {
             // If an upload is in flight, Cancel must actually stop it — a
             // hidden request kept the modal's button disabled and the
-            // server busy (see abortCurrentUpload).
+            // server busy (see abortCurrentUpload). Also cancels the
+            // in-browser compression step (see uploadImages).
+            AdminPanel.uploadAborted = true;
             AdminPanel.abortCurrentUpload();
             const $modal = $('#uploadModal');
             if ($modal.length) {
@@ -83,13 +146,12 @@
             }
         },
 
-        uploadImages: function() {
+        uploadImages: async function() {
             const $form = $('#uploadForm');
             const $images = $('#images');
             const $title = $('#imageTitle');
             const $albumSelect = $('#albumSelect');
             const $progress = $('#uploadProgress');
-            const $preview = $('#uploadPreview');
 
             if (!$images[0].files.length) {
                 AdminPanel.showNotification('Please select at least one image', 'error');
@@ -102,17 +164,44 @@
 
             const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
             const invalidFile = Array.from($images[0].files).find((file) => {
-                return allowedTypes.indexOf(file.type) === -1 || file.size > 5 * 1024 * 1024;
+                return allowedTypes.indexOf(file.type) === -1;
             });
             if (invalidFile) {
-                AdminPanel.showNotification('Invalid image: ' + invalidFile.name + '. Use JPEG, PNG, GIF, WebP, or HEIC under 5MB.', 'error');
+                AdminPanel.showNotification('Invalid image: ' + invalidFile.name + '. Use JPEG, PNG, GIF, WebP, or HEIC.', 'error');
                 return;
             }
 
             $progress.show();
             this.updateProgress(0);
-            AdminPanel.setUploadStatus('Uploading 0%…');
             $('#startUpload').prop('disabled', true);
+
+            // Oversized images are compressed in-browser first: batches stay
+            // under the server's post size and the mobile uplink time drops.
+            // Cancel during compression stops everything — no XHR starts after.
+            let files = Array.from($images[0].files);
+            const oversized = files.filter((f) => f.size > AdminPanel.MAX_UPLOAD_BYTES && f.type !== 'image/gif');
+            AdminPanel.uploadAborted = false;
+            for (let i = 0; i < oversized.length; i++) {
+                if (AdminPanel.uploadAborted) return;
+                AdminPanel.setUploadStatus('Compressing large images (' + (i + 1) + '/' + oversized.length + ')…');
+                const compressed = await AdminPanel.compressImageFile(oversized[i]);
+                if (AdminPanel.uploadAborted) return;
+                if (compressed && compressed !== oversized[i]) {
+                    files[files.indexOf(oversized[i])] = compressed;
+                }
+            }
+            if (AdminPanel.uploadAborted) return;
+
+            const totalBytes = files.reduce((sum, f) => sum + f.size, 0);
+            if (totalBytes > 60 * 1024 * 1024) {
+                AdminPanel.showNotification('Batch too large after compression (' + Math.round(totalBytes / 1048576) + 'MB). Please upload in smaller batches.', 'error');
+                AdminPanel.setUploadStatus('Batch too large (' + Math.round(totalBytes / 1048576) + 'MB). Please split into smaller batches.', true);
+                this.updateProgress(0);
+                $('#startUpload').prop('disabled', false);
+                return;
+            }
+
+            AdminPanel.setUploadStatus('Uploading 0%…');
 
             const formData = new FormData();
             const csrfToken = $('meta[name="csrf-token"]').attr('content') || $('input[name="csrf_token"]').val();
@@ -120,7 +209,7 @@
             formData.append('imageTitle', $title.val());
             formData.append('album_id', $albumSelect.val());
 
-            Array.from($images[0].files).forEach((file) => {
+            files.forEach((file) => {
                 formData.append('images[]', file);
             });
 

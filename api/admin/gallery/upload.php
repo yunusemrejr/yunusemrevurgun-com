@@ -102,10 +102,13 @@ try {
             continue;
         }
 
-        // Validate file size (5MB max)
+        // Oversized files are auto-compressed instead of rejected (the client
+        // usually pre-compresses them in-browser; this covers HEIC and any
+        // fallback paths). Animated GIFs stay exempt — recompression would
+        // silently destroy their animation.
         $maxSize = 5 * 1024 * 1024; // 5MB
-        if ($_FILES['images']['size'][$i] > $maxSize) {
-            $errors[] = "File " . ($i + 1) . ": File too large. Maximum size is 5MB.";
+        if ($_FILES['images']['size'][$i] > $maxSize && $mimeType === 'image/gif') {
+            $errors[] = "File " . ($i + 1) . ": GIF is over 5MB and cannot be compressed without losing animation. Please choose a smaller GIF.";
             continue;
         }
 
@@ -132,6 +135,26 @@ try {
                 continue;
             }
             $processingSource = $convertedPath;
+            $removeProcessingSource = true;
+            $extension = 'jpg';
+            $originalName = pathinfo($originalName, PATHINFO_FILENAME) . '.jpg';
+        }
+
+        // Anything still over 5MB (HEIC->JPEG can grow, or client compression
+        // failed/never ran) is re-encoded here rather than rejected.
+        if (filesize($processingSource) > $maxSize) {
+            $compressedPath = compressOversizeImage($processingSource);
+            if ($compressedPath === false) {
+                $errors[] = "File " . ($i + 1) . ": could not be compressed below 5MB automatically. Please choose a smaller image.";
+                if ($removeProcessingSource && file_exists($processingSource)) {
+                    unlink($processingSource);
+                }
+                continue;
+            }
+            if ($removeProcessingSource && file_exists($processingSource)) {
+                unlink($processingSource);
+            }
+            $processingSource = $compressedPath;
             $removeProcessingSource = true;
             $extension = 'jpg';
             $originalName = pathinfo($originalName, PATHINFO_FILENAME) . '.jpg';
@@ -245,6 +268,66 @@ function convertHeicToJpeg(string $sourcePath): string|false
         }
         if (file_exists($tempPath)) {
             unlink($tempPath);
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Re-encode an oversized image to JPEG (max 2560px edge, quality ladder
+ * 82 -> 62) until it fits under the 5MB upload cap. Returns a temp path
+ * (caller must unlink) or false when compression failed.
+ */
+function compressOversizeImage(string $sourcePath): string|false
+{
+    $maxBytes = 5 * 1024 * 1024;
+
+    // Method 1: Imagick extension
+    if (extension_loaded('imagick')) {
+        foreach ([82, 62] as $quality) {
+            try {
+                $img = new Imagick($sourcePath);
+                // Flatten transparency onto white (JPEG has no alpha).
+                $img->setImageBackgroundColor('white');
+                $img->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
+                if (max($img->getImageWidth(), $img->getImageHeight()) > 2560) {
+                    $img->scaleImage(2560, 2560, true);
+                }
+                $img->setImageFormat('jpeg');
+                $img->setImageCompressionQuality($quality);
+                $img->stripImage();
+                $tempPath = tempnam(sys_get_temp_dir(), 'cmp_') . '.jpg';
+                $img->writeImage($tempPath);
+                $img->clear();
+                if (file_exists($tempPath) && filesize($tempPath) > 0 && filesize($tempPath) <= $maxBytes) {
+                    return $tempPath;
+                }
+                @unlink($tempPath);
+            } catch (Exception $e) {
+                // Fall through to the CLI method.
+                break;
+            }
+        }
+    }
+
+    // Method 2: exec() with ImageMagick convert command
+    $whichConvert = trim(shell_exec('which convert 2>/dev/null') ?? '');
+    if (!empty($whichConvert) && is_executable($whichConvert)) {
+        foreach ([82, 62] as $quality) {
+            $tempPath = tempnam(sys_get_temp_dir(), 'cmp_') . '.jpg';
+            $cmd = escapeshellcmd($whichConvert) . ' '
+                . escapeshellarg($sourcePath) . ' '
+                . '-background white -alpha remove -resize "2560x2560>" -strip -quality ' . $quality . ' '
+                . escapeshellarg($tempPath)
+                . ' 2>/dev/null';
+            exec($cmd, $output, $returnCode);
+            if ($returnCode === 0 && file_exists($tempPath) && filesize($tempPath) > 0 && filesize($tempPath) <= $maxBytes) {
+                return $tempPath;
+            }
+            if (file_exists($tempPath)) {
+                unlink($tempPath);
+            }
         }
     }
 
