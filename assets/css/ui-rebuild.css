@@ -2496,6 +2496,109 @@ body.ui-landing::before {
   }
 }
 
+/* ===== DUCK-BOT (corner patroller) ===== */
+.duck-bot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 56px;
+  height: 48px;
+  z-index: 80;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.duck-bot-inner {
+  position: relative;
+  transform-origin: 50% 90%;
+}
+
+.duck-bot svg {
+  display: block;
+  overflow: visible;
+}
+
+/* waddle: alternating leg steps + body bob/tilt while patrolling */
+.duck-bot.is-walking .duck-bot-inner {
+  animation: duck-waddle 0.5s ease-in-out infinite;
+}
+
+.duck-bot-leg-l,
+.duck-bot-leg-r {
+  transform-origin: 50% 0;
+}
+
+.duck-bot.is-walking .duck-bot-leg-l {
+  animation: duck-step 0.5s ease-in-out infinite;
+}
+
+.duck-bot.is-walking .duck-bot-leg-r {
+  animation: duck-step 0.5s ease-in-out infinite reverse;
+}
+
+/* panicked dash: everything runs at double tempo */
+.duck-bot.is-fleeing .duck-bot-inner {
+  animation: duck-waddle 0.22s ease-in-out infinite;
+}
+
+.duck-bot.is-fleeing .duck-bot-leg-l {
+  animation-duration: 0.22s;
+}
+
+.duck-bot.is-fleeing .duck-bot-leg-r {
+  animation-duration: 0.22s;
+}
+
+@keyframes duck-waddle {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-2px) rotate(6deg); }
+}
+
+@keyframes duck-step {
+  0%, 100% { transform: rotate(14deg); }
+  50% { transform: rotate(-14deg); }
+}
+
+/* idle look-around: antenna blink while pausing at corners */
+.duck-bot.is-walking .duck-bot-antenna {
+  animation: duck-blink 2.4s ease-in-out infinite;
+}
+
+@keyframes duck-blink {
+  0%, 92%, 100% { opacity: 1; }
+  95% { opacity: 0.2; }
+}
+
+/* touch devices: no hover-chase intent, slightly smaller */
+.duck-bot.is-touch svg {
+  width: 44px;
+  height: 38px;
+}
+
+/* reduced motion: static perch, no animations at all */
+.duck-bot.is-perched .duck-bot-inner,
+.duck-bot.is-perched .duck-bot-leg-l,
+.duck-bot.is-perched .duck-bot-leg-r,
+.duck-bot.is-perched .duck-bot-antenna {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .duck-bot .duck-bot-inner,
+  .duck-bot .duck-bot-leg-l,
+  .duck-bot .duck-bot-leg-r,
+  .duck-bot .duck-bot-antenna {
+    animation: none !important;
+  }
+}
+
+/* keep the bot out of the footer's way on small screens */
+@media (max-width: 768px) {
+  .duck-bot {
+    z-index: 40;
+  }
+}
+
 /* ===== LANDING PAGE FOOTER ===== */
 /* Unique footer: contains all navbar links alongside social links */
 .ui-landing-footer {

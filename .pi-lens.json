@@ -4,5 +4,7 @@
     "sw-yunobot.js",
     "sessionlog.jsonl"
   ],
+  "format.enabled": false,
+  "autofix.enabled": false,
   "actionableWarnings.autoFix.enabled": false
 }
