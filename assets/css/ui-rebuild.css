@@ -2465,6 +2465,37 @@ body.ui-landing::before {
   color: var(--color-ink-slate);
 }
 
+/* No-WebGPU fallback: animated topographic SVG pattern (muted, palette-true).
+   Kept subtle and slow — same visual genre as the WebGPU field. */
+.ui-hero--fallback .ui-hero-canvas {
+  display: none;
+}
+
+.ui-hero--fallback::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900' viewBox='0 0 900 900'%3E%3Cg fill='none' stroke='%238490a4' stroke-width='1.2'%3E%3Cellipse cx='240' cy='250' rx='190' ry='135' transform='rotate(-12 240 250)'/%3E%3Cellipse cx='240' cy='250' rx='140' ry='98' transform='rotate(-12 240 250)'/%3E%3Cellipse cx='240' cy='250' rx='92' ry='62' transform='rotate(-12 240 250)'/%3E%3Cellipse cx='240' cy='250' rx='48' ry='30' transform='rotate(-12 240 250)'/%3E%3Cellipse cx='690' cy='640' rx='210' ry='140' transform='rotate(16 690 640)'/%3E%3Cellipse cx='690' cy='640' rx='150' ry='96' transform='rotate(16 690 640)'/%3E%3Cellipse cx='690' cy='640' rx='92' ry='56' transform='rotate(16 690 640)'/%3E%3C/g%3E%3Cg fill='none' stroke='%238fa6a6' stroke-width='1'%3E%3Cellipse cx='720' cy='160' rx='120' ry='80' transform='rotate(-24 720 160)'/%3E%3Cellipse cx='720' cy='160' rx='70' ry='44' transform='rotate(-24 720 160)'/%3E%3Cellipse cx='140' cy='740' rx='130' ry='90' transform='rotate(8 140 740)'/%3E%3Cellipse cx='140' cy='740' rx='76' ry='46' transform='rotate(8 140 740)'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 900px 900px;
+  opacity: 0.35;
+  animation: hero-pattern-drift 150s linear infinite;
+}
+
+@keyframes hero-pattern-drift {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(-450px, -300px, 0) rotate(6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-hero--fallback::before {
+    animation: none;
+  }
+}
+
 /* ===== LANDING PAGE FOOTER ===== */
 /* Unique footer: contains all navbar links alongside social links */
 .ui-landing-footer {

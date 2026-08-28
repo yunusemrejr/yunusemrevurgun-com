@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "assets/js/vgpu-hero.min.js",
+    "sw-yunobot.js",
+    "sessionlog.jsonl"
+  ],
+  "actionableWarnings.autoFix.enabled": false
+}

@@ -102,7 +102,7 @@ ui_render_head(
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../assets/js/ui-interactions.js') ?>"></script>
-<script src="<?= FULL_BASE_PATH ?>assets/js/vgpu-hero.js?v=<?= filemtime(__DIR__ . '/../assets/js/vgpu-hero.js') ?>"></script>
+<script src="<?= FULL_BASE_PATH ?>assets/js/vgpu-hero.min.js?v=<?= filemtime(__DIR__ . '/../assets/js/vgpu-hero.min.js') ?>"></script>
 <script>
 (function () {
     var canvas = document.querySelector('.ui-hero-canvas');

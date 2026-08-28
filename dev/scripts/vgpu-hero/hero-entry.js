@@ -5,7 +5,7 @@
  * so this entry is bundled ONCE with esbuild into a committed static asset:
  *
  *   cd dev/scripts/vgpu-hero && npm install && npm run build
- *   -> writes assets/js/vgpu-hero.js (IIFE, self-contained, committed)
+ *   -> writes assets/js/vgpu-hero.min.js (IIFE, self-contained, committed)
  *
  * Design: quiet topographic contour lines (fbm value-noise field) drifting
  * slowly over the #e3e2de paper background. The pointer raises a soft hill
@@ -90,12 +90,12 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
   let sec = vec3f(0.561, 0.651, 0.651);         // #8fa6a6
 
   var col = bg;
-  col = mix(col, ink, line * 0.28);
-  col = mix(col, ink, major * 0.22);
+  col = mix(col, ink, line * 0.42);
+  col = mix(col, ink, major * 0.30);
 
   // soft secondary tint hugging the pointer hill (feedback, not glow)
   let halo = exp(-d2 * 9.0) * params.glow;
-  col = mix(col, sec, halo * 0.10);
+  col = mix(col, sec, halo * 0.14);
 
   // paper grain
   let grain = hash2(uv * params.width + vec2f(fract(params.time) * 61.7, 0.0));
@@ -106,20 +106,28 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
 `;
 
 export async function mountVgpuHero(canvas) {
-  if (!canvas || !("gpu" in navigator)) return false;
+  const hero = canvas ? (canvas.closest(".ui-hero") || canvas.parentElement) : null;
+
+  const fallback = () => {
+    // No WebGPU / init failed: hand over to the animated CSS fallback.
+    if (hero) hero.classList.add("ui-hero--fallback");
+    return false;
+  };
+
+  if (!canvas || !("gpu" in navigator)) return fallback();
 
   let gpu;
   try {
     gpu = await init({ powerPreference: "low-power" });
-  } catch (err) {
-    return false; // WebGPU unavailable or no adapter — CSS fallback stays
+  } catch {
+    return fallback(); // WebGPU unavailable or no adapter
   }
 
   let canvasSurface;
   try {
     canvasSurface = surface(gpu, canvas, { dpr: [1, 1.75] });
-  } catch (err) {
-    return false;
+  } catch {
+    return fallback();
   }
 
   const params = effect(gpu, SHADER, {
@@ -136,26 +144,42 @@ export async function mountVgpuHero(canvas) {
     },
   });
 
+  const reduced =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // NOTE: onResize fires synchronously on subscription — `reduced` must be
+  // declared above this line (TDZ otherwise).
   canvasSurface.onResize(({ width, height }) => {
     params.set({ params: { width, height } });
     if (reduced) params.draw(canvasSurface); // keep the static frame filled
   });
 
   // Pointer: target position + eased follow so the hill glides, not snaps.
-  let tx = 0.5, ty = 0.4, cx = 0.5, cy = 0.4;
+  let tx = 0.5,
+    ty = 0.4,
+    cx = 0.5,
+    cy = 0.4;
   let glow = 0.0;
-  const reduced = window.matchMedia
-    && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (!reduced) {
-    const hero = canvas.closest(".ui-hero") || canvas.parentElement || canvas;
-    hero.addEventListener("pointermove", (e) => {
-      const r = hero.getBoundingClientRect();
-      tx = (e.clientX - r.left) / Math.max(1, r.width);
-      ty = (e.clientY - r.top) / Math.max(1, r.height);
-      glow = 1.0;
-    }, { passive: true });
-    hero.addEventListener("pointerleave", () => { glow = 0.0; }, { passive: true });
+    hero.addEventListener(
+      "pointermove",
+      (e) => {
+        const r = hero.getBoundingClientRect();
+        tx = (e.clientX - r.left) / Math.max(1, r.width);
+        ty = (e.clientY - r.top) / Math.max(1, r.height);
+        glow = 1.0;
+      },
+      { passive: true },
+    );
+    hero.addEventListener(
+      "pointerleave",
+      () => {
+        glow = 0.0;
+      },
+      { passive: true },
+    );
   }
 
   if (reduced) {
@@ -166,19 +190,23 @@ export async function mountVgpuHero(canvas) {
   }
 
   const time = clock(gpu);
-  const loop = frameLoop(gpu, (frame) => {
-    cx += (tx - cx) * 0.08;
-    cy += (ty - cy) * 0.08;
-    params.set({
-      params: {
-        time: time.time,
-        mx: cx,
-        my: cy,
-        glow,
-      },
-    });
-    frame.pass(canvasSurface, params);
-  }, { fps: 45 });
+  const loop = frameLoop(
+    gpu,
+    (frame) => {
+      cx += (tx - cx) * 0.08;
+      cy += (ty - cy) * 0.08;
+      params.set({
+        params: {
+          time: time.time,
+          mx: cx,
+          my: cy,
+          glow,
+        },
+      });
+      frame.pass(canvasSurface, params);
+    },
+    { fps: 45 },
+  );
 
   canvas.dataset.vgpu = "live";
   return { stop: () => loop.stop(), surface: canvasSurface, effect: params };
