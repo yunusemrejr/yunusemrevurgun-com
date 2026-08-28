@@ -1,0 +1,14 @@
+{
+  "name": "vgpu-hero-build",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild hero-entry.js --bundle --minify --format=iife --global-name=VgpuHero --outfile=../../../assets/js/vgpu-hero.js --target=es2020"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "dependencies": {
+    "vgpu": "0.3.1"
+  }
+}

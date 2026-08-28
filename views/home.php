@@ -70,36 +70,20 @@ ui_render_head(
 );
 ?>
 <body class="ui-landing">
-<?php
-// Rotating SVG hero variants (desktop set + matching mobile set). One random
-// variant renders on first paint; ui-interactions.js auto-rotates the rest.
-$heroFiles = [
-    ['desktop.svg', 'mobile.svg'],
-    ['desktop2.svg', 'mobile2.svg'],
-    ['desktop3.svg', 'mobile3.svg'],
-    ['desktop4.svg', 'mobile4.svg'],
-    ['desktop5.svg', 'mobile5.svg'],
-    ['desktop6.svg', 'mobile6.svg'],
-    ['desktop7.svg', 'mobile7.svg'],
-];
-$heroIdx = array_rand($heroFiles);
-$heroDesktopSrc = [];
-$heroMobileSrc = [];
-foreach ($heroFiles as $heroPair) {
-    $heroDesktopSrc[] = FULL_BASE_PATH . 'assets/images/' . $heroPair[0] . '?v=' . filemtime(__DIR__ . '/../assets/images/' . $heroPair[0]);
-    $heroMobileSrc[] = FULL_BASE_PATH . 'assets/images/' . $heroPair[1] . '?v=' . filemtime(__DIR__ . '/../assets/images/' . $heroPair[1]);
-}
-?>
-<div class="ui-landing-svg" data-hero-current="<?= $heroIdx ?>" data-hero-desktop="<?= htmlspecialchars(implode('|', $heroDesktopSrc), ENT_QUOTES) ?>" data-hero-mobile="<?= htmlspecialchars(implode('|', $heroMobileSrc), ENT_QUOTES) ?>">
-    <!-- Desktop SVG hero (navigation, portrait, background, headings, decorative elements) -->
-    <img class="ui-landing-svg-desktop" src="<?= $heroDesktopSrc[$heroIdx] ?>" alt="Yemre — The world of a developer" loading="eager" draggable="false">
-    <!-- Mobile SVG hero -->
-    <img class="ui-landing-svg-mobile" src="<?= $heroMobileSrc[$heroIdx] ?>" alt="Yemre — The world of a developer" loading="eager" draggable="false">
-</div>
-
-<div class="ui-landing-actions">
-    <a class="ui-landing-btn ui-landing-btn-primary" href="<?= FULL_BASE_PATH ?>about">About me</a>
-    <a class="ui-landing-btn ui-landing-btn-secondary" href="<?= FULL_BASE_PATH ?>portfolio">See my work</a>
+<!-- vgpu WebGPU hero (bundled from dev/scripts/vgpu-hero/hero-entry.js).
+     Falls back to plain palette background + HTML text when WebGPU is
+     unavailable; prefers-reduced-motion renders one static frame. -->
+<div class="ui-hero">
+    <canvas class="ui-hero-canvas" aria-hidden="true"></canvas>
+    <div class="ui-hero-content">
+        <h1 class="ui-hero-title">Yemre</h1>
+        <p class="ui-hero-tagline">The world of a developer</p>
+        <p class="ui-hero-lede">They say you’re the average of the five people you spend the most time with. I’m carefully curating mine.</p>
+        <div class="ui-hero-actions">
+            <a class="ui-landing-btn ui-landing-btn-primary" href="<?= FULL_BASE_PATH ?>about">About me</a>
+            <a class="ui-landing-btn ui-landing-btn-secondary" href="<?= FULL_BASE_PATH ?>portfolio">See my work</a>
+        </div>
+    </div>
 </div>
 
 <footer class="ui-landing-footer">
@@ -118,5 +102,14 @@ foreach ($heroFiles as $heroPair) {
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../assets/js/ui-interactions.js') ?>"></script>
+<script src="<?= FULL_BASE_PATH ?>assets/js/vgpu-hero.js?v=<?= filemtime(__DIR__ . '/../assets/js/vgpu-hero.js') ?>"></script>
+<script>
+(function () {
+    var canvas = document.querySelector('.ui-hero-canvas');
+    if (canvas && window.VgpuHero && typeof window.VgpuHero.mountVgpuHero === 'function') {
+        window.VgpuHero.mountVgpuHero(canvas).catch(function () { /* CSS fallback stays */ });
+    }
+})();
+</script>
 </body>
 </html>

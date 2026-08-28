@@ -59,6 +59,11 @@ MEDIA
   --color-accent-hover: #6e7a90;
   --color-accent-secondary: #8fa6a6;
 
+  /* Hero ink — darkened palette hues that pass APCA on --color-bg-primary */
+  --color-ink-body: #434343;
+  --color-ink-slate: #566178;
+  --color-ink-slate-hover: #48556d;
+
   --color-grid: rgba(132, 144, 164, 0.12);
 
   --color-border: rgba(132, 144, 164, 0.25);
@@ -2344,10 +2349,10 @@ textarea.ui-input {
   }
 }
 
-/* ===== LANDING PAGE (SVG HERO) ===== */
-/* Landing page has no navbar — SVG starts at top:0, left:0 */
+/* ===== LANDING PAGE (VGPU HERO) ===== */
+/* Landing page has no navbar — hero fills the first viewport */
 body.ui-landing {
-  background-color: #e3e2de;
+  background-color: var(--color-bg-primary);
   background-image: none;
   padding: 0;
   margin: 0;
@@ -2357,73 +2362,66 @@ body.ui-landing::before {
   display: none;
 }
 
-.ui-landing {
-  min-height: 100vh;
-}
-
-.ui-landing-svg {
+.ui-hero {
   position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #e3e2de;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-bg-primary);
+  overflow: hidden;
 }
 
-.ui-landing-svg-desktop {
+.ui-hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: block;
-  width: 100%;
-  height: auto;
-  margin: 0;
-  padding: 0;
-  filter: none; /* SVG already contains grayscale treatment */
-  user-select: none;
-  -webkit-user-drag: none;
+  /* No-WebGPU fallback: canvas stays empty over the palette background */
   pointer-events: none;
 }
 
-.ui-landing-svg-mobile {
-  display: none;
-  width: 100%;
-  height: auto;
-  margin: 0;
-  padding: 0;
-  filter: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  pointer-events: none;
+.ui-hero-content {
+  position: relative;
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+  max-width: 52rem;
 }
 
-/* Switch between desktop and mobile SVG at the designated breakpoint */
-@media (max-width: 768px) {
-  .ui-landing-svg-desktop { display: none; }
-  .ui-landing-svg-mobile { display: block; }
+.ui-hero-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3.5rem, 10vw, var(--text-6xl));
+  letter-spacing: 0.04em;
+  color: var(--color-ink-body);
+  margin: 0 0 var(--space-2);
+  line-height: 1.05;
 }
 
-/* Rotating hero variants: fade between SVGs (ui-interactions.js toggles .is-fading) */
-.ui-landing-svg img {
-  transition: opacity 0.6s ease;
+.ui-hero-tagline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 2.4vw, var(--text-xl));
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--color-ink-slate);
+  margin: 0 0 var(--space-6);
 }
 
-.ui-landing-svg img.is-fading {
-  opacity: 0;
+.ui-hero-lede {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.7;
+  color: var(--color-ink-body);
+  max-width: 34rem;
+  margin: 0 auto var(--space-8);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ui-landing-svg img {
-    transition: none;
-  }
-}
-
-/* Landing page action buttons — redesigned for new palette */
-.ui-landing-actions {
+.ui-hero-actions {
   display: flex;
   gap: var(--space-4);
   flex-wrap: wrap;
   justify-content: center;
-  padding: var(--space-10) var(--space-6);
-  background-color: #e3e2de;
 }
 
 .ui-landing-btn {
@@ -2442,23 +2440,29 @@ body.ui-landing::before {
 }
 
 .ui-landing-btn-primary {
-  background-color: #8fa6a6;
-  color: #e3e2de;
+  background-color: var(--color-ink-slate);
+  color: var(--color-bg-primary);
 }
 
 .ui-landing-btn-primary:hover {
-  background-color: #8490a4;
-  color: #e3e2de;
+  background-color: var(--color-ink-slate-hover);
+  color: var(--color-bg-primary);
+}
+
+.ui-landing-btn-primary:focus-visible,
+.ui-landing-btn-secondary:focus-visible {
+  outline: 2px solid var(--color-ink-slate);
+  outline-offset: 3px;
 }
 
 .ui-landing-btn-secondary {
   background-color: transparent;
-  color: #575757;
+  color: var(--color-ink-body);
 }
 
 .ui-landing-btn-secondary:hover {
-  background-color: rgba(132,144,164,0.08);
-  color: #8fa6a6;
+  background-color: rgba(86,97,120,0.08);
+  color: var(--color-ink-slate);
 }
 
 /* ===== LANDING PAGE FOOTER ===== */

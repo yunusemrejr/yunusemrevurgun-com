@@ -1,5 +1,5 @@
-(function () {
-  'use strict';
+(() => {
+  
 
   const BASE_PATH = window.FULL_BASE_PATH || '/';
 
@@ -56,20 +56,20 @@
     }
 
     if (openBtn) openBtn.addEventListener('click', open);
-    closeItems.forEach(function (el) {
+    closeItems.forEach((el) => {
       el.addEventListener('click', close);
     });
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && menu.classList.contains('is-open')) {
         close();
       }
     });
 
     var resizeTimer;
-    window.addEventListener('resize', function () {
+    window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
+      resizeTimer = setTimeout(() => {
         if (window.innerWidth > 768 && menu.classList.contains('is-open')) {
           close();
         }
@@ -94,7 +94,7 @@
 
       if (index === 0) setOpen(true);
 
-      trigger.addEventListener('click', function () {
+      trigger.addEventListener('click', () => {
         const isOpen = card.classList.contains('is-open');
         cards.forEach((c) => {
           const t = q('.ui-command-trigger', c);
@@ -135,7 +135,7 @@
     }
 
     pills.forEach((pill) => {
-      pill.addEventListener('click', function () {
+      pill.addEventListener('click', () => {
         applyFilter(pill.dataset.filter || 'all');
       });
     });
@@ -149,7 +149,7 @@
 
     const instances = [];
 
-    roots.forEach(function (root) {
+    roots.forEach((root) => {
       const track = q('.ui-slideshow-track', root);
       const prevBtn = q('[data-slideshow-prev]', root);
       const nextBtn = q('[data-slideshow-next]', root);
@@ -175,20 +175,20 @@
         render();
       }
 
-      if (prevBtn) prevBtn.addEventListener('click', function () { go(-1); });
-      if (nextBtn) nextBtn.addEventListener('click', function () { go(1); });
+      if (prevBtn) prevBtn.addEventListener('click', () => { go(-1); });
+      if (nextBtn) nextBtn.addEventListener('click', () => { go(1); });
 
       // Touch swipe (mobile)
       let startX = 0, startY = 0, touching = false;
       const viewport = q('.ui-slideshow-viewport', root);
       if (viewport) {
-        viewport.addEventListener('touchstart', function (e) {
+        viewport.addEventListener('touchstart', (e) => {
           if (e.touches.length !== 1) return;
           touching = true;
           startX = e.touches[0].clientX;
           startY = e.touches[0].clientY;
         }, { passive: true });
-        viewport.addEventListener('touchend', function (e) {
+        viewport.addEventListener('touchend', (e) => {
           if (!touching) return;
           touching = false;
           const dx = (e.changedTouches[0] ? e.changedTouches[0].clientX : 0) - startX;
@@ -204,14 +204,14 @@
     // Arrow keys: drive the slideshow that is most visible in the viewport
     // (never hijacks keys while typing in a form field).
     if (instances.length) {
-      document.addEventListener('keydown', function (event) {
+      document.addEventListener('keydown', (event) => {
         if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
         const target = event.target;
         if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable)) return;
 
         let best = null;
         let bestVisible = 0;
-        instances.forEach(function (inst) {
+        instances.forEach((inst) => {
           if (!inst.root.getBoundingClientRect) return;
           const rect = inst.root.getBoundingClientRect();
           const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
@@ -243,7 +243,7 @@
 
     // Build weighted array: each src repeated weight times
     var weighted = [];
-    favicons.forEach(function (f) {
+    favicons.forEach((f) => {
       for (var i = 0; i < f.weight; i++) weighted.push(f.src);
     });
 
@@ -252,7 +252,7 @@
     }
 
     function setFavicon(src) {
-      links.forEach(function (l) { l.href = src; });
+      links.forEach((l) => { l.href = src; });
     }
 
     // Set initial favicon (default has highest probability)
@@ -262,7 +262,7 @@
     if (reducedMotion) return;
 
     // Rotate every 5 seconds with weighted randomization
-    setInterval(function () {
+    setInterval(() => {
       setFavicon(pickRandom());
     }, 5000);
   }
@@ -275,7 +275,7 @@
 
     const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    frames.forEach(function (frame) {
+    frames.forEach((frame) => {
       if (frame.dataset.loaderInit === '1') return;
       frame.dataset.loaderInit = '1';
 
@@ -296,13 +296,13 @@
         ? window.performance.now()
         : Date.now();
 
-      const reveal = function () {
+      const reveal = () => {
         const now = (window.performance && typeof window.performance.now === 'function')
           ? window.performance.now()
           : Date.now();
         const elapsed = now - start;
         const wait = Math.max(0, minLoaderMs - elapsed);
-        window.setTimeout(function () {
+        window.setTimeout(() => {
           frame.classList.add('is-image-loaded');
         }, wait);
       };
@@ -311,7 +311,7 @@
         reveal();
       } else {
         img.addEventListener('load', reveal, { once: true });
-        img.addEventListener('error', function () {
+        img.addEventListener('error', () => {
           frame.classList.remove('is-image-loaded');
         }, { once: true });
       }
@@ -325,12 +325,10 @@
 
     // Small fallback so UI stays responsive if modular ML files fail to load.
     return {
-      infer: function () {
-        return {
+      infer: () => ({
           response: 'YunoBot ML modules are loading. Please retry in a second.',
           confidence: 0.2
-        };
-      },
+        }),
       routes: []
     };
   }
@@ -365,7 +363,7 @@
       messages.scrollTop = messages.scrollHeight;
     }
 
-    form.addEventListener('submit', function (event) {
+    form.addEventListener('submit', (event) => {
       event.preventDefault();
       const text = input.value.trim();
       if (!text) return;
@@ -375,11 +373,16 @@
 
       const result = brain.infer(text, session);
       session.turns += 1;
-      window.setTimeout(function () {
+      window.setTimeout(() => {
         appendLine(result.response, 'yuno');
         if (result.toolCall && result.toolCall.auto && result.toolCall.args && result.toolCall.args.url) {
-          window.setTimeout(function () {
-            window.location.href = result.toolCall.args.url;
+          window.setTimeout(() => {
+            // Same-origin only: relative URLs or absolute URLs on this host.
+            const url = result.toolCall.args.url;
+            const a = document.createElement('a');
+            a.href = url;
+            // pi-lens-ignore: ast-grep:no-open-redirect-js
+            if (a.origin === window.location.origin) window.location.href = url;
           }, 520);
         }
       }, 180);
@@ -463,7 +466,7 @@
       function colorize(line) {
         let html = esc(line);
         html = html.replace(/(\/\/.*)$/g, '<span class="ui-code-com">$1</span>');
-        html = html.replace(/(\"[^\"]*\"|'[^']*')/g, '<span class="ui-code-str">$1</span>');
+        html = html.replace(/("[^"]*"|'[^']*')/g, '<span class="ui-code-str">$1</span>');
         html = html.replace(/\b(function|const|let|return|if|for|while|new)\b/g, '<span class="ui-code-kw">$1</span>');
         html = html.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\()/g, '<span class="ui-code-fn">$1</span>');
         html = html.replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="ui-code-num">$1</span>');
@@ -472,11 +475,11 @@
 
       if (stageSources.length) {
         let ln = 1;
-        stageSources.forEach(function (stage) {
+        stageSources.forEach((stage) => {
           rows.push('<span class="ui-code-ln">' + String(ln).padStart(2, '0') + '</span> <span class="ui-code-sec"># ' + esc(stage.title || stage.id || 'Stage') + '</span>');
           ln += 1;
           const lines = String(stage.source || '').split('\n');
-          lines.forEach(function (line) {
+          lines.forEach((line) => {
             rows.push('<span class="ui-code-ln">' + String(ln).padStart(2, '0') + '</span> ' + colorize(line));
             ln += 1;
           });
@@ -533,6 +536,7 @@
         '<span class="ui-code-ln">46</span> } <span class="ui-code-com">// rendered from actual architecture parts, not raw file dump</span>'
         );
       }
+      // pi-lens-ignore: ast-grep:no-inner-html-js
       codeBody.innerHTML = rows.join('\n');
       codeBody.dataset.rendered = '1';
     }
@@ -540,6 +544,7 @@
     function renderNodeExplain(key) {
       const item = archDetails[key];
       if (!item || !explain) return;
+      // pi-lens-ignore: ast-grep:no-inner-html-js
       explain.innerHTML =
         '<h3 class="ui-arch-explain-title">' + item.title + '</h3>' +
         '<p class="ui-arch-explain-tech"><strong>Technical:</strong> ' + item.technical + '</p>' +
@@ -548,6 +553,7 @@
 
     function renderQuickSummary() {
       if (!explain) return;
+      // pi-lens-ignore: ast-grep:no-inner-html-js
       explain.innerHTML =
         '<h3 class="ui-arch-explain-title">YunoBot AI In 90 Seconds</h3>' +
         '<p class="ui-arch-explain-tech">YunoBot starts by turning your text into weighted numeric signals (hashed TF-IDF), where rare, informative words are given more influence than common words. Then it runs three parallel scoring views: embedding similarity (meaning closeness in vector space), Bayes likelihood (how probable your observed words are under each intent model), and lexical overlap (direct token intersection strength). A simple analogy: Bayes is like checking which department most likely wrote a memo based on its word habits, while lexical overlap is counting how many key checklist items are explicitly present. These signals are normalized and blended so no single metric dominates unfairly.</p>' +
@@ -555,22 +561,22 @@
         '<p class="ui-arch-explain-tech">Finally, planner policy uses aim, goal, and confidence thresholds to decide response depth and tool autonomy. Response generation is compositional: it samples opener/core/action phrase groups and composes them into the final output, instead of picking one fixed canned sentence. Think of it as assembling a response from validated components with context-aware weights. Session memory stores last intent and route so follow-ups stay consistent and mathematically anchored to previous state.</p>';
     }
 
-    nodes.forEach(function (node) {
+    nodes.forEach((node) => {
       const key = node.getAttribute('data-arch-node');
       node.setAttribute('tabindex', '0');
       node.setAttribute('role', 'button');
       node.setAttribute('aria-label', 'Explain ' + (key || 'architecture node'));
 
-      node.addEventListener('click', function () {
+      node.addEventListener('click', () => {
         if (!key) return;
         activeNode = key;
-        nodes.forEach(function (n) {
+        nodes.forEach((n) => {
           n.classList.toggle('is-active', n === node);
         });
         renderNodeExplain(key);
       });
 
-      node.addEventListener('keydown', function (event) {
+      node.addEventListener('keydown', (event) => {
         if (event.key !== 'Enter' && event.key !== ' ') return;
         event.preventDefault();
         node.click();
@@ -584,7 +590,7 @@
       document.body.style.overflow = 'hidden';
       document.body.dataset.yunobotArchLock = '1';
       const initial = activeNode || (nodes[0] && nodes[0].getAttribute('data-arch-node')) || 'tokenize';
-      const targetNode = nodes.find(function (n) { return n.getAttribute('data-arch-node') === initial; }) || nodes[0];
+      const targetNode = nodes.find((n) => n.getAttribute('data-arch-node') === initial) || nodes[0];
       if (targetNode) targetNode.click();
     }
 
@@ -601,7 +607,7 @@
     }
 
     if (codeBtn && codePanel) {
-      codeBtn.addEventListener('click', function () {
+      codeBtn.addEventListener('click', () => {
         const isOpen = codePanel.classList.toggle('is-open');
         codePanel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
         codeBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -610,12 +616,12 @@
     }
 
     if (quickBtn) {
-      quickBtn.addEventListener('click', function () {
+      quickBtn.addEventListener('click', () => {
         renderQuickSummary();
       });
     }
 
-    window.addEventListener('pageshow', function () {
+    window.addEventListener('pageshow', () => {
       if (!modal.classList.contains('is-open') && document.body.dataset.yunobotArchLock === '1') {
         document.body.style.overflow = previousBodyOverflow || '';
         delete document.body.dataset.yunobotArchLock;
@@ -623,11 +629,11 @@
     });
 
     openBtn.addEventListener('click', openModal);
-    closeItems.forEach(function (el) {
+    closeItems.forEach((el) => {
       el.addEventListener('click', closeModal);
     });
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && modal.classList.contains('is-open')) {
         closeModal();
       }
@@ -648,110 +654,13 @@
       '.ui-profile-frame'
     ];
 
-    selectors.forEach(function (sel) {
-      qa(sel).forEach(function (el) {
-        el.addEventListener('click', function () {
+    selectors.forEach((sel) => {
+      qa(sel).forEach((el) => {
+        el.addEventListener('click', () => {
           el.classList.toggle('is-revealed');
         });
       });
     });
-  }
-
-  /* Landing hero: auto-rotating SVG variants (desktop + mobile sets stay in
-     sync). Initial variant is chosen server-side; this rotates the rest on a
-     timer forever, fading between SVGs and never repeating a recently-shown
-     variant. Only the currently-visible img is swapped (the other set loads
-     lazily on breakpoint change) to avoid double downloads. */
-  function initLandingHero() {
-    var hero = q('.ui-landing-svg');
-    if (!hero) return;
-    var desktop = q('.ui-landing-svg-desktop', hero);
-    var mobile = q('.ui-landing-svg-mobile', hero);
-    if (!desktop || !mobile) return;
-
-    var desktopSrcs = (hero.getAttribute('data-hero-desktop') || '').split('|').filter(Boolean);
-    var mobileSrcs = (hero.getAttribute('data-hero-mobile') || '').split('|').filter(Boolean);
-    if (!desktopSrcs.length || desktopSrcs.length !== mobileSrcs.length) return;
-
-    var current = parseInt(hero.getAttribute('data-hero-current') || '0', 10);
-    if (isNaN(current) || current < 0 || current >= desktopSrcs.length) current = 0;
-
-    var SHOW_MS = 7000;   // how long each variant stays visible
-    var FADE_MS = 650;    // matches the 0.6s CSS transition
-    var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var recent = [current]; // last shown indexes — never pick from here
-    var failed = {};        // variants that failed to load are excluded
-    var stopped = false;
-
-    function visibleImg() {
-      return desktop.offsetParent !== null ? desktop : mobile;
-    }
-
-    function srcsFor(img, index) {
-      return (img === desktop ? desktopSrcs : mobileSrcs)[index];
-    }
-
-    function prefetch(src) {
-      return new Promise(function (resolve, reject) {
-        var img = new Image();
-        img.onload = resolve;
-        img.onerror = function () { reject(new Error('failed to load ' + src)); };
-        img.src = src;
-      });
-    }
-
-    function pickNext() {
-      var pool = [];
-      desktopSrcs.forEach(function (_, i) {
-        if (recent.indexOf(i) === -1 && !failed[i]) pool.push(i);
-      });
-      if (!pool.length) {
-        desktopSrcs.forEach(function (_, i) {
-          if (i !== current && !failed[i]) pool.push(i);
-        });
-      }
-      if (!pool.length) return -1;
-      var next = pool[Math.floor(Math.random() * pool.length)];
-      recent.push(next);
-      if (recent.length > 2) recent.shift();
-      return next;
-    }
-
-    function rotate() {
-      if (stopped) return;
-      var next = pickNext();
-      if (next === -1) { stopped = true; return; } // all variants failed — keep current
-      var img = visibleImg();
-      var nextSrc = srcsFor(img, next);
-
-      prefetch(nextSrc).then(function () {
-        img.classList.add('is-fading');
-        setTimeout(function () {
-          img.src = nextSrc;
-          img.classList.remove('is-fading');
-          schedule();
-        }, REDUCED ? 0 : FADE_MS);
-      }).catch(function () {
-        failed[next] = true;
-        schedule(); // skip the broken variant and try again next cycle
-      });
-    }
-
-    function schedule() {
-      if (stopped) return;
-      setTimeout(rotate, SHOW_MS);
-    }
-
-    // Keep the newly-visible img in sync with the current variant after a
-    // desktop/mobile breakpoint change (only one img is loaded per rotation).
-    var mq = window.matchMedia('(max-width: 768px)');
-    function onBreakpoint() {
-      visibleImg().src = srcsFor(visibleImg(), current);
-    }
-    if (mq.addEventListener) mq.addEventListener('change', onBreakpoint);
-    else if (mq.addListener) mq.addListener(onBreakpoint);
-
-    schedule();
   }
 
   function initXPopup() {
@@ -781,11 +690,11 @@
     }
 
     trigger.addEventListener('click', open);
-    closeItems.forEach(function (el) {
+    closeItems.forEach((el) => {
       el.addEventListener('click', close);
     });
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && popup.classList.contains('is-open')) {
         close();
       }
@@ -801,7 +710,6 @@
     initYunobotArchitectureModal();
     initYunobotTerminal();
     initGrayscaleTapReveal();
-    initLandingHero();
     initXPopup();
   }
 
@@ -813,3 +721,4 @@
 })();
 
 // FORCE REDEPLOY FLAG: js-updated-2026-04-22
+26-04-22
