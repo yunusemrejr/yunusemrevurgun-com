@@ -39,7 +39,7 @@ $adminNavItems = [
     ['id' => 'export', 'label' => 'Export', 'href' => FULL_BASE_PATH . 'api/admin/export.php', 'download' => true],
 ];
 
-$faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg';
+$faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg?v=3';
 $faviconMime = 'image/svg+xml';
 ?>
 <!DOCTYPE html>
@@ -53,10 +53,9 @@ $faviconMime = 'image/svg+xml';
     <meta name="robots" content="noindex, nofollow">
     <title>Admin - <?php echo htmlspecialchars($pageTitle); ?> | Yunus Emre Vurgun</title>
 
-    <link id="appFavicon32" rel="icon" type="<?php echo htmlspecialchars($faviconMime); ?>" sizes="32x32" href="<?php echo $faviconUrl; ?>">
-    <link id="appFavicon16" rel="icon" type="<?php echo htmlspecialchars($faviconMime); ?>" sizes="16x16" href="<?php echo $faviconUrl; ?>">
-    <link id="appFaviconShortcut" rel="shortcut icon" href="<?php echo $faviconUrl; ?>">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $faviconUrl; ?>">
+    <link rel="icon" type="<?php echo htmlspecialchars($faviconMime); ?>" href="<?php echo $faviconUrl; ?>">
+    <link rel="shortcut icon" href="<?php echo $faviconUrl; ?>">
+    <link rel="apple-touch-icon" href="<?php echo $faviconUrl; ?>">
     <meta name="msapplication-TileImage" content="<?php echo $faviconUrl; ?>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>

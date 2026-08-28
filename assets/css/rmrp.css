@@ -7,174 +7,176 @@
 
 /* ===== VIEW TOOLBAR (grid/list + per-page) ===== */
 .ui-rmrp-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
+ display: flex;
+ flex-wrap: wrap;
+ align-items: center;
+ gap: var(--space-3);
+ margin-bottom: var(--space-6);
 }
 
 .ui-rmrp-count {
-  font-size: var(--text-xs);
-  color: #8fa6a6;
-  font-family: var(--font-display);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+ font-size: var(--text-xs);
+ color: #8fa6a6;
+ font-family: var(--font-display);
+ letter-spacing: 0.5px;
+ text-transform: uppercase;
 }
 
 .ui-view-toggle {
-  display: inline-flex;
-  border: 1px solid var(--color-border-strong);
+ display: inline-flex;
+ border: 1px solid var(--color-border-strong);
 }
 
 .ui-view-toggle a {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: #575757;
-  text-decoration: none;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+ display: inline-flex;
+ align-items: center;
+ gap: var(--space-2);
+ padding: var(--space-2) var(--space-3);
+ font-family: var(--font-display);
+ font-size: var(--text-xs);
+ letter-spacing: 0.5px;
+ text-transform: uppercase;
+ color: #434343;
+ text-decoration: none;
+ transition:
+  background-color var(--transition-fast),
+  color var(--transition-fast);
 }
 
 .ui-view-toggle a:hover {
-  background-color: rgba(132, 144, 164, 0.08);
-  color: #8fa6a6;
+ background-color: rgba(132, 144, 164, 0.08);
+ color: #8fa6a6;
 }
 
 .ui-view-toggle a.is-active {
-  background-color: #8fa6a6;
-  color: #e3e2de;
+ background-color: #8fa6a6;
+ color: #e3e2de;
 }
 
 .ui-rmrp-per {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: #8fa6a6;
+ margin-left: auto;
+ display: inline-flex;
+ align-items: center;
+ gap: var(--space-2);
+ font-family: var(--font-display);
+ font-size: var(--text-xs);
+ letter-spacing: 0.5px;
+ text-transform: uppercase;
+ color: #8fa6a6;
 }
 
 .ui-rmrp-per select {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border-strong);
-  color: #575757;
-  padding: var(--space-2) var(--space-3);
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
+ background-color: var(--color-surface);
+ border: 1px solid var(--color-border-strong);
+ color: #434343;
+ padding: var(--space-2) var(--space-3);
+ font-family: var(--font-display);
+ font-size: var(--text-xs);
+ letter-spacing: 0.5px;
+ text-transform: uppercase;
+ cursor: pointer;
 }
 
 .ui-rmrp-per select:focus {
-  outline: none;
-  background-color: var(--color-bg-card);
+ outline: none;
+ background-color: var(--color-bg-card);
 }
 
 /* ===== GRID / LIST LAYOUT ===== */
 .ui-rmrp-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+ display: flex;
+ flex-direction: column;
+ gap: var(--space-4);
 }
 
 .ui-rmrp-grid.is-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
+ display: grid;
+ grid-template-columns: repeat(2, minmax(0, 1fr));
+ gap: var(--space-4);
 }
 
 @media (max-width: 760px) {
-  .ui-rmrp-grid.is-grid {
-    grid-template-columns: 1fr;
-  }
+ .ui-rmrp-grid.is-grid {
+  grid-template-columns: 1fr;
+ }
 }
 
 /* No author/pfp row on these cards — list cards get a left accent instead. */
 .ui-rmrp-card {
-  background-color: var(--color-surface);
-  padding: var(--space-6);
-  border-left: 2px solid transparent;
-  transition: border-color var(--transition-base);
+ background-color: var(--color-surface);
+ padding: var(--space-6);
+ border-left: 2px solid transparent;
+ transition: border-color var(--transition-base);
 }
 
 .ui-rmrp-card:hover {
-  border-color: #8490a4;
+ border-color: #8490a4;
 }
 
 .ui-rmrp-card .ui-feed-title a {
-  color: #575757;
-  text-decoration: none;
-  transition: color var(--transition-fast);
+ color: #434343;
+ text-decoration: none;
+ transition: color var(--transition-fast);
 }
 
 .ui-rmrp-card .ui-feed-title a:hover {
-  color: #8fa6a6;
+ color: #8fa6a6;
 }
 
 /* ===== DATE CAPTION (above the title, unlike Updates) ===== */
 .ui-rmrp-meta {
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: var(--text-xs);
-  letter-spacing: 0.04em;
-  color: #8490a4;
-  margin: 0 0 var(--space-2);
+ font-family: var(--font-mono, ui-monospace, monospace);
+ font-size: var(--text-xs);
+ letter-spacing: 0.04em;
+ color: #8490a4;
+ margin: 0 0 var(--space-2);
 }
 
 /* ===== BADGES ===== */
 .ui-rmrp-badges {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
+ display: flex;
+ flex-wrap: wrap;
+ align-items: center;
+ gap: var(--space-2);
+ margin-bottom: var(--space-3);
 }
 
 .ui-importance {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-1) var(--space-2);
-  font-family: var(--font-display);
-  font-size: var(--text-xs);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  border: 1px solid currentColor;
+ display: inline-flex;
+ align-items: center;
+ padding: var(--space-1) var(--space-2);
+ font-family: var(--font-display);
+ font-size: var(--text-xs);
+ letter-spacing: 0.5px;
+ text-transform: uppercase;
+ border: 1px solid currentColor;
 }
 
 .ui-importance.is-high {
-  color: #a66060;
-  background-color: rgba(166, 96, 96, 0.08);
+ color: #a66060;
+ background-color: rgba(166, 96, 96, 0.08);
 }
 
 .ui-importance.is-medium {
-  color: #b89a3e;
-  background-color: rgba(184, 154, 62, 0.08);
+ color: #b89a3e;
+ background-color: rgba(184, 154, 62, 0.08);
 }
 
 .ui-importance.is-low {
-  color: #8490a4;
-  background-color: rgba(132, 144, 164, 0.08);
+ color: #8490a4;
+ background-color: rgba(132, 144, 164, 0.08);
 }
 
 /* Grid cards: clamp long excerpts to three lines. */
 .ui-rmrp-grid.is-grid .ui-feed-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+ display: -webkit-box;
+ -webkit-line-clamp: 3;
+ -webkit-box-orient: vertical;
+ overflow: hidden;
 }
 
 /* The per-page select auto-navigates when JS is active; the Apply button
    is a no-JS fallback and is hidden once the script marks the page. */
 .has-js .ui-per-apply {
-  display: none;
+ display: none;
 }

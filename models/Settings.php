@@ -49,7 +49,7 @@ class Settings {
         $defaultSettings = [
             'lockdown_mode' => '0',
             'lockdown_message' => 'The site is currently under maintenance. Please check back later.',
-            'favicon_path' => 'assets/images/favicon-pfp.png'
+            'favicon_path' => 'assets/images/favicon.svg'
         ];
         
         $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -173,7 +173,7 @@ class Settings {
 
     // Favicon management methods
     public function getFaviconPath() {
-        return $this->getSetting('favicon_path', 'assets/images/favicon-pfp.png');
+        return $this->getSetting('favicon_path', 'assets/images/favicon.svg');
     }
 
     public function updateFaviconPath($path) {

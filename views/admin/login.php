@@ -351,11 +351,10 @@ if (strpos($currentPath, '/admin') !== false &&
     <meta name="description" content="Admin Login - Yunus Emre Vurgun Personal Website Administration">
     <meta name="robots" content="noindex, nofollow">
     <title>Admin Login | Yunus Emre Vurgun</title>
-    <link id="appFavicon32" rel="icon" type="image/svg+xml" sizes="32x32" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
-    <link id="appFavicon16" rel="icon" type="image/svg+xml" sizes="16x16" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
-    <link id="appFaviconShortcut" rel="shortcut icon" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
-    <meta name="msapplication-TileImage" content="<?php echo FULL_BASE_PATH; ?>assets/images/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
+    <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
+    <link rel="apple-touch-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
+    <meta name="msapplication-TileImage" content="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -375,7 +374,7 @@ if (strpos($currentPath, '/admin') !== false &&
 </head>
 <body class="admin-login-body">
     <noscript>
-        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3e2de; color: #575757; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3e2de; color: #434343; display: flex; align-items: center; justify-content: center; z-index: 9999;">
             <div style="text-align: center; padding: 2rem;">
                 <h1 style="font-family: 'Aileron', 'Helvetica Neue', Arial, sans-serif;">JavaScript Required</h1>
                 <p>This page requires JavaScript to function properly.</p>

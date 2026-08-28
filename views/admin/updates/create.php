@@ -312,7 +312,7 @@ $pageScripts = '
   border: 1px solid var(--color-border);
   padding: 12px 14px;
   font-size: 0.875rem;
-  color: #575757;
+  color: #434343;
   white-space: pre-wrap;
   word-break: break-word;
   min-height: 70px;

@@ -63,6 +63,10 @@ RewriteRule \.(php|phtml|php3|php4|php5|php7|php8|phar)$ - [F,L]
 RewriteCond %{REQUEST_URI} ^/(admin|api/admin)(/|$)
 RewriteRule ^ - [E=YEV_ADMIN_NO_CACHE:1]
 
+# favicon.ico legacy — browsers always probe /favicon.ico regardless of link
+# tags; redirect to THE one favicon so they can never settle on a different file.
+RewriteRule ^favicon\.ico$ assets/images/favicon.svg [L,R=302]
+
 # Route app requests
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

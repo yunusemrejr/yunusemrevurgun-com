@@ -258,7 +258,7 @@ $pageScripts = '
 .admin-form-help {
     display: block;
     margin-top: 4px;
-    color: #888;
+    color: var(--color-text-tertiary);
     font-size: 0.85em;
 }
 .admin-form-required {

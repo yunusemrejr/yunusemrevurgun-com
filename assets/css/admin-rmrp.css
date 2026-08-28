@@ -31,10 +31,12 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
   padding: 0 10px;
   background: transparent;
   border: 1px solid transparent;
-  color: #575757;
+  color: #434343;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .rmrp-md-toolbar button:hover {
@@ -67,7 +69,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
   background: var(--color-bg-subtle);
   padding: var(--space-5);
   min-height: 80px;
-  color: #575757;
+  color: #434343;
   font-size: 0.9rem;
   line-height: 1.7;
 }

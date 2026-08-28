@@ -25,7 +25,9 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .ui-music-track:hover {
@@ -67,7 +69,7 @@
 .ui-music-track-title {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -120,7 +122,7 @@
 .ui-music-play-btn:hover {
   background: var(--color-accent);
   border-color: var(--color-accent);
-  color: #575757;
+  color: #434343;
 }
 
 .ui-music-track.is-active .ui-music-play-btn {
@@ -149,7 +151,7 @@
 .ui-music-player-title {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -182,7 +184,7 @@
 .ui-music-player-btn:hover {
   background: var(--color-bg-hover);
   border-color: #8490a4;
-  color: #575757;
+  color: #434343;
 }
 
 .ui-music-player-btn-play {
@@ -194,7 +196,7 @@
 
 .ui-music-player-btn-play:hover {
   background: var(--color-accent);
-  color: #575757;
+  color: #434343;
 }
 
 .ui-music-player-progress {
@@ -343,15 +345,17 @@
   flex-direction: column;
   gap: 0.35rem;
   padding: 1.25rem;
-  border: 1px solid var(--color-border, rgba(132,144,164,0.25));
+  border: 1px solid var(--color-border, rgba(132, 144, 164, 0.25));
   background: var(--color-bg-card, #f5f4f1);
   text-decoration: none;
-  color: var(--color-text-primary, #575757);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  color: var(--color-text-primary, #434343);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .ui-music-link-card:hover {
-  border-color: rgba(132,144,164,0.5);
+  border-color: rgba(132, 144, 164, 0.5);
   background: var(--color-bg-elevated, #edeceb);
 }
 
@@ -370,7 +374,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   font-family: var(--font-mono, ui-monospace, monospace);
-  color: #575757;
+  color: #434343;
 }
 
 .ui-music-link-desc {

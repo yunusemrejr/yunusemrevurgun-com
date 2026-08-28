@@ -25,9 +25,9 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/assets/images/favicon-pfp.png",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "/assets/images/favicon.svg?v=3",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
     }
   ],

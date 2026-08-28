@@ -61,11 +61,12 @@ if (!function_exists('ui_render_head')) {
     <link rel="alternate" type="text/plain" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
     <link rel="alternate" type="application/ld+json" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
     <link rel="manifest" href="<?= FULL_BASE_PATH ?>manifest.json?v=<?= filemtime(__DIR__ . '/../../manifest.json') ?>">
-    <link rel="icon" type="image/svg+xml" sizes="32x32" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
-    <link rel="icon" type="image/svg+xml" sizes="16x16" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
-    <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
-    <meta name="msapplication-TileImage" content="<?= FULL_BASE_PATH ?>assets/images/favicon.svg">
+    <?php $faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg?v=' . filemtime(__DIR__ . '/../../assets/images/favicon.svg'); ?>
+    <link rel="icon" type="image/svg+xml" href="<?= $faviconUrl ?>">
+    <link rel="shortcut icon" href="<?= $faviconUrl ?>">
+    <link rel="apple-touch-icon" href="<?= $faviconUrl ?>">
+    <meta name="msapplication-TileImage" content="<?= $faviconUrl ?>">
+    <link rel="mask-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg" color="#566178">
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ui-rebuild.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ui-rebuild.css') ?>">
     <?php if (isset($extraMeta['yunobot']) && $extraMeta['yunobot']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/yunobot.css?v=<?= filemtime(__DIR__ . '/../../assets/css/yunobot.css') ?>">

@@ -10,7 +10,8 @@ COLOR SYSTEM
 - Page background:    #e3e2de  (dominant, warm light gray)
 - Primary text:      #a6a6a6  (heroes, major titles — Aileron Bold)
 - Secondary text:    #8fa6a6  (subheadings, labels — Aileron Bold)
-- Body text:         #575757  (paragraphs, articles — Canva Sans)
+- Body text:         #434343  (paragraphs, articles — Canva Sans; #434343 renamed
+                      here after it darkened to pass APCA on #e3e2de)
 - Borders/Decor:     #8490a4  (dividers, icons, outlines)
 
 TYPOGRAPHY
@@ -153,7 +154,7 @@ body {
   font-size: var(--text-base);
   font-weight: 400;
   line-height: 1.6;
-  color: #575757;
+  color: #434343;
   background-color: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -171,7 +172,7 @@ body::before {
 
 ::selection {
   background-color: var(--color-border-strong);
-  color: #575757;
+  color: #434343;
 }
 
 a {
@@ -342,7 +343,7 @@ body .ui-cards-section {
   font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: 400;
-  color: #575757;
+  color: #434343;
   transition: color var(--transition-fast);
   position: relative;
   text-decoration: none;
@@ -357,7 +358,7 @@ body .ui-cards-section {
 .ui-nav-link-more {
   font-size: var(--text-sm);
   font-weight: 400;
-  color: #575757;
+  color: #434343;
   padding: var(--space-2) var(--space-3);
   transition: all var(--transition-fast);
 }
@@ -378,7 +379,7 @@ body .ui-cards-section {
   -webkit-tap-highlight-color: transparent;
   background: transparent;
   border: none;
-  color: #575757;
+  color: #434343;
   transition: color var(--transition-fast), background-color var(--transition-fast);
   align-items: center;
   justify-content: center;
@@ -500,7 +501,7 @@ body .ui-cards-section {
   height: 44px;
   font-size: 1.5rem;
   line-height: 1;
-  color: #575757;
+  color: #434343;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -542,7 +543,7 @@ body .ui-cards-section {
   padding: var(--space-4) var(--space-4);
   font-size: var(--text-lg);
   font-weight: 400;
-  color: #575757;
+  color: #434343;
   text-decoration: none;
   transition: all var(--transition-fast);
   touch-action: manipulation;
@@ -621,7 +622,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .ui-section-text {
   font-size: var(--text-lg);
-  color: #575757;
+  color: #434343;
   line-height: 1.65;
   max-width: var(--content-narrow);
 }
@@ -647,7 +648,7 @@ h1, h2, h3, h4, h5, h6 {
 .ui-album-description {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   line-height: 1.6;
   margin: 0;
   max-width: var(--content-narrow);
@@ -811,7 +812,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .ui-btn-secondary {
   background-color: transparent;
-  color: #575757;
+  color: #434343;
 }
 
 .ui-btn-secondary:hover {
@@ -840,7 +841,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   margin-bottom: var(--space-2);
   letter-spacing: -0.01em;
 }
@@ -854,7 +855,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .ui-card-text {
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   line-height: 1.65;
   margin-top: var(--space-3);
 }
@@ -879,11 +880,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Link card text */
 .ui-link-card .ui-card-title {
-  color: #575757;
+  color: #434343;
 }
 
 .ui-link-card .ui-card-text {
-  color: #575757;
+  color: #434343;
 }
 
 /* Glass Panel */
@@ -903,7 +904,7 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   font-size: var(--text-sm);
   font-weight: 400;
-  color: #575757;
+  color: #434343;
   margin-bottom: var(--space-2);
 }
 
@@ -911,7 +912,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   padding: var(--space-3) var(--space-4);
   font-size: var(--text-base);
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   border: none;
   transition: background-color var(--transition-fast);
@@ -932,13 +933,13 @@ textarea.ui-input {
 }
 
 .ui-input-error {
-  border-color: #ef4444 !important;
+  border-color: var(--color-danger) !important;
 }
 
 .ui-field-error {
   display: block;
   font-size: var(--text-xs);
-  color: #ef4444;
+  color: var(--color-danger);
   margin-top: var(--space-1);
 }
 
@@ -958,7 +959,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: 400;
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   padding: var(--space-2) var(--space-4);
 }
@@ -972,7 +973,7 @@ textarea.ui-input {
   padding: 0;
   background-color: transparent;
   border: none;
-  color: #575757;
+  color: #434343;
   cursor: pointer;
   transition: color var(--transition-fast);
 }
@@ -1018,7 +1019,7 @@ textarea.ui-input {
 .ui-socials-icon {
   width: 28px;
   height: 28px;
-  color: #575757;
+  color: #434343;
   flex-shrink: 0;
 }
 
@@ -1026,7 +1027,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
 }
 
 .ui-socials-handle {
@@ -1061,7 +1062,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-2xl);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   margin-bottom: var(--space-4);
 }
 
@@ -1069,14 +1070,14 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   margin-bottom: var(--space-2);
   letter-spacing: -0.01em;
 }
 
 .ui-more-desc {
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   line-height: 1.6;
 }
 
@@ -1131,7 +1132,7 @@ textarea.ui-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   border: none;
   cursor: pointer;
@@ -1176,7 +1177,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-sm);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   letter-spacing: 0.08em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -1184,7 +1185,7 @@ textarea.ui-input {
 
 .ui-slideshow-caption {
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   text-align: right;
   min-width: 0;
   overflow: hidden;
@@ -1328,7 +1329,7 @@ textarea.ui-input {
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-xs);
   font-weight: 400;
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   transition: all var(--transition-fast);
   font-family: var(--font-display);
@@ -1361,7 +1362,7 @@ textarea.ui-input {
   font-weight: 500;
   font-family: var(--font-display);
   letter-spacing: 0.5px;
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   transition: all var(--transition-fast);
   text-decoration: none;
@@ -1420,7 +1421,7 @@ textarea.ui-input {
   justify-content: space-between;
   gap: var(--space-4);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
 }
 
 .ui-footer-socials {
@@ -1477,7 +1478,7 @@ textarea.ui-input {
     width: 40px;
     height: 40px;
     background: var(--color-surface);
-    color: #575757;
+    color: #434343;
     transition: background var(--transition-fast), color var(--transition-fast);
   }
   .ui-footer-socials a:hover,
@@ -1530,7 +1531,7 @@ textarea.ui-input {
   align-items: center;
   justify-content: center;
   font-size: var(--text-xl);
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   border: 0;
   cursor: pointer;
@@ -1548,14 +1549,14 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 900;
-  color: #575757;
+  color: #434343;
   margin-bottom: var(--space-2);
 }
 
 .ui-x-popup-text {
   font-size: var(--text-sm);
   line-height: 1.6;
-  color: #575757;
+  color: #434343;
   margin-bottom: var(--space-2);
 }
 
@@ -1615,7 +1616,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   letter-spacing: -0.01em;
 }
 
@@ -1627,7 +1628,7 @@ textarea.ui-input {
 
 .ui-feed-text {
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   line-height: 1.65;
   margin-top: var(--space-3);
 }
@@ -1665,7 +1666,7 @@ textarea.ui-input {
   font-size: var(--text-base);
   font-weight: 400;
   font-family: var(--font-body);
-  color: #575757;
+  color: #434343;
   text-align: left;
   transition: background-color var(--transition-fast);
 }
@@ -1699,7 +1700,7 @@ textarea.ui-input {
 .ui-command-content {
   padding: 0 var(--space-5) var(--space-5);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   line-height: 1.7;
 }
 
@@ -1753,7 +1754,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-3xl);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   letter-spacing: -0.02em;
 }
 
@@ -1781,7 +1782,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   transition: all var(--transition-fast);
   cursor: pointer;
@@ -1822,7 +1823,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   padding: var(--space-5);
   padding-bottom: var(--space-2);
   letter-spacing: -0.01em;
@@ -1830,7 +1831,7 @@ textarea.ui-input {
 
 .ui-project-desc {
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   line-height: 1.65;
   padding: 0 var(--space-5);
 }
@@ -1844,7 +1845,7 @@ textarea.ui-input {
 
 .ui-tech-tag {
   font-size: var(--text-xs);
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   padding: var(--space-1) var(--space-2);
   font-family: var(--font-display);
@@ -1861,7 +1862,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: #575757;
+  color: #434343;
 }
 
 .ui-case-link:hover {
@@ -1935,7 +1936,7 @@ textarea.ui-input {
   align-items: center;
   justify-content: center;
   font-size: var(--text-xl);
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
 }
 
@@ -1961,7 +1962,7 @@ textarea.ui-input {
 
 .ui-card-list li {
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   padding: var(--space-2) 0;
 }
 
@@ -1969,7 +1970,7 @@ textarea.ui-input {
 .ui-rich-content {
   font-size: var(--text-base);
   line-height: 1.75;
-  color: #575757;
+  color: #434343;
 }
 
 .ui-rich-content p {
@@ -2033,7 +2034,7 @@ textarea.ui-input {
   padding-left: 1.25em;
   margin: 1.5em 0;
   font-style: italic;
-  color: #575757;
+  color: #434343;
 }
 
 .ui-rich-content code {
@@ -2045,7 +2046,7 @@ textarea.ui-input {
 
 .ui-rich-content pre {
   background-color: var(--color-surface);
-  color: #575757;
+  color: #434343;
   padding: 1.25em;
   overflow-x: auto;
   margin: 1.5em 0;
@@ -2110,13 +2111,13 @@ textarea.ui-input {
 .ui-yunobot-icon {
   font-family: var(--font-display);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   flex-shrink: 0;
 }
 
 .ui-yunobot-text {
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   line-height: 1.6;
 }
 
@@ -2163,7 +2164,7 @@ textarea.ui-input {
   flex: 1;
   padding: var(--space-3) var(--space-4);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   transition: border-color var(--transition-fast);
 }
@@ -2207,7 +2208,7 @@ textarea.ui-input {
   font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: 500;
-  color: #575757;
+  color: #434343;
   background-color: var(--color-surface);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -2219,7 +2220,7 @@ textarea.ui-input {
 
 .ui-yunobot-info-text {
   font-size: var(--text-xs);
-  color: #575757;
+  color: #434343;
   text-align: center;
 }
 
@@ -2406,6 +2407,33 @@ body.ui-landing::before {
   letter-spacing: 0.28em;
   color: var(--color-ink-slate);
   margin: 0 0 var(--space-6);
+}
+
+/* Slot-machine word swap — vertical roll + blur settle, no glow/gradient.
+   Reduced motion: word just changes (transitions disabled, JS swaps text). */
+.ui-tagline-word {
+  display: inline-block;
+  transition: transform 0.45s cubic-bezier(0.22, 1.4, 0.36, 1),
+    opacity 0.45s ease, filter 0.45s ease;
+}
+
+.ui-tagline-word.is-out {
+  transform: translateY(-0.55em) scaleY(0.9);
+  opacity: 0;
+  filter: blur(2px);
+}
+
+.ui-tagline-word.is-in-pre {
+  transition: none;
+  transform: translateY(0.55em) scaleY(0.9);
+  opacity: 0;
+  filter: blur(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-tagline-word {
+    transition: none;
+  }
 }
 
 .ui-hero-lede {
@@ -2654,7 +2682,7 @@ body.ui-landing::before {
   font-family: var(--font-display);
   font-size: var(--text-sm);
   font-weight: 700;
-  color: #575757;
+  color: #434343;
   text-decoration: none;
   transition: color var(--transition-fast);
 }
@@ -2675,7 +2703,7 @@ body.ui-landing::before {
 .ui-landing-footer-socials a {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   text-decoration: none;
   transition: color var(--transition-fast);
 }
@@ -2687,7 +2715,7 @@ body.ui-landing::before {
 .ui-landing-footer-copy {
   font-family: var(--font-body);
   font-size: var(--text-xs);
-  color: #575757;
+  color: #434343;
   text-align: center;
 }
 
@@ -2741,7 +2769,7 @@ body.ui-landing::before {
 .comedy-social-handle {
   display: block;
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   margin-top: 2px;
 }
 

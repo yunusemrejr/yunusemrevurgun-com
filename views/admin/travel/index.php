@@ -173,7 +173,7 @@ include __DIR__ . '/../includes/header.php';
         </div>
         <div class="admin-modal-footer">
             <div class="admin-upload-buttons">
-                <button type="button" class="admin-btn" id="linkFromGalleryBtn" style="background:#e3e2de;color:#575757;border:1px solid rgba(132,144,164,0.25);"><i class="bi bi-link-45deg"></i> Link from Gallery</button>
+                <button type="button" class="admin-btn" id="linkFromGalleryBtn" style="background:#e3e2de;color:#434343;border:1px solid rgba(132,144,164,0.25);"><i class="bi bi-link-45deg"></i> Link from Gallery</button>
                 <button type="button" class="admin-btn admin-btn-secondary" id="closePhotosBtn">Close</button>
                 <button type="button" class="admin-btn admin-btn-primary" id="uploadPhotosBtn" disabled>Upload Photos</button>
             </div>

@@ -10,7 +10,7 @@
  */
 
 const CACHE_NAME = 'yunobot-v1';
-const CACHE_VERSION = '20260717';
+const CACHE_VERSION = '20260828a';
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -170,8 +170,8 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     const options = {
         body: data.body || 'New message from YunoBot',
-        icon: '/assets/images/favicon-pfp.png',
-        badge: '/assets/images/favicon-pfp.png',
+        icon: '/assets/images/favicon.svg?v=3',
+        badge: '/assets/images/favicon.svg?v=3',
         tag: 'yunobot-notification',
         requireInteraction: false,
     };

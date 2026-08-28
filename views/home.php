@@ -77,7 +77,7 @@ ui_render_head(
     <canvas class="ui-hero-canvas" aria-hidden="true"></canvas>
     <div class="ui-hero-content">
         <h1 class="ui-hero-title">Yemre</h1>
-        <p class="ui-hero-tagline">The world of a developer</p>
+        <p class="ui-hero-tagline" data-tagline>The <span class="ui-tagline-word" data-tagline-noun>world</span> of <span class="ui-tagline-word" data-tagline-subject>a developer</span></p>
         <p class="ui-hero-lede">They say you’re the average of the five people you spend the most time with. I’m carefully curating mine.</p>
         <div class="ui-hero-actions">
             <a class="ui-landing-btn ui-landing-btn-primary" href="<?= FULL_BASE_PATH ?>about">About me</a>
@@ -100,8 +100,8 @@ ui_render_head(
             <!-- face panel -->
             <rect x="14" y="19" width="28" height="16" rx="4" fill="#8490a4" opacity="0.12"/>
             <!-- eyes -->
-            <circle class="cube-bot-eye cube-bot-eye-l" cx="22" cy="26" r="2.6" fill="#575757"/>
-            <circle class="cube-bot-eye cube-bot-eye-r" cx="34" cy="26" r="2.6" fill="#575757"/>
+            <circle class="cube-bot-eye cube-bot-eye-l" cx="22" cy="26" r="2.6" fill="#434343"/>
+            <circle class="cube-bot-eye cube-bot-eye-r" cx="34" cy="26" r="2.6" fill="#434343"/>
             <circle cx="22.9" cy="25.2" r="0.8" fill="#e3e2de"/>
             <circle cx="34.9" cy="25.2" r="0.8" fill="#e3e2de"/>
             <!-- mouth slit -->

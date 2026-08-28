@@ -20,7 +20,9 @@ ADMIN SEARCH — POLISHED DARK THEME
   align-items: center;
   background: var(--color-bg-subtle);
   padding: 0.125rem;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .admin-search-input-group:focus-within {
@@ -32,7 +34,7 @@ ADMIN SEARCH — POLISHED DARK THEME
   background: transparent;
   border: none;
   outline: none;
-  color: #575757;
+  color: #434343;
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   font-size: var(--text-sm);
@@ -58,7 +60,7 @@ ADMIN SEARCH — POLISHED DARK THEME
 }
 
 .admin-search-button:hover {
-  color: #575757;
+  color: #434343;
 }
 
 /* ===== DROPDOWN RESULTS ===== */
@@ -145,7 +147,7 @@ ADMIN SEARCH — POLISHED DARK THEME
   justify-content: space-between;
   gap: var(--space-2);
   padding: 0.4375rem 0.625rem;
-  color: #575757;
+  color: #434343;
   text-decoration: none;
   transition: background-color var(--transition-fast);
   font-family: var(--font-body);
@@ -164,17 +166,17 @@ ADMIN SEARCH — POLISHED DARK THEME
 
 .search-section li.search-item-published a:hover {
   background: rgba(34, 197, 94, 0.12);
-  color: #575757;
+  color: #434343;
 }
 
 .search-section li.search-item-draft a:hover {
   background: rgba(234, 179, 8, 0.12);
-  color: #575757;
+  color: #434343;
 }
 
 .search-section a:hover {
   background: var(--search-accent-subtle);
-  color: #575757;
+  color: #434343;
 }
 
 /* ===== LOADING ===== */
@@ -187,7 +189,7 @@ ADMIN SEARCH — POLISHED DARK THEME
 }
 
 .admin-search-loading::after {
-  content: '';
+  content: "";
   display: inline-block;
   width: 14px;
   height: 14px;

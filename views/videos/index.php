@@ -215,7 +215,7 @@ ui_render_head(
 }
 .ui-video-desc {
     font-size: 0.875rem;
-    color: #555;
+    color: #434343;
     margin: 0 0 6px;
     line-height: 1.5;
 }
@@ -223,8 +223,8 @@ ui_render_head(
 .ui-video-platform {
     display: inline-block;
     font-size: 0.75rem;
-    color: #888;
-    background: #f0f0f0;
+    color: var(--color-text-tertiary);
+    background: var(--color-bg-elevated);
     padding: 2px 8px;
     border-radius: 4px;
     margin-right: 6px;
@@ -232,7 +232,7 @@ ui_render_head(
 .ui-section-empty {
     text-align: center;
     padding: 40px 20px;
-    color: #888;
+    color: var(--color-text-tertiary);
 }
 @media (max-width: 480px) {
     .ui-videos-grid {

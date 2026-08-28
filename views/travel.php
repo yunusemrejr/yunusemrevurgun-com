@@ -151,7 +151,7 @@ ui_render_head(
             .ui-overlay-stat-value {
                 font-size: 1.25rem;
                 font-weight: 700;
-                color: #575757;
+                color: #434343;
                 font-family: var(--font-mono, ui-monospace, monospace);
             }
             .ui-overlay-stat-label {
@@ -179,7 +179,7 @@ ui_render_head(
             }
             .leaflet-popup-content-wrapper {
                 background: var(--color-bg-elevated, #edeceb) !important;
-                color: #575757 !important;
+                color: #434343 !important;
                 border-radius: 0 !important;
                 border: 1px solid var(--color-border, rgba(132,144,164,0.25));
             }
@@ -262,12 +262,12 @@ ui_render_head(
             }
             .ui-travel-modal-close:hover {
                 background: rgba(132,144,164,0.08);
-                color: #575757;
+                color: #434343;
             }
             .ui-card-title {
                 font-size: 1.25rem;
                 font-weight: 600;
-                color: #575757;
+                color: #434343;
                 margin-bottom: 0.25rem;
                 font-family: var(--font-mono, ui-monospace, monospace);
             }

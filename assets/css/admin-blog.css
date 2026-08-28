@@ -5,7 +5,7 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
 */
 
 :root {
-  --blog-accent: var(--color-brand, #4A7C59);
+  --blog-accent: var(--color-brand, #4a7c59);
   --blog-accent-hover: var(--color-brand-hover, #5d9369);
   --blog-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
 }
@@ -14,7 +14,7 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: #575757 !important;
+  color: #434343 !important;
   letter-spacing: var(--text-tracking-tight);
   margin: 0;
 }
@@ -44,18 +44,20 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
   font-family: var(--font-body);
   font-weight: var(--font-medium);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   margin-bottom: var(--space-2);
 }
 
 .blog-admin-form-control {
   width: 100%;
   background: var(--color-bg-elevated);
-  color: #575757;
+  color: #434343;
   padding: 0.5625rem 0.875rem;
   font-family: var(--font-body);
   font-size: var(--text-md);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .blog-admin-form-control:focus {
@@ -102,7 +104,9 @@ select.blog-admin-form-control {
   font-family: var(--font-body);
   font-size: var(--text-md);
   background: var(--color-bg-elevated);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .blog-admin-content-editor:focus {
@@ -117,7 +121,9 @@ select.blog-admin-form-control {
   font-style: italic;
 }
 
-.blog-admin-content-editor p { margin-bottom: 0.75rem; }
+.blog-admin-content-editor p {
+  margin-bottom: 0.75rem;
+}
 
 .blog-admin-content-editor h1,
 .blog-admin-content-editor h2,
@@ -125,7 +131,7 @@ select.blog-admin-form-control {
   font-family: var(--font-display);
   font-weight: var(--font-medium);
   margin: 1.25rem 0 0.5rem;
-  color: #575757;
+  color: #434343;
 }
 
 .blog-admin-content-editor a {
@@ -186,7 +192,7 @@ select.blog-admin-form-control {
   background: var(--color-bg-elevated);
   font-family: var(--font-body);
   line-height: var(--text-leading-relaxed);
-  color: #575757;
+  color: #434343;
 }
 
 .blog-admin-preview:empty:before {
@@ -227,7 +233,7 @@ select.blog-admin-form-control {
   transition: all var(--transition-fast);
   font-size: var(--text-sm);
   background: transparent;
-  color: #575757;
+  color: #434343;
   min-height: 36px;
   white-space: nowrap;
 }
@@ -240,7 +246,7 @@ select.blog-admin-form-control {
 .blog-admin-btn-primary {
   background: #8fa6a6;
   color: var(--color-bg);
-  border-color: #575757;
+  border-color: #434343;
 }
 
 .blog-admin-btn-primary:hover {
@@ -251,7 +257,7 @@ select.blog-admin-form-control {
 
 .blog-admin-btn-secondary {
   background: transparent;
-  color: #575757;
+  color: #434343;
 }
 
 .blog-admin-btn-secondary:hover {
@@ -354,7 +360,7 @@ select.blog-admin-form-control {
 }
 
 .blog-admin-table strong {
-  color: #575757;
+  color: #434343;
   font-weight: var(--font-medium);
 }
 
@@ -415,7 +421,7 @@ select.blog-admin-form-control {
 
 .blog-admin-pagination .page-link {
   background: var(--color-bg-subtle) !important;
-  color: #575757 !important;
+  color: #434343 !important;
   padding: 0.4375rem 0.75rem !important;
   transition: all var(--transition-fast) !important;
   font-family: var(--font-body) !important;
@@ -436,7 +442,7 @@ select.blog-admin-form-control {
 
 .blog-admin-pagination .page-item.active .page-link {
   background: #8fa6a6 !important;
-  border-color: #575757 !important;
+  border-color: #434343 !important;
   color: var(--color-bg) !important;
 }
 

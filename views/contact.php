@@ -178,12 +178,12 @@ ui_render_head(
                 <div class="ui-glass-panel">
                     <?php if ($success): ?>
                         <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(168,34,30,0.2) 0%, rgba(246,241,232,0.06) 100%); border: 1px solid var(--color-accent); border-radius: var(--radius-lg);">
-                            <p style="color: #575757;">Thank you. Your message has been sent.</p>
+                            <p style="color: #434343;">Thank you. Your message has been sent.</p>
                         </div>
                     <?php endif; ?>
                     <?php if ($error): ?>
                         <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(246,241,232,0.06) 100%); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-lg);">
-                            <p style="color: #575757;"><?= htmlspecialchars($error) ?></p>
+                            <p style="color: #434343;"><?= htmlspecialchars($error) ?></p>
                         </div>
                     <?php endif; ?>
 
@@ -245,7 +245,7 @@ ui_render_head(
                 <div>
                     <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Response Time</p>
-                        <p style="font-size: var(--text-sm); color: #575757;">I typically respond within 24-48 hours on weekdays.</p>
+                        <p style="font-size: var(--text-sm); color: #434343;">I typically respond within 24-48 hours on weekdays.</p>
                     </div>
                     <?php if (!empty($contactSocials)): ?>
                     <?php foreach ($contactSocials as $cs):

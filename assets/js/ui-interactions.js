@@ -11,17 +11,6 @@
     return Array.from((root || document).querySelectorAll(selector));
   }
 
-  function normalizeText(text) {
-    return (text || '').toLowerCase().trim();
-  }
-
-  function tokenize(text) {
-    return normalizeText(text)
-      .replace(/[^a-z0-9\s-]/g, ' ')
-      .split(/\s+/)
-      .filter(Boolean);
-  }
-
   function initMobileMenu() {
     const menu = q('#uiMobileMenu');
     if (!menu) return;
@@ -227,95 +216,41 @@
     }
   }
 
-  // Dynamic favicon — cycles the three landing-page portraits.
-  function initDynamicFavicon() {
-    var links = qa('link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]');
-    if (!links.length) return;
+  // Hero tagline slot machine — "The {world|mind} of {a developer|a human|...}".
+  // Two independent timers (async) cycle the slots; every combination is a valid
+  // sentence because the article lives inside the subject phrase.
+  function initHeroTagline() {
+    const nounEl = q('[data-tagline-noun]');
+    const subjectEl = q('[data-tagline-subject]');
+    if (!nounEl || !subjectEl) return;
 
-    /* Weighted favicon rotation: 5 slots, default (favicon.svg) = 2/5 (40%),
-       each alternative = 1/5 (20%) */
-    var favicons = [
-      { src: BASE_PATH + 'assets/images/favicon.svg',         weight: 2 },
-      { src: BASE_PATH + 'assets/images/favicon-blackhole.svg',  weight: 1 },
-      { src: BASE_PATH + 'assets/images/favicon-editorial.svg',  weight: 1 },
-      { src: BASE_PATH + 'assets/images/favicon-pfp.png',        weight: 1 }
-    ];
-
-    // Build weighted array: each src repeated weight times
-    var weighted = [];
-    favicons.forEach((f) => {
-      for (var i = 0; i < f.weight; i++) weighted.push(f.src);
-    });
-
-    function pickRandom() {
-      return weighted[Math.floor(Math.random() * weighted.length)];
-    }
-
-    function setFavicon(src) {
-      links.forEach((l) => { l.href = src; });
-    }
-
-    // Set initial favicon (default has highest probability)
-    setFavicon(favicons[0].src);
-
-    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) return;
-
-    // Rotate every 5 seconds with weighted randomization
-    setInterval(() => {
-      setFavicon(pickRandom());
-    }, 5000);
-  }
-
-
-
-  function initProfileImageLoaders() {
-    const frames = qa('[data-profile-loader]');
-    if (!frames.length) return;
-
+    const nouns = ['world', 'mind'];
+    const subjects = ['a developer', 'a human', 'someone', 'a printer whisperer'];
+    let ni = 0;
+    let si = 0;
     const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    frames.forEach((frame) => {
-      if (frame.dataset.loaderInit === '1') return;
-      frame.dataset.loaderInit = '1';
+    function swap(el, next) {
+      if (reducedMotion) { el.textContent = next; return; }
+      el.classList.add('is-out');
+      window.setTimeout(() => {
+        el.textContent = next;
+        el.classList.remove('is-out');
+        el.classList.add('is-in-pre');
+        void el.offsetWidth; // reflow so the enter transition plays
+        el.classList.remove('is-in-pre');
+      }, 460);
+    }
 
-      const img = q('.ui-profile-image', frame);
-      if (!img) {
-        frame.classList.add('is-image-loaded');
-        return;
-      }
-
-      if (reducedMotion) {
-        frame.classList.add('is-image-loaded');
-        return;
-      }
-
-      const minMs = Number.parseInt(frame.getAttribute('data-loader-min-ms') || '5000', 10);
-      const minLoaderMs = Number.isFinite(minMs) ? Math.max(0, minMs) : 5000;
-      const start = (window.performance && typeof window.performance.now === 'function')
-        ? window.performance.now()
-        : Date.now();
-
-      const reveal = () => {
-        const now = (window.performance && typeof window.performance.now === 'function')
-          ? window.performance.now()
-          : Date.now();
-        const elapsed = now - start;
-        const wait = Math.max(0, minLoaderMs - elapsed);
-        window.setTimeout(() => {
-          frame.classList.add('is-image-loaded');
-        }, wait);
-      };
-
-      if (img.complete && img.naturalWidth > 0) {
-        reveal();
-      } else {
-        img.addEventListener('load', reveal, { once: true });
-        img.addEventListener('error', () => {
-          frame.classList.remove('is-image-loaded');
-        }, { once: true });
-      }
-    });
+    window.setInterval(() => {
+      ni = (ni + 1) % nouns.length;
+      swap(nounEl, nouns[ni]);
+    }, 4000);
+    // Deliberately different period -> the two slots drift out of phase.
+    window.setInterval(() => {
+      si = (si + 1) % subjects.length;
+      swap(subjectEl, subjects[si]);
+    }, 7300);
   }
 
   function createHybridYunoBrain() {
@@ -706,7 +641,7 @@
     initAboutCommandCenter();
     initPortfolioFilters();
     initSlideshow();
-    initDynamicFavicon();
+    initHeroTagline();
     initYunobotArchitectureModal();
     initYunobotTerminal();
     initGrayscaleTapReveal();

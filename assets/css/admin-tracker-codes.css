@@ -5,7 +5,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 */
 
 :root {
-  --tracker-accent: var(--color-brand, #4A7C59);
+  --tracker-accent: var(--color-brand, #4a7c59);
   --tracker-accent-hover: var(--color-brand-hover, #5d9369);
   --tracker-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
 }
@@ -32,7 +32,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: #575757 !important;
+  color: #434343 !important;
   margin: 0 0 var(--space-1) 0;
 }
 
@@ -64,7 +64,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-normal);
   font-size: var(--text-md);
-  color: #575757 !important;
+  color: #434343 !important;
   margin: 0;
 }
 

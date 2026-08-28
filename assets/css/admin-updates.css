@@ -5,7 +5,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 */
 
 :root {
-  --updates-accent: var(--color-brand, #4A7C59);
+  --updates-accent: var(--color-brand, #4a7c59);
   --updates-accent-hover: var(--color-brand-hover, #5d9369);
   --updates-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
 }
@@ -33,7 +33,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
   font-family: var(--font-display) !important;
   font-weight: var(--font-light) !important;
   font-size: var(--text-3xl) !important;
-  color: #575757 !important;
+  color: #434343 !important;
   letter-spacing: var(--text-tracking-tight) !important;
   margin: 0 !important;
 }
@@ -64,7 +64,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 .admin-card-title {
   font-family: var(--font-display) !important;
   font-weight: var(--font-normal) !important;
-  color: #575757 !important;
+  color: #434343 !important;
   font-size: var(--text-md) !important;
   margin: 0 !important;
 }
@@ -227,7 +227,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 
 .admin-content .pagination .page-link {
   background: var(--color-bg-subtle) !important;
-  color: #575757 !important;
+  color: #434343 !important;
   padding: 0.4375rem 0.75rem !important;
   transition: all var(--transition-fast) !important;
   font-family: var(--font-body) !important;
@@ -248,7 +248,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 
 .admin-content .pagination .page-item.active .page-link {
   background: #8fa6a6 !important;
-  border-color: #575757 !important;
+  border-color: #434343 !important;
   color: var(--color-bg) !important;
 }
 
@@ -345,10 +345,12 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
   padding: 0 10px;
   background: transparent;
   border: 1px solid transparent;
-  color: #575757;
+  color: #434343;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .updates-md-toolbar button:hover {
@@ -381,7 +383,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
   background: var(--color-bg-subtle);
   padding: var(--space-5);
   min-height: 80px;
-  color: #575757;
+  color: #434343;
   font-size: 0.9rem;
   line-height: 1.7;
 }

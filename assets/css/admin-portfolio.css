@@ -5,9 +5,12 @@ ADMIN PORTFOLIO PAGES — POLISHED DARK THEME
 */
 
 :root {
-  --portfolio-accent: var(--color-brand, #4A7C59);
+  --portfolio-accent: var(--color-brand, #4a7c59);
   --portfolio-accent-hover: var(--color-brand-hover, #5d9369);
-  --portfolio-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
+  --portfolio-accent-subtle: var(
+    --color-brand-subtle,
+    rgba(132, 144, 164, 0.12)
+  );
 }
 
 /* ===== CARDS ===== */
@@ -27,7 +30,7 @@ ADMIN PORTFOLIO PAGES — POLISHED DARK THEME
 .admin-content .admin-card-title {
   font-family: var(--font-display);
   font-weight: var(--font-normal);
-  color: #575757;
+  color: #434343;
   font-size: var(--text-md);
   margin: 0;
 }
@@ -49,7 +52,7 @@ ADMIN PORTFOLIO PAGES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: #575757 !important;
+  color: #434343 !important;
   margin: 0;
 }
 
@@ -85,18 +88,20 @@ ADMIN PORTFOLIO PAGES — POLISHED DARK THEME
   font-family: var(--font-body);
   font-weight: var(--font-medium);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   margin-bottom: var(--space-2);
 }
 
 .portfolio-admin-form-control {
   width: 100%;
   background: var(--color-bg-elevated);
-  color: #575757;
+  color: #434343;
   padding: 0.5625rem 0.875rem;
   font-family: var(--font-body);
   font-size: var(--text-md);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .portfolio-admin-form-control:focus {
@@ -133,7 +138,7 @@ textarea.portfolio-admin-form-control {
 .portfolio-admin-form-check-label {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: #575757;
+  color: #434343;
   cursor: pointer;
   margin: 0;
   user-select: none;
@@ -179,7 +184,7 @@ textarea.portfolio-admin-form-control {
   transition: all var(--transition-fast);
   font-size: var(--text-sm);
   background: transparent;
-  color: #575757;
+  color: #434343;
   min-height: 36px;
   white-space: nowrap;
 }
@@ -192,7 +197,7 @@ textarea.portfolio-admin-form-control {
 .portfolio-admin-btn-primary {
   background: #8fa6a6;
   color: var(--color-bg);
-  border-color: #575757;
+  border-color: #434343;
 }
 
 .portfolio-admin-btn-primary:hover {
@@ -203,7 +208,7 @@ textarea.portfolio-admin-form-control {
 
 .portfolio-admin-btn-secondary {
   background: transparent;
-  color: #575757;
+  color: #434343;
 }
 
 .portfolio-admin-btn-secondary:hover {
@@ -262,7 +267,7 @@ textarea.portfolio-admin-form-control {
 
 .portfolio-admin-alert-info {
   background: var(--color-bg-subtle);
-  color: #575757;
+  color: #434343;
 }
 
 .portfolio-admin-alert-info a {
@@ -327,7 +332,7 @@ textarea.portfolio-admin-form-control {
 }
 
 .portfolio-admin-table strong {
-  color: #575757;
+  color: #434343;
   font-weight: var(--font-medium);
 }
 
@@ -394,7 +399,7 @@ textarea.portfolio-admin-form-control {
 
 .portfolio-admin-pagination .page-link {
   background: var(--color-bg-subtle);
-  color: #575757;
+  color: #434343;
   padding: 0.4375rem 0.75rem;
   font-family: var(--font-body);
   font-size: var(--text-sm);
@@ -414,7 +419,7 @@ textarea.portfolio-admin-form-control {
 
 .portfolio-admin-pagination .page-item.active .page-link {
   background: #8fa6a6;
-  border-color: #575757;
+  border-color: #434343;
   color: var(--color-bg);
 }
 
