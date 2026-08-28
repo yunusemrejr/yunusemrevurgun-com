@@ -2496,105 +2496,130 @@ body.ui-landing::before {
   }
 }
 
-/* ===== DUCK-BOT (corner patroller) ===== */
-.duck-bot {
+/* ===== CUBE-BOT (corner patroller) ===== */
+.cube-bot {
   position: fixed;
   left: 0;
   top: 0;
-  width: 56px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   z-index: 80;
   pointer-events: none;
   will-change: transform;
 }
 
-.duck-bot-inner {
+.cube-bot-inner {
   position: relative;
-  transform-origin: 50% 90%;
+  transform-origin: 50% 80%;
 }
 
-.duck-bot svg {
+.cube-bot svg {
   display: block;
   overflow: visible;
 }
 
-/* waddle: alternating leg steps + body bob/tilt while patrolling */
-.duck-bot.is-walking .duck-bot-inner {
-  animation: duck-waddle 0.5s ease-in-out infinite;
+/* glide: gentle hover-bob + slight tilt while cruising */
+.cube-bot.is-walking .cube-bot-inner {
+  animation: cube-hover 1.1s ease-in-out infinite;
 }
 
-.duck-bot-leg-l,
-.duck-bot-leg-r {
+/* antenna wiggle (both, out of phase) */
+.cube-bot.is-walking .cube-bot-ant-line-l {
+  animation: cube-sway 1.1s ease-in-out infinite;
+  transform-origin: 17px 12px;
+}
+
+.cube-bot.is-walking .cube-bot-ant-line-r {
+  animation: cube-sway 1.1s ease-in-out infinite reverse;
+  transform-origin: 39px 12px;
+}
+
+.cube-bot-foot-l,
+.cube-bot-foot-r {
   transform-origin: 50% 0;
 }
 
-.duck-bot.is-walking .duck-bot-leg-l {
-  animation: duck-step 0.5s ease-in-out infinite;
+.cube-bot.is-walking .cube-bot-foot-l {
+  animation: cube-step 0.55s ease-in-out infinite;
 }
 
-.duck-bot.is-walking .duck-bot-leg-r {
-  animation: duck-step 0.5s ease-in-out infinite reverse;
+.cube-bot.is-walking .cube-bot-foot-r {
+  animation: cube-step 0.55s ease-in-out infinite reverse;
 }
 
-/* panicked dash: everything runs at double tempo */
-.duck-bot.is-fleeing .duck-bot-inner {
-  animation: duck-waddle 0.22s ease-in-out infinite;
+/* panicked dash (flee or resize-recover): double tempo */
+.cube-bot.is-fleeing .cube-bot-inner {
+  animation: cube-hover 0.26s ease-in-out infinite;
 }
 
-.duck-bot.is-fleeing .duck-bot-leg-l {
-  animation-duration: 0.22s;
+.cube-bot.is-fleeing .cube-bot-foot-l,
+.cube-bot.is-fleeing .cube-bot-foot-r {
+  animation-duration: 0.26s;
 }
 
-.duck-bot.is-fleeing .duck-bot-leg-r {
-  animation-duration: 0.22s;
+.cube-bot.is-fleeing .cube-bot-ant-line-l,
+.cube-bot.is-fleeing .cube-bot-ant-line-r {
+  animation-duration: 0.26s;
 }
 
-@keyframes duck-waddle {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-2px) rotate(6deg); }
+@keyframes cube-hover {
+  0%, 100% { transform: translateY(0) rotate(-2.5deg); }
+  50% { transform: translateY(-3px) rotate(5deg); }
 }
 
-@keyframes duck-step {
-  0%, 100% { transform: rotate(14deg); }
-  50% { transform: rotate(-14deg); }
+@keyframes cube-step {
+  0%, 100% { transform: rotate(12deg) translateY(0); }
+  50% { transform: rotate(-12deg) translateY(-1px); }
 }
 
-/* idle look-around: antenna blink while pausing at corners */
-.duck-bot.is-walking .duck-bot-antenna {
-  animation: duck-blink 2.4s ease-in-out infinite;
+@keyframes cube-sway {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(8deg); }
 }
 
-@keyframes duck-blink {
-  0%, 92%, 100% { opacity: 1; }
-  95% { opacity: 0.2; }
+/* idle: eyes blink occasionally */
+.cube-bot.is-walking .cube-bot-eye {
+  animation: cube-blink 3.2s ease-in-out infinite;
 }
 
-/* touch devices: no hover-chase intent, slightly smaller */
-.duck-bot.is-touch svg {
-  width: 44px;
-  height: 38px;
+.cube-bot.is-walking .cube-bot-eye-r {
+  animation-delay: 0.12s;
+}
+
+@keyframes cube-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
+/* touch devices: slightly smaller */
+.cube-bot.is-touch svg {
+  width: 42px;
+  height: 42px;
 }
 
 /* reduced motion: static perch, no animations at all */
-.duck-bot.is-perched .duck-bot-inner,
-.duck-bot.is-perched .duck-bot-leg-l,
-.duck-bot.is-perched .duck-bot-leg-r,
-.duck-bot.is-perched .duck-bot-antenna {
+.cube-bot.is-perched .cube-bot-inner,
+.cube-bot.is-perched .cube-bot-foot-l,
+.cube-bot.is-perched .cube-bot-foot-r,
+.cube-bot.is-perched .cube-bot-eye,
+.cube-bot.is-perched .cube-bot-ant-line-l,
+.cube-bot.is-perched .cube-bot-ant-line-r {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .duck-bot .duck-bot-inner,
-  .duck-bot .duck-bot-leg-l,
-  .duck-bot .duck-bot-leg-r,
-  .duck-bot .duck-bot-antenna {
+  .cube-bot .cube-bot-inner,
+  .cube-bot .cube-bot-foot-l,
+  .cube-bot .cube-bot-foot-r,
+  .cube-bot .cube-bot-eye,
+  .cube-bot .cube-bot-ant-line-l,
+  .cube-bot .cube-bot-ant-line-r {
     animation: none !important;
   }
 }
 
-/* keep the bot out of the footer's way on small screens */
 @media (max-width: 768px) {
-  .duck-bot {
+  .cube-bot {
     z-index: 40;
   }
 }

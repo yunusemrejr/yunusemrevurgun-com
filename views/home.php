@@ -86,37 +86,36 @@ ui_render_head(
     </div>
 </div>
 
-<!-- Duck-bot: decorative corner patroller (see assets/js/duck-bot.js) -->
-<div class="duck-bot" aria-hidden="true">
-    <div class="duck-bot-inner">
-        <svg width="56" height="48" viewBox="0 0 56 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- legs -->
-            <g class="duck-bot-legs">
-                <rect class="duck-bot-leg duck-bot-leg-l" x="22" y="38" width="3" height="9" rx="1.5" fill="#8490a4"/>
-                <rect class="duck-bot-leg duck-bot-leg-r" x="31" y="38" width="3" height="9" rx="1.5" fill="#8490a4"/>
-                <rect x="19.5" y="45" width="8" height="2.5" rx="1.25" fill="#8490a4"/>
-                <rect x="28.5" y="45" width="8" height="2.5" rx="1.25" fill="#8490a4"/>
+<!-- Cube-bot: decorative corner patroller (see assets/js/cube-bot.js) -->
+<div class="cube-bot" aria-hidden="true">
+    <div class="cube-bot-inner">
+        <svg width="52" height="52" viewBox="0 0 56 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- hover feet -->
+            <g class="cube-bot-feet">
+                <rect class="cube-bot-foot cube-bot-foot-l" x="16" y="44" width="9" height="4" rx="2" fill="#8490a4"/>
+                <rect class="cube-bot-foot cube-bot-foot-r" x="31" y="44" width="9" height="4" rx="2" fill="#8490a4"/>
             </g>
-            <!-- body -->
-            <ellipse cx="28" cy="28" rx="17" ry="12" fill="#e3e2de" stroke="#8490a4" stroke-width="1.5"/>
-            <!-- panel seam + rivets -->
-            <path d="M13 28c4-3 9-4.5 15-4.5S39 25 43 28" stroke="#8490a4" stroke-width="1" opacity="0.5"/>
-            <circle cx="18" cy="31" r="1" fill="#8490a4"/>
-            <circle cx="38" cy="31" r="1" fill="#8490a4"/>
-            <!-- tail -->
-            <path d="M11 26c-3-1-5-1-7 1 2 2 4 2 6 1.5" fill="#e3e2de" stroke="#8490a4" stroke-width="1.2"/>
-            <!-- head -->
-            <circle cx="40" cy="15" r="8.5" fill="#e3e2de" stroke="#8490a4" stroke-width="1.5"/>
-            <!-- neck -->
-            <rect x="35" y="20" width="9" height="8" fill="#e3e2de"/>
-            <!-- eye -->
-            <circle class="duck-bot-eye" cx="42.5" cy="13.5" r="2.2" fill="#575757"/>
-            <circle cx="43.2" cy="12.8" r="0.7" fill="#e3e2de"/>
-            <!-- beak -->
-            <path class="duck-bot-beak" d="M47.5 13.5h7l-3 3.5h-4z" fill="#8fa6a6" stroke="#8490a4" stroke-width="0.8"/>
-            <!-- antenna -->
-            <line x1="40" y1="6.5" x2="40" y2="3.5" stroke="#8490a4" stroke-width="1.2"/>
-            <circle class="duck-bot-antenna" cx="40" cy="3" r="2" fill="#8fa6a6" stroke="#8490a4" stroke-width="1"/>
+            <!-- cube body -->
+            <rect x="8" y="12" width="40" height="34" rx="7" fill="#e3e2de" stroke="#8490a4" stroke-width="1.5"/>
+            <!-- face panel -->
+            <rect x="14" y="19" width="28" height="16" rx="4" fill="#8490a4" opacity="0.12"/>
+            <!-- eyes -->
+            <circle class="cube-bot-eye cube-bot-eye-l" cx="22" cy="26" r="2.6" fill="#575757"/>
+            <circle class="cube-bot-eye cube-bot-eye-r" cx="34" cy="26" r="2.6" fill="#575757"/>
+            <circle cx="22.9" cy="25.2" r="0.8" fill="#e3e2de"/>
+            <circle cx="34.9" cy="25.2" r="0.8" fill="#e3e2de"/>
+            <!-- mouth slit -->
+            <rect x="24" y="31" width="8" height="1.6" rx="0.8" fill="#8fa6a6"/>
+            <!-- side rivets -->
+            <circle cx="11" cy="30" r="1" fill="#8490a4"/>
+            <circle cx="45" cy="30" r="1" fill="#8490a4"/>
+            <!-- two antennas -->
+            <g class="cube-bot-antennas">
+                <line class="cube-bot-ant-line cube-bot-ant-line-l" x1="17" y1="12" x2="13" y2="4" stroke="#8490a4" stroke-width="1.4"/>
+                <circle class="cube-bot-ant cube-bot-ant-l" cx="13" cy="3.5" r="2.2" fill="#8fa6a6" stroke="#8490a4" stroke-width="1"/>
+                <line class="cube-bot-ant-line cube-bot-ant-line-r" x1="39" y1="12" x2="43" y2="4" stroke="#8490a4" stroke-width="1.2"/>
+                <circle class="cube-bot-ant cube-bot-ant-r" cx="43" cy="3" r="2.2" fill="#8fa6a6" stroke="#8490a4" stroke-width="1"/>
+            </g>
         </svg>
     </div>
 </div>
@@ -138,7 +137,7 @@ ui_render_head(
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../assets/js/ui-interactions.js') ?>"></script>
 <script src="<?= FULL_BASE_PATH ?>assets/js/vgpu-hero.min.js?v=<?= filemtime(__DIR__ . '/../assets/js/vgpu-hero.min.js') ?>"></script>
-<script src="<?= FULL_BASE_PATH ?>assets/js/duck-bot.js?v=<?= filemtime(__DIR__ . '/../assets/js/duck-bot.js') ?>"></script>
+<script src="<?= FULL_BASE_PATH ?>assets/js/cube-bot.js?v=<?= filemtime(__DIR__ . '/../assets/js/cube-bot.js') ?>"></script>
 <script>
 (function () {
     var canvas = document.querySelector('.ui-hero-canvas');
