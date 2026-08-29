@@ -277,7 +277,20 @@ if (!function_exists('ui_render_footer')) {
 <script>
 (function () {
     var fxCanvas = document.querySelector('.ui-page-fx');
-    if (fxCanvas && window.VgpuPages && typeof window.VgpuPages.mountPageFx === 'function') {
+    if (!fxCanvas) {
+        return;
+    }
+    // WHY: the ambient background is pure decoration (aria-hidden, pointer-events:
+    // none) and a full-screen WebGPU loop is the one thing on these pages that can
+    // cost a phone real memory and GPU time. Every resize it handles (iOS collapses
+    // its toolbar while scrolling, and the /about accordions reflow the page height)
+    // reallocates the surface. Phones take the same plain-paper fallback the bundle
+    // already uses when WebGPU is missing, instead of a new state.
+    if (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+        fxCanvas.remove();
+        return;
+    }
+    if (window.VgpuPages && typeof window.VgpuPages.mountPageFx === 'function') {
         window.VgpuPages.mountPageFx(fxCanvas).catch(function () { /* plain bg fallback stays */ });
     }
 })();
