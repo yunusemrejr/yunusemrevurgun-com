@@ -106,6 +106,9 @@ ui_render_head(
             </article>
             <div class="ui-tags" style="margin-top: 1.5rem;">
                 <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>blog">← Back to Blog</a>
+                <a class="ui-btn ui-btn-secondary" href="https://twitter.com/intent/tweet?text=<?= rawurlencode($title) ?>&url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on X</a>
+                <a class="ui-btn ui-btn-secondary" href="https://www.linkedin.com/sharing/share-offsite/?url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
+                <button class="ui-btn ui-btn-secondary" type="button" onclick="navigator.clipboard.writeText('<?= htmlspecialchars($postUrl, ENT_QUOTES) ?>');this.textContent='Copied';">Copy link</button>
             </div>
         </section>
     </main>

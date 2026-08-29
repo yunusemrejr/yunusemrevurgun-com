@@ -59,7 +59,9 @@ if (!function_exists('ui_render_head')) {
     <meta name="twitter:image" content="<?= htmlspecialchars($defaultOgImage) ?>">
     <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= FULL_BASE_PATH ?>sitemap.xml">
     <link rel="alternate" type="text/plain" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
-    <link rel="alternate" type="application/ld+json" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
+    <link rel="alternate" type="application/rss+xml" title="Journal (RSS)" href="<?= FULL_BASE_PATH ?>blog.xml">
+    <link rel="alternate" type="application/rss+xml" title="Updates (RSS)" href="<?= FULL_BASE_PATH ?>updates.xml">
+    <link rel="alternate" type="application/rss+xml" title="Random Memories (RSS)" href="<?= FULL_BASE_PATH ?>rmrp.xml">
     <link rel="manifest" href="<?= FULL_BASE_PATH ?>manifest.json?v=<?= filemtime(__DIR__ . '/../../manifest.json') ?>">
     <?php $faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg?v=' . filemtime(__DIR__ . '/../../assets/images/favicon.svg'); ?>
     <link rel="icon" type="image/svg+xml" href="<?= $faviconUrl ?>">
