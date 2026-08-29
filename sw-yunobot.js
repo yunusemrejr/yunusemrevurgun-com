@@ -10,7 +10,7 @@
  */
 
 const CACHE_NAME = 'yunobot-v1';
-const CACHE_VERSION = '20260828a';
+const CACHE_VERSION = '20260829b';
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -21,8 +21,11 @@ const STATIC_ASSETS = [
     // JS files
     'assets/js/yunobot/nn-weights.js',
     'assets/js/yunobot/nn-engine.js',
+    'assets/js/yunobot/knowledge-pack.js',
+    'assets/js/yunobot/kb.js',
     'assets/js/yunobot/ml-engine.js',
     'assets/js/yunobot.js',
+    'assets/js/yunobot/brain.wasm',
     
     // CSS
     'assets/css/yunobot.css',
@@ -95,7 +98,8 @@ self.addEventListener('fetch', (event) => {
     if (isSameOrigin && (
         url.pathname.endsWith('.js') ||
         url.pathname.endsWith('.css') ||
-        url.pathname.endsWith('.html')
+        url.pathname.endsWith('.html') ||
+        url.pathname.endsWith('.wasm')
     )) {
         event.respondWith(
             caches.match(request)

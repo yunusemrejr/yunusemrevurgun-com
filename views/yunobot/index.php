@@ -83,6 +83,8 @@ ui_render_head(
      ============================================================ -->
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/nn-weights.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/nn-weights.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/nn-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/nn-engine.js') ?>" defer></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/knowledge-pack.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/knowledge-pack.js') ?>" defer></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/kb.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/kb.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/ml-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/ml-engine.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot.js') ?>" defer></script>
 

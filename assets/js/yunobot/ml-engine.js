@@ -2915,8 +2915,8 @@
          * - Early exit on high-confidence pattern matches
          * - Inactivity timeout for worker
          * 
-         * Pipeline: Lazy init → Debounce → Cache check → Normalize → 
-         *           Pattern matching (early exit) → Semantic matching → Fallback
+         * Pipeline: Lazy init -> Debounce -> Cache check -> Normalize -> 
+         *           Pattern matching (early exit) -> Semantic matching -> Fallback
          */
         async process(input) {
             // ============================================================
@@ -3387,6 +3387,17 @@
                 };
             }
             
+            // STEP 3.5: WASM knowledge engine — open content questions the
+            // pattern/NN layers left unanswered.
+            const kbAnswer = await this.knowledgeAnswer(input);
+            if (kbAnswer) {
+                this.lastIntent = kbAnswer.intent;
+                this.lastQuery = normalizedInput;
+                const result = { ...kbAnswer };
+                this.addToHistory(input, result.response, result.intent, result.confidence);
+                return result;
+            }
+
             // STEP 4: Intelligent fallback chain
             // Check if input resembles any known intent keywords
             const fallbackResult = this.intelligentFallback(normalizedInput);
@@ -3466,6 +3477,31 @@
             }
         }
         
+        /**
+         * Knowledge-base lookup (WASM BM25/LM ranker). Fires for open content
+         * questions the pattern/NN layers did not confidently answer. Returns a
+         * well-formed result carrying a source link, or null to fall through.
+         */
+        async knowledgeAnswer(input) {
+            if (!globalThis.YunoBotKB) return null;
+            try {
+                await globalThis.YunoBotKB.load();
+                const r = globalThis.YunoBotKB.answer(input);
+                if (!r || !r.sentence) return null;
+                return {
+                    intent: 'knowledge',
+                    response: r.sentence,
+                    confidence: Math.min(0.8, 0.5 + r.score * 0.1),
+                    sourceUrl: r.url,
+                    sourcePage: r.page,
+                    sourceTitle: r.title,
+                };
+            } catch (e) {
+                console.error('[YunoBot KB] answer error:', e);
+                return null;
+            }
+        }
+
         /**
          * Intelligent fallback - try to match based on keyword overlap with known intents
          */

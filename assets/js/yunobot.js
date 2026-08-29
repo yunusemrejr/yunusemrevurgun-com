@@ -234,6 +234,9 @@
             updateStatus('error', 'ML engine unavailable');
             return;
         }
+
+        // Warm the WASM knowledge engine in the background (non-blocking).
+        if (window.YunoBotKB) window.YunoBotKB.load();
         
         // Initialize Chat UI
         setupChatUI();
@@ -377,13 +380,17 @@
                 if (result.intent === 'navigate' && result.url) {
                     addMessage(result.response, 'bot');
                     
-                    // Open in new tab after short delay
+                    // Open in new tab after short delay (guard: only http(s)/relative)
                     setTimeout(function() {
-                        window.open(result.url, '_blank');
+                        if (/^(https?:\/\/|\/)/i.test(result.url)) {
+                            window.open(result.url, '_blank');
+                        }
                     }, 500);
                 } else {
                     // Regular response
-                    addMessage(result.response, 'bot');
+                    addMessage(result.response, 'bot', result.sourceUrl
+                        ? { url: result.sourceUrl, page: result.sourcePage, title: result.sourceTitle }
+                        : null);
                     
                     // Show examples if provided
                     if (result.examples && result.examples.length > 0) {
@@ -406,7 +413,7 @@
     // Store message timestamps for export
     var messageTimestamps = [];
     
-    function addMessage(text, type) {
+    function addMessage(text, type, source) {
         var now = new Date();
         var msgId = 'msg-' + (++messageCounter);
         var messageDiv = document.createElement('div');
@@ -433,8 +440,13 @@
         content.className = 'message-content';
         
         if (type === 'bot') {
-            // Render markdown for bot messages
-            content.innerHTML = renderMarkdown(text);
+            if (source && source.url) {
+                // Knowledge-base answer: plain corpus sentence, not markdown.
+                content.textContent = text;
+            } else {
+                // Render markdown for bot messages
+                content.innerHTML = renderMarkdown(text);
+            }
         } else {
             content.textContent = text;
         }
@@ -461,6 +473,22 @@
         }
         
         body.appendChild(content);
+
+        // Source chip: knowledge-base answers carry a link to where the
+        // sentence came from (the exact site page it was extracted from).
+        if (type === 'bot' && source && source.url) {
+            var sourceChip = document.createElement('div');
+            sourceChip.className = 'message-source';
+            var sourceLink = document.createElement('a');
+            sourceLink.className = 'source-chip';
+            sourceLink.href = source.url;
+            sourceLink.target = '_blank';
+            sourceLink.rel = 'noopener noreferrer';
+            sourceLink.textContent = source.title || source.page || 'Source';
+            sourceChip.appendChild(sourceLink);
+            body.appendChild(sourceChip);
+        }
+
         body.appendChild(meta);
         
         messageDiv.appendChild(avatar);

@@ -25,6 +25,11 @@ RewriteRule ^blog\.xml$ api/blog-feed.php [L,QSA]
 # Normalize /index
 RewriteRule ^index/?$ / [R=301,L]
 
+# WebAssembly: serve yunobot brain.wasm with the correct MIME type
+<IfModule mod_mime.c>
+    AddType application/wasm .wasm
+</IfModule>
+
 # Block sensitive files (htaccess itself excluded so Apache can read it)
 <FilesMatch "^(\.env|\.env\.example|composer\.(json|lock)|phpunit\.xml|\.gitignore|env\.clone|\.ftpquota|\.user\.ini)$">
     Require all denied
