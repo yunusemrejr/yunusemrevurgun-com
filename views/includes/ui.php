@@ -103,6 +103,25 @@ if (!function_exists('ui_nav_items')) {
     }
 }
 
+if (!function_exists('ui_page_fx')) {
+    // Per-page ambient WebGPU background. One canvas + one shared bundle
+    // (assets/js/vgpu-pages.min.js); pages without an entry render nothing.
+    // Effect shaders live in dev/scripts/vgpu-pages/pages-entry.js.
+    function ui_page_fx(): ?string
+    {
+        static $fxMap = [
+            'about' => 'wind',          // gusty paper wisps from top-left
+            'rmrp' => 'memories',       // fading dust specks
+            'music' => 'wave',          // thin undulating waveform ribbon
+            'comedy' => 'bubbles',      // sparse rising rings
+            'science-corner' => 'lattice', // nodes slowly lighting up
+            'post-code' => 'grid',      // blueprint grid + scan pulses
+        ];
+        $fxPage = strtok(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '', '/'), '/');
+        return is_string($fxPage) ? ($fxMap[$fxPage] ?? null) : null;
+    }
+}
+
 if (!function_exists('ui_render_navbar')) {
     function ui_render_navbar(string $active = '', bool $isHome = false): void
     {
@@ -121,6 +140,7 @@ if (!function_exists('ui_render_navbar')) {
         if ($requestPath === '') {
             $requestPath = 'home';
         }
+        $pageFx = ui_page_fx();
         ?>
 <header class="ui-navbar-wrap">
     <nav class="ui-navbar" aria-label="Main">
@@ -148,6 +168,11 @@ if (!function_exists('ui_render_navbar')) {
         </div>
     </nav>
 </header>
+<!-- Page fx canvas: mounted behind content; vgpu-pages.min.js removes it
+     entirely when WebGPU is unavailable (plain paper bg is the fallback). -->
+<?php if ($pageFx !== null): ?>
+<canvas class="ui-page-fx" data-fx="<?= htmlspecialchars($pageFx) ?>" aria-hidden="true"></canvas>
+<?php endif; ?>
 <div class="ui-mobile-menu" id="uiMobileMenu" aria-hidden="true">
     <div class="ui-mobile-backdrop" data-mobile-menu-close></div>
     <div class="ui-mobile-panel">
@@ -217,6 +242,17 @@ if (!function_exists('ui_render_footer')) {
 </div>
 <?php endif; ?>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../../assets/js/ui-interactions.js') ?>"></script>
+<?php if (ui_page_fx() !== null): ?>
+<script src="<?= FULL_BASE_PATH ?>assets/js/vgpu-pages.min.js?v=<?= filemtime(__DIR__ . '/../../assets/js/vgpu-pages.min.js') ?>"></script>
+<script>
+(function () {
+    var fxCanvas = document.querySelector('.ui-page-fx');
+    if (fxCanvas && window.VgpuPages && typeof window.VgpuPages.mountPageFx === 'function') {
+        window.VgpuPages.mountPageFx(fxCanvas).catch(function () { /* plain bg fallback stays */ });
+    }
+})();
+</script>
+<?php endif; ?>
 <?php
     }
 }
