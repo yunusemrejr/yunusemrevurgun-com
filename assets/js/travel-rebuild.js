@@ -1,5 +1,5 @@
-(function() {
-    'use strict';
+(() => {
+    
 
     const HQ = { lat: 41.0082, lng: 28.9784, city: 'Istanbul', country: 'Turkey' };
     const locations = window.TRAVEL_LOCATIONS || [];
@@ -31,18 +31,24 @@
     }
 
     // Build fallback image src chain: uploads/travel/ -> assets/images/travel/ -> uploads/gallery/ -> hide
-    function buildImageHtml(filename, alt) {
-        var escapedAlt = (alt || '').replace(/['"]/g, '');
-        var src1 = imageBase + filename;
+    // DOM-API build (no innerHTML): keeps lightbox filename extraction via src working
+    function buildImageEl(filename, alt) {
+        var wrap = document.createElement('div');
+        wrap.className = 'ui-travel-image-wrap';
+        wrap.setAttribute('data-img', alt || '');
+        var img = document.createElement('img');
         var src2 = staticImageBase + filename;
         var src3 = galleryImageBase + filename;
-        return '<div class="ui-travel-image-wrap" data-img="' + escapedAlt + '">' +
-            '<img src="' + src1 + '" alt="' + escapedAlt + '" loading="lazy" ' +
-            'onerror="' +
-            'if(this.src!==\'' + src2 + '\'){this.src=\'' + src2 + '\';this.onerror=null;}' +
-            'else if(this.src!==\'' + src3 + '\'){this.src=\'' + src3 + '\';this.onerror=null;}' +
-            'else{this.parentElement.style.display=\'none\';}' +
-            '"></div>';
+        img.loading = 'lazy';
+        img.alt = alt || '';
+        img.onerror = function() {
+            if (this.src !== src2) { this.src = src2; return; }
+            if (this.src !== src3) { this.src = src3; return; }
+            this.parentElement.style.display = 'none';
+        };
+        img.src = imageBase + filename;
+        wrap.appendChild(img);
+        return wrap;
     }
 
     // ==================== LIGHTBOX (Feature 2) ====================
@@ -138,11 +144,15 @@
 
         if (grid) {
             if (images.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #8fa6a6;">No images for this location yet.</p>';
+                var empty = document.createElement('p');
+                empty.style.gridColumn = '1/-1';
+                empty.style.textAlign = 'center';
+                empty.style.padding = '2rem';
+                empty.style.color = '#8fa6a6';
+                empty.textContent = 'No images for this location yet.';
+                grid.replaceChildren(empty);
             } else {
-                grid.innerHTML = images.map(function(img) {
-                    return buildImageHtml(img, location.city);
-                }).join('');
+                grid.replaceChildren.apply(grid, images.map((img) => buildImageEl(img, location.city)));
             }
         }
 
@@ -155,8 +165,8 @@
         const modal = document.getElementById('travelImageModal');
         if (!modal) return;
         const closeEls = modal.querySelectorAll('[data-travel-modal-close]');
-        closeEls.forEach(function(el) {
-            el.addEventListener('click', function() {
+        closeEls.forEach((el) => {
+            el.addEventListener('click', () => {
                 modal.classList.remove('is-open');
                 modal.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
@@ -177,9 +187,9 @@
             scrollWheelZoom: false
         });
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap &copy; CARTO',
-            subdomains: 'abcd',
+        // WHY: CARTO light_all began requiring API keys for some clients; OSM standard tiles are keyless and already CSP-whitelisted
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
             maxZoom: 19
         }).addTo(leafletMap);
 
@@ -187,7 +197,7 @@
         let totalMiles = 0;
         const countriesSet = new Set();
 
-        locations.forEach(function(loc) {
+        locations.forEach((loc) => {
             if (!loc.lat || !loc.lng) return;
             countriesSet.add(loc.country);
             totalMiles += haversineMiles(HQ.lat, HQ.lng, loc.lat, loc.lng);
@@ -203,7 +213,7 @@
             }).addTo(leafletMap);
 
             marker.bindPopup('<strong>' + loc.city + '</strong><br>' + loc.country);
-            marker.on('click', function() { openModal(loc); });
+            marker.on('click', () => { openModal(loc); });
         });
 
         if (bounds.length > 0) {
@@ -287,7 +297,7 @@
 
         const markerObjects = [];
 
-        locations.forEach(function(loc) {
+        locations.forEach((loc) => {
             if (!loc.lat || !loc.lng) return;
             const pos = latLngToVector3(loc.lat, loc.lng, radius);
 
@@ -312,12 +322,12 @@
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
-        container.addEventListener('mousedown', function(e) {
+        container.addEventListener('mousedown', () => {
             isDragging = true;
             hasDragged = false;
         });
 
-        window.addEventListener('mouseup', function(e) {
+        window.addEventListener('mouseup', (e) => {
             if (isDragging && !hasDragged && e.target.closest('#travelGlobeCanvas')) {
                 const rect = renderer.domElement.getBoundingClientRect();
                 mouse.x = (e.clientX - rect.left) / rect.width * 2 - 1;
@@ -331,7 +341,7 @@
             isDragging = false;
         });
 
-        window.addEventListener('mousemove', function(e) {
+        window.addEventListener('mousemove', (e) => {
             if (isDragging) {
                 hasDragged = true;
                 const deltaMove = {
@@ -353,7 +363,7 @@
             requestAnimationFrame(animate);
             if (!isDragging) group.rotation.y += 0.002;
             var time = Date.now() * 0.005;
-            markersGroup.children.forEach(function(child, i) {
+            markersGroup.children.forEach((child, i) => {
                 if (child.geometry && child.geometry.type === 'SphereGeometry') {
                     var s = 1 + Math.sin(time + i) * 0.1;
                     child.scale.set(s, s, s);
@@ -363,7 +373,7 @@
         }
         animate();
 
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', () => {
             var w = container.clientWidth;
             var h = container.clientHeight;
             renderer.setSize(w, h);
@@ -376,12 +386,12 @@
 
     // Toggle 2D / 3D
     function setupToggle() {
-        toggleBtns.forEach(function(btn) {
-            btn.addEventListener('click', function() {
+        toggleBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
                 const view = btn.dataset.viewToggle;
                 if (view === activeView) return;
                 activeView = view;
-                toggleBtns.forEach(function(b) { b.classList.toggle('is-active', b === btn); });
+                toggleBtns.forEach((b) => { b.classList.toggle('is-active', b === btn); });
                 if (view === '2d') {
                     mapEl.classList.remove('is-hidden');
                     globeEl.classList.add('is-hidden');
@@ -399,7 +409,7 @@
 
     function setupLightboxEvents() {
         // Click on any image in the travel modal grid to open lightbox
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', (e) => {
             var wrap = e.target.closest('.ui-travel-image-wrap');
             if (!wrap) return;
             var grid = document.getElementById('travelModalGrid');
@@ -408,7 +418,7 @@
             var allWraps = grid.querySelectorAll('.ui-travel-image-wrap');
             var images = [];
             var index = 0;
-            allWraps.forEach(function(w, i) {
+            allWraps.forEach((w, i) => {
                 var imgEl = w.querySelector('img');
                 if (imgEl) {
                     // Extract filename from src — grab the last path segment
@@ -427,7 +437,7 @@
         });
 
         // Lightbox close / nav events (delegated)
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', (e) => {
             var btn = e.target.closest('[data-lightbox-close]');
             if (btn) { closeLightbox(); return; }
             btn = e.target.closest('[data-lightbox-prev]');
@@ -437,7 +447,7 @@
         });
 
         // Keyboard navigation for lightbox
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', (e) => {
             if (!lightboxEl || lightboxEl.getAttribute('aria-hidden') !== 'false') return;
             if (e.key === 'Escape') { closeLightbox(); return; }
             if (e.key === 'ArrowLeft') { lightboxPrev(); return; }
