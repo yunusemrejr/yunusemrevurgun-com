@@ -10,18 +10,44 @@
  * bot falls back to its pattern/NN logic.
  */
 ((global) => {
-  
+  const scriptSrc =
+    global.document && global.document.currentScript
+      ? global.document.currentScript.src
+      : "";
+  // cache-bust brain.wasm with the mtime the PHP template stamps on the script tag
+  const wasmUrl =
+    (global.document &&
+      global.document.currentScript &&
+      global.document.currentScript.dataset.wasm) ||
+    (scriptSrc ? new URL("brain.wasm", scriptSrc).href : "");
 
-  const scriptSrc = (global.document && global.document.currentScript)
-    ? global.document.currentScript.src
-    : '';
-  const wasmUrl = scriptSrc ? new URL('brain.wasm', scriptSrc).href : '';
+  const TR = {
+    ç: "c",
+    Ç: "C",
+    ğ: "g",
+    Ğ: "G",
+    ı: "i",
+    İ: "i",
+    ö: "o",
+    Ö: "O",
+    ş: "s",
+    Ş: "S",
+    ü: "u",
+    Ü: "U",
+    â: "a",
+    î: "i",
+    û: "u",
+  };
+  const norm = (s) =>
+    String(s)
+      .toLowerCase()
+      .replace(/[çÇğĞıİöÖşŞüÜâîû]/g, (ch) => TR[ch] || ch);
 
-  const TR = { ç: 'c', Ç: 'C', ğ: 'g', Ğ: 'G', ı: 'i', İ: 'i', ö: 'o', Ö: 'O', ş: 's', Ş: 'S', ü: 'u', Ü: 'U', â: 'a', î: 'i', û: 'u' };
-  const norm = (s) => String(s).toLowerCase().replace(/[çÇğĞıİöÖşŞüÜâîû]/g, (ch) => TR[ch] || ch);
-
-  let ins = null, mem = null, ready = null;
-  let answerOutOff = 0, queryOutOff = 0;
+  let ins = null,
+    mem = null,
+    ready = null;
+  let answerOutOff = 0,
+    queryOutOff = 0;
   const PACK_BASE = 131072; // must stay in sync with brain.c (past module statics/initial memory)
 
   function base64ToBytes(b64) {
@@ -32,21 +58,31 @@
   }
 
   async function inflateRaw(bytes) {
-    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    const stream = new Blob([bytes])
+      .stream()
+      .pipeThrough(new DecompressionStream("deflate-raw"));
     return new Uint8Array(await new Response(stream).arrayBuffer());
   }
 
   async function load() {
     if (ready) return ready;
     ready = (async () => {
-      if (typeof WebAssembly === 'undefined' || typeof DecompressionStream === 'undefined') {
+      if (
+        typeof WebAssembly === "undefined" ||
+        typeof DecompressionStream === "undefined"
+      ) {
         ready = null;
         return false;
       }
       const KB = global.YUNOBOT_KB;
-      if (!KB || !KB.blob || !wasmUrl) { ready = null; return false; }
+      if (!KB || !KB.blob || !wasmUrl) {
+        ready = null;
+        return false;
+      }
 
-      const wasm = await WebAssembly.compile(await (await fetch(wasmUrl)).arrayBuffer());
+      const wasm = await WebAssembly.compile(
+        await (await fetch(wasmUrl)).arrayBuffer(),
+      );
 
       const pack = await inflateRaw(base64ToBytes(KB.blob));
       const packLen = Math.ceil(pack.length / 4) * 4 + 4;
@@ -56,17 +92,18 @@
       ins = new WebAssembly.Instance(wasm, {}).exports;
       const curPages = ins.memory.buffer.byteLength / 65536;
       const pages = Math.ceil(total / 65536);
-      if (ins.memory.grow(pages - curPages) < 0) throw new Error('WASM memory grow failed');
+      if (ins.memory.grow(pages - curPages) < 0)
+        throw new Error("WASM memory grow failed");
       mem = new Uint8Array(ins.memory.buffer); // view AFTER grow (buffer detaches)
       mem.set(pack, PACK_BASE);
       ins.kb_setup(PACK_BASE, scratch);
-      if (!ins.kb_load()) throw new Error('kb_load failed');
+      if (!ins.kb_load()) throw new Error("kb_load failed");
 
       answerOutOff = scratch + 0x100000 - 8192;
       queryOutOff = answerOutOff - 4096;
       return true;
     })().catch((e) => {
-      console.warn('[YunoBot KB] load failed:', e);
+      console.warn("[YunoBot KB] load failed:", e);
       ready = null;
       return false;
     });
@@ -85,7 +122,9 @@
     const dv = new DataView(ins.memory.buffer);
     const sentId = dv.getUint32(answerOutOff, true);
     const score = dv.getFloat32(answerOutOff + 4, true);
-    const text = new TextDecoder().decode(mem.subarray(answerOutOff + 8, answerOutOff + n - 1));
+    const text = new TextDecoder().decode(
+      mem.subarray(answerOutOff + 8, answerOutOff + n - 1),
+    );
     const KB = global.YUNOBOT_KB;
     const doc = KB.docs[KB.sentDoc[sentId]] || {};
     return {
@@ -99,4 +138,4 @@
   }
 
   global.YunoBotKB = { load, answer };
-})(typeof window === 'undefined' ? globalThis : window);
+})(typeof window === "undefined" ? globalThis : window);

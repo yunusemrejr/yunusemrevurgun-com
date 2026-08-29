@@ -40,15 +40,16 @@ static u16 u16_at(u32 off) {
 static u8 u8_at(u32 off) { return *(const u8 *)(PACK_BASE + off); }
 
 static void *scr(u32 off) { return (void *)(SCRATCH + off); } /* SCRATCH is absolute (JS: PACK_BASE + packSize, aligned) */
-/* scratch layout: f32 scores[nSents max 60000] + u32 qids[64] + i32 ids[64]
- * + u32 sentTok[300] + u32 topIdx[16] + f32 topScore[16] */
+/* scratch layout: f32 scores[nSents max 60000] + u32 qids[64] + f32 idf[64]
+ * + u32 sentTok[300] + u32 topIdx[16] + f32 topScore[16] + qtok[64*44] */
 #define SCR_SENT 0
 #define SCR_QIDS (SCR_SENT + 60000 * 4)
 #define SCR_IDF (SCR_QIDS + 256)
 #define SCR_TOK (SCR_IDF + 256)
 #define SCR_TOPIDX (SCR_TOK + 1200)
 #define SCR_TOPSC (SCR_TOPIDX + 64)
-#define SCR_SIZE (SCR_TOPSC + 64)
+#define SCR_QTOK (SCR_TOPSC + 64)
+#define SCR_SIZE (SCR_QTOK + MAX_QUERY_TOKENS * 44)
 
 /* ---- pack header offsets (mirror build.mjs) ---- */
 #define H_MAGIC 0
@@ -159,17 +160,53 @@ static u32 stem(const u8 *w, u32 len, u8 *out) {
     if (len <= 4) return len;
     const u8 *end = w + len;
     if (len > 5 && end[-3] == 'i' && end[-2] == 'n' && end[-1] == 'g')
-        return len - 3;
-    if (len > 4 && end[-2] == 'e' && end[-1] == 'd')
-        return len - 2;
-    if (len > 4 && end[-2] == 'e' && end[-1] == 's')
-        return len - 2;
-    if (len > 3 && end[-1] == 's' && !(end[-2] == 's'))
-        return len - 1;
+        len -= 3;
+    else if (len > 4 && end[-2] == 'e' && end[-1] == 'd')
+        len -= 2;
+    else if (len > 4 && end[-2] == 'e' && end[-1] == 's')
+        len -= 2;
+    else if (len > 3 && end[-1] == 's' && !(end[-2] == 's'))
+        len -= 1;
+    /* y->i after consonant (study->studi, countries->countri); both sides must match */
+    if (out[len - 1] == 'y') {
+        u8 p = out[len - 2];
+        if (p != 'a' && p != 'e' && p != 'i' && p != 'o' && p != 'u') out[len - 1] = 'i';
+    }
+    return len;
+}
+
+/* lowercase copy of tok (len <= 39); returns len. tokenize() returns offsets into
+ * the ORIGINAL text, so every consumer must fold case before stem/vocab_find. */
+static u32 tok_lower(const u8 *src, u32 len, u8 *dst) {
+    for (u32 i = 0; i < len; i++) {
+        u8 c = src[i];
+        dst[i] = (c >= 'A' && c <= 'Z') ? c + 32 : c;
+    }
     return len;
 }
 
 /* binary search vocab (NUL-separated, sorted); returns term id or -1 */
+/* Corpus stopword list (must mirror STOP in build.mjs): dropped from the
+ * vocab at build time, so an OOV stopword is "off-topic noise", not a miss —
+ * it must not count against the coverage gate. OOV non-stopwords do. */
+static const char *STOP_WORDS = "a,an,the,and,or,of,to,in,on,at,for,with,about,from,by,as,is,are,was,were,be,been,being,am,do,does,did,have,has,had,i,you,he,she,it,we,they,me,him,her,us,them,my,your,his,our,their,this,that,these,those,what,which,who,whom,whose,when,where,why,how,not,no,so,but,if,then,than,there,here,can,could,would,should,will,shall,may,might,must,its,one,just,tell,also,very,really,into,through,up,down,out,off,over,under,too,all,any,both,each,few,more,most,other,some,such,only,own,same,once,still,even,lot";
+static u32 is_stop(const u8 *w, u32 len) {
+    const char *p = STOP_WORDS;
+    while (*p) {
+        u32 n = 0;
+        while (p[n] && p[n] != ',') n++;
+        if (n == len) {
+            u32 eq = 1;
+            for (u32 k = 0; k < len; k++)
+                if ((u8)p[k] != w[k]) { eq = 0; break; }
+            if (eq) return 1;
+        }
+        p += n;
+        if (*p) p++;
+    }
+    return 0;
+}
+
 static i32 vocab_find(const u8 *tok, u32 len) {
     u32 lo = 0, hi = g_nTerms;
     while (lo < hi) {
@@ -275,23 +312,47 @@ u32 kb_answer(const char *q, u32 qlen, u8 *out, u32 outCap) {
     u32 nq = tokenize(q, qlen, starts, lens);
     if (nq == 0) return 0;
 
-    /* unique query term ids + idfs (keep only content terms: idf >= 1) */
+    /* unique query term ids + idfs (keep only content terms: idf >= 1).
+     * qtok[] records EVERY distinct content stem (found or OOV) so the
+     * coverage gate can divide by the full query, not just vocab hits. */
     u32 *qids = (u32 *)scr(SCR_QIDS);
     f32 *qidf = (f32 *)scr(SCR_IDF);
-    u32 nqid = 0;
+    u8 *qtok = (u8 *)scr(SCR_QTOK); /* MAX_QUERY_TOKENS slots x 44B: [u32 len][40B stem] */
+    u32 nqid = 0, nContent = 0;
     f32 sumIdf = 0;
     u8 stemBuf[40];
     for (u32 i = 0; i < nq; i++) {
         u32 tl = lens[i];
         if (tl > 39) tl = 39;
-        for (u32 b = 0; b < tl; b++) stemBuf[b] = (u8)q[starts[i] + b];
+        tok_lower((const u8 *)q + starts[i], tl, stemBuf);
         tl = stem(stemBuf, tl, stemBuf);
         i32 id = vocab_find(stemBuf, tl);
-        if (id < 0) continue;
-        u32 dup = 0;
-        for (u32 j = 0; j < nqid; j++)
-            if (qids[j] == (u32)id) { dup = 1; break; }
-        if (dup) continue;
+        if (id < 0 && tl > 4) {
+            /* compound-token fallback: nodejs -> node (longest prefix >= 4 in vocab) */
+            u32 pl = tl - 1;
+            while (pl >= 4 && (id = vocab_find(stemBuf, pl)) < 0) pl--;
+            if (pl < 4) id = -1;
+            else tl = pl; /* record the matched prefix as the coverage stem */
+        }
+        /* dedupe content stems (stopwords are noise, not coverage misses) */
+        if (is_stop(stemBuf, tl)) continue;
+        u32 seen = 0;
+        for (u32 j = 0; j < nContent; j++) {
+            u32 jl = *(u32 *)(qtok + j * 44);
+            if (jl == tl) {
+                u32 eq = 1;
+                for (u32 b = 0; b < tl; b++)
+                    if (qtok[j * 44 + 4 + b] != stemBuf[b]) { eq = 0; break; }
+                if (eq) { seen = 1; break; }
+            }
+        }
+        if (!seen && nContent < MAX_QUERY_TOKENS) {
+            *(u32 *)(qtok + nContent * 44) = tl;
+            for (u32 b = 0; b < tl; b++) qtok[nContent * 44 + 4 + b] = stemBuf[b];
+            nContent++;
+        }
+        if (seen) continue;
+        if (id < 0) continue; /* OOV non-stopword: counts against coverage, no postings */
         u32 df = u32_at(g_df + (u32)id * 4);
         f32 idf = logf_(1.0f + ((f32)g_nSents - (f32)df + 0.5f) / ((f32)df + 0.5f));
         if (idf < 1.0f) continue; /* stopword: dilutes ranking, never gates */
@@ -301,7 +362,7 @@ u32 kb_answer(const char *q, u32 qlen, u8 *out, u32 outCap) {
         nqid++;
         if (nqid >= MAX_QUERY_TOKENS) break;
     }
-    if (nqid == 0) return 0;
+    if (nqid == 0 || nContent == 0) return 0;
 
     /* ---- BM25 over all sentences ---- */
     f32 *scores = (f32 *)scr(SCR_SENT);
@@ -346,6 +407,7 @@ u32 kb_answer(const char *q, u32 qlen, u8 *out, u32 outCap) {
     const f32 MU = 100.0f;
     u32 bestSid = 0xFFFFFFFF;
     f32 bestScore = 0.0f;
+    u32 bestSentTf[MAX_QUERY_TOKENS];
     u32 *tokIds = (u32 *)scr(SCR_TOK);
     for (u32 k = 0; k < TOP_K; k++) {
         u32 sid = topIdx[k];
@@ -364,7 +426,7 @@ u32 kb_answer(const char *q, u32 qlen, u8 *out, u32 outCap) {
         for (u32 i = 0; i < nst && ntok < MAX_SENT_TOKENS; i++) {
             u32 tl2 = sl[i];
             if (tl2 > 39) tl2 = 39;
-            for (u32 b = 0; b < tl2; b++) stemBuf[b] = (u8)stext[ss[i] + b];
+            tok_lower((const u8 *)stext + ss[i], tl2, stemBuf);
             tl2 = stem(stemBuf, tl2, stemBuf);
             i32 id = vocab_find(stemBuf, tl2);
             tokIds[ntok] = (u32)id; /* -1 wraps; compare via cast */
@@ -401,20 +463,28 @@ u32 kb_answer(const char *q, u32 qlen, u8 *out, u32 outCap) {
         if (merged > bestScore) {
             bestScore = merged;
             bestSid = sid;
+            for (u32 t = 0; t < nqid; t++) bestSentTf[t] = sentTf[t];
         }
     }
 
     if (bestSid == 0xFFFFFFFF) return 0;
 
-    /* ---- threshold: confidence floor (tuned against off-topic probes) ---- */
+    /* ---- threshold: coverage gate + confidence floor.
+     * Coverage: answer must contain >= half the query's content stems
+     * (OOV included in the denominator) — separates on-topic hits from
+     * lexical coincidences; an absolute floor alone cannot. */
     f32 score01 = bestScore;
-    if (nqid <= 1) {
+    if (nContent > 1) {
+        u32 matched = 0;
+        for (u32 t = 0; t < nqid; t++)
+            if (bestSentTf[t] > 0) matched++;
+        if (matched * 2 < nContent) return 0;
+        if (score01 < 0.04f) return 0;
+    } else {
         u32 df0 = u32_at(g_df + qids[0] * 4);
         if ((f32)df0 / (f32)g_nSents > 0.05f) return 0; /* common word alone is not a signal */
         if (qidf[0] < 4.6f) return 0;  /* single generic word (today/live/edge) is not a topic signal */
         if (score01 < 0.35f) return 0;
-    } else if (score01 < 0.40f) {
-        return 0;
     }
 
     /* ---- write out: [u32 sid][f32 score][text\0] ---- */
