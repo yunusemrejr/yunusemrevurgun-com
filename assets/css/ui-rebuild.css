@@ -8,10 +8,12 @@ Retro, understated, photographic visual feel.
 
 COLOR SYSTEM
 - Page background:    #e3e2de  (dominant, warm light gray)
-- Primary text:      #a6a6a6  (heroes, major titles — Aileron Bold)
+- Primary text:      #a6a6a6  (reserved palette token; live headings use ink)
 - Secondary text:    #8fa6a6  (subheadings, labels — Aileron Bold)
 - Body text:         #434343  (paragraphs, articles — Canva Sans; #434343 renamed
                       here after it darkened to pass APCA on #e3e2de)
+- Headings:          var(--color-ink-body) #434343 — matches the landing hero,
+                      which renders titles in dark ink, not #a6a6a6
 - Borders/Decor:     #8490a4  (dividers, icons, outlines)
 
 TYPOGRAPHY
@@ -323,7 +325,7 @@ body .ui-cards-section {
   font-size: var(--text-xl);
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: #a6a6a6;
+  color: var(--color-ink-body);
   text-decoration: none;
   transition: opacity var(--transition-fast);
   line-height: 1;
@@ -592,7 +594,7 @@ body .ui-cards-section {
   font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
   font-weight: 500;
   line-height: 1.15;
-  color: #a6a6a6;
+  color: var(--color-ink-body);
   margin-bottom: var(--space-4);
   letter-spacing: -0.01em;
 }
@@ -603,7 +605,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.2;
-  color: #a6a6a6;
+  color: var(--color-ink-body);
 }
 
 .ui-section-title, h1, h2 {
@@ -640,7 +642,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-size: var(--text-2xl);
   font-weight: 600;
-  color: #a6a6a6;
+  color: var(--color-ink-body);
   margin: 0 0 var(--space-2);
   letter-spacing: -0.02em;
 }
@@ -1646,6 +1648,19 @@ textarea.ui-input {
 }
 
 /* ===== COMMAND CENTER (About) ===== */
+.ui-page-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+
+.ui-page-fx.is-live {
+  opacity: 1;
+}
+
 .ui-command-center {
   display: flex;
   flex-direction: column;
@@ -1668,11 +1683,21 @@ textarea.ui-input {
   font-family: var(--font-body);
   color: #434343;
   text-align: left;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .ui-command-trigger:hover {
   background-color: var(--color-surface-hover);
+}
+
+/* Compositor-only press feedback (transform, not layout). */
+.ui-command-trigger:active {
+  transform: translateY(1px);
+}
+
+.ui-command-trigger:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: -2px;
 }
 
 .ui-command-trigger::after {
@@ -1680,7 +1705,7 @@ textarea.ui-input {
   font-size: var(--text-xl);
   font-weight: 300;
   color: #8fa6a6;
-  transition: transform var(--transition-fast);
+  transition: transform 260ms cubic-bezier(0.32, 0.72, 0.25, 1);
 }
 
 .ui-command-card.is-open .ui-command-trigger::after {
@@ -1690,11 +1715,25 @@ textarea.ui-input {
 .ui-command-panel {
   max-height: 0;
   overflow: hidden;
-  transition: max-height var(--transition-base);
+  transition: max-height 320ms cubic-bezier(0.32, 0.72, 0.25, 1);
 }
 
 .ui-command-card.is-open .ui-command-panel {
   max-height: 1000px;
+}
+
+/* Content reveal runs on the compositor (opacity + transform) under the
+   height animation; JS sets max-height in ui-interactions.js. */
+.ui-command-content {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.ui-command-card.is-open .ui-command-content {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 240ms ease 70ms, transform 260ms cubic-bezier(0.32, 0.72, 0.25, 1) 70ms;
 }
 
 .ui-command-content {
@@ -1710,6 +1749,21 @@ textarea.ui-input {
 
 .ui-command-content ul {
   margin-top: var(--space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-command-trigger,
+  .ui-command-trigger::after,
+  .ui-command-panel,
+  .ui-command-content {
+    transition: none;
+    transform: none;
+  }
+
+  .ui-page-fx {
+    transition: none;
+    opacity: 1;
+  }
 }
 
 /* ===== TRAVEL MAP ===== */
@@ -1982,7 +2036,7 @@ textarea.ui-input {
 .ui-rich-content h3,
 .ui-rich-content h4 {
   font-family: var(--font-display);
-  color: #a6a6a6;
+  color: var(--color-ink-body);
   line-height: 1.25;
   margin-top: 1.5em;
   margin-bottom: 0.75em;
@@ -2233,7 +2287,7 @@ textarea.ui-input {
 .ui-yunobot-arch-code h3 {
   font-size: var(--text-sm);
   font-weight: 400;
-  color: #a6a6a6;
+  color: var(--color-ink-body);
   margin-bottom: var(--space-3);
 }
 
@@ -2763,7 +2817,7 @@ body.ui-landing::before {
   display: block;
   font-weight: 600;
   font-size: var(--text-base);
-  color: #1a1a1a;
+  color: var(--color-ink-body);
 }
 
 .comedy-social-handle {

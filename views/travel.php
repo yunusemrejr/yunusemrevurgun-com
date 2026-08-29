@@ -97,7 +97,7 @@ ui_render_head(
             }
             .ui-toggle-btn:hover {
                 background: rgba(132,144,164,0.08);
-                color: var(--color-text-primary, #a6a6a6);
+                color: var(--color-ink-body, #434343);
             }
             .ui-toggle-btn.is-active {
                 background: var(--color-text-primary, #a6a6a6);

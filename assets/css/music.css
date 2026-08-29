@@ -88,7 +88,7 @@
 .ui-music-track-date {
   font-family: var(--font-display);
   font-size: 0.6rem;
-  color: #b5b3af;
+  color: #8fa6a6;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -348,7 +348,7 @@
   border: 1px solid var(--color-border, rgba(132, 144, 164, 0.25));
   background: var(--color-bg-card, #f5f4f1);
   text-decoration: none;
-  color: var(--color-text-primary, #434343);
+  color: var(--color-ink-body, #434343);
   transition:
     border-color 0.2s ease,
     background 0.2s ease;
