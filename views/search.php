@@ -39,6 +39,10 @@ if ($isValidQuery && strlen($sanitizedQuery) >= 2) {
 ui_render_head(
     'Search' . (!empty($query) ? ' — ' . htmlspecialchars($query) : '') . ' | Yunus Emre Vurgun',
     'Search results across blog posts, updates, and portfolio of Yunus Emre Vurgun.',
+    // WHY noindex,follow: the result set is thin, near-duplicate content and every
+    // ?q= variant is a separate crawlable URL. follow keeps the equity flowing to
+    // the real pages it points at.
+    ['robots' => 'noindex,follow']
 );
 ?>
 <body>

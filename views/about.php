@@ -58,7 +58,7 @@ ui_render_head(
                             <div class="ui-command-content">
                                 <p>Developer and IT specialist from Istanbul with a focus on AI and operational technology.</p>
                                 <p>Building systems that are architecturally robust and computationally efficient. I prioritize time-resistant fundamentals and mathematical soundness over industry trends.</p>
-                                <p>From CPU-optimized neural network proof-of-concepts to industrial automation — I build for the internal logic, not the surface-level implementation.</p>
+                                <p>From <a href="<?= FULL_BASE_PATH ?>yunobot">CPU-optimized neural network proof-of-concepts</a> to <a href="<?= FULL_BASE_PATH ?>portfolio">industrial automation</a> — I build for the internal logic, not the surface-level implementation.</p>
                                 <p>Currently working at ASP Otomasyon A.Ş., building and maintaining internal systems for industrial operations.</p>
                             </div>
                         </div>
@@ -85,6 +85,21 @@ ui_render_head(
                                 <ul class="ui-timeline">
                                     <li class="ui-timeline-item"><strong>Software Developer & IT Specialist</strong><br>ASP Otomasyon A.Ş. | 2022 — present<br>Building and maintaining internal systems for industrial operations — from business tools to IT/OT infrastructure.</li>
                                     <li class="ui-timeline-item"><strong>Financial Assistant</strong><br>ASP Otomasyon A.Ş. | 2019 — 2022<br>Started in finance and administration. The transition into technical work shaped my approach to building practical solutions.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="ui-command-card">
+                        <button class="ui-command-trigger" type="button" aria-expanded="false">Selected Work</button>
+                        <div class="ui-command-panel">
+                            <div class="ui-command-content">
+                                <ul class="ui-card-list">
+                                    <li><a href="<?= FULL_BASE_PATH ?>portfolio"><strong>Project archive</strong></a><br>Systems across AI/ML, operational technology, industrial automation and web infrastructure, with the stack each one runs on.</li>
+                                    <li><a href="<?= FULL_BASE_PATH ?>blog"><strong>Journal</strong></a><br>Long-form writing on AI capability trends, model releases, and post-code engineering.</li>
+                                    <li><a href="<?= FULL_BASE_PATH ?>yunobot"><strong>YunoBot</strong></a><br>An assistant that answers questions about this site entirely in the browser — no server call, no API key.</li>
+                                    <li><a href="<?= FULL_BASE_PATH ?>post-code"><strong>Post-Code</strong></a><br>The mathematics and concepts reading list behind the above.</li>
+                                    <li><a href="<?= FULL_BASE_PATH ?>contact"><strong>Start a conversation</strong></a><br>Projects, questions, or just to say hello.</li>
                                 </ul>
                             </div>
                         </div>

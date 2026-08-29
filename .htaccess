@@ -69,6 +69,11 @@ RewriteRule \.(php|phtml|php3|php4|php5|php7|php8|phar)$ - [F,L]
 RewriteCond %{REQUEST_URI} ^/(admin|api/admin)(/|$)
 RewriteRule ^ - [E=YEV_ADMIN_NO_CACHE:1]
 
+# Search results are thin, near-duplicate and unbounded (?q=...) — keep them out
+# of the index without cutting the links they carry.
+RewriteCond %{REQUEST_URI} ^/search
+RewriteRule ^ - [E=YEV_NOINDEX:1]
+
 # favicon.ico legacy — browsers always probe /favicon.ico regardless of link
 # tags; redirect to THE one favicon so they can never settle on a different file.
 RewriteRule ^favicon\.ico$ assets/images/favicon.svg [L,R=302]
@@ -84,6 +89,7 @@ RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set X-Robots-Tag "index,follow,noarchive"
+    Header always set X-Robots-Tag "noindex,follow" env=YEV_NOINDEX
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Cache-Control "no-cache, no-store, must-revalidate" env=YEV_ADMIN_NO_CACHE

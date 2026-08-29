@@ -2,9 +2,28 @@
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once dirname(__DIR__) . '/models/Settings.php';
 require_once dirname(__DIR__) . '/models/Socials.php';
+require_once dirname(__DIR__) . '/models/Portfolio.php';
+require_once dirname(__DIR__) . '/models/Blog.php';
+require_once dirname(__DIR__) . '/models/Updates.php';
 require_once __DIR__ . '/includes/ui.php';
 
 $settings = new Settings();
+
+// Proof of substance for the landing page: real counts, server-rendered.
+// fetchColumn() returns a numeric string; (int) guards against a false on a
+// missing table so the sentence never renders "0 projects" by accident.
+$countOr = static function ($value): ?int {
+    return is_numeric($value) && (int) $value > 0 ? (int) $value : null;
+};
+$nProjects = $countOr((new Portfolio())->getTotalProjects());
+$nPosts = $countOr((new Blog())->getTotalPublishedPosts());
+$nUpdates = $countOr((new Updates())->getTotalUpdates());
+$archiveParts = array_filter([
+    $nProjects !== null ? $nProjects . ' projects' : null,
+    $nPosts !== null ? $nPosts . ' journal entries' : null,
+    $nUpdates !== null ? $nUpdates . ' dated updates' : null,
+]);
+$archiveLine = $archiveParts !== [] ? implode(', ', $archiveParts) . '.' : null;
 
 $homeSchema = [
     '@context' => 'https://schema.org',
@@ -70,6 +89,7 @@ ui_render_head(
 );
 ?>
 <body class="ui-landing">
+<main>
 <!-- vgpu WebGPU hero (bundled from dev/scripts/vgpu-hero/hero-entry.js).
      Falls back to plain palette background + HTML text when WebGPU is
      unavailable; prefers-reduced-motion renders one static frame. -->
@@ -85,6 +105,44 @@ ui_render_head(
         </div>
     </div>
 </div>
+
+<!-- Landing brief: the hero carries the brand voice, this carries the facts.
+     Below the fold, so the visual identity is untouched; it exists so a first
+     visit can answer "who is this and what has he built" without clicking, and
+     so the most-linked URL on the site has crawlable substance. -->
+<div class="ui-landing-brief">
+    <section class="ui-section">
+        <p class="ui-eyebrow">Istanbul · Operational technology &amp; AI</p>
+        <h2 class="ui-brief-title">Software developer and IT specialist building systems that have to keep running.</h2>
+        <p class="ui-section-text">AI/ML systems, industrial automation, and the internal tools a factory floor depends on — documented as it is built.<?= $archiveLine !== null ? ' This archive holds ' . htmlspecialchars($archiveLine) : '' ?></p>
+    </section>
+
+    <section class="ui-section">
+        <div class="ui-more-grid">
+            <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>portfolio">
+                <span class="ui-more-icon" aria-hidden="true">[]</span>
+                <h3 class="ui-more-title">Project archive</h3>
+                <p class="ui-more-desc">Systems across AI/ML, operational technology, industrial automation and web infrastructure — with the stack each one runs on.</p>
+            </a>
+            <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>blog">
+                <span class="ui-more-icon" aria-hidden="true">¶</span>
+                <h3 class="ui-more-title">Journal</h3>
+                <p class="ui-more-desc">Long-form notes on AI capability trends, model releases, free internet access, and post-code engineering.</p>
+            </a>
+            <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>yunobot">
+                <span class="ui-more-icon" aria-hidden="true">>_</span>
+                <h3 class="ui-more-title">YunoBot</h3>
+                <p class="ui-more-desc">An assistant that answers questions about this site entirely in your browser — no server call, no API key.</p>
+            </a>
+            <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>about">
+                <span class="ui-more-icon" aria-hidden="true">@</span>
+                <h3 class="ui-more-title">About &amp; CV</h3>
+                <p class="ui-more-desc">Education, work history at ASP Otomasyon A.Ş., certifications, and where to reach me.</p>
+            </a>
+        </div>
+    </section>
+</div>
+</main>
 
 <!-- Cube-bot: decorative corner patroller (see assets/js/cube-bot.js) -->
 <div class="cube-bot" aria-hidden="true">

@@ -13,9 +13,18 @@ if (!function_exists('ui_render_head')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#e3e2de">
-    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
-    <meta name="googlebot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
-    <meta name="bingbot" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+    <?php
+    // Pages may override the index directive via extraMeta['robots'] (e.g. the
+    // search results page, which is thin and has an unbounded ?q= URL space).
+    // Overridden here rather than emitted as a second tag: two robots metas
+    // make crawlers guess.
+    $robots = is_string($extraMeta['robots'] ?? null) && $extraMeta['robots'] !== ''
+        ? $extraMeta['robots']
+        : 'index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1';
+    ?>
+    <meta name="robots" content="<?= htmlspecialchars($robots) ?>">
+    <meta name="googlebot" content="<?= htmlspecialchars($robots) ?>">
+    <meta name="bingbot" content="<?= htmlspecialchars($robots) ?>">
     <meta name="x-robots-tag" content="index,follow,noarchive">
     <title><?= htmlspecialchars($title) ?></title>
     <meta name="title" content="<?= htmlspecialchars($title) ?>">
@@ -43,12 +52,31 @@ if (!function_exists('ui_render_head')) {
         : FULL_BASE_PATH . 'assets/images/og-image.png';
     $defaultOgTitle = htmlspecialchars($title, ENT_QUOTES);
     $defaultOgDesc = htmlspecialchars($description, ENT_QUOTES);
+    // Declaring the raster's real size lets platforms reserve preview space in one
+    // pass. Measured, not assumed: omitted when the file is remote or unreadable.
+    $ogImageSize = '';
+    $ogImagePath = __DIR__ . '/../../' . ltrim((string)parse_url($defaultOgImage, PHP_URL_PATH), '/');
+    if (is_file($ogImagePath)) {
+        $ogImageDims = @getimagesize($ogImagePath);
+        if (is_array($ogImageDims)) {
+            $ogImageSize = sprintf(
+                '<meta property="og:image:width" content="%d">' . "\n    "
+                . '<meta property="og:image:height" content="%d">' . "\n    "
+                . '<meta property="og:image:type" content="%s">',
+                $ogImageDims[0],
+                $ogImageDims[1],
+                $ogImageDims['mime']
+            );
+        }
+    }
     ?>
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
     <meta property="og:url" content="<?= htmlspecialchars($canonical) ?>">
     <meta property="og:title" content="<?= $defaultOgTitle ?>">
     <meta property="og:description" content="<?= $defaultOgDesc ?>">
     <meta property="og:image" content="<?= htmlspecialchars($defaultOgImage) ?>">
+    <?= $ogImageSize . "\n" ?>
     <meta property="og:image:alt" content="<?= $defaultOgTitle ?>">
     <meta property="og:site_name" content="Yunus Emre Vurgun">
     <meta name="author" content="Yunus Emre Vurgun">
@@ -81,7 +109,7 @@ if (!function_exists('ui_render_head')) {
     <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot', 'music', 'downloads', 'og_image'], true)) continue;
+        if (is_string($key) && in_array($key, ['yunobot', 'music', 'downloads', 'og_image', 'robots'], true)) continue;
         if (!empty($value) && is_string($value)) echo $value . "\n";
     endforeach; ?>
 </head>

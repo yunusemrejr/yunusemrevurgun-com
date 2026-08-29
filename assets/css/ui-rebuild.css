@@ -2706,6 +2706,28 @@ body.ui-landing::before {
   }
 }
 
+/* ===== LANDING BRIEF (below the hero fold) ===== */
+/* The hero is 100svh and carries the brand voice only. This block carries the
+   facts: who, what, how much proof — reusing the /more card system so no new
+   component is invented. */
+.ui-landing-brief {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-8) var(--space-12);
+  position: relative;
+  z-index: var(--z-base);
+}
+.ui-brief-title {
+  font-family: var(--font-heading);
+  font-size: clamp(var(--text-2xl), 3.4vw, var(--text-4xl));
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-ink-body);
+  max-width: var(--content-narrow);
+  margin-bottom: var(--space-4);
+}
+
 /* ===== LANDING PAGE FOOTER ===== */
 /* Unique footer: contains all navbar links alongside social links */
 .ui-landing-footer {

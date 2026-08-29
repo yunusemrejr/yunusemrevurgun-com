@@ -78,8 +78,10 @@ class Sitemap {
         ];
 
         foreach ($staticPages as $page => $priority) {
-            // Add lastmod date for static pages (use current time for now)
-            $this->addUrl($xml, $urlset, $page, $priority, date('c'));
+            // WHY: this was date('c') — every static URL claimed "modified right
+            // now" on every request, which teaches crawlers to ignore lastmod
+            // entirely. The view file's mtime is the honest signal.
+            $this->addUrl($xml, $urlset, $page, $priority, $this->staticPageModified($page));
         }
 
         // Add blog posts
@@ -165,6 +167,27 @@ class Sitemap {
             error_log("Sitemap force regeneration failed: " . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Real last-modified signal for a static route: the mtime of the view file
+     * that renders it. $page comes from the hardcoded $staticPages map above,
+     * so the path is never attacker-controlled. Returns null when no view file
+     * resolves — addUrl then omits <lastmod> rather than inventing a date.
+     */
+    private function staticPageModified(string $page): ?string
+    {
+        $candidates = $page === '' ? ['home.php'] : [$page . '.php', $page . '/index.php', 'legal/' . $page . '.php'];
+        foreach ($candidates as $candidate) {
+            $file = __DIR__ . '/../views/' . $candidate;
+            if (is_file($file)) {
+                $mtime = filemtime($file);
+                if ($mtime !== false) {
+                    return date('c', $mtime);
+                }
+            }
+        }
+        return null;
     }
 
     private function addUrl($xml, $urlset, $path, $priority, $lastmod = null) {

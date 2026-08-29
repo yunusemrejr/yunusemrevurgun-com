@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/config/setPath.php';
+require_once dirname(__DIR__) . '/models/Blog.php';
 require_once __DIR__ . '/includes/ui.php';
 
 if (!isset($GLOBALS['current_post'])) {
@@ -43,7 +44,6 @@ $extraMeta = [
     '<meta name="twitter:label2" content="Author">',
     '<meta name="twitter:data2" content="Yunus Emre Vurgun">',
     '<meta name="author" content="Yunus Emre Vurgun">',
-    '<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">',
     '<script type="application/ld+json">' . json_encode([
         '@context' => 'https://schema.org',
         '@type' => 'BlogPosting',
@@ -81,7 +81,7 @@ $extraMeta = [
 ];
 
 ui_render_head(
-    $title . ' | Journal',
+    $title . ' | Yemre',
     $description,
     $extraMeta
 );
@@ -94,7 +94,7 @@ ui_render_head(
         <section class="ui-section">
             <p class="ui-eyebrow">Journal</p>
             <h1 class="ui-section-title"><?= htmlspecialchars($post['title']) ?></h1>
-            <p class="ui-section-text">Published <?= date('F j, Y', strtotime($post['created_at'] ?? 'now')) ?></p>
+            <p class="ui-section-text">Published <?= date('F j, Y', strtotime($post['created_at'] ?? 'now')) ?><?= $modifiedDate !== $publishedDate ? ' · updated ' . date('F j, Y', strtotime($post['updated_at'])) : '' ?></p>
         </section>
 
         <section class="ui-section">
@@ -109,6 +109,42 @@ ui_render_head(
                 <a class="ui-btn ui-btn-secondary" href="https://twitter.com/intent/tweet?text=<?= rawurlencode($title) ?>&url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on X</a>
                 <a class="ui-btn ui-btn-secondary" href="https://www.linkedin.com/sharing/share-offsite/?url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
                 <button class="ui-btn ui-btn-secondary" type="button" onclick="navigator.clipboard.writeText('<?= htmlspecialchars($postUrl, ENT_QUOTES) ?>');this.textContent='Copied';">Copy link</button>
+            </div>
+        </section>
+
+        <?php
+        // A finished post is the highest-intent moment on the site, and it used
+        // to end at "Back to Blog". Recent writing keeps the reader here; the
+        // three routes say who wrote it.
+        $blog = new Blog();
+        $morePosts = array_values(array_filter(
+            $blog->getPosts(0, 5),
+            static fn(array $p): bool => ($p['slug'] ?? '') !== $slug && ($p['slug'] ?? '') !== ''
+        ));
+        ?>
+        <?php if ($morePosts !== []): ?>
+        <section class="ui-section">
+            <p class="ui-eyebrow">Continue</p>
+            <h2 class="ui-section-title">Keep reading</h2>
+            <div class="ui-grid" style="margin-top: 1.5rem;">
+                <?php foreach ($morePosts as $more): ?>
+                <a class="ui-link-card" href="<?= FULL_BASE_PATH ?>blog/<?= rawurlencode($more['slug']) ?>">
+                    <h3 class="ui-card-title"><?= htmlspecialchars($more['title']) ?></h3>
+                    <p class="ui-card-meta"><?= date('F j, Y', strtotime($more['created_at'] ?? 'now')) ?></p>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </section>
+        <?php endif; ?>
+
+        <section class="ui-section">
+            <p class="ui-eyebrow">The author</p>
+            <h2 class="ui-section-title">Yunus Emre Vurgun</h2>
+            <p class="ui-section-text">Software developer and IT specialist in Istanbul, working on AI/ML systems, operational technology and industrial automation at ASP Otomasyon A.Ş.</p>
+            <div class="ui-tags">
+                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>about">About &amp; CV</a>
+                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>portfolio">Project archive</a>
+                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>contact">Contact</a>
             </div>
         </section>
     </main>
