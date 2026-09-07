@@ -1,15 +1,6 @@
 User-agent: *
 Allow: /
-
-# Sitemap
-Sitemap: https://yunusemrevurgun.com/sitemap.xml
-
-# LLM & AI crawler guidance
-# Machine-readable AI guidance: https://yunusemrevurgun.com/llms.txt
-# Attribution: Content by Yunus Emre Vurgun (yunusemrevurgun.com)
-
-# Disallow admin and system areas
-Disallow: /admin/
+Disallow: /admin
 Disallow: /api/
 Disallow: /config/
 Disallow: /dev/
@@ -19,52 +10,9 @@ Disallow: /models/
 Disallow: /router/
 Disallow: /scripts/
 Disallow: /views/
+Disallow: /.git/
+Disallow: /.agent_memory/
+Disallow: /.pi/
+Disallow: /.kilo/
 
-# AI-specific crawler rules
-User-agent: GPTBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: ChatGPT-User
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: OAI-SearchBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: Google-Extended
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: CCBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: anthropic-ai
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: ClaudeBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: PerplexityBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: Applebot-Extended
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-# Crawl delay
-Crawl-delay: 1
+Sitemap: https://yunusemrevurgun.com/sitemap.xml

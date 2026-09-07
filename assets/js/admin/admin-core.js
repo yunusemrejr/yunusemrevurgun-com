@@ -18,108 +18,10 @@
 
         // Initialize core admin functionality
         init: function() {
-            this.initSidebar();
-            this.initMobileMenu();
             this.initSearch();
             this.initSearchClickOutside();
             this.initResponsive();
             this.bindGlobalEvents();
-        },
-
-        // Initialize mobile drawer nav (data-admin-menu-open / data-admin-menu-close)
-        initMobileMenu: function() {
-            const $menu = $('#adminUiMobileMenu');
-            if (!$menu.length) return;
-            const $openBtn = $('[data-admin-menu-open]');
-            const $closeItems = $('[data-admin-menu-close]', $menu);
-            let prevOverflow = '';
-
-            function open() {
-                prevOverflow = document.body.style.overflow;
-                $menu.addClass('is-open').attr('aria-hidden', 'false');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function close() {
-                $menu.removeClass('is-open').attr('aria-hidden', 'true');
-                document.body.style.overflow = prevOverflow || '';
-            }
-
-            $openBtn.on('click', open);
-            $closeItems.on('click', close);
-
-            // Close on Escape when open
-            $(document).on('keydown', function(e) {
-                if (e.keyCode === 27 && $menu.hasClass('is-open')) close();
-            });
-        },
-
-        // Initialize sidebar functionality
-        initSidebar: function() {
-            const $sidebar = $('.admin-sidebar');
-            const $main = $('.admin-main');
-            const $toggle = $('.sidebar-toggle');
-            const $body = $('body');
-
-            // Create backdrop if it doesn't exist
-            if (!$('.admin-sidebar-backdrop').length) {
-                $('<div class="admin-sidebar-backdrop"></div>').appendTo('body');
-            }
-            const $backdrop = $('.admin-sidebar-backdrop');
-
-            // Toggle sidebar on mobile
-            $toggle.on('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if ($(window).width() <= AdminPanel.config.sidebarBreakpoint) {
-                    $sidebar.toggleClass('show');
-                    $body.toggleClass('sidebar-open');
-                    $backdrop.toggleClass('show');
-                }
-            });
-
-            // Close sidebar when clicking backdrop
-            $backdrop.on('click', function() {
-                AdminPanel.closeMobileSidebar();
-            });
-
-            // Close sidebar when clicking outside on mobile
-            $(document).on('click', function(e) {
-                if ($(window).width() <= AdminPanel.config.sidebarBreakpoint) {
-                    if (!$sidebar.is(e.target) && 
-                        $sidebar.has(e.target).length === 0 && 
-                        !$toggle.is(e.target) && 
-                        $toggle.has(e.target).length === 0) {
-                        AdminPanel.closeMobileSidebar();
-                    }
-                }
-            });
-
-            // Handle window resize
-            $(window).on('resize', function() {
-                if ($(window).width() > AdminPanel.config.sidebarBreakpoint) {
-                    AdminPanel.closeMobileSidebar();
-                }
-            });
-
-            // Handle escape key
-            $(document).on('keydown', function(e) {
-                if (e.keyCode === 27 && $(window).width() <= AdminPanel.config.sidebarBreakpoint) {
-                    AdminPanel.closeMobileSidebar();
-                }
-            });
-        },
-
-        // Close mobile sidebar
-        closeMobileSidebar: function() {
-            const $sidebar = $('.admin-sidebar');
-            const $body = $('body');
-            const $backdrop = $('.admin-sidebar-backdrop');
-            
-            $sidebar.removeClass('show');
-            $body.removeClass('sidebar-open');
-            $backdrop.removeClass('show');
         },
 
         // Initialize search functionality
@@ -236,7 +138,9 @@
             // Make AJAX request
             const searchUrl = window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/admin/api/search';
             
-            $.ajax({
+            if (this.searchRequest) this.searchRequest.abort();
+            this.searchQuery = query;
+            this.searchRequest = $.ajax({
                 url: searchUrl,
                 method: 'GET',
                 data: { 
@@ -245,6 +149,7 @@
                 },
                 dataType: 'json',
                 success: function(response) {
+                    if (AdminPanel.searchQuery !== query) return;
                     if (response.error) {
                         AdminPanel.showSearchError(response.error);
                     } else {
@@ -252,6 +157,7 @@
                     }
                 },
                 error: function(xhr, status, error) {
+                    if (status === 'abort') return;
                     let errorMessage = 'Search failed';
                     if (xhr.responseJSON && xhr.responseJSON.error) {
                         errorMessage = xhr.responseJSON.error;
@@ -266,71 +172,36 @@
         // Create search results container
         createSearchResultsContainer: function() {
             const $searchContainer = $('<div id="adminSearchResults" class="admin-search-results"></div>');
-            $('.admin-navbar .position-relative').append($searchContainer);
+            $('.admin-search-container').append($searchContainer);
         },
 
-        // Display search results
+        // Use text nodes for stored titles and queries; accept only local links.
         displaySearchResults: function(response) {
-            const $container = $('#adminSearchResults');
-            
-            // Handle both old and new response formats
-            let results = response;
-            if (response.results) {
-                results = response.results;
-            }
-            
-            let html = '<div class="admin-search-results-content">';
-            let hasResults = false;
-
-            // Show context information if available
-            if (response.context) {
-                html += `<div class="search-context">Searching in: <strong>${response.context.charAt(0).toUpperCase() + response.context.slice(1)}</strong></div>`;
-            }
-
-            // Blog results
-            if (results.blog && results.blog.length > 0) {
-                hasResults = true;
-                html += '<div class="search-section"><h4><i class="bi bi-file-earmark-text me-2"></i>Blog Posts</h4><ul>';
-                results.blog.forEach(function(item) {
-                    const status = item.is_published ? '<span class="admin-badge admin-badge-success">Published</span>' : '<span class="admin-badge admin-badge-warning">Draft</span>';
-                    html += `<li><a href="${item.url}">${item.title}</a> ${status}</li>`;
+            const $container = $('#adminSearchResults').empty();
+            const $content = $('<div class="admin-search-results-content"></div>');
+            const results = response.results || response;
+            let count = 0;
+            for (const [type, label] of [['blog', 'Blog posts'], ['updates', 'Updates'], ['portfolio', 'Portfolio']]) {
+                if (!Array.isArray(results[type]) || !results[type].length) continue;
+                const $section = $('<div class="search-section"></div>');
+                $('<h4></h4>').text(label).appendTo($section);
+                const $list = $('<ul></ul>').appendTo($section);
+                results[type].forEach(item => {
+                    let url;
+                    try { url = new URL(item.url, location.origin); } catch (_) { return; }
+                    if (url.origin !== location.origin) return;
+                    const $row = $('<li></li>');
+                    $('<a></a>').attr('href', url.href).text(item.title || 'Untitled').appendTo($row);
+                    $row.appendTo($list);
+                    count++;
                 });
-                html += '</ul></div>';
+                $section.appendTo($content);
             }
-
-            // Updates results
-            if (results.updates && results.updates.length > 0) {
-                hasResults = true;
-                html += '<div class="search-section"><h4><i class="bi bi-clock-history me-2"></i>Updates</h4><ul>';
-                results.updates.forEach(function(item) {
-                    const status = item.is_published ? '<span class="admin-badge admin-badge-success">Published</span>' : '<span class="admin-badge admin-badge-warning">Draft</span>';
-                    html += `<li><a href="${item.url}">${item.title}</a> ${status}</li>`;
-                });
-                html += '</ul></div>';
-            }
-
-            // Portfolio results
-            if (results.portfolio && results.portfolio.length > 0) {
-                hasResults = true;
-                html += '<div class="search-section"><h4><i class="bi bi-briefcase me-2"></i>Portfolio</h4><ul>';
-                results.portfolio.forEach(function(item) {
-                    const status = item.is_visible ? '<span class="admin-badge admin-badge-success">Visible</span>' : '<span class="admin-badge admin-badge-warning">Hidden</span>';
-                    html += `<li><a href="${item.url}">${item.title}</a> ${status}</li>`;
-                });
-                html += '</ul></div>';
-            }
-
-            if (!hasResults) {
-                html += '<div class="admin-search-no-results"><i class="bi bi-search me-2"></i>No results found for "' + response.query + '"</div>';
-            }
-
-            // Add "View All Results" link if context is set
-            if (response.context && hasResults) {
-                html += '<div class="search-footer"><a href="' + window.location.origin + window.location.pathname.replace(/\/admin.*$/, '') + '/admin/search?q=' + encodeURIComponent(response.query) + '&type=' + response.context + '" class="btn btn-sm btn-outline-primary">View All Results</a></div>';
-            }
-
-            html += '</div>';
-            $container.html(html).addClass('show');
+            if (!count) $('<p class="admin-search-no-results"></p>').text('No results for “' + (response.query || '') + '”.').appendTo($content);
+            else $('<a class="admin-btn admin-btn-secondary"></a>')
+                .attr('href', (window.FULL_BASE_PATH || '/') + 'admin/search?q=' + encodeURIComponent(response.query || ''))
+                .text('View all results').appendTo($content);
+            $container.append($content).addClass('show');
         },
 
         // Show search loading state
@@ -342,18 +213,20 @@
         // Show search error
         showSearchError: function(message) {
             const $container = $('#adminSearchResults');
-            $container.html(`<div class="admin-search-error">${message}</div>`).addClass('show');
+            $container.empty().append($('<div class="admin-search-error" role="status"></div>').text(message)).addClass('show');
         },
 
         // Clear search results
         clearSearchResults: function() {
+            this.searchQuery = '';
+            if (this.searchRequest) this.searchRequest.abort();
             $('#adminSearchResults').removeClass('show').empty();
         },
 
         // Close search results when clicking outside
         initSearchClickOutside: function() {
             $(document).on('click', function(e) {
-                const $searchContainer = $('.admin-navbar .position-relative');
+                const $searchContainer = $('.admin-search-container');
                 const $searchResults = $('#adminSearchResults');
                 
                 if (!$searchContainer.is(e.target) && 
@@ -388,18 +261,15 @@
         initResponsiveTables: function() {
             $('.admin-table').each(function() {
                 const $table = $(this);
-                if ($table[0].scrollWidth > $table.parent().width()) {
-                    $table.wrap('<div class="table-responsive"></div>');
+                if (!$table.parent().is('.admin-table-scroll, .admin-table-container, .table-responsive')) {
+                    $table.wrap('<div class="table-responsive" tabindex="0" role="region" aria-label="Scrollable content table"></div>');
                 }
             });
         },
 
         // Initialize responsive forms
         initResponsiveForms: function() {
-            // Adjust form layout on mobile
-            if ($(window).width() <= 768) {
-                $('.admin-form .row').removeClass('row').addClass('form-mobile');
-            }
+            // CSS owns responsive form layout so resizing stays reversible.
         },
 
         // Bind global events

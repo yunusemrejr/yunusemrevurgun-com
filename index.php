@@ -3,8 +3,12 @@
 if (php_sapi_name() === 'cli-server') {
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $file = __DIR__ . $path;
+    if (preg_match('#^/(?:\.env|\.git|config/|models/|includes/|middleware/|router/)|\.(?:sqlite|log|jsonl)$#i', $path)) {
+        http_response_code(403);
+        return;
+    }
     
-    if (is_file($file)) {
+    if (is_file($file) && $path !== '/sitemap.xml') {
         return false; // Let PHP built-in server handle the static file directly
     }
 }
@@ -50,10 +54,3 @@ if (getenv('MODE') === 'development') {
 require_once 'router/Router.php';
 $router = new Router();
 $router->route();
-
-echo <<<HTML
- 
-HTML;
-
-
-?> 

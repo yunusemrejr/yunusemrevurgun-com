@@ -21,6 +21,9 @@ if (!isset($_SESSION['csrf_token'])) {
 
 $page = $page ?? '';
 $pageTitle = $pageTitle ?? 'Dashboard';
+if (isset($pageHeader) && !str_contains($pageHeader, '<h1')) {
+    $pageHeader = str_replace('<div class="admin-page-header">', '<div class="admin-page-header"><h1 class="admin-page-title">' . htmlspecialchars($pageTitle) . '</h1>', $pageHeader);
+}
 
 $adminNavItems = [
     ['id' => 'dashboard', 'label' => 'Dashboard', 'href' => FULL_BASE_PATH . 'admin/dashboard'],
@@ -57,10 +60,6 @@ $faviconMime = 'image/svg+xml';
     <link rel="shortcut icon" href="<?php echo $faviconUrl; ?>">
     <link rel="apple-touch-icon" href="<?php echo $faviconUrl; ?>">
     <meta name="msapplication-TileImage" content="<?php echo $faviconUrl; ?>">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -102,20 +101,21 @@ $faviconMime = 'image/svg+xml';
     </script>
 </head>
 <body class="admin-container">
+    <a class="admin-skip-link" href="#main-content">Skip to content</a>
     <header class="admin-ui-topbar">
         <div class="admin-ui-topbar-row">
             <div class="admin-ui-brand">
-                <a href="<?php echo FULL_BASE_PATH; ?>admin/dashboard">YUNUSEMRE VURGUN</a>
+                <a href="<?php echo FULL_BASE_PATH; ?>admin/dashboard">Yemre</a>
                 <span>ADMIN</span>
             </div>
 
-            <button class="admin-ui-menu-toggle" type="button" data-admin-menu-open aria-label="Open admin menu">Menu</button>
+            <button class="admin-ui-menu-toggle" type="button" data-admin-menu-open aria-label="Open admin menu" aria-expanded="false" aria-controls="adminUiMobileMenu">Menu</button>
 
             <nav class="admin-ui-nav" aria-label="Admin navigation">
                 <?php foreach ($adminNavItems as $item):
                     $isActive = $page === $item['id'] || str_starts_with($page, $item['id'] . '-');
                     ?>
-                    <a class="admin-ui-nav-link<?php echo $isActive ? ' is-active' : ''; ?>" href="<?php echo htmlspecialchars($item['href']); ?>"<?php echo !empty($item['download']) ? ' download' : ''; ?>><?php echo htmlspecialchars($item['label']); ?></a>
+                    <a class="admin-ui-nav-link<?php echo $isActive ? ' is-active' : ''; ?>" href="<?php echo htmlspecialchars($item['href']); ?>"<?php echo !empty($item['download']) ? ' download' : ''; ?><?php echo ($page === $item['id'] || str_starts_with($page, $item['id'] . '-')) ? ' aria-current="page"' : ''; ?>><?php echo htmlspecialchars($item['label']); ?></a>
                 <?php endforeach; ?>
             </nav>
 
@@ -133,7 +133,7 @@ $faviconMime = 'image/svg+xml';
             <button type="button" class="admin-ui-mobile-close" data-admin-menu-close aria-label="Close">×</button>
             <nav class="admin-ui-mobile-links" aria-label="Admin mobile navigation">
                 <?php foreach ($adminNavItems as $item): ?>
-                    <a href="<?php echo htmlspecialchars($item['href']); ?>" data-admin-menu-close<?php echo !empty($item['download']) ? ' download' : ''; ?>><?php echo htmlspecialchars($item['label']); ?></a>
+                    <a href="<?php echo htmlspecialchars($item['href']); ?>" data-admin-menu-close<?php echo !empty($item['download']) ? ' download' : ''; ?><?php echo ($page === $item['id'] || str_starts_with($page, $item['id'] . '-')) ? ' aria-current="page"' : ''; ?>><?php echo htmlspecialchars($item['label']); ?></a>
                 <?php endforeach; ?>
                 <a href="<?php echo FULL_BASE_PATH; ?>" target="_blank" rel="noopener noreferrer" data-admin-menu-close>View Site</a>
                 <a href="<?php echo FULL_BASE_PATH; ?>admin/logout" data-admin-menu-close>Logout</a>
@@ -141,8 +141,9 @@ $faviconMime = 'image/svg+xml';
         </div>
     </div>
 
-    <main class="admin-main">
+    <main class="admin-main" id="main-content" tabindex="-1">
         <div class="admin-content">
+            <?php if (isset($pageHeader)): echo $pageHeader; else: ?>
             <div class="admin-page-header">
                 <h1 class="admin-page-title"><?php echo htmlspecialchars($pageTitle); ?></h1>
                 <?php if (isset($actionButton)): ?>
@@ -151,3 +152,5 @@ $faviconMime = 'image/svg+xml';
                     </div>
                 <?php endif; ?>
             </div>
+
+            <?php endif; ?>

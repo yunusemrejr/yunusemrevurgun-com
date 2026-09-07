@@ -31,12 +31,9 @@ if ($isArchived) $baseUrl .= '?tab=archived';
 
 $page = "videos";
 $pageTitle = "Videos";
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
-
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <h1 class="admin-page-title">Videos</h1>
                 <p class="admin-page-subtitle">Manage video uploads and embedded videos</p>
@@ -50,6 +47,13 @@ include __DIR__ . '/../includes/header.php';
                 </button>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
 
         <div class="admin-tabs">
             <a href="<?= FULL_BASE_PATH ?>admin/videos?tab=active" class="admin-tab <?= !$isArchived ? 'active' : '' ?>">Active</a>
@@ -72,7 +76,7 @@ include __DIR__ . '/../includes/header.php';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($videoList as $i => $video): 
+                        <?php foreach ($videoList as $i => $video):
                             $duration = $video['duration'] > 0 ? gmdate('i:s', intval($video['duration'])) : '--:--';
                             $size = $video['file_size'] > 0 ? round($video['file_size'] / 1024 / 1024, 1) . ' MB' : '--';
                             $typeLabel = $video['type'] === 'url' ? 'URL' : 'File';
@@ -133,8 +137,7 @@ include __DIR__ . '/../includes/header.php';
                 <?= $isArchived ? 'No archived videos.' : 'No videos yet. Add a URL or upload a video.' ?>
             </div>
         <?php endif; ?>
-    </div>
-</main>
+
 
 <!-- Upload Modal -->
 <div class="admin-upload-modal" id="uploadModal" tabindex="-1">

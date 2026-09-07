@@ -45,14 +45,14 @@ echo '    <atom:link href="' . htmlspecialchars($base . '/rmrp.xml', ENT_XML1) .
 foreach ($items as $item) {
     $url = $base . '/rmrp/' . (int) $item['id'];
     echo '    <item>' . "\n";
-    echo '      <title><![CDATA[' . ($item['title'] ?? '') . ']]></title>' . "\n";
+    echo '      <title>' . htmlspecialchars(($item['title'] ?? ''), ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</title>' . "\n";
     echo '      <link>' . htmlspecialchars($url, ENT_XML1) . '</link>' . "\n";
     echo '      <guid isPermaLink="true">' . htmlspecialchars($url, ENT_XML1) . '</guid>' . "\n";
     echo '      <pubDate>' . date('r', strtotime($item['memory_date'] ?? $item['created_at'] ?? 'now')) . '</pubDate>' . "\n";
     if (!empty($item['category'])) {
-        echo '      <category><![CDATA[' . $item['category'] . ']]></category>' . "\n";
+        echo '      <category>' . htmlspecialchars($item['category'], ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</category>' . "\n";
     }
-    echo '      <description><![CDATA[' . RichText::markdown($item['description'] ?? '') . ']]></description>' . "\n";
+    echo '      <description>' . htmlspecialchars(RichText::markdown($item['description'] ?? ''), ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</description>' . "\n";
     echo '    </item>' . "\n";
 }
 

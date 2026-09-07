@@ -119,7 +119,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 .admin-gallery-item .admin-card-text {
   font-family: var(--font-body);
   font-size: 0.8rem;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   margin: 0;
 }
 
@@ -165,7 +165,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 .admin-alert.admin-alert-info p {
   margin: 0;
   font-size: var(--text-sm);
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
 }
 
 /* ===== TABS ===== */
@@ -185,7 +185,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: var(--font-normal);
-  color: #8490a4;
+  color: var(--color-ink-slate);
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
@@ -240,7 +240,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 .admin-page-subtitle {
   font-family: var(--font-body);
   font-weight: var(--font-normal);
-  color: #8490a4;
+  color: var(--color-ink-slate);
   margin: 0;
   font-size: var(--text-sm);
 }
@@ -306,7 +306,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
-  color: #8490a4;
+  color: var(--color-ink-slate);
   text-decoration: none;
   border-bottom: 2px solid transparent;
   transition: all var(--transition-fast);
@@ -328,7 +328,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   cursor: pointer;
   padding: var(--space-2);
   line-height: 1;
@@ -437,7 +437,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 .admin-album-desc {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
   margin: 0 0 var(--space-2);
   line-height: var(--text-leading-normal);
 }
@@ -445,7 +445,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 .admin-album-meta {
   font-family: var(--font-body);
   font-size: 0.75rem;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   margin: 0;
 }
 
@@ -510,7 +510,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   font-weight: var(--font-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   margin-bottom: 0.2rem;
   display: block;
 }

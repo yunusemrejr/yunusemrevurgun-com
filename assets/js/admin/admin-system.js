@@ -30,7 +30,7 @@
         regenerateSitemap: function() {
             const $btn = $('#regenerate-sitemap-btn');
             const originalText = $btn.html();
-            const loadingText = '<i class="bi bi-arrow-clockwise me-1 spin"></i>Regenerating...';
+            const loadingText = '<i class="bi bi-arrow-clockwise me-1 spin"></i>Validating...';
             
             // Disable button and show loading state
             $btn.prop('disabled', true).html(loadingText);
@@ -54,7 +54,7 @@
                 timeout: 30000,
                 success: function(response) {
                     if (response.success) {
-                        AdminPanel.showNotification('Sitemap regenerated successfully!', 'success');
+                        AdminPanel.showNotification(response.message || 'Sitemap validated.', 'success');
                         // Sitemap regenerated successfully
                         
                         // Update CSRF token in meta tag for next request

@@ -5,6 +5,7 @@ require_once __DIR__ . '/Database.php';
 
 class Travel {
     private $db;
+    private bool $sourceColumnsChecked = false;
 
     public function __construct() {
         $this->db = Database::getInstance()->getConnection();
@@ -67,7 +68,7 @@ class Travel {
     // ==================== LOCATION METHODS ====================
 
     public function getAllLocations() {
-        $query = "SELECT * FROM travel_locations ORDER BY sort_order ASC, country ASC, city ASC";
+        $query = "SELECT l.*, COALESCE(i.image_count, 0) AS image_count FROM travel_locations l LEFT JOIN (SELECT location_id, COUNT(*) AS image_count FROM travel_location_images GROUP BY location_id) i ON i.location_id = l.id ORDER BY l.sort_order ASC, l.country ASC, l.city ASC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -164,6 +165,8 @@ class Travel {
     // ==================== IMAGE METHODS ====================
 
     private function migrateSourceColumn() {
+        if ($this->sourceColumnsChecked) return;
+        $this->sourceColumnsChecked = true;
         try {
             $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
             if ($driver === 'sqlite') {
@@ -179,18 +182,23 @@ class Travel {
                     $this->db->exec("ALTER TABLE travel_location_images ADD COLUMN gallery_image_id INTEGER DEFAULT NULL");
                 }
             } else {
-                try {
-                    $this->db->exec("ALTER TABLE travel_location_images ADD COLUMN source VARCHAR(20) DEFAULT 'upload'");
-                } catch (PDOException $e) {}
-                try {
-                    $this->db->exec("ALTER TABLE travel_location_images ADD COLUMN gallery_image_id INT DEFAULT NULL");
-                } catch (PDOException $e) {}
+                $columns = $this->db->query('SHOW COLUMNS FROM travel_location_images')->fetchAll(PDO::FETCH_COLUMN);
+                if (!in_array('source', $columns, true)) $this->db->exec("ALTER TABLE travel_location_images ADD COLUMN source VARCHAR(20) DEFAULT 'upload'");
+                if (!in_array('gallery_image_id', $columns, true)) $this->db->exec('ALTER TABLE travel_location_images ADD COLUMN gallery_image_id INT DEFAULT NULL');
             }
         } catch (PDOException $e) {
             if (getenv('MODE') === 'development') {
                 error_log("travel_location_images migration: " . $e->getMessage());
             }
         }
+    }
+
+    public function getImagesGroupedByLocation(): array {
+        $this->migrateSourceColumn();
+        $images = $this->db->query('SELECT * FROM travel_location_images ORDER BY sort_order ASC, id ASC')->fetchAll(PDO::FETCH_ASSOC);
+        $grouped = [];
+        foreach ($images as $image) $grouped[$image['location_id']][] = $image;
+        return $grouped;
     }
 
     public function getImagesByLocation($locationId) {

@@ -4,14 +4,14 @@ require_once __DIR__ . '/includes/ui.php';
 
 ui_render_head(
     'Comedy | Yunus Emre Vurgun',
-    'Shower Thoughts & Memes — @showerthoughtsamp',
+    'Shower Thoughts & Memes by @showerthoughtsamp: find the Instagram and TikTok profiles and a small collection of animated memes.',
 );
 ?>
-<body>
+<body class="ui-collection">
 <div class="ui-page">
     <?php ui_render_navbar('more'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Comedy</p>
             <h1 class="ui-section-title">Shower Thoughts &amp; Memes</h1>
@@ -42,21 +42,22 @@ ui_render_head(
         <!-- Memes -->
         <section class="ui-section">
             <h2 class="ui-section-subtitle">Memes</h2>
+            <div class="ui-media-intro"><p>Load the animated collection when you’re ready.</p><button class="ui-btn ui-btn-primary" type="button" data-load-memes>Load memes</button></div>
             <div class="comedy-memes">
-                <div class="tenor-gif-embed" data-postid="10218248190964058871" data-share-method="host" data-aspect-ratio="1" data-width="100%"></div>
-                <div class="tenor-gif-embed" data-postid="22423735" data-share-method="host" data-aspect-ratio="1.25" data-width="100%"></div>
-                <div class="tenor-gif-embed" data-postid="4485592100516537029" data-share-method="host" data-aspect-ratio="0.761044" data-width="100%"></div>
-                <div class="tenor-gif-embed" data-postid="4871515084258742720" data-share-method="host" data-aspect-ratio="1.05508" data-width="100%"></div>
-                <div class="tenor-gif-embed" data-postid="14578253283354428711" data-share-method="host" data-aspect-ratio="0.98996" data-width="100%"></div>
-                <div class="tenor-gif-embed" data-postid="7328295092409424487" data-share-method="host" data-aspect-ratio="0.803213" data-width="100%"></div>
+                <div class="tenor-gif-embed" data-postid="10218248190964058871" data-share-method="host" data-aspect-ratio="1" data-width="100%"><a href="https://tenor.com/view/10218248190964058871" target="_blank" rel="noopener noreferrer">View this meme on Tenor ↗</a></div>
+                <div class="tenor-gif-embed" data-postid="22423735" data-share-method="host" data-aspect-ratio="1.25" data-width="100%"><a href="https://tenor.com/view/22423735" target="_blank" rel="noopener noreferrer">View this meme on Tenor ↗</a></div>
+                <div class="tenor-gif-embed" data-postid="4485592100516537029" data-share-method="host" data-aspect-ratio="0.761044" data-width="100%"><a href="https://tenor.com/view/4485592100516537029" target="_blank" rel="noopener noreferrer">View this meme on Tenor ↗</a></div>
+                <div class="tenor-gif-embed" data-postid="4871515084258742720" data-share-method="host" data-aspect-ratio="1.05508" data-width="100%"><a href="https://tenor.com/view/4871515084258742720" target="_blank" rel="noopener noreferrer">View this meme on Tenor ↗</a></div>
+                <div class="tenor-gif-embed" data-postid="14578253283354428711" data-share-method="host" data-aspect-ratio="0.98996" data-width="100%"><a href="https://tenor.com/view/14578253283354428711" target="_blank" rel="noopener noreferrer">View this meme on Tenor ↗</a></div>
+                <div class="tenor-gif-embed" data-postid="7328295092409424487" data-share-method="host" data-aspect-ratio="0.803213" data-width="100%"><a href="https://tenor.com/view/7328295092409424487" target="_blank" rel="noopener noreferrer">View this meme on Tenor ↗</a></div>
             </div>
         </section>
     </main>
 
     <?php ui_render_footer(); ?>
 </div>
-<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

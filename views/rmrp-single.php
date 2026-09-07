@@ -57,7 +57,7 @@ $pageMeta = [
     '<meta name="twitter:data1" content="' . htmlspecialchars($category !== '' ? $category : 'Memories', ENT_QUOTES) . '">',
     '<meta name="twitter:label2" content="Importance">',
     '<meta name="twitter:data2" content="' . htmlspecialchars($importance !== '' ? ucfirst($importance) : 'General', ENT_QUOTES) . '">',
-    '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>',
+    '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>',
 ];
 
 ui_render_head($title, $description, $pageMeta);
@@ -66,7 +66,7 @@ ui_render_head($title, $description, $pageMeta);
 <div class="ui-page">
     <?php ui_render_navbar('Journal'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Random Memories</p>
             <h1 class="ui-section-title" style="margin-bottom: 0.25rem;"><?= htmlspecialchars($memory['title']) ?></h1>
@@ -95,6 +95,6 @@ ui_render_head($title, $description, $pageMeta);
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

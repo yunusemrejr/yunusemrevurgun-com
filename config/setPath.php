@@ -14,16 +14,7 @@ $httpHost = $_SERVER['HTTP_HOST'] ?? '';
 $serverAddr = $_SERVER['SERVER_ADDR'] ?? '';
 $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
 
-$isLocalhost = (
-    strpos($httpHost, 'localhost') !== false ||
-    strpos($httpHost, '127.0.0.1') !== false ||
-    strpos($httpHost, '192.168.') !== false ||
-    strpos($httpHost, '10.0.') !== false ||
-    $serverAddr === '127.0.0.1' ||
-    $serverAddr === '::1' ||
-    $remoteAddr === '127.0.0.1' ||
-    $remoteAddr === '::1'
-);
+$isLocalhost = (bool)preg_match('/^(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i', $httpHost);
 
 // Robust environment variable helper: checks getenv(), $_ENV, and $_SERVER
 if (!function_exists('env')) {

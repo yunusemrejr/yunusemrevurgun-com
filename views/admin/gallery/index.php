@@ -41,12 +41,9 @@ $albums = $gallery->getAllAlbums();
 <?php
 $page = "gallery";
 $pageTitle = "Gallery";
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
-
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <h1 class="admin-page-title">Gallery</h1>
                 <p class="admin-page-subtitle">Manage your gallery images and albums</p>
@@ -57,6 +54,13 @@ include __DIR__ . '/../includes/header.php';
                 </button>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
 
         <!-- Tabs -->
         <div class="admin-tabs">
@@ -77,7 +81,7 @@ include __DIR__ . '/../includes/header.php';
                     <i class="bi bi-plus-lg me-2"></i>Create Album
                 </button>
             </div>
-            
+
             <?php if (!empty($albums)): ?>
             <div class="admin-albums-grid">
                 <?php foreach ($albums as $album): ?>
@@ -180,8 +184,7 @@ include __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
         </div>
-    </div>
-</main>
+
 
 <!-- Upload Modal -->
 <div class="admin-upload-modal" id="uploadModal" tabindex="-1">

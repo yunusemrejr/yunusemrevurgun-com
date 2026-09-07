@@ -7,7 +7,7 @@ require_once dirname(__DIR__, 3) . '/config/setPath.php';
 if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
     header('Location: ' . FULL_BASE_PATH);
     exit;
-} 
+}
 ?>
 <?php
 require_once __DIR__ . '/../../../global.php';
@@ -27,6 +27,8 @@ if (!$post) {
     exit;
 }
 
+require_once __DIR__ . '/../../../models/HtmlSanitizer.php';
+$post['content'] = HtmlSanitizer::clean((string)$post['content']);
 $success = false;
 $error = '';
 
@@ -45,19 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $title = $_POST['title'] ?? '';
     $content = $_POST['content'] ?? '';
-    $content = preg_replace('#<script\b[^>]*>(.*?)</script>#is', '', (string)$content);
-    $content = preg_replace('#<style\b[^>]*>(.*?)</style>#is', '', $content);
-    $content = preg_replace('#\s*on\w+\s*=\s*["\'][^"\']*["\']#is', '', $content);
     $excerpt = $_POST['excerpt'] ?? '';
     // Ensure status is explicitly captured from form submission
     $rawStatus = $_POST['status'] ?? null;
     $status = ($rawStatus === 'published') ? 'published' : 'draft';
-    
+
     // Ensure we have a slug or generate one
     if (empty($_POST['slug'])) {
         $_POST['slug'] = $blog->createSlug($title);
     }
-    
+
     // Prepare the data array
     $data = [
         'title' => $title,
@@ -68,16 +67,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'meta_keywords' => $_POST['meta_keywords'] ?? '',
         'meta_description' => $_POST['meta_description'] ?? ''
     ];
-    
+
     // Handle featured image upload
     if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = __DIR__ . '/../../../uploads/blog/';
-        
+
         // Create directory if it doesn't exist
         if (!file_exists($upload_dir)) {
             mkdir($upload_dir, 0755, true);
         }
-        
+
         $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         $tmpPath = $_FILES['featured_image']['tmp_name'];
         $mime = @mime_content_type($tmpPath) ?: '';
@@ -94,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $extByMime = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
             $filename = uniqid('', true) . '_' . $sanitizedName . '.' . $extByMime[$mime];
             $upload_file = $upload_dir . $filename;
-            
+
             if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $upload_file)) {
                 $data['featured_image'] = 'uploads/blog/' . $filename;
                 // Delete old featured image only after new upload succeeds
@@ -119,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Explicitly set featured_image to NULL in the data array
         $data['featured_image'] = null;
     }
-    
+
     if (empty($error)) {
         try {
             $result = $blog->updatePost($id, $data);
@@ -268,4 +267,4 @@ include __DIR__ . '/../includes/header.php';
 <?php
 // Include footer
 include __DIR__ . '/../includes/footer.php';
-?> 
+?>

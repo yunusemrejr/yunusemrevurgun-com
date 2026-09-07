@@ -50,11 +50,11 @@ foreach ($items as $item) {
         $excerpt = mb_substr(trim(strip_tags((string) ($item['content'] ?? ''))), 0, 300);
     }
     echo '    <item>' . "\n";
-    echo '      <title><![CDATA[' . ($item['title'] ?? '') . ']]></title>' . "\n";
+    echo '      <title>' . htmlspecialchars(($item['title'] ?? ''), ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</title>' . "\n";
     echo '      <link>' . htmlspecialchars($url, ENT_XML1) . '</link>' . "\n";
     echo '      <guid isPermaLink="true">' . htmlspecialchars($url, ENT_XML1) . '</guid>' . "\n";
     echo '      <pubDate>' . date('r', strtotime($item['pubdate'] ?? 'now')) . '</pubDate>' . "\n";
-    echo '      <description><![CDATA[' . RichText::markdown($excerpt) . ']]></description>' . "\n";
+    echo '      <description>' . htmlspecialchars(RichText::markdown($excerpt), ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</description>' . "\n";
     echo '    </item>' . "\n";
 }
 

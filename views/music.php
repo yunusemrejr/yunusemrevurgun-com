@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
+require_once __DIR__ . '/includes/collection.php';
 require_once dirname(__DIR__) . '/models/Music.php';
 
 $music = new Music();
@@ -8,19 +9,19 @@ $tracks = $music->getAllTracks(false);
 
 ui_render_head(
     'Music | Yunus Emre Vurgun',
-    'Music collection with audio player.',
-    ['music' => true]
+    'Listen to audio recordings shared by Yunus Emre Vurgun, with track details and links to music platforms.',
+    ['music' => true, ui_collection_schema('Music', 'music', array_column($tracks, 'title'), array_map(fn($item) => 'track-' . $item['id'], $tracks))]
 );
 ?>
-<body>
+<body class="ui-collection">
 <div class="ui-page">
     <?php ui_render_navbar('music'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Audio</p>
             <h1 class="ui-section-title">Music</h1>
-            <p class="ui-section-text">A collection of audio tracks. Click to play.</p>
+            <p class="ui-section-text">Recordings and music links from my corner of the internet. Choose a track to listen.</p>
         </section>
 
         <section class="ui-section">
@@ -32,7 +33,7 @@ ui_render_head(
                             $duration = $track['duration'] > 0 ? gmdate('i:s', round($track['duration'])) : '--:--';
                             $recordedDate = !empty($track['recorded_at']) ? date('M d, Y', strtotime($track['recorded_at'])) : '';
                         ?>
-                            <div class="ui-music-track" data-track-id="<?= $track['id'] ?>" data-src="<?= $trackUrl ?>">
+                            <div class="ui-music-track" id="track-<?= (int)$track['id'] ?>" data-track-id="<?= $track['id'] ?>" data-src="<?= $trackUrl ?>">
                                 <div class="ui-music-track-cover">
                                     <span class="ui-music-track-number"><?= $index + 1 ?></span>
                                 </div>
@@ -48,13 +49,14 @@ ui_render_head(
                                 <div class="ui-music-track-meta">
                                     <span class="ui-music-track-duration"><?= $duration ?></span>
                                 </div>
-                                <button class="ui-music-play-btn" type="button" aria-label="Play track">
+                                <button class="ui-music-play-btn" type="button" aria-label="Play <?= htmlspecialchars($track['title'] ?? 'track') ?>">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                                 </button>
                             </div>
                         <?php endforeach; ?>
                     </div>
 
+                    <p id="musicStatus" role="status" aria-live="polite"></p>
                     <!-- Player bar -->
                     <div class="ui-music-player" id="musicPlayer">
                         <div class="ui-music-player-track">
@@ -73,9 +75,7 @@ ui_render_head(
                         </div>
                         <div class="ui-music-player-progress">
                             <span class="ui-music-player-time" id="currentTime">0:00</span>
-                            <div class="ui-music-player-bar" id="progressBar">
-                                <div class="ui-music-player-bar-fill" id="progressFill"></div>
-                            </div>
+                            <input type="range" class="ui-music-seek" id="progressBar" min="0" max="100" step="0.1" value="0" aria-label="Seek in current track" disabled>
                             <span class="ui-music-player-time" id="totalTime">0:00</span>
                         </div>
                         <div class="ui-music-player-volume">
@@ -151,6 +151,8 @@ ui_render_head(
     'use strict';
 
     const audio = new Audio();
+    audio.preload = 'none';
+    const status = document.getElementById('musicStatus');
     const tracks = document.querySelectorAll('.ui-music-track');
     const trackElements = Array.from(tracks);
     let currentIndex = -1;
@@ -160,7 +162,6 @@ ui_render_head(
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const muteBtn = document.getElementById('muteBtn');
-    const progressFill = document.getElementById('progressFill');
     const progressBar = document.getElementById('progressBar');
     const currentTimeEl = document.getElementById('currentTime');
     const totalTimeEl = document.getElementById('totalTime');
@@ -175,6 +176,7 @@ ui_render_head(
     }
 
     function updatePlayBtn() {
+        playBtn.setAttribute('aria-label', isPlaying ? 'Pause' : 'Play');
         const svg = playBtn.querySelector('svg');
         if (isPlaying) {
             svg.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
@@ -196,6 +198,9 @@ ui_render_head(
         const src = el.getAttribute('data-src');
         const title = el.querySelector('.ui-music-track-title').textContent;
         playerTitle.textContent = title;
+        status.textContent = '';
+        progressBar.value = 0;
+        progressBar.disabled = true;
         audio.src = src;
         audio.load();
         selectTrack(index);
@@ -206,7 +211,7 @@ ui_render_head(
         audio.play().then(function() {
             isPlaying = true;
             updatePlayBtn();
-        }).catch(function() {});
+        }).catch(function() { status.textContent = 'Playback could not start. Please try again.'; });
     }
 
     function togglePlay() {
@@ -220,7 +225,7 @@ ui_render_head(
         } else {
             audio.play().then(function() {
                 isPlaying = true;
-            }).catch(function() {});
+            }).catch(function() { status.textContent = 'Playback could not start. Please try again.'; });
         }
         updatePlayBtn();
     }
@@ -266,7 +271,8 @@ ui_render_head(
     audio.addEventListener('timeupdate', function() {
         if (audio.duration) {
             const pct = (audio.currentTime / audio.duration) * 100;
-            progressFill.style.width = pct + '%';
+            progressBar.value = pct;
+            progressBar.setAttribute('aria-valuetext', formatTime(audio.currentTime) + ' of ' + formatTime(audio.duration));
             currentTimeEl.textContent = formatTime(audio.currentTime);
         }
     });
@@ -274,7 +280,8 @@ ui_render_head(
     audio.addEventListener('loadedmetadata', function() {
         totalTimeEl.textContent = formatTime(audio.duration);
         currentTimeEl.textContent = '0:00';
-        progressFill.style.width = '0%';
+        progressBar.value = 0;
+        progressBar.disabled = !Number.isFinite(audio.duration);
     });
 
     audio.addEventListener('ended', function() {
@@ -293,12 +300,14 @@ ui_render_head(
         updatePlayBtn();
     });
 
-    // Progress bar click
-    progressBar.addEventListener('click', function(e) {
-        if (!audio.duration) return;
-        const rect = progressBar.getBoundingClientRect();
-        const pct = (e.clientX - rect.left) / rect.width;
-        audio.currentTime = pct * audio.duration;
+    progressBar.addEventListener('input', function() {
+        if (Number.isFinite(audio.duration)) audio.currentTime = Number(this.value) / 100 * audio.duration;
+    });
+    audio.addEventListener('error', function() {
+        status.textContent = 'This recording is unavailable right now. Try another track.';
+        progressBar.disabled = true;
+        isPlaying = false;
+        updatePlayBtn();
     });
 
     // Volume
@@ -310,20 +319,15 @@ ui_render_head(
     muteBtn.addEventListener('click', function() {
         audio.muted = !audio.muted;
         muteBtn.classList.toggle('is-muted', audio.muted);
+        muteBtn.setAttribute('aria-label', audio.muted ? 'Unmute' : 'Mute');
+        muteBtn.setAttribute('aria-pressed', String(audio.muted));
     });
 
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        if (e.key === ' ') { e.preventDefault(); togglePlay(); }
-        if (e.key === 'ArrowRight') playNext();
-        if (e.key === 'ArrowLeft') playPrev();
-    });
 })();
 </script>
 <?php endif; ?>
 
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

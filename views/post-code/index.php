@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
+require_once dirname(__DIR__, 2) . '/views/includes/collection.php';
 
 $modules = [
     // ── Original 12 modules (preserved) ──
@@ -251,20 +252,21 @@ $totalModules = count($modules);
 $totalTopics  = count(array_unique(array_merge(...array_column($modules, 'tags'))));
 
 ui_render_head(
-    'Experiments | Post-Code Feed',
-    'Unified feed for post-code concepts, mathematics foundations, philosophy of computation, and the nature of software as a general transformative power.'
+    'Post-Code | Computing, Mathematics & Software Foundations',
+    'Notes on algorithms, software architecture, mathematics and the philosophy of computation, collected by Yunus Emre Vurgun.',
+    [ui_collection_schema('Post-Code', 'post-code', array_column($modules, 'title'))]
 );
 ?>
 <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/post-code.css?v=<?= filemtime(__DIR__ . '/../../assets/css/post-code.css') ?>">
-<body>
+<body class="ui-collection">
 <div class="ui-page">
     <?php ui_render_navbar('Experiments'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Feed</p>
             <h1 class="ui-section-title">Post-Code</h1>
-            <p class="ui-section-text">High-signal notes on coding fundamentals, architecture, mathematics, and the philosophy of computation. Curated concepts that remain relevant regardless of which tools write the code—exploring software as a general power that can alter life in a technological civilization.</p>
+            <p class="ui-section-text">Notes on the foundations behind the tools: algorithms, architecture, mathematics, and the philosophy of computation. Browse a category or search for a concept.</p>
         </section>
 
         <section class="ui-section">
@@ -284,19 +286,20 @@ ui_render_head(
             </div>
         </section>
 
-        <section class="ui-section">
-            <div class="ui-archive-filters" role="toolbar" aria-label="Post-code category filters">
+        <section class="ui-section" data-collection>
+            <?php ui_collection_tools($modules); ?>
+            <div class="ui-archive-filters" role="group" aria-label="Post-code category filters">
                 <?php foreach ($categories as $key => $label): ?>
-                    <button class="ui-filter-pill<?= $key === 'all' ? ' is-active' : '' ?>" type="button" data-filter="<?= htmlspecialchars($key) ?>"><?= htmlspecialchars($label) ?></button>
+                    <button class="ui-filter-pill<?= $key === 'all' ? ' is-active' : '' ?>" type="button" data-filter="<?= htmlspecialchars($key) ?>" aria-pressed="<?= $key === 'all' ? 'true' : 'false' ?>"><?= htmlspecialchars($label) ?></button>
                 <?php endforeach; ?>
             </div>
 
             <div class="ui-feed-list" id="postCodeFeed">
                 <?php foreach ($modules as $module): ?>
-                    <article class="ui-feed-card" data-category="<?= htmlspecialchars($module['category']) ?>">
+                    <article class="ui-feed-card" id="<?= ui_entry_id($module['title']) ?>" data-collection-item data-category="<?= htmlspecialchars($module['category']) ?>">
                         <div class="ui-feed-card-header">
                             <div>
-                                <h2 class="ui-feed-title"><?= htmlspecialchars($module['title']) ?></h2>
+                                <h2 class="ui-feed-title"><a href="#<?= ui_entry_id($module['title']) ?>"><?= htmlspecialchars($module['title']) ?></a></h2>
                                 <p class="ui-feed-meta"><?= htmlspecialchars($module['meta']) ?></p>
                             </div>
                         </div>
@@ -322,11 +325,7 @@ ui_render_head(
                 <?php endforeach; ?>
             </div>
 
-            <nav class="ui-pagination" aria-label="Post-code pagination">
-                <span class="ui-page-link is-disabled">Previous</span>
-                <span class="ui-page-link is-active">1</span>
-                <span class="ui-page-link is-disabled">Next</span>
-            </nav>
+            <div class="ui-collection-empty" data-collection-empty hidden><p>No entries match. Try a shorter phrase or clear the filters.</p><button type="button" class="ui-btn ui-btn-secondary" data-collection-reset>Clear filters</button></div>
         </section>
     </main>
 
@@ -340,7 +339,6 @@ window.MathJax = {
 };
 </script>
 <script data-cfasync="false" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/post-code.js?v=<?= filemtime(__DIR__ . '/../../assets/js/post-code.js') ?>"></script>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

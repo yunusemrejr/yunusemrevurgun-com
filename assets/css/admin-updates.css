@@ -355,7 +355,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 
 .updates-md-toolbar button:hover {
   background: rgba(132, 144, 164, 0.12);
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
 }
 
 .updates-md-toolbar .updates-md-sep {
@@ -406,7 +406,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 }
 
 .updates-md-preview a {
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -421,7 +421,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
   margin: 1em 0;
   padding-left: 1em;
   border-left: 2px solid var(--color-border-strong);
-  color: #8490a4;
+  color: var(--color-ink-slate);
   font-style: italic;
 }
 
@@ -453,7 +453,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 .updates-md-help {
   margin-top: var(--space-2);
   font-size: 0.75rem;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   line-height: 1.6;
 }
 

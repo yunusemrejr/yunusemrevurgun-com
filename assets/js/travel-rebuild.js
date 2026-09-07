@@ -41,12 +41,14 @@
         var src3 = galleryImageBase + filename;
         img.loading = 'lazy';
         img.alt = alt || '';
+        const sources = [...new Set([imageBase + filename, src2, src3])];
+        let sourceIndex = 0;
         img.onerror = function() {
-            if (this.src !== src2) { this.src = src2; return; }
-            if (this.src !== src3) { this.src = src3; return; }
-            this.parentElement.style.display = 'none';
+            sourceIndex++;
+            if (sourceIndex < sources.length) this.src = sources[sourceIndex];
+            else { this.onerror = null; wrap.hidden = true; }
         };
-        img.src = imageBase + filename;
+        img.src = sources[0];
         wrap.appendChild(img);
         return wrap;
     }
@@ -104,11 +106,14 @@
         if (!lightboxImg) return;
         lightboxImg.alt = 'Travel photo ' + (lightboxIndex + 1);
         // Reset onerror chain
+        const sources = [...new Set([src1, src2, src3])];
+        let sourceIndex = 0;
         lightboxImg.onerror = function() {
-            if (this.src !== src2) { this.src = src2; return; }
-            if (this.src !== src3) { this.src = src3; return; }
+            sourceIndex++;
+            if (sourceIndex < sources.length) this.src = sources[sourceIndex];
+            else { this.onerror = null; this.alt = 'This travel photo is unavailable.'; }
         };
-        lightboxImg.src = src1;
+        lightboxImg.src = sources[0];
 
         var counter = document.getElementById('travelLightboxCounter');
         if (counter) counter.textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;

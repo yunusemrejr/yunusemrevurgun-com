@@ -28,18 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete']) && isset($_
     header("Location: " . FULL_BASE_PATH . "admin/tracker-codes");
     exit();
 }
-?> 
+?>
 <?php
 // Set page title
 $page = "tracker-codes";
 $pageTitle = "Tracker Codes";
 // Include header
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
-
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <p class="admin-page-subtitle">Manage your analytics and tracking codes</p>
             </div>
@@ -49,6 +46,13 @@ include __DIR__ . '/../includes/header.php';
                 </a>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
 
         <?php if (isset($_SESSION['success'])): ?>
             <div class="admin-alert admin-alert-success">
@@ -56,14 +60,14 @@ include __DIR__ . '/../includes/header.php';
                 <?= htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?>
             </div>
         <?php endif; ?>
-        
+
         <?php if (isset($_SESSION['error'])): ?>
             <div class="admin-alert admin-alert-danger">
                 <i class="bi bi-exclamation-triangle me-2"></i>
                 <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
             </div>
         <?php endif; ?>
-        
+
         <div class="admin-card">
             <div class="admin-card-header">
                 <h5 class="admin-card-title">
@@ -121,6 +125,5 @@ include __DIR__ . '/../includes/header.php';
                 <?php endif; ?>
             </div>
         </div>
-    </div>
-</main> 
-<?php include __DIR__ . '/../includes/footer.php'; ?>  
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

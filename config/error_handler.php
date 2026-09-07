@@ -41,6 +41,7 @@ function customErrorHandler($errno, $errstr, $errfile, $errline) {
 
 // Create custom exception handler
 function customExceptionHandler($exception) {
+    if (!headers_sent()) http_response_code(500);
     global $logFile;
 
     // Format the exception message
@@ -109,6 +110,3 @@ if (getenv('MODE') === 'development' || php_sapi_name() === 'cli') {
 ini_set('log_errors', 1); // Enable error logging
 ini_set('error_log', $logFile); // Set the error log file
 error_reporting(E_ALL); // Report all PHP errors
-
- 
-?> 

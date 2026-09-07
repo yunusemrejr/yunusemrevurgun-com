@@ -1,5 +1,9 @@
 <?php
 $projectRoot = __DIR__;
+if (preg_match('#^/(?:admin|api/admin)(?:/|$)#', (string)parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH))) {
+    header('Cache-Control: no-store, private');
+    header('X-Robots-Tag: noindex, nofollow');
+}
 
 require_once $projectRoot . '/config/setPath.php';
 require_once $projectRoot . '/includes/csrf.php';

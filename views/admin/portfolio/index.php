@@ -36,18 +36,15 @@ $offset = ($currentPage - 1) * $itemsPerPage;
 $projects = $portfolio->getPaginatedProjects($offset, $itemsPerPage);
 $totalProjects = $portfolio->getTotalProjects();
 $totalPages = ceil($totalProjects / $itemsPerPage);
-?> 
+?>
 <?php
 // Set page title
 $page = "portfolio";
 $pageTitle = "Portfolio Projects";
 // Include header
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
-
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <p class="admin-page-subtitle">Manage your portfolio projects</p>
             </div>
@@ -57,6 +54,13 @@ include __DIR__ . '/../includes/header.php';
                 </a>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
 
         <?php if (isset($_SESSION['success'])): ?>
             <div class="portfolio-admin-alert portfolio-admin-alert-success" role="alert">
@@ -142,11 +146,11 @@ include __DIR__ . '/../includes/header.php';
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="portfolio-admin-pagination">
                         <?php echo renderPagination($currentPage, $totalPages, FULL_BASE_PATH . 'admin/portfolio'); ?>
                     </div>
-                    
+
                 <?php else: ?>
                     <div class="portfolio-admin-alert portfolio-admin-alert-info">
                         <i class="bi bi-info-circle"></i>
@@ -155,10 +159,9 @@ include __DIR__ . '/../includes/header.php';
                 <?php endif; ?>
             </div>
         </div>
-    </div>
-</main>
-         
+
+
      <?php
 // Include footer
 include __DIR__ . '/../includes/footer.php';
-?> 
+?>

@@ -13,7 +13,7 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
 if (file_exists('../../../global.php')) {
     require_once '../../../global.php';
     restrictDirectAccess();
-}  
+}
 ?>
 <?php
 require_once __DIR__ . '/../../../global.php';
@@ -40,16 +40,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($error)) {
     try {
         $blog = new Blog();
-        
+
         // Handle featured image upload
         if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
             $upload_dir = __DIR__ . '/../../../uploads/blog/';
-            
+
             // Create directory if it doesn't exist
             if (!file_exists($upload_dir)) {
                 mkdir($upload_dir, 0755, true);
             }
-            
+
             $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
             $tmpPath = $_FILES['featured_image']['tmp_name'];
             $mime = @mime_content_type($tmpPath) ?: '';
@@ -66,29 +66,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $extByMime = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
             $filename = uniqid('', true) . '_' . $sanitizedName . '.' . $extByMime[$mime];
             $upload_file = $upload_dir . $filename;
-            
+
             if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $upload_file)) {
                 $_POST['featured_image'] = 'uploads/blog/' . $filename;
             } else {
                 throw new Exception('Failed to upload image.');
             }
         }
-        
+
         // Ensure we have a valid slug
         if (empty($_POST['slug']) && !empty($_POST['title'])) {
             $_POST['slug'] = $blog->createSlug($_POST['title']);
         }
 
         $_POST['status'] = (($_POST['status'] ?? 'draft') === 'published') ? 'published' : 'draft';
-        
-        if (isset($_POST['content'])) {
-            $content = (string)$_POST['content'];
-            // Strip script tags and event handlers
-            $content = preg_replace('#<script\b[^>]*>(.*?)</script>#is', '', $content);
-            $content = preg_replace('#<style\b[^>]*>(.*?)</style>#is', '', $content);
-            $content = preg_replace('#\s*on\w+\s*=\s*["\'][^"\']*["\']#is', '', $content);
-            $_POST['content'] = $content;
-        }
+
 
         if ($blog->createPost($_POST)) {
             header('Location: ' . FULL_BASE_PATH . 'admin/blog');
@@ -217,4 +209,4 @@ include __DIR__ . '/../includes/footer.php';
 
 
 
-?> 
+?>

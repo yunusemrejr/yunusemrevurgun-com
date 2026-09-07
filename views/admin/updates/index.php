@@ -43,12 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete']) && is_numer
 $page = "updates";
 $pageTitle = "Updates";
 // Include header
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
- 
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <p class="admin-page-subtitle">Manage your site updates and announcements</p>
             </div>
@@ -58,6 +55,13 @@ include __DIR__ . '/../includes/header.php';
                 </a>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
 
         <?php if (isset($_SESSION['success'])): ?>
             <div class="admin-alert admin-alert-success">
@@ -170,9 +174,9 @@ include __DIR__ . '/../includes/header.php';
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <?php echo renderPagination($currentPage, $totalPages, FULL_BASE_PATH . 'admin/updates'); ?>
-                    
+
                 <?php else: ?>
                     <p class="admin-empty-state">
                         <i class="bi bi-inbox me-2"></i>
@@ -181,9 +185,8 @@ include __DIR__ . '/../includes/header.php';
                 <?php endif; ?>
             </div>
         </div>
-    </div>
-</main>
-        
+
+
 
      <?php
 $pageScripts = '
@@ -223,4 +226,4 @@ $pageScripts = '
 })();
 </script>';
 include __DIR__ . '/../includes/footer.php';
-?>  
+?>

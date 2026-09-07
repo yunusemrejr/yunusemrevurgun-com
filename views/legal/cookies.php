@@ -7,7 +7,7 @@ ui_render_head('Cookie Policy', 'Cookie policy for yunusemrevurgun.com');
 <body>
 <div class="ui-page">
     <?php ui_render_navbar('Studio'); ?>
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Legal</p>
             <h1 class="ui-section-title">Cookie Policy</h1>
@@ -27,6 +27,6 @@ ui_render_head('Cookie Policy', 'Cookie policy for yunusemrevurgun.com');
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__, 2)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

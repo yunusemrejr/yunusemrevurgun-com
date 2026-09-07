@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
+require_once dirname(__DIR__, 2) . '/views/includes/collection.php';
 require_once dirname(__DIR__, 2) . '/models/Videos.php';
 
 $videos = new Videos();
@@ -9,13 +10,14 @@ $videoList = $videos->getAllVideos(false);
 ui_render_head(
     'Videos | Yunus Emre Vurgun',
     'Video collection — uploads, YouTube embeds, and Odysee clips.',
+    [ui_collection_schema('Videos', 'videos', array_column($videoList, 'title'), array_map(fn($item) => 'video-' . $item['id'], $videoList))]
 );
 ?>
-<body>
+<body class="ui-collection">
 <div class="ui-page">
     <?php ui_render_navbar('videos'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Video</p>
             <h1 class="ui-section-title">Videos</h1>
@@ -28,7 +30,7 @@ ui_render_head(
                     <?php foreach ($videoList as $video): 
                         $duration = $video['duration'] > 0 ? gmdate('i:s', intval($video['duration'])) : '';
                     ?>
-                        <div class="ui-video-card" data-video-id="<?= $video['id'] ?>">
+                        <div class="ui-video-card" id="video-<?= (int)$video['id'] ?>" data-video-id="<?= $video['id'] ?>">
                             <?php if ($video['type'] === 'url'): ?>
                                 <?php 
                                     $embedUrl = '';
@@ -108,6 +110,7 @@ ui_render_head(
 
             var iframe = document.createElement('iframe');
             iframe.setAttribute('src', url);
+            iframe.title = embed.closest('.ui-video-card')?.querySelector('.ui-video-title')?.textContent || 'Video player';
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
             iframe.setAttribute('allowfullscreen', '');
@@ -122,6 +125,7 @@ ui_render_head(
             // Clear embed content and append iframe
             embed.innerHTML = '';
             embed.appendChild(iframe);
+            iframe.focus();
         });
     });
 })();
@@ -131,18 +135,18 @@ ui_render_head(
 <style>
 .ui-videos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
     gap: 24px;
 }
 .ui-video-card {
-    background: var(--surface, #fff);
+    background: var(--color-surface);
     border-radius: var(--radius-md, 8px);
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid var(--color-border);
     transition: box-shadow 0.2s;
 }
 .ui-video-card:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    border-color: var(--color-border-strong);
 }
 .ui-video-embed-container {
     position: relative;
@@ -243,6 +247,6 @@ ui_render_head(
 <?php endif; ?>
 
 <?php ui_render_tracker_codes(dirname(__DIR__, 2)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

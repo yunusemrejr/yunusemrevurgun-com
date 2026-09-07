@@ -38,7 +38,7 @@ ui_render_head(
 <div class="ui-page">
     <?php ui_render_navbar('Gallery'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Archive</p>
             <h1 class="ui-section-title">Gallery</h1>
@@ -131,6 +131,6 @@ ui_render_head(
 </div>
 
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

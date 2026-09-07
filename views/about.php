@@ -36,14 +36,14 @@ $aboutSchema = [
 ui_render_head(
     'About — Yunus Emre Vurgun | Software Developer & IT Specialist',
     'About Yunus Emre Vurgun (Yemre, YEV, yunusemrejr) — software developer and IT specialist in Istanbul, building AI/ML systems and operational technology solutions.',
-    ['<script type="application/ld+json">' . json_encode($aboutSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>']
+    ['<script type="application/ld+json">' . json_encode($aboutSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>']
 );
 ?>
 <body>
 <div class="ui-page">
     <?php ui_render_navbar('About'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Profile</p>
             <h1 class="ui-section-title">Yunus Emre Vurgun — Developer &amp; IT Specialist</h1>

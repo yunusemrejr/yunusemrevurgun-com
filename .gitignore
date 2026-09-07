@@ -38,3 +38,6 @@ vendor/
 .playwright-cli/
 .ruff_cache/
 output/playwright/
+
+# Local agent task output
+.pi/

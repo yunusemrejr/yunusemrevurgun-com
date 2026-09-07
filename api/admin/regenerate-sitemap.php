@@ -47,38 +47,12 @@ try {
     $sitemap = new Sitemap();
     $result = $sitemap->generateSitemapXML();
     
-    if ($result) {
-        // Check if files were created
-        $publicPath = dirname(dirname(__DIR__)) . '/public/sitemap.xml';
-        $rootPath = dirname(dirname(__DIR__)) . '/sitemap.xml';
-        
-        $publicExists = file_exists($publicPath);
-        $rootExists = file_exists($rootPath);
-        
-        if ($publicExists || $rootExists) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Sitemap regenerated successfully',
-                'new_csrf_token' => $_SESSION['csrf_token'],
-                'details' => [
-                    'public_sitemap' => $publicExists,
-                    'root_sitemap' => $rootExists,
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Sitemap generation completed but files were not created'
-            ]);
-        }
-    } else {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Sitemap generation failed'
-        ]);
-    }
-    
+    echo json_encode([
+        'success' => $result,
+        'message' => $result ? 'Sitemap validated. Published content is included automatically.' : 'Sitemap validation failed.',
+        'new_csrf_token' => $_SESSION['csrf_token'],
+    ]);
+
 } catch (Exception $e) {
     if (getenv('MODE') === 'development') {
         error_log("Admin sitemap regeneration error: " . $e->getMessage());
@@ -86,7 +60,7 @@ try {
     echo json_encode([
         'success' => false,
         'message' => 'An error occurred while regenerating the sitemap',
-        'error' => $e->getMessage()
+        'error' => 'Please check the server log.'
     ]);
 }
 ?>

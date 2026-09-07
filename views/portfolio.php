@@ -5,8 +5,14 @@ require_once __DIR__ . '/includes/ui.php';
 
 $portfolio = new Portfolio();
 $projects = $portfolio->getAllProjects();
-$years = $portfolio->getDistinctYears();
-$categories = $portfolio->getDistinctCategories();
+$years = []; $categories = [];
+foreach ($projects as $project) {
+    $date = $project['completion_date'] ?: ($project['created_at'] ?? '');
+    if ($date && strtotime($date)) $years[] = date('Y', strtotime($date));
+    if (!empty($project['category'])) $categories[] = $project['category'];
+}
+$years = array_unique($years); rsort($years);
+$categories = array_unique($categories); sort($categories);
 
 ui_render_head(
     'Portfolio — Work | Yunus Emre Vurgun, Developer',
@@ -17,7 +23,7 @@ ui_render_head(
 <div class="ui-page">
     <?php ui_render_navbar('Work'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Archive</p>
             <h1 class="ui-section-title">Project Archive</h1>
@@ -25,7 +31,7 @@ ui_render_head(
         </section>
 
         <section class="ui-section">
-            <div class="ui-archive-filters" role="toolbar" aria-label="Project filters">
+            <div class="ui-archive-filters" role="group" aria-label="Project filters">
                 <button class="ui-filter-pill is-active" type="button" data-filter="all">All</button>
                 <button class="ui-filter-pill" type="button" data-filter="featured">Featured</button>
                 <?php foreach ($years as $year): ?>
@@ -50,11 +56,11 @@ ui_render_head(
                         $tagsRaw = (string) ($project['technologies'] ?? '');
                         $isFeatured = !empty($project['featured']) ? '1' : '0';
                         ?>
-                        <article class="ui-project-card" data-year="<?= htmlspecialchars($year) ?>" data-featured="<?= $isFeatured ?>" data-tags="<?= htmlspecialchars($tagsRaw) ?>" data-category="<?= htmlspecialchars($project['category'] ?? '') ?>">
+                        <article id="project-<?= (int)$project['id'] ?>" class="ui-project-card" data-year="<?= htmlspecialchars($year) ?>" data-featured="<?= $isFeatured ?>" data-tags="<?= htmlspecialchars($tagsRaw) ?>" data-category="<?= htmlspecialchars($project['category'] ?? '') ?>">
                             <?php if (!empty($project['image'])): ?>
-                                <img class="ui-media" src="<?= FULL_BASE_PATH . htmlspecialchars($project['image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>">
+                                <img class="ui-media" loading="lazy" decoding="async" src="<?= FULL_BASE_PATH . htmlspecialchars($project['image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>">
                             <?php endif; ?>
-                            <h2 class="ui-project-title"><?= htmlspecialchars($project['title']) ?></h2>
+                            <h2 class="ui-project-title"><a href="#project-<?= (int)$project['id'] ?>"><?= htmlspecialchars($project['title']) ?></a></h2>
                             <?php if (!empty($year)): ?>
                                 <p class="ui-card-meta" style="padding: 0 1.25rem;"><?= htmlspecialchars($year) ?></p>
                             <?php endif; ?>
@@ -91,6 +97,6 @@ ui_render_head(
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

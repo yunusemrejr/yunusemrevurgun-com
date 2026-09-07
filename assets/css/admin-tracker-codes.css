@@ -171,7 +171,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 
 .admin-badge-secondary {
   background: rgba(138, 133, 128, 0.1);
-  color: #8490a4;
+  color: var(--color-ink-slate);
 }
 
 /* ===== ALERTS ===== */

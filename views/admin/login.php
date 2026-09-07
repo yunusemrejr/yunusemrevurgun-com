@@ -356,10 +356,6 @@ if (strpos($currentPath, '/admin') !== false &&
     <link rel="apple-touch-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
     <meta name="msapplication-TileImage" content="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
@@ -530,6 +526,6 @@ if (strpos($currentPath, '/admin') !== false &&
         }
     }
     ?>
-<?php readfile(dirname(__DIR__) . '/includes/gumroad-widget.php'); ?>
+
 </body>
 </html> 

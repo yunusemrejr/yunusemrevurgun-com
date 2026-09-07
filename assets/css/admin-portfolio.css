@@ -36,7 +36,7 @@ ADMIN PORTFOLIO PAGES — POLISHED DARK THEME
 }
 
 .admin-content .admin-card-body {
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
   font-family: var(--font-body);
   padding: var(--space-6);
 }
@@ -57,7 +57,7 @@ ADMIN PORTFOLIO PAGES — POLISHED DARK THEME
 }
 
 .admin-content .admin-page-subtitle {
-  color: #8490a4;
+  color: var(--color-ink-slate);
   font-family: var(--font-body);
   font-size: var(--text-sm);
   margin: var(--space-1) 0 0;
@@ -111,7 +111,7 @@ ADMIN PORTFOLIO PAGES — POLISHED DARK THEME
 }
 
 .portfolio-admin-form-control::placeholder {
-  color: #8490a4;
+  color: var(--color-ink-slate);
 }
 
 textarea.portfolio-admin-form-control {
@@ -147,7 +147,7 @@ textarea.portfolio-admin-form-control {
 .portfolio-admin-form-text {
   font-family: var(--font-body);
   font-size: 0.775rem;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   margin-top: var(--space-1);
 }
 
@@ -303,7 +303,7 @@ textarea.portfolio-admin-form-control {
   font-size: 0.675rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   padding: 0.875rem 1rem;
   text-align: left;
   border-bottom: 1px solid var(--color-border);
@@ -312,7 +312,7 @@ textarea.portfolio-admin-form-control {
 
 .portfolio-admin-table td {
   font-family: var(--font-body);
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
   padding: 0.875rem 1rem;
   border-bottom: 1px solid var(--color-border);
   font-size: var(--text-sm);
@@ -338,7 +338,7 @@ textarea.portfolio-admin-form-control {
 
 .portfolio-admin-table small {
   font-size: var(--text-xs);
-  color: #8490a4;
+  color: var(--color-ink-slate);
   display: block;
   margin-top: var(--space-1);
 }
@@ -369,7 +369,7 @@ textarea.portfolio-admin-form-control {
 }
 
 .portfolio-admin-text-muted {
-  color: #8490a4;
+  color: var(--color-ink-slate);
   font-size: var(--text-sm);
   font-family: var(--font-body);
 }

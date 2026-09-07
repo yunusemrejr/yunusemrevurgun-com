@@ -6,13 +6,18 @@ require_once __DIR__ . '/includes/ui.php';
 $blog = new Blog();
 $postsPerPage = 10;
 $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-$offset = ($currentPage - 1) * $postsPerPage;
-$posts = $blog->getPosts($offset, $postsPerPage);
 $totalPosts = $blog->getTotalPublishedPosts();
 $totalPages = max(1, (int) ceil($totalPosts / $postsPerPage));
-$currentPage = min($currentPage, $totalPages);
+if ($currentPage > $totalPages) {
+    require __DIR__ . '/404.php';
+    return;
+}
+$offset = ($currentPage - 1) * $postsPerPage;
+$posts = $blog->getPosts($offset, $postsPerPage);
 
-$pageMeta = [];
+$canonicalParams = [];
+if ($currentPage > 1) $canonicalParams['page'] = $currentPage;
+$pageMeta = ['canonical' => FULL_BASE_PATH . 'blog' . ($canonicalParams ? '?' . http_build_query($canonicalParams) : '')];
 if ($totalPages > 1) {
     if ($currentPage > 1) {
         $pageMeta[] = '<link rel="prev" href="' . FULL_BASE_PATH . 'blog?page=' . ($currentPage - 1) . '">';
@@ -23,7 +28,7 @@ if ($totalPages > 1) {
 }
 
 ui_render_head(
-    'Blog — Journal | Yunus Emre Vurgun, Developer',
+    'Blog' . ($currentPage > 1 ? ' — Page ' . $currentPage : '') . ' | Yunus Emre Vurgun',
     'Long-form notes, architecture logs, and technical writing by Yunus Emre Vurgun (Yemre, YEV).',
     $pageMeta
 );
@@ -32,7 +37,7 @@ ui_render_head(
 <div class="ui-page">
     <?php ui_render_navbar('Journal'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Journal</p>
             <h1 class="ui-section-title">Blog</h1>
@@ -41,7 +46,7 @@ ui_render_head(
 
         <section class="ui-section">
             <form class="ui-search-form" action="<?= FULL_BASE_PATH ?>search" method="get">
-                <input class="ui-input" type="text" name="q" placeholder="Search blog posts..." required>
+                <input class="ui-input" type="text" name="q" aria-label="Search blog posts" placeholder="Search blog posts..." required>
                 <input type="hidden" name="type" value="blog">
                 <button class="ui-btn ui-btn-secondary" type="submit">Search</button>
             </form>
@@ -72,7 +77,7 @@ ui_render_head(
                             <span class="ui-page-link is-disabled">Previous</span>
                         <?php endif; ?>
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <a class="ui-page-link<?= $i === $currentPage ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>blog?page=<?= $i ?>"><?= $i ?></a>
+                            <a class="ui-page-link<?= $i === $currentPage ? ' is-active' : '' ?>"<?= $i === $currentPage ? ' aria-current="page"' : '' ?> href="<?= FULL_BASE_PATH ?>blog?page=<?= $i ?>"><?= $i ?></a>
                         <?php endfor; ?>
                         <?php if ($currentPage < $totalPages): ?>
                             <a class="ui-page-link" href="<?= FULL_BASE_PATH ?>blog?page=<?= $currentPage + 1 ?>">Next</a>
@@ -88,6 +93,6 @@ ui_render_head(
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

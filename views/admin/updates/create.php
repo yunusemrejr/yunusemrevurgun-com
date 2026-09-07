@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($title === '') {
         $error = 'Title is required.';
     }
-    
+
     $data = [
         'title' => $title,
         'content' => $content,
@@ -165,12 +165,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $page = "updates-create";
 $pageTitle = "Create Update";
 // Include header
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
-
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <p class="admin-page-subtitle">Add a new site update or announcement</p>
             </div>
@@ -180,6 +177,13 @@ include __DIR__ . '/../includes/header.php';
                 </a>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
 
         <?php if ($error): ?>
             <div class="admin-alert admin-alert-danger">
@@ -197,12 +201,12 @@ include __DIR__ . '/../includes/header.php';
             <div class="admin-card-body">
                 <form method="POST" class="admin-form">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                    
+
                     <div class="admin-form-group">
                         <label for="title" class="admin-form-label">Title</label>
                         <input type="text" class="admin-form-control" id="title" name="title" placeholder="Enter update title" required>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="content" class="admin-form-label">Description</label>
                         <div class="updates-md-editor">
@@ -227,18 +231,18 @@ include __DIR__ . '/../includes/header.php';
                             Single Enter = line skip, blank line = new paragraph. Links open in a new tab.
                         </div>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="date" class="admin-form-label">Date</label>
                         <input type="date" class="admin-form-control" id="date" name="date" value="<?= date('Y-m-d') ?>">
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="category" class="admin-form-label">Category</label>
                         <input type="text" class="admin-form-control" id="category" name="category" placeholder="e.g., Work, Education, Personal">
                         <div class="admin-form-text">Optional: Categorize this update</div>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="importance" class="admin-form-label">Importance</label>
                         <select class="admin-form-control" id="importance" name="importance">
@@ -248,7 +252,7 @@ include __DIR__ . '/../includes/header.php';
                         </select>
                         <div class="admin-form-text">Set the importance level for this update</div>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label class="admin-form-label">Mastodon cross-posting</label>
                         <div class="admin-form-check" style="margin-bottom: 0.75rem;">
@@ -300,8 +304,7 @@ include __DIR__ . '/../includes/header.php';
                 </form>
             </div>
         </div>
-    </div>
-</main>
+
 
 
      <?php

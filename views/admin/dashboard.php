@@ -10,7 +10,7 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
 if (file_exists('../../global.php')) {
     require_once '../../global.php';
     restrictDirectAccess();
-}  
+}
 
 require_once __DIR__ . '/../../models/Auth.php';
 require_once __DIR__ . '/../../models/Blog.php';
@@ -38,8 +38,6 @@ $recentPosts = $blog->getRecentPosts(5);
 $recentUpdates = $updates->getUpdates(5);
 $recentImages = $gallery->getRecentImages(5);
 $recentProjects = $portfolio->getRecentProjects(5);
-$recentTracks = $music->getRecentTracks(5);
-$recentVideos = $videos->getRecentVideos(5);
 
 $totalPosts = $blog->getTotalPosts();
 $totalUpdates = $updates->getTotalUpdates();
@@ -64,28 +62,28 @@ include __DIR__ . '/includes/header.php';
             <p class="admin-stat-label">Blog Posts</p>
             <a href="<?= FULL_BASE_PATH ?>admin/blog" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
-        
+
         <div class="admin-stat-card">
             <i class="bi bi-clock-history admin-stat-icon"></i>
             <h3 class="admin-stat-number"><?= $totalUpdates ?></h3>
             <p class="admin-stat-label">Updates</p>
             <a href="<?= FULL_BASE_PATH ?>admin/updates" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
-        
+
         <div class="admin-stat-card">
             <i class="bi bi-dice-5 admin-stat-icon"></i>
             <h3 class="admin-stat-number"><?= $totalMemories ?></h3>
             <p class="admin-stat-label">Memories</p>
             <a href="<?= FULL_BASE_PATH ?>admin/rmrp" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
-        
+
         <div class="admin-stat-card">
             <i class="bi bi-images admin-stat-icon"></i>
             <h3 class="admin-stat-number"><?= $totalImages ?></h3>
             <p class="admin-stat-label">Gallery Images</p>
             <a href="<?= FULL_BASE_PATH ?>admin/gallery" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
-        
+
         <div class="admin-stat-card">
             <i class="bi bi-briefcase admin-stat-icon"></i>
             <h3 class="admin-stat-number"><?= $totalProjects ?></h3>
@@ -99,7 +97,7 @@ include __DIR__ . '/includes/header.php';
             <p class="admin-stat-label">Music Tracks</p>
             <a href="<?= FULL_BASE_PATH ?>admin/music" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
-        
+
         <div class="admin-stat-card">
             <i class="bi bi-camera-reel admin-stat-icon"></i>
             <h3 class="admin-stat-number"><?= $totalVideos ?></h3>
@@ -124,7 +122,7 @@ include __DIR__ . '/includes/header.php';
 
     <div class="admin-card">
         <div class="admin-card-header">
-            <h5 class="admin-card-title">System Management</h5>
+            <h2 class="admin-card-title">System Management</h2>
         </div>
         <div class="admin-card-body">
             <div class="system-grid">
@@ -132,10 +130,10 @@ include __DIR__ . '/includes/header.php';
                     <i class="bi bi-diagram-2 system-item-icon"></i>
                     <div class="system-item-content">
                         <h6 class="system-item-title">Sitemap</h6>
-                        <p class="system-item-desc">Regenerate XML sitemap for search engines</p>
+                        <p class="system-item-desc">Published content appears in the XML sitemap automatically.</p>
                         <button id="regenerate-sitemap-btn" class="admin-btn admin-btn-secondary admin-btn-sm">
                             <i class="bi bi-arrow-clockwise"></i>
-                            Regenerate
+                            Validate sitemap
                         </button>
                     </div>
                 </div>
@@ -169,7 +167,7 @@ include __DIR__ . '/includes/header.php';
         <div class="admin-card">
             <div class="admin-card-header">
                 <div class="admin-card-header-row">
-                    <h5 class="admin-card-title">Recent Blog Posts</h5>
+                    <h2 class="admin-card-title">Recent Blog Posts</h2>
                     <a href="<?= FULL_BASE_PATH ?>admin/blog/create" class="admin-btn admin-btn-primary admin-btn-sm">New Post</a>
                 </div>
             </div>
@@ -198,11 +196,11 @@ include __DIR__ . '/includes/header.php';
                 <?php endif; ?>
             </div>
         </div>
-        
+
         <div class="admin-card">
             <div class="admin-card-header">
                 <div class="admin-card-header-row">
-                    <h5 class="admin-card-title">Recent Updates</h5>
+                    <h2 class="admin-card-title">Recent Updates</h2>
                     <a href="<?= FULL_BASE_PATH ?>admin/updates/create" class="admin-btn admin-btn-primary admin-btn-sm">New Update</a>
                 </div>
             </div>
@@ -233,7 +231,7 @@ include __DIR__ . '/includes/header.php';
         <div class="admin-card">
             <div class="admin-card-header">
                 <div class="admin-card-header-row">
-                    <h5 class="admin-card-title">Recent Gallery Images</h5>
+                    <h2 class="admin-card-title">Recent Gallery Images</h2>
                     <a href="<?= FULL_BASE_PATH ?>admin/gallery" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
                 </div>
             </div>
@@ -260,11 +258,11 @@ include __DIR__ . '/includes/header.php';
                 <?php endif; ?>
             </div>
         </div>
-        
+
         <div class="admin-card">
             <div class="admin-card-header">
                 <div class="admin-card-header-row">
-                    <h5 class="admin-card-title">Recent Portfolio Projects</h5>
+                    <h2 class="admin-card-title">Recent Portfolio Projects</h2>
                     <a href="<?= FULL_BASE_PATH ?>admin/portfolio/create" class="admin-btn admin-btn-primary admin-btn-sm">New Project</a>
                 </div>
             </div>

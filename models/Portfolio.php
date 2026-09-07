@@ -51,16 +51,10 @@ class Portfolio {
         
         $this->db->exec($query);
 
-        if ($driver !== 'sqlite') {
-            try {
-                $this->db->exec("ALTER TABLE portfolio_projects ADD COLUMN category VARCHAR(255)");
-            } catch (\PDOException $e) {
-            }
-        } else {
-            try {
-                $this->db->exec("ALTER TABLE portfolio_projects ADD COLUMN category TEXT");
-            } catch (\PDOException $e) {
-            }
+        $columnRows = $this->db->query($driver === 'sqlite' ? 'PRAGMA table_info(portfolio_projects)' : 'SHOW COLUMNS FROM portfolio_projects')->fetchAll(PDO::FETCH_ASSOC);
+        $columns = array_column($columnRows, $driver === 'sqlite' ? 'name' : 'Field');
+        if (!in_array('category', $columns, true)) {
+            $this->db->exec('ALTER TABLE portfolio_projects ADD COLUMN category ' . ($driver === 'sqlite' ? 'TEXT' : 'VARCHAR(255)'));
         }
     }
 

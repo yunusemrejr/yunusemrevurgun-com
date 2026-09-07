@@ -4,22 +4,22 @@ require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 
 ui_render_head(
     'YunoBot | Yunus Emre Vurgun',
-    'AI chat assistant powered by a custom neural network that runs entirely in your browser.',
+    'Ask YunoBot about Yunus Emre Vurgun, his projects and writing. Local neural matching, source-linked answers, and English or Turkish questions.',
     ['yunobot' => true]
 );
 ?>
-<body>
+<body class="ui-yunobot-page">
 <div class="ui-page">
     <?php ui_render_navbar('yunobot'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">AI Assistant</p>
             <h1 class="ui-section-title">YunoBot</h1>
-            <p class="ui-section-text">A privacy-first AI assistant powered by a custom neural network trained for this site. It runs entirely in your browser — no downloads, no API calls — and answers instantly.</p>
+            <p class="ui-section-text">Ask about my work, find something in the journal, or explore a project. YunoBot matches your question locally and answers from this site, with links you can check.</p>
         </section>
 
-        <section class="ui-section">
+        <section class="ui-section ui-yunobot-workspace" aria-label="Ask YunoBot">
             <div class="ui-yunobot-container">
                 <div class="ui-yunobot-chat" id="yunobotChat">
                     <!-- Status Bar -->
@@ -29,7 +29,7 @@ ui_render_head(
                     </div>
 
                     <!-- Messages Area -->
-                    <div class="ui-yunobot-messages" id="chatMessages" role="log" aria-label="Chat messages">
+                    <div class="ui-yunobot-messages" id="chatMessages" role="log" aria-live="polite" aria-relevant="additions" aria-label="Chat messages">
                         <!-- Messages will be injected by JS -->
                     </div>
 
@@ -59,7 +59,8 @@ ui_render_head(
                             <textarea
                                 class="chat-input"
                                 id="chatInput"
-                                placeholder="Type a message..."
+                                placeholder="Ask about a project or topic…"
+                                maxlength="2000"
                                 autocomplete="off"
                                 rows="1"
                                 aria-label="Chat message input"
@@ -71,6 +72,14 @@ ui_render_head(
                         </button>
                     </div>
                 </div>
+            </div>
+            <aside class="ui-yunobot-guide">
+                <p class="ui-eyebrow">A guide to this site</p>
+                <h2>Start with something specific.</h2>
+                <p>A project name, a question about my background, or a topic from the journal gives YunoBot a useful starting point.</p>
+                <ul><li>Ask in English or Turkish.</li><li>Check the linked source for context.</li><li>Use Clear to start a new conversation.</li></ul>
+                <details><summary>How it works &amp; privacy</summary><p>A small neural classifier recognizes topics; local search finds relevant passages. It selects reviewed answers or quotes the source, and can still misunderstand a question.</p><p>The model and public source index load with the page. Chat messages stay in browser memory and are not sent to an AI service. Source links open the relevant page.</p></details>
+            </aside>
         </section>
     </main>
 
@@ -81,10 +90,12 @@ ui_render_head(
      Custom neural network — weights + runtime ship with the page.
      No CDN, no external model download: instant load, instant answers.
      ============================================================ -->
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/text.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/text.js') ?>" defer></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/answers.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/answers.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/nn-weights.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/nn-weights.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/nn-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/nn-engine.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/knowledge-pack.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/knowledge-pack.js') ?>" defer></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/kb.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/kb.js') ?>" data-wasm="<?= FULL_BASE_PATH ?>assets/js/yunobot/brain.wasm?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/brain.wasm') ?>" defer></script>
+<script data-cfasync="false" data-live-source="<?= getenv('MODE') === 'development' ? '' : FULL_BASE_PATH . 'api/yunobot-knowledge.php' ?>" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/kb.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/kb.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/ml-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/ml-engine.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot.js') ?>" defer></script>
 
@@ -95,7 +106,7 @@ ui_render_head(
 // Register service worker for offline support (only in production, scoped to yunobot)
 if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('<?= FULL_BASE_PATH ?>sw-yunobot.js', { scope: '<?= FULL_BASE_PATH ?>yunobot/' })
+        navigator.serviceWorker.register('<?= FULL_BASE_PATH ?>sw-yunobot.js', { scope: '<?= FULL_BASE_PATH ?>yunobot' })
             .then(function(registration) {
                 console.log('[YunoBot SW] Registered:', registration.scope);
             })
@@ -107,6 +118,6 @@ if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
 </script>
 
 <?php ui_render_tracker_codes(dirname(__DIR__, 2)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

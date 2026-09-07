@@ -19,7 +19,8 @@ $totalUpdates = $updates->getTotalUpdates();
 $totalPages = max(1, (int) ceil($totalUpdates / $updatesPerPage));
 $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 if ($currentPage > $totalPages) {
-    $currentPage = $totalPages;
+    require __DIR__ . '/404.php';
+    return;
 }
 $offset = ($currentPage - 1) * $updatesPerPage;
 $allUpdates = $updates->getPaginatedUpdates($offset, $updatesPerPage);
@@ -30,7 +31,10 @@ $qs = function (array $overrides = []) use ($view, $updatesPerPage): string {
     return '?' . http_build_query($params);
 };
 
-$pageMeta = [];
+$canonicalParams = [];
+if ($updatesPerPage !== 10) $canonicalParams['per'] = $updatesPerPage;
+if ($currentPage > 1) $canonicalParams['page'] = $currentPage;
+$pageMeta = ['canonical' => FULL_BASE_PATH . 'updates' . ($canonicalParams ? '?' . http_build_query($canonicalParams) : '')];
 if ($totalPages > 1) {
     if ($currentPage > 1) {
         $pageMeta[] = '<link rel="prev" href="' . FULL_BASE_PATH . 'updates' . $qs(['page' => $currentPage - 1]) . '">';
@@ -59,7 +63,7 @@ $pageMeta[] = '<script type="application/ld+json">' . json_encode([
     '@type' => 'ItemList',
     'name' => 'Updates by Yunus Emre Vurgun',
     'itemListElement' => $listItems,
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>';
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>';
 
 // Page-specific stylesheet + view-options script (loaded after ui-rebuild.css).
 $updatesCss = FULL_BASE_PATH . 'assets/css/updates.css?v=' . filemtime(dirname(__DIR__) . '/assets/css/updates.css');
@@ -77,7 +81,7 @@ ui_render_head($title, $description, $pageMeta);
 <div class="ui-page">
     <?php ui_render_navbar('Journal'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Log</p>
             <h1 class="ui-section-title">Updates</h1>
@@ -163,7 +167,7 @@ ui_render_head($title, $description, $pageMeta);
                             <span class="ui-page-link is-disabled">Previous</span>
                         <?php endif; ?>
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <a class="ui-page-link<?= $i === $currentPage ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>updates<?= $qs(['page' => $i]) ?>"><?= $i ?></a>
+                            <a class="ui-page-link<?= $i === $currentPage ? ' is-active' : '' ?>"<?= $i === $currentPage ? ' aria-current="page"' : '' ?> href="<?= FULL_BASE_PATH ?>updates<?= $qs(['page' => $i]) ?>"><?= $i ?></a>
                         <?php endfor; ?>
                         <?php if ($currentPage < $totalPages): ?>
                             <a class="ui-page-link" href="<?= FULL_BASE_PATH ?>updates<?= $qs(['page' => $currentPage + 1]) ?>">Next</a>
@@ -181,6 +185,6 @@ ui_render_head($title, $description, $pageMeta);
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

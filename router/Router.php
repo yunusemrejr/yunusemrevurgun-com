@@ -47,6 +47,9 @@ class Router {
         '404' => 'views/404.php',
         'sitemap' => 'views/sitemap.php',
         'sitemap.xml' => 'api/sitemap.php',
+        'blog.xml' => 'api/blog-feed.php',
+        'updates.xml' => 'api/updates-feed.php',
+        'rmrp.xml' => 'api/rmrp-feed.php',
         'llms.txt' => 'api/llms.php',
         'privacy' => 'views/legal/privacy.php',
         'terms' => 'views/legal/terms.php',
@@ -72,10 +75,6 @@ class Router {
         'admin/socials' => 'views/admin/socials/index.php',
     ];
 
-    public function __construct() {
-        // Remove CSRF middleware registration if present
-    }
-
     public function route() {
         // Handle both development and production modes
         $isDevMode = (php_sapi_name() === 'cli-server' || getenv('MODE') === 'development');
@@ -91,6 +90,11 @@ class Router {
             $url = trim($url, '/');
         }
 
+        if (in_array($url, ['home', 'index', 'index.php'], true) && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+            header('Location: ' . FULL_BASE_PATH, true, 301);
+            return;
+        }
+
         // Handle root URL (empty string)
         if (empty($url)) {
             $url = '';
@@ -103,7 +107,7 @@ class Router {
         }
 
         // Check for lockdown mode (except for admin pages)
-        if (!str_starts_with($url, 'admin/')) {
+        if ($url !== 'admin' && !str_starts_with($url, 'admin/')) {
             require_once dirname(__DIR__) . '/models/Settings.php';
             $settings = new Settings();
             

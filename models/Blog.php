@@ -470,12 +470,8 @@ class Blog {
     }
 
     private function sanitizePostContent(string $content): string {
-        $content = preg_replace('#<script\b[^>]*>(.*?)</script>#is', '', $content);
-        $content = preg_replace('/\s+on\w+\s*=\s*"[^"]*"/i', '', $content);
-        $content = preg_replace("/\s+on\w+\s*=\s*'[^']*'/i", '', $content);
-        $content = preg_replace('/javascript\s*:/i', '', $content);
-        $content = preg_replace('/<img\b([^>]*)>/i', '<img$1 loading="lazy">', $content);
-        return $content;
+        require_once __DIR__ . '/HtmlSanitizer.php';
+        return HtmlSanitizer::clean($content);
     }
 
     private function sanitizeSlug(string $slug): string {

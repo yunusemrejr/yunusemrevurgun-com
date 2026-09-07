@@ -6,6 +6,14 @@ require_once dirname(__DIR__) . '/../models/Socials.php';
 if (!function_exists('ui_render_head')) {
     function ui_render_head(string $title, string $description, array $extraMeta = []): void
     {
+        // A single metadata owner avoids conflicting crawler and sharing hints.
+        $ogType = $extraMeta['og_type'] ?? 'website';
+        foreach ($extraMeta as $value) {
+            if (is_string($value) && preg_match('/<meta property="og:type" content="([^"]+)"/', $value, $match)) {
+                $ogType = $match[1];
+            }
+        }
+        if (http_response_code() >= 400) $extraMeta['robots'] = 'noindex,follow';
         ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,21 +31,17 @@ if (!function_exists('ui_render_head')) {
         : 'index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1';
     ?>
     <meta name="robots" content="<?= htmlspecialchars($robots) ?>">
-    <meta name="googlebot" content="<?= htmlspecialchars($robots) ?>">
-    <meta name="bingbot" content="<?= htmlspecialchars($robots) ?>">
-    <meta name="x-robots-tag" content="index,follow,noarchive">
     <title><?= htmlspecialchars($title) ?></title>
-    <meta name="title" content="<?= htmlspecialchars($title) ?>">
     <meta name="description" content="<?= htmlspecialchars($description) ?>">
     <?php
-    $requestPath = $_SERVER['REQUEST_URI'] ?? '/';
-    $requestPath = (string)parse_url($requestPath, PHP_URL_PATH);
-    // Normalize: /home is duplicate content of /
-    $normalizedPath = $requestPath;
-    if ($normalizedPath === '/home' || $normalizedPath === '/home/') {
-        $normalizedPath = '/';
+    $requestPath = (string)parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    $basePath = rtrim((string)parse_url(FULL_BASE_PATH, PHP_URL_PATH), '/');
+    if ($basePath !== '' && str_starts_with($requestPath, $basePath . '/')) {
+        $requestPath = substr($requestPath, strlen($basePath));
     }
-    $canonical = rtrim(FULL_BASE_PATH, '/') . ($normalizedPath === '' ? '/' : $normalizedPath);
+    $normalizedPath = '/' . trim($requestPath, '/');
+    if (in_array($normalizedPath, ['/home', '/index', '/index.php'], true)) $normalizedPath = '/';
+    $canonical = $extraMeta['canonical'] ?? (rtrim(FULL_BASE_PATH, '/') . $normalizedPath);
     ?>
     <link rel="canonical" href="<?= htmlspecialchars($canonical) ?>">
     <?php
@@ -70,7 +74,7 @@ if (!function_exists('ui_render_head')) {
         }
     }
     ?>
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="<?= htmlspecialchars($ogType, ENT_QUOTES) ?>">
     <meta property="og:locale" content="en_US">
     <meta property="og:url" content="<?= htmlspecialchars($canonical) ?>">
     <meta property="og:title" content="<?= $defaultOgTitle ?>">
@@ -97,6 +101,12 @@ if (!function_exists('ui_render_head')) {
     <link rel="apple-touch-icon" href="<?= $faviconUrl ?>">
     <meta name="msapplication-TileImage" content="<?= $faviconUrl ?>">
     <link rel="mask-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg" color="#566178">
+    <?php $collectionPage = in_array(trim($requestPath, '/'), ['post-code','science-corner','comedy','music','videos','downloads','more','rmrp'], true); ?>
+    <?php if ($collectionPage): ?>
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/collections.css?v=<?= filemtime(__DIR__ . '/../../assets/css/collections.css') ?>">
+    <script src="<?= FULL_BASE_PATH ?>assets/js/collections.js?v=<?= filemtime(__DIR__ . '/../../assets/js/collections.js') ?>" defer></script>
+    <?php endif; ?>
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/variables.css?v=<?= filemtime(__DIR__ . '/../../assets/css/variables.css') ?>">
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ui-rebuild.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ui-rebuild.css') ?>">
     <?php if (isset($extraMeta['yunobot']) && $extraMeta['yunobot']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/yunobot.css?v=<?= filemtime(__DIR__ . '/../../assets/css/yunobot.css') ?>">
@@ -109,8 +119,12 @@ if (!function_exists('ui_render_head')) {
     <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot', 'music', 'downloads', 'og_image', 'robots'], true)) continue;
-        if (!empty($value) && is_string($value)) echo $value . "\n";
+        if (is_string($key) && in_array($key, ['yunobot', 'music', 'downloads', 'og_image', 'og_type', 'robots', 'canonical'], true)) continue;
+        if (!empty($value) && is_string($value)) {
+            // Defaults above already own these tags; page-specific article data remains.
+            if (preg_match('/<meta (?:name|property)="(?:author|description|keywords|og:(?:type|url|title|description|image)|twitter:(?:card|url|title|description|image))"/', $value)) continue;
+            echo $value . "\n";
+        }
     endforeach; ?>
 </head>
 <?php
@@ -121,7 +135,7 @@ if (!function_exists('ui_nav_items')) {
     function ui_nav_items(): array
     {
         return [
-            ['label' => 'Home', 'href' => FULL_BASE_PATH . 'home'],
+            ['label' => 'Home', 'href' => FULL_BASE_PATH],
             ['label' => 'About', 'href' => FULL_BASE_PATH . 'about'],
             ['label' => 'Portfolio', 'href' => FULL_BASE_PATH . 'portfolio'],
             ['label' => 'Gallery', 'href' => FULL_BASE_PATH . 'gallery'],
@@ -172,6 +186,7 @@ if (!function_exists('ui_render_navbar')) {
         }
         $pageFx = ui_page_fx();
         ?>
+<a class="ui-skip-link" href="#main-content">Skip to content</a>
 <header class="ui-navbar-wrap">
     <nav class="ui-navbar" aria-label="Main">
         <div class="ui-nav-left">
@@ -185,13 +200,13 @@ if (!function_exists('ui_render_navbar')) {
                         || ($itemPath !== '' && ($requestPath === $itemPath || str_starts_with($requestPath, $itemPath . '/')));
                     ?>
                 <li>
-                    <a class="ui-nav-link<?= $isActive ? ' is-active' : '' ?>" href="<?= htmlspecialchars($item['href']) ?>">
+                    <a class="ui-nav-link<?= $isActive ? ' is-active' : '' ?>" href="<?= htmlspecialchars($item['href']) ?>"<?= $isActive ? ' aria-current="page"' : '' ?>>
                         <span><?= htmlspecialchars($item['label']) ?></span>
                     </a>
                 </li>
                 <?php endforeach; ?>
                 <li>
-                    <a class="ui-nav-link ui-nav-link-more<?= $requestPath === 'more' ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>more" aria-label="More pages">+</a>
+                    <a class="ui-nav-link ui-nav-link-more<?= $requestPath === 'more' ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>more" aria-label="More pages">More</a>
                 </li>
             </ul>
             <button class="ui-mobile-toggle" type="button" aria-label="Open menu" data-mobile-menu-open aria-expanded="false" aria-controls="uiMobileMenu"><span></span><span></span><span></span></button>
@@ -205,13 +220,13 @@ if (!function_exists('ui_render_navbar')) {
 <?php endif; ?>
 <div class="ui-mobile-menu" id="uiMobileMenu" aria-hidden="true">
     <div class="ui-mobile-backdrop" data-mobile-menu-close></div>
-    <div class="ui-mobile-panel">
+    <div class="ui-mobile-panel" role="dialog" aria-modal="true" aria-label="Site navigation">
         <button class="ui-mobile-close" type="button" aria-label="Close menu" data-mobile-menu-close>×</button>
         <ul class="ui-mobile-links" role="list">
             <?php foreach (ui_nav_items() as $item): ?>
                 <li><a href="<?= htmlspecialchars($item['href']) ?>" data-mobile-menu-close><?= htmlspecialchars($item['label']) ?></a></li>
             <?php endforeach; ?>
-            <li><a href="<?= FULL_BASE_PATH ?>more" data-mobile-menu-close aria-label="More pages">+</a></li>
+            <li><a href="<?= FULL_BASE_PATH ?>more" data-mobile-menu-close aria-label="More pages">More</a></li>
         </ul>
     </div>
 </div>
@@ -248,7 +263,7 @@ if (!function_exists('ui_render_footer')) {
                 <span class="ui-footer-social-label"><?= $sLabel ?></span>
             </button></li>
             <?php else: ?>
-            <li><a href="<?= htmlspecialchars($s['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">
+            <li><a href="<?= htmlspecialchars($s['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" aria-label="<?= $sLabel ?>">
                 <?= $sIcon ?>
                 <span class="ui-footer-social-label"><?= $sLabel ?></span>
             </a></li>
@@ -258,6 +273,15 @@ if (!function_exists('ui_render_footer')) {
         <?php endif; ?>
 
     </div>
+    <nav class="ui-footer-links" aria-label="Site resources">
+        <a href="<?= FULL_BASE_PATH ?>search">Search</a>
+        <a href="<?= FULL_BASE_PATH ?>more">Explore</a>
+        <a href="https://theknowledgeproject.gumroad.com/" target="_blank" rel="noopener noreferrer">Books</a>
+        <a href="<?= FULL_BASE_PATH ?>blog.xml">RSS</a>
+        <a href="<?= FULL_BASE_PATH ?>sitemap">Sitemap</a>
+        <a href="<?= FULL_BASE_PATH ?>privacy">Privacy</a>
+        <a href="<?= FULL_BASE_PATH ?>contact">Contact</a>
+    </nav>
 </footer>
 <?php if ($hasPopup): ?>
 <div class="ui-x-popup" id="uiXPopup" aria-hidden="true">
@@ -271,30 +295,10 @@ if (!function_exists('ui_render_footer')) {
     </div>
 </div>
 <?php endif; ?>
+<script src="<?= FULL_BASE_PATH ?>assets/js/navigation.js?v=<?= filemtime(__DIR__ . '/../../assets/js/navigation.js') ?>"></script>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../../assets/js/ui-interactions.js') ?>"></script>
 <?php if (ui_page_fx() !== null): ?>
-<script src="<?= FULL_BASE_PATH ?>assets/js/vgpu-pages.min.js?v=<?= filemtime(__DIR__ . '/../../assets/js/vgpu-pages.min.js') ?>"></script>
-<script>
-(function () {
-    var fxCanvas = document.querySelector('.ui-page-fx');
-    if (!fxCanvas) {
-        return;
-    }
-    // WHY: the ambient background is pure decoration (aria-hidden, pointer-events:
-    // none) and a full-screen WebGPU loop is the one thing on these pages that can
-    // cost a phone real memory and GPU time. Every resize it handles (iOS collapses
-    // its toolbar while scrolling, and the /about accordions reflow the page height)
-    // reallocates the surface. Phones take the same plain-paper fallback the bundle
-    // already uses when WebGPU is missing, instead of a new state.
-    if (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
-        fxCanvas.remove();
-        return;
-    }
-    if (window.VgpuPages && typeof window.VgpuPages.mountPageFx === 'function') {
-        window.VgpuPages.mountPageFx(fxCanvas).catch(function () { /* plain bg fallback stays */ });
-    }
-})();
-</script>
+<script src="<?= FULL_BASE_PATH ?>assets/js/decorative-effects.js?v=<?= filemtime(__DIR__ . '/../../assets/js/decorative-effects.js') ?>" data-effect-src="<?= FULL_BASE_PATH ?>assets/js/vgpu-pages.min.js?v=<?= filemtime(__DIR__ . '/../../assets/js/vgpu-pages.min.js') ?>" data-effect-kind="page"></script>
 <?php endif; ?>
 <?php
     }
@@ -303,54 +307,8 @@ if (!function_exists('ui_render_footer')) {
 if (!function_exists('ui_sanitize_html')) {
     function ui_sanitize_html(string $html): string
     {
-        if (empty($html)) return '';
-        
-        $allowed = ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'a', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'img', 'figure', 'figcaption'];
-        $allowed_attrs = ['href', 'src', 'alt', 'title', 'class', 'id', 'target', 'rel'];
-        $doc = new DOMDocument();
-        libxml_use_internal_errors(true);
-        $doc->loadHTML('<div>' . mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8') . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        libxml_clear_errors();
-        $xpath = new DOMXPath($doc);
-        $nodes = $xpath->query('//@*|//script|//style|//comment()');
-        foreach ($nodes as $node) {
-            if ($node->nodeType === XML_ELEMENT_NODE && ($node->nodeName === 'script' || $node->nodeName === 'style')) {
-                $node->parentNode->removeChild($node);
-            } elseif ($node->nodeType === XML_ATTRIBUTE_NODE) {
-                if (!in_array($node->nodeName, $allowed_attrs, true)) {
-                    $node->ownerElement->removeAttribute($node->nodeName);
-                } elseif ($node->nodeName === 'href' || $node->nodeName === 'src') {
-                    $value = $node->nodeValue;
-                    if (preg_match('/^javascript:/i', trim($value)) || preg_match('/\bon\w+\s*=/i', $value)) {
-                        $node->ownerElement->removeAttribute($node->nodeName);
-                    }
-                }
-            } elseif ($node->nodeType === XML_COMMENT_NODE) {
-                $node->parentNode->removeChild($node);
-            }
-        }
-        
-        $container = $doc->getElementsByTagName('div')->item(0);
-        $innerHtml = '';
-        if ($container) {
-            foreach ($container->childNodes as $child) {
-                $innerHtml .= $doc->saveHTML($child);
-            }
-        }
-        return $innerHtml;
-    }
-}
-
-if (!function_exists('ui_render_gumroad_widget')) {
-    // Gumroad Products Promoter Widget (floating books button + panel).
-    // Markup lives in gumroad-widget.php (pure HTML, no PHP tags) so standalone
-    // pages that don't load ui.php (403/500/admin) can readfile() it directly.
-    function ui_render_gumroad_widget(): void
-    {
-        $widgetFile = __DIR__ . '/gumroad-widget.php';
-        if (file_exists($widgetFile)) {
-            readfile($widgetFile);
-        }
+        require_once __DIR__ . '/../../models/HtmlSanitizer.php';
+        return HtmlSanitizer::clean($html);
     }
 }
 

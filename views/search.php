@@ -3,8 +3,8 @@ require_once dirname(__DIR__) . '/config/setPath.php';
 require_once dirname(__DIR__) . '/models/Search.php';
 require_once __DIR__ . '/includes/ui.php';
 
-$query = trim($_GET['q'] ?? '');
-$type = trim($_GET['type'] ?? 'all');
+$query = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
+$type = is_string($_GET['type'] ?? null) ? trim($_GET['type']) : 'all';
 
 $search = new Search();
 $sanitizedQuery = $search->sanitizeSearchQuery($query);
@@ -37,7 +37,7 @@ if ($isValidQuery && strlen($sanitizedQuery) >= 2) {
 }
 
 ui_render_head(
-    'Search' . (!empty($query) ? ' — ' . htmlspecialchars($query) : '') . ' | Yunus Emre Vurgun',
+    'Search' . (!empty($query) ? ' — ' . $query : '') . ' | Yunus Emre Vurgun',
     'Search results across blog posts, updates, and portfolio of Yunus Emre Vurgun.',
     // WHY noindex,follow: the result set is thin, near-duplicate content and every
     // ?q= variant is a separate crawlable URL. follow keeps the equity flowing to
@@ -49,7 +49,7 @@ ui_render_head(
 <div class="ui-page">
     <?php ui_render_navbar(); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Search</p>
             <h1 class="ui-section-title">Find Content</h1>
@@ -57,7 +57,7 @@ ui_render_head(
 
         <section class="ui-section">
             <form class="ui-search-form" action="<?= FULL_BASE_PATH ?>search" method="get">
-                <input class="ui-input" type="text" name="q" placeholder="Search..." value="<?= htmlspecialchars($query) ?>" required>
+                <input class="ui-input" type="text" name="q" aria-label="Search the site" placeholder="Search..." value="<?= htmlspecialchars($query) ?>" required>
                 <button class="ui-btn ui-btn-secondary" type="submit">Search</button>
             </form>
 
@@ -84,7 +84,7 @@ ui_render_head(
                     <div class="ui-grid" style="margin-bottom: 2rem;">
                         <?php foreach ($results['blog'] as $item): ?>
                             <a class="ui-link-card" href="<?= htmlspecialchars($item['url']) ?>">
-                                <h3 class="ui-card-title"><?= html_entity_decode($item['title']) ?></h3>
+                                <h3 class="ui-card-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></h3>
                                 <p class="ui-card-text"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['excerpt'] ?? '')), 0, 140)) ?>...</p>
                             </a>
                         <?php endforeach; ?>
@@ -96,7 +96,7 @@ ui_render_head(
                     <div class="ui-grid" style="margin-bottom: 2rem;">
                         <?php foreach ($results['updates'] as $item): ?>
                             <a class="ui-link-card" href="<?= FULL_BASE_PATH . 'updates/' . intval($item['id']) ?>">
-                                <h3 class="ui-card-title"><?= html_entity_decode($item['title']) ?></h3>
+                                <h3 class="ui-card-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></h3>
                                 <p class="ui-card-text"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['content'] ?? '')), 0, 140)) ?>...</p>
                             </a>
                         <?php endforeach; ?>
@@ -107,11 +107,11 @@ ui_render_head(
                     <h2 style="font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; margin-bottom: 1rem;">Portfolio</h2>
                     <div class="ui-grid">
                         <?php foreach ($results['portfolio'] as $item): ?>
-                            <a class="ui-link-card" href="<?= FULL_BASE_PATH ?>portfolio">
+                            <a class="ui-link-card" href="<?= FULL_BASE_PATH ?>portfolio#project-<?= (int)$item['id'] ?>">
                                 <?php if (!empty($item['image_url'])): ?>
                                     <img class="ui-media" src="<?= htmlspecialchars($item['image_url']) ?>" alt="<?= htmlspecialchars($item['title']) ?>">
                                 <?php endif; ?>
-                                <h3 class="ui-card-title"><?= html_entity_decode($item['title']) ?></h3>
+                                <h3 class="ui-card-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></h3>
                                 <p class="ui-card-text"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['description'] ?? '')), 0, 140)) ?>...</p>
                             </a>
                         <?php endforeach; ?>
@@ -124,6 +124,6 @@ ui_render_head(
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

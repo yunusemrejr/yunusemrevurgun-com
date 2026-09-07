@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
+require_once dirname(__DIR__, 2) . '/views/includes/collection.php';
 
 $modules = [
     [
@@ -237,20 +238,21 @@ $totalModules = count($modules);
 $totalTopics  = count(array_unique(array_merge(...array_column($modules, 'tags'))));
 
 ui_render_head(
-    'Science Corner | Figures & Formulas',
-    'Quotes and equations from the greatest minds in quantum mechanics, physics, mathematics, and computer science—Turing, Einstein, Feynman, Oppenheimer, Lovelace, and more.'
+    'Science Corner | Physics, Mathematics & Computer Science',
+    'Explore figures, equations and ideas from physics, mathematics and computer science in Yunus Emre Vurgun’s science collection.',
+    [ui_collection_schema('Science Corner', 'science-corner', array_column($modules, 'title'))]
 );
 ?>
 <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/post-code.css?v=<?= filemtime(__DIR__ . '/../../assets/css/post-code.css') ?>">
-<body>
+<body class="ui-collection">
 <div class="ui-page">
     <?php ui_render_navbar('Experiments'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Archive</p>
             <h1 class="ui-section-title">Science Corner</h1>
-            <p class="ui-section-text">A curated collection of quotes, equations, and insights from the greatest minds in physics, mathematics, and computer science. Each entry explores how their ideas shape our understanding of reality, computation, and the technological civilization we are building.</p>
+            <p class="ui-section-text">Figures and ideas I return to in physics, mathematics, and computer science. Browse by field, search a topic, or open the index.</p>
         </section>
 
         <section class="ui-section">
@@ -270,19 +272,20 @@ ui_render_head(
             </div>
         </section>
 
-        <section class="ui-section">
-            <div class="ui-archive-filters" role="toolbar" aria-label="Science Corner category filters">
+        <section class="ui-section" data-collection>
+            <?php ui_collection_tools($modules); ?>
+            <div class="ui-archive-filters" role="group" aria-label="Science Corner category filters">
                 <?php foreach ($categories as $key => $label): ?>
-                    <button class="ui-filter-pill<?= $key === 'all' ? ' is-active' : '' ?>" type="button" data-filter="<?= htmlspecialchars($key) ?>"><?= htmlspecialchars($label) ?></button>
+                    <button class="ui-filter-pill<?= $key === 'all' ? ' is-active' : '' ?>" type="button" data-filter="<?= htmlspecialchars($key) ?>" aria-pressed="<?= $key === 'all' ? 'true' : 'false' ?>"><?= htmlspecialchars($label) ?></button>
                 <?php endforeach; ?>
             </div>
 
             <div class="ui-feed-list" id="scienceFeed">
                 <?php foreach ($modules as $module): ?>
-                    <article class="ui-feed-card" data-category="<?= htmlspecialchars($module['category']) ?>">
+                    <article class="ui-feed-card" id="<?= ui_entry_id($module['title']) ?>" data-collection-item data-category="<?= htmlspecialchars($module['category']) ?>">
                         <div class="ui-feed-card-header">
                             <div>
-                                <h2 class="ui-feed-title"><?= htmlspecialchars($module['title']) ?></h2>
+                                <h2 class="ui-feed-title"><a href="#<?= ui_entry_id($module['title']) ?>"><?= htmlspecialchars($module['title']) ?></a></h2>
                                 <p class="ui-feed-meta"><?= htmlspecialchars($module['meta']) ?></p>
                             </div>
                         </div>
@@ -308,11 +311,7 @@ ui_render_head(
                 <?php endforeach; ?>
             </div>
 
-            <nav class="ui-pagination" aria-label="Science Corner pagination">
-                <span class="ui-page-link is-disabled">Previous</span>
-                <span class="ui-page-link is-active">1</span>
-                <span class="ui-page-link is-disabled">Next</span>
-            </nav>
+            <div class="ui-collection-empty" data-collection-empty hidden><p>No entries match. Try a shorter phrase or clear the filters.</p><button type="button" class="ui-btn ui-btn-secondary" data-collection-reset>Clear filters</button></div>
         </section>
     </main>
 
@@ -326,7 +325,6 @@ window.MathJax = {
 };
 </script>
 <script data-cfasync="false" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/post-code.js?v=<?= filemtime(__DIR__ . '/../../assets/js/post-code.js') ?>"></script>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

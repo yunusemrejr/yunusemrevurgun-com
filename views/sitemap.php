@@ -8,7 +8,7 @@ ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primar
 <div class="ui-page">
     <?php ui_render_navbar(); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Navigation</p>
             <h1 class="ui-section-title">Sitemap</h1>
@@ -20,7 +20,7 @@ ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primar
                 <article class="ui-card">
                     <h2 class="ui-card-title">Main</h2>
                     <ul class="ui-card-list" style="margin-top: 0.75rem;">
-                        <li><a href="<?= FULL_BASE_PATH ?>home">Home</a></li>
+                        <li><a href="<?= FULL_BASE_PATH ?>">Home</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>about">About</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>portfolio">Portfolio</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>blog">Blog</a></li>
@@ -34,6 +34,14 @@ ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primar
                         <li><a href="<?= FULL_BASE_PATH ?>updates">Updates</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>rmrp">Random Memories</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>travel">Travel</a></li>
+                    </ul>
+                </article>
+                <article class="ui-card">
+                    <h2 class="ui-card-title">Explore</h2>
+                    <ul class="ui-card-list" style="margin-top: .75rem;">
+                        <?php foreach (['yunobot' => 'YunoBot', 'music' => 'Music', 'videos' => 'Videos', 'downloads' => 'Downloads', 'post-code' => 'Post-Code', 'science-corner' => 'Science Corner', 'comedy' => 'Comedy', 'more' => 'More'] as $path => $label): ?>
+                        <li><a href="<?= FULL_BASE_PATH . $path ?>"><?= $label ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
                 <article class="ui-card">
@@ -51,6 +59,6 @@ ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primar
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

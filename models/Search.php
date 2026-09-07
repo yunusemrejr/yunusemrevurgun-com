@@ -240,13 +240,13 @@ class Search {
                 case 'updates':
                     $formattedItem['url'] = $adminMode 
                         ? FULL_BASE_PATH . "admin/updates/edit?id={$item['id']}" 
-                        : FULL_BASE_PATH . "updates";
+                        : FULL_BASE_PATH . "updates/{$item['id']}";
                     break;
                     
                 case 'portfolio':
                     $formattedItem['url'] = $adminMode 
                         ? FULL_BASE_PATH . "admin/portfolio/edit?id={$item['id']}" 
-                        : FULL_BASE_PATH . "portfolio";
+                        : FULL_BASE_PATH . "portfolio#project-{$item['id']}";
                     break;
             }
             

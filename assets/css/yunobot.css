@@ -8,7 +8,7 @@
  --yuno-border: var(--color-border);
  --yuno-text: #434343;
  --yuno-text-secondary: #8fa6a6;
- --yuno-text-muted: #8490a4;
+ --yuno-text-muted: var(--color-ink-slate);
 
  --status-loading: var(--color-warning);
  --status-ready: var(--color-success);
@@ -58,7 +58,7 @@
  border-radius: var(--radius-sm);
 }
 .ui-yunobot-messages::-webkit-scrollbar-thumb:hover {
- background: #8490a4;
+ background: var(--color-ink-slate);
 }
 
 /* ============================================================
@@ -125,7 +125,7 @@
 .chat-status-text {
  font-family: var(--font-display);
  font-size: var(--text-xs);
- color: #8490a4;
+ color: var(--color-ink-slate);
  text-transform: uppercase;
  letter-spacing: 0.05em;
  white-space: nowrap;
@@ -174,7 +174,7 @@
  font-size: 0.65rem;
  font-weight: 500;
  background: var(--color-surface-alt);
- color: #8490a4;
+ color: var(--color-ink-slate);
  border: 1px solid var(--color-border);
 }
 
@@ -285,7 +285,7 @@
  align-items: center;
  gap: var(--space-2);
  font-size: var(--text-xs);
- color: #8490a4;
+ color: var(--color-ink-slate);
  font-family: var(--font-display);
  padding: 0 var(--space-1);
 }
@@ -299,7 +299,7 @@
  height: 20px;
  border: none;
  background: transparent;
- color: #8490a4;
+ color: var(--color-ink-slate);
  cursor: pointer;
  border-radius: var(--radius-sm);
  transition: color var(--transition-fast);
@@ -367,7 +367,7 @@
 .typing-dot {
  width: 5px;
  height: 5px;
- background: #8490a4;
+ background: var(--color-ink-slate);
  border-radius: var(--radius-sm);
  animation: yunobot-typingWave 1.2s ease-in-out infinite;
  opacity: 0.5;
@@ -400,7 +400,7 @@
 .example-questions-label {
  font-family: var(--font-display);
  font-size: var(--text-xs);
- color: #8490a4;
+ color: var(--color-ink-slate);
  text-transform: uppercase;
  letter-spacing: 0.08em;
  margin-bottom: var(--space-2);
@@ -555,8 +555,8 @@
 }
 
 .chat-send-button:hover {
- background: #8490a4;
- border-color: #8490a4;
+ background: var(--color-ink-slate);
+ border-color: var(--color-ink-slate);
 }
 
 .chat-send-button:active {
@@ -666,4 +666,32 @@
  .typing-dot {
   animation: none;
  }
+}
+
+/* A reading surface with a compact companion guide. */
+.ui-yunobot-workspace { display:grid; grid-template-columns:minmax(0, 2.3fr) minmax(210px, 1fr); gap:2.5rem; align-items:start; }
+.ui-yunobot-container { max-width:none; min-width:0; }
+.ui-yunobot-chat { height:650px; height:min(74dvh, 760px); max-height:none; min-height:440px; padding:1.25rem; }
+.ui-yunobot-guide { padding:1.5rem 0; font-size:.95rem; line-height:1.7; color:var(--color-ink-body); }
+.ui-yunobot-guide h2 { font-size:1.35rem; margin:.75rem 0; }
+.ui-yunobot-guide ul { padding-left:1.25rem; }
+.ui-yunobot-guide details { border-top:1px solid var(--color-border); margin-top:1.5rem; padding-top:1rem; }
+.ui-yunobot-guide summary { cursor:pointer; min-height:44px; font-weight:600; }
+.source-label { display:block; margin:0 0 .3rem; font-size:.72rem; color:var(--color-ink-slate); }
+.message-source .source-chip { display:inline-flex; min-height:44px; align-items:center; line-height:1.4; max-width:100%; overflow-wrap:anywhere; }
+.message-content { font-size:1rem; line-height:1.7; }
+.message-copy-btn { min-width:44px; min-height:44px; }
+.chat-message { scroll-margin:1rem; }
+@media(max-width:980px) { .ui-yunobot-workspace { grid-template-columns:minmax(0,1fr); gap:1rem; } .ui-yunobot-guide { max-width:65ch; } }
+@media(max-width:480px) { .ui-yunobot-chat { padding:.8rem; min-height:440px; height:72dvh; } .message-avatar { display:none; } .chat-message { gap:0; } .example-question-chip { text-align:left; } }
+
+.ui-yunobot-page .ui-main { padding-top:2rem; }
+.ui-yunobot-page .ui-main > .ui-section:first-child { margin-bottom:2rem; }
+.ui-yunobot-page .ui-section-title { font-size:clamp(2rem,4vw,2.75rem); }
+.ui-yunobot-page .ui-yunobot-chat { height:62dvh; min-height:420px; max-height:650px; }
+@media(max-width:480px) {
+  .example-questions-list { flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-x:contain; padding-bottom:.5rem; max-width:100%; }
+  .example-question-chip { flex:0 0 190px; white-space:normal; }
+  .chat-actions { flex-wrap:nowrap; gap:.375rem; }
+  .chat-action-btn { flex:1; min-width:0; padding:.5rem .25rem; font-size:.72rem; }
 }

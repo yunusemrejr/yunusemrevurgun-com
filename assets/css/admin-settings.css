@@ -145,7 +145,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   font-size: 0.775rem;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   line-height: var(--text-leading-normal);
   margin: 0;
 }
@@ -190,14 +190,14 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 
 .settings-input::placeholder,
 .settings-textarea::placeholder {
-  color: #8490a4;
+  color: var(--color-ink-slate);
 }
 
 .settings-help-text {
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   font-size: 0.775rem;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   margin-top: 0;
   line-height: var(--text-leading-normal);
 }
@@ -260,7 +260,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 .settings-alert-close {
   background: none;
   border: none;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;

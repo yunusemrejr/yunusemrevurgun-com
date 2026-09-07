@@ -16,6 +16,7 @@
             // admin.css (the old inline styles + missing .admin-alert-error
             // rule made error toasts transparent/invisible on the light theme).
             const $notification = $('<div class="admin-notification admin-alert-' + type + '"></div>')
+                .attr('role', type === 'error' ? 'alert' : 'status')
                 .text(message)
                 .appendTo('body')
                 .css('opacity', 0)
@@ -33,6 +34,7 @@
         showAutoSaveIndicator: function(message, type = 'success') {
             const $indicator = $('<div class="admin-auto-save-indicator"></div>')
                 .addClass(`admin-alert-${type}`)
+                .attr('role', type === 'error' ? 'alert' : 'status')
                 .text(message)
                 .appendTo('body');
 

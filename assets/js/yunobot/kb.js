@@ -1,141 +1,121 @@
-/**
- * YunoBot Knowledge Engine loader (WASM).
- *
- * Loads `brain.wasm` (freestanding C: BM25 + Dirichlet-LM ranker) and the
- * inline `knowledge-pack.js` (`window.YUNOBOT_KB`), wires them into wasm
- * linear memory, and exposes YunoBotKB.answer(q) for open content questions.
- *
- * Zero dependencies: WebAssembly for the brain, DecompressionStream for the
- * deflated pack. If either is unavailable the engine silently disables and the
- * bot falls back to its pattern/NN logic.
+/** Local passage retrieval: BM25 + field/phrase relevance + bounded neural reranking.
+ * Every result is an unmodified excerpt with its actual source URL.
  */
-((global) => {
-  const scriptSrc =
-    global.document && global.document.currentScript
-      ? global.document.currentScript.src
-      : "";
-  // cache-bust brain.wasm with the mtime the PHP template stamps on the script tag
-  const wasmUrl =
-    (global.document &&
-      global.document.currentScript &&
-      global.document.currentScript.dataset.wasm) ||
-    (scriptSrc ? new URL("brain.wasm", scriptSrc).href : "");
-
-  const TR = {
-    ç: "c",
-    Ç: "C",
-    ğ: "g",
-    Ğ: "G",
-    ı: "i",
-    İ: "i",
-    ö: "o",
-    Ö: "O",
-    ş: "s",
-    Ş: "S",
-    ü: "u",
-    Ü: "U",
-    â: "a",
-    î: "i",
-    û: "u",
-  };
-  const norm = (s) =>
-    String(s)
-      .toLowerCase()
-      .replace(/[çÇğĞıİöÖşŞüÜâîû]/g, (ch) => TR[ch] || ch);
-
-  let ins = null,
-    mem = null,
-    ready = null;
-  let answerOutOff = 0,
-    queryOutOff = 0;
-  const PACK_BASE = 131072; // must stay in sync with brain.c (past module statics/initial memory)
-
-  function base64ToBytes(b64) {
-    const bin = atob(b64);
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    return bytes;
-  }
-
-  async function inflateRaw(bytes) {
-    const stream = new Blob([bytes])
-      .stream()
-      .pipeThrough(new DecompressionStream("deflate-raw"));
-    return new Uint8Array(await new Response(stream).arrayBuffer());
-  }
-
-  async function load() {
-    if (ready) return ready;
-    ready = (async () => {
-      if (
-        typeof WebAssembly === "undefined" ||
-        typeof DecompressionStream === "undefined"
-      ) {
-        ready = null;
-        return false;
-      }
-      const KB = global.YUNOBOT_KB;
-      if (!KB || !KB.blob || !wasmUrl) {
-        ready = null;
-        return false;
-      }
-
-      const wasm = await WebAssembly.compile(
-        await (await fetch(wasmUrl)).arrayBuffer(),
-      );
-
-      const pack = await inflateRaw(base64ToBytes(KB.blob));
-      const packLen = Math.ceil(pack.length / 4) * 4 + 4;
-      const scratch = PACK_BASE + packLen;
-      const total = scratch + 1024 * 1024;
-
-      ins = new WebAssembly.Instance(wasm, {}).exports;
-      const curPages = ins.memory.buffer.byteLength / 65536;
-      const pages = Math.ceil(total / 65536);
-      if (ins.memory.grow(pages - curPages) < 0)
-        throw new Error("WASM memory grow failed");
-      mem = new Uint8Array(ins.memory.buffer); // view AFTER grow (buffer detaches)
-      mem.set(pack, PACK_BASE);
-      ins.kb_setup(PACK_BASE, scratch);
-      if (!ins.kb_load()) throw new Error("kb_load failed");
-
-      answerOutOff = scratch + 0x100000 - 8192;
-      queryOutOff = answerOutOff - 4096;
-      return true;
-    })().catch((e) => {
-      console.warn("[YunoBot KB] load failed:", e);
-      ready = null;
-      return false;
-    });
-    return ready;
-  }
-
-  function answer(q) {
-    if (!mem || !ins || !answerOutOff) return null;
-    const bytes = new TextEncoder().encode(norm(q));
-    if (!bytes.length || bytes.length > 8000) return null;
-
-    mem.set(bytes, queryOutOff);
-    const n = ins.kb_answer(queryOutOff, bytes.length, answerOutOff, 4096);
-    if (!n) return null;
-
-    const dv = new DataView(ins.memory.buffer);
-    const sentId = dv.getUint32(answerOutOff, true);
-    const score = dv.getFloat32(answerOutOff + 4, true);
-    const text = new TextDecoder().decode(
-      mem.subarray(answerOutOff + 8, answerOutOff + n - 1),
-    );
-    const KB = global.YUNOBOT_KB;
-    const doc = KB.docs[KB.sentDoc[sentId]] || {};
-    return {
-      sentId,
-      score: +score.toFixed(3),
-      sentence: text,
-      page: doc.page,
-      url: doc.url,
-      title: doc.title,
+((g) => {
+    const stop = new Set(('a an the this that those these of in on at to for from by with and or but is are was were be been being do does did has have had i me my you your he him his she her they their it its we our who what when where why how which can could would should will tell show please about know more some any as also yunus emre vurgun yemre site website article post write writes writing written say says said think thinks explain question find want like give read learn learning using use used work works many much go got went come came get getting turkish english bana bir bu su ve veya ile mi mu nedir nasil hangi kim ne onun yunus\'un hakkinda bilgi misin anlat soyler soyle').split(' '));
+    const synonyms = {
+        projects: ['project'], built: ['project','build'], created: ['project','build'],
+        education: ['education','university','degree'], studied: ['study','university','degree'], college: ['university'],
+        countries: ['country','travel'], visited: ['visit','travel'], trips: ['travel'],
+        languages: ['language','php','python','javascript'], coding: ['code','programming'],
+        neural: ['neural'], ai: ['ai','intelligence'], ml: ['ml','machine'],
+        egitim: ['education','university'], universite: ['university'], proje: ['project'], projeleri: ['project'],
+        seyahat: ['travel'], ulke: ['country'], muzik: ['music'], iletisim: ['contact'],
+        graphy: ['graphy'], finetuneyuno: ['finetuneyuno'], nodejs: ['node','nodejs'],
     };
-  }
-
-  global.YunoBotKB = { load, answer };
-})(typeof window === "undefined" ? globalThis : window);
+    const normalize = text => g.YunoBotText.normalize(text);
+    const stem = word => word.length > 4 ? word.replace(/ies$/, 'y').replace(/(?:ing|ed|s)$/, '') : word;
+    const tokens = text => g.YunoBotText.tokenize(text).filter(t => !stop.has(t) && t.length > 1).map(stem);
+    const liveSource = g.document?.currentScript?.dataset.liveSource || '';
+    let refreshing = null;
+    let rows = [], index = new Map(), average = 1, loaded = false;
+    function build(passages) {
+        index = new Map();
+        rows = passages.map((passage, id) => {
+            const body = tokens(passage.text), fields = new Map();
+            for (const [text, boost] of [[passage.text, 1], [passage.heading, 1.8], [passage.title, 2.4]]) {
+                for (const term of tokens(text)) fields.set(term, (fields.get(term) || 0) + boost);
+            }
+            for (const [term, tf] of fields) {
+                if (!index.has(term)) index.set(term, []);
+                index.get(term).push([id, tf]);
+            }
+            return { ...passage, length: body.length, fields, body: new Set(body) };
+        });
+        average = rows.reduce((sum, row) => sum + row.length, 0) / Math.max(1, rows.length);
+        loaded = true;
+        return true;
+    }
+    function load() {
+        if (refreshing) return refreshing;
+        const corpus = g.YUNOBOT_KB;
+        if (!corpus || corpus.version !== 2 || !g.YunoBotText) return Promise.resolve(false);
+        if (!loaded) build(corpus.passages);
+        refreshing = (async () => {
+            if (!liveSource || !g.fetch) return true;
+            try {
+                const source = new URL(liveSource, g.location.href);
+                if(source.origin !== g.location.origin) return true;
+                const response=await g.fetch(source.href,{credentials:'omit',signal:AbortSignal.timeout(2500)});
+                if(!response.ok) return true;
+                const latest=await response.json();
+                if(latest.version!==2 || latest.scope!=='blog' || !Array.isArray(latest.passages) || !Array.isArray(latest.publishedUrls))return true;
+                const published=new Set(latest.publishedUrls);
+                const replacements=new Set(latest.passages.map(row=>row.url));
+                const safe=latest.passages.filter(row=>typeof row.text==='string'&&typeof row.title==='string'&&typeof row.heading==='string'&&published.has(row.url)&&row.url.startsWith(source.origin+'/blog/'));
+                const kept=corpus.passages.filter(row=>row.page!=='blog'||(!replacements.has(row.url)&&published.has(row.url)));
+                build([...kept,...safe]);
+            } catch { /* Bundled public sources remain available offline. */ }
+            return true;
+        })();
+        return refreshing;
+    }
+    function search(query, options = {}) {
+        if (!loaded || typeof query !== 'string' || query.length > 2000) return [];
+        const raw = g.YunoBotText.tokenize(query).filter(t => !stop.has(t) && t.length > 1);
+        const groups = [...new Set(raw)].map(term => [...new Set([term, ...(synonyms[term] || [])].map(stem))]);
+        if (!groups.length) return [];
+        const hits = new Map();
+        groups.forEach((terms, group) => {
+            const perGroup = new Map();
+            for (const term of terms) {
+                const postings = index.get(term) || [];
+                const idf = Math.log(1 + (rows.length - postings.length + .5) / (postings.length + .5));
+                for (const [id, tf] of postings) {
+                    const row = rows[id];
+                    if (options.url && row.url !== options.url) continue;
+                    if (options.heading && row.heading !== options.heading) continue;
+                    if (options.exclude && row.text === options.exclude) continue;
+                    const score = idf * tf * 2.2 / (tf + 1.2 * (.25 + .75 * row.length / average));
+                    const previous = perGroup.get(id);
+                    if (!previous || previous.score < score) perGroup.set(id, {score, idf});
+                }
+            }
+            for (const [id, value] of perGroup) {
+                if (!hits.has(id)) hits.set(id, {id, score:0, groups:new Set(), specificity:0});
+                const hit=hits.get(id); hit.score+=value.score; hit.groups.add(group); hit.specificity=Math.max(hit.specificity,value.idf);
+            }
+        });
+        const phrase = normalize(query).replace(/^(?:what is|tell me about|find|explain)\s+/, '').replace(/[?.!]+$/, '');
+        let candidates = [...hits.values()].filter(hit => {
+            const coverage = hit.groups.size / groups.length;
+            return coverage >= .7 && (hit.groups.size >= Math.min(2, groups.length)) && (hit.groups.size > 1 || hit.specificity >= 2);
+        }).map(hit => {
+            const row = rows[hit.id];
+            const bodyMatches = groups.filter(terms => terms.some(term => row.body.has(term))).length;
+            const headingMatch = groups.every(terms => terms.some(term => tokens(row.heading).includes(term)));
+            const definition = /\b(?:application|software|system|project|tool|app|is a|was a|refers to)\b/i.test(row.text);
+            if (!bodyMatches && !(headingMatch && definition)) return null;
+            let boost = bodyMatches * 4;
+            if (/\b(application|software|web server|fine.tuning app|database|algorithm)\b/i.test(row.text) && /^(?:what is|tell me about)/.test(normalize(query))) boost += 8;
+            if (/^(?:what is|what are|tell me about)/.test(normalize(query)) && definition) boost += 3;
+            if (phrase.length >= 5 && normalize(row.title).includes(phrase)) boost += 7;
+            if (phrase.length >= 5 && normalize(row.heading).includes(phrase)) boost += 4;
+            if (options.page && row.page === options.page) boost += 2;
+            // Prefer the complete article over a listing-page excerpt.
+            if (/\/(blog|updates)\/[^/]+$/.test(row.url)) boost += .8;
+            return {...hit, score: (hit.score + boost) * (hit.groups.size / groups.length), row};
+        }).filter(Boolean).sort((a,b) => b.score-a.score).slice(0,12);
+        if (g.YunoBotNN?.ready) {
+            const queryVector = g.YunoBotNN.embed(query);
+            for (const hit of candidates) {
+                if (!hit.row.vector) hit.row.vector = g.YunoBotNN.embed(hit.row.title + ' ' + hit.row.heading + ' ' + hit.row.text);
+                let cosine=0; for(let d=0;d<queryVector.length;d++)cosine+=queryVector[d]*hit.row.vector[d];
+                hit.score += Math.max(0, cosine) * .6;
+            }
+            candidates.sort((a,b)=>b.score-a.score);
+        }
+        return candidates.slice(0,options.limit || 3).map(hit=>({sentence:hit.row.text, text:hit.row.text, url:hit.row.url, page:hit.row.page, title:hit.row.title, heading:hit.row.heading, score:hit.score, coverage:hit.groups.size/groups.length,titleCoverage:groups.filter(terms=>terms.some(term=>tokens(hit.row.title+' '+hit.row.heading).includes(term))).length/groups.length,specificity:hit.specificity}));
+    }
+    g.YunoBotKB = {load,search,answer(query,options){return search(query,{...options,limit:1})[0]||null;},get ready(){return loaded;}};
+})(typeof window === 'undefined' ? globalThis : window);

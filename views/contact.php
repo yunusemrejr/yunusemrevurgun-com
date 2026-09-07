@@ -166,7 +166,7 @@ ui_render_head(
 <div class="ui-page">
     <?php ui_render_navbar('Contact'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Connect</p>
             <h1 class="ui-section-title">Get in Touch</h1>
@@ -254,7 +254,7 @@ ui_render_head(
                     ?>
                     <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
                         <p class="ui-eyebrow" style="margin-bottom: 0.25rem;"><?= $csName ?></p>
-                        <p style="font-size: var(--text-sm);"><a href="<?= htmlspecialchars($cs['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" style="color: #8fa6a6;"><?= $csHandle ?></a></p>
+                        <p style="font-size: var(--text-sm);"><a href="<?= htmlspecialchars($cs['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" style="color: var(--color-ink-slate);"><?= $csHandle ?></a></p>
                     </div>
                     <?php endforeach; ?>
                     <?php endif; ?>
@@ -266,7 +266,7 @@ ui_render_head(
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<script src="<?= FULL_BASE_PATH ?>assets/js/contact.js"></script>
+<script src="<?= FULL_BASE_PATH ?>assets/js/contact.js?v=<?= filemtime(dirname(__DIR__) . '/assets/js/contact.js') ?>"></script>
 <script>
 (function() {
     var refreshBtn = document.getElementById('refresh-captcha');
@@ -279,6 +279,6 @@ ui_render_head(
     }
 })();
 </script>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

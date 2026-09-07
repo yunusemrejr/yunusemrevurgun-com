@@ -17,68 +17,18 @@ if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
 // Function to determine current page context
 function getCurrentAdminPageContext() {
     global $page;
-    
-    $path = $_SERVER['REQUEST_URI'];
-    
-    // Use $page variable if set (preferred method)
-    if (isset($page) && !empty($page)) {
-        if (strpos($path, '/create') !== false) {
-            return $page . '-create';
-        } elseif (strpos($path, '/edit') !== false) {
-            return $page . '-edit';
-        } elseif (strpos($path, '/delete') !== false) {
-            return $page . '-delete';
-        }
-        return $page;
+    $path = trim((string)parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
+    if (preg_match('#(?:^|/)admin/([a-z-]+)(?:/(create|edit|delete))?$#', $path, $matches)) {
+        return $matches[1] . (isset($matches[2]) ? '-' . $matches[2] : '');
     }
-    
-    // Fallback: analyze path
-    if (strpos($path, '/admin/dashboard') !== false) return 'dashboard';
-    if (strpos($path, '/admin/blog') !== false) {
-        if (strpos($path, '/create') !== false) return 'blog-create';
-        if (strpos($path, '/edit') !== false) return 'blog-edit';
-        return 'blog';
-    }
-    if (strpos($path, '/admin/portfolio') !== false) {
-        if (strpos($path, '/create') !== false) return 'portfolio-create';
-        if (strpos($path, '/edit') !== false) return 'portfolio-edit';
-        return 'portfolio';
-    }
-    if (strpos($path, '/admin/gallery') !== false) {
-        if (strpos($path, '/create') !== false) return 'gallery-create';
-        if (strpos($path, '/edit') !== false) return 'gallery-edit';
-        return 'gallery';
-    }
-    if (strpos($path, '/admin/updates') !== false) {
-        if (strpos($path, '/create') !== false) return 'updates-create';
-        if (strpos($path, '/edit') !== false) return 'updates-edit';
-        return 'updates';
-    }
-    if (strpos($path, '/admin/rmrp') !== false) {
-        if (strpos($path, '/create') !== false) return 'rmrp-create';
-        if (strpos($path, '/edit') !== false) return 'rmrp-edit';
-        return 'rmrp';
-    }
-    if (strpos($path, '/admin/settings') !== false) return 'settings';
-    if (strpos($path, '/admin/tracker-codes') !== false) {
-        if (strpos($path, '/create') !== false) return 'tracker-codes-create';
-        if (strpos($path, '/edit') !== false) return 'tracker-codes-edit';
-        return 'tracker-codes';
-    }
-    if (strpos($path, '/admin/music') !== false) return 'music';
-    if (strpos($path, '/admin/downloads') !== false) return 'downloads';
-    if (strpos($path, '/admin/socials') !== false) return 'socials';
-    if (strpos($path, '/admin/travel') !== false) return 'travel';
-    if (strpos($path, '/admin/search') !== false) return 'search';
-    
-    return 'dashboard';
+    return $page ?: 'dashboard';
 }
 
 // Function to get required modules for current page
 function getRequiredAdminModules() {
     $pageContext = getCurrentAdminPageContext();
     $requiredModules = [];
-    
+
     $adminModules = [
         'core' => ['admin-core.js', 'admin-notifications.js'],
         'dashboard' => ['admin-system.js'],
@@ -108,17 +58,17 @@ function getRequiredAdminModules() {
         'socials' => ['admin-forms.js', 'admin-tables.js'],
         'travel' => ['admin-forms.js', 'admin-tables.js', 'admin-travel.js'],
     ];
-    
+
     // Always load core modules
     if (isset($adminModules['core'])) {
         $requiredModules = $adminModules['core'];
     }
-    
+
     // Add page-specific modules
     if (isset($adminModules[$pageContext])) {
         $requiredModules = array_merge($requiredModules, $adminModules[$pageContext]);
     }
-    
+
     return array_unique($requiredModules);
 }
 

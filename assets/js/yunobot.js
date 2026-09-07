@@ -26,16 +26,7 @@
     // ============================================================
     // PERFORMANCE: Virtual scrolling state
     // ============================================================
-    const VISIBLE_MESSAGE_THRESHOLD = 50; // Start virtual scrolling after this many messages
-    let isVirtualScrolling = false;
-    let visibleStart = 0;
-    let visibleEnd = 0;
-    let messageElements = []; // Keep references for virtual scroll
-
-    // ============================================================
-    // PERFORMANCE: Scroll debouncing
-    // ============================================================
-    let scrollRAF = null;
+    let chatVersion = 0;
     let scrollPending = false;
 
     // ---- Utility: Escape HTML ----
@@ -203,7 +194,7 @@
                         "] " +
                         label +
                         ": " +
-                        entry.text,
+                        entry.text + (entry.source ? "\nSource: " + entry.source : ""),
                 );
             }
         } else {
@@ -236,11 +227,15 @@
     // ---- Utility: Clear chat ----
     function clearChat() {
         chatMessages.innerHTML = "";
+        chatVersion++;
+        mlEngine = new window.YunoBotMLEngine();
+        chatInput.disabled = false;
+        sendButton.disabled = false;
         messageCounter = 0;
         messageTimestamps = [];
         // Re-add welcome message
         addMessage(
-            "System online. Ask anything about Yunus, projects, or technical topics.",
+            "Ask about Yunus’s work, a project, or a topic from the journal.",
             "bot",
         );
         // Show example questions
@@ -249,10 +244,10 @@
 
     function getInitialExamples() {
         return [
-            "Take me to the about section",
-            "Show me the portfolio",
-            "Who is Yunus?",
-            "What projects has Yunus made?",
+            "What does Yunus do at ASP?",
+            "What is Mr. Graphy?",
+            "Find writing about edge AI",
+            "Yunus nerede okudu?",
         ];
     }
 
@@ -299,7 +294,7 @@
 
         // Enter to send, Shift+Enter for newline
         chatInput.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" && !e.shiftKey) {
+            if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
                 e.preventDefault();
                 handleSend();
             }
@@ -343,7 +338,7 @@
                 updateStatus("ready", "Ready");
             };
             mlEngine.onError = function () {
-                updateStatus("ready", "Offline mode");
+                updateStatus("ready", "Source search available");
             };
 
             // Check if already ready (unlikely but possible)
@@ -355,7 +350,7 @@
         // Fallback: if worker never initializes within 10 seconds, show offline mode
         setTimeout(function () {
             if (mlEngine && !mlEngine.workerReady) {
-                updateStatus("ready", "Offline mode");
+                updateStatus("ready", "Source search available");
             }
         }, 10000);
     }
@@ -370,7 +365,9 @@
 
     function handleSend() {
         var input = chatInput.value.trim();
-        if (!input) return;
+        if (!input || chatInput.disabled) return;
+        const version = chatVersion;
+        const activeEngine = mlEngine;
 
         // Disable input while processing
         chatInput.disabled = true;
@@ -396,9 +393,10 @@
             // Use Promise.resolve to handle both sync and async engines
             Promise.resolve()
                 .then(function () {
-                    return mlEngine.process(input);
+                    return activeEngine.process(input);
                 })
                 .then(function (result) {
+                    if (version !== chatVersion) return;
                     hideTypingIndicator(typingId);
 
                     // Safety check: ensure result and response exist
@@ -425,37 +423,16 @@
                         return;
                     }
 
-                    // Handle navigation intent
-                    if (result.intent === "navigate" && result.url) {
-                        addMessage(result.response, "bot");
-
-                        // Open in new tab after short delay (guard: only http(s)/relative)
-                        setTimeout(function () {
-                            if (/^(https?:\/\/|\/)/i.test(result.url)) {
-                                window.open(result.url, "_blank");
-                            }
-                        }, 500);
-                    } else {
-                        // Regular response
-                        addMessage(
-                            result.response,
-                            "bot",
-                            result.sourceUrl
-                                ? {
-                                      url: result.sourceUrl,
-                                      page: result.sourcePage,
-                                      title: result.sourceTitle,
-                                  }
-                                : null,
-                        );
-
-                        // Show examples if provided
-                        if (result.examples && result.examples.length > 0) {
-                            showExampleQuestions(result.examples);
-                        }
-                    }
+                    addMessage(result.response, "bot", result.sourceUrl ? {
+                        url: result.sourceUrl,
+                        page: result.sourcePage,
+                        title: result.sourceTitle,
+                        label: result.kind === 'excerpt' ? (result.sourceLabel || 'Source excerpt') : (result.kind === 'navigation' ? 'Open page' : 'Source'),
+                    } : null);
+                    if (result.examples?.length) showExampleQuestions(result.examples);
                 })
                 .catch(function (error) {
+                    if (version !== chatVersion) return;
                     console.error("ML processing error:", error);
                     hideTypingIndicator(typingId);
                     addMessage(
@@ -464,6 +441,7 @@
                     );
                 })
                 .finally(function () {
+                    if (version !== chatVersion) return;
                     // Re-enable input
                     chatInput.disabled = false;
                     sendButton.disabled = false;
@@ -493,6 +471,7 @@
             time: now,
             type: type,
             text: text,
+            source: source?.url || null,
         });
 
         // Avatar
@@ -552,11 +531,16 @@
             sourceChip.className = "message-source";
             var sourceLink = document.createElement("a");
             sourceLink.className = "source-chip";
-            sourceLink.href = source.url;
+            const parsed = new URL(source.url, location.href);
+            if (!['http:', 'https:'].includes(parsed.protocol)) return;
+            sourceLink.href = parsed.href;
             sourceLink.target = "_blank";
             sourceLink.rel = "noopener noreferrer";
             sourceLink.textContent = source.title || source.page || "Source";
-            sourceChip.appendChild(sourceLink);
+            const sourceLabel = document.createElement('span');
+            sourceLabel.className = 'source-label';
+            sourceLabel.textContent = source.label || 'Source';
+            sourceChip.append(sourceLabel, sourceLink);
             body.appendChild(sourceChip);
         }
 
@@ -571,14 +555,6 @@
         var fragment = document.createDocumentFragment();
         fragment.appendChild(messageDiv);
         chatMessages.appendChild(fragment);
-
-        // Track for virtual scrolling
-        messageElements.push(messageDiv);
-
-        // Enable virtual scrolling if we have many messages
-        if (messageElements.length >= VISIBLE_MESSAGE_THRESHOLD) {
-            enableVirtualScrolling();
-        }
 
         // Scroll to bottom using RAF
         scrollToBottom();
@@ -641,7 +617,7 @@
                 // Use smooth scroll behavior for better UX
                 chatMessages.scrollTo({
                     top: chatMessages.scrollHeight,
-                    behavior: "smooth",
+                    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
                 });
             }
             scrollPending = false;
@@ -651,58 +627,6 @@
     // ============================================================
     // PERFORMANCE: Virtual scrolling for large message lists
     // ============================================================
-    function updateVirtualScroll() {
-        if (!isVirtualScrolling) return;
-
-        const containerHeight = chatMessages.clientHeight;
-        const messageHeight = 100; // Average message height in px
-        const visibleCount = Math.ceil(containerHeight / messageHeight) + 2; // Buffer
-
-        const scrollTop = chatMessages.scrollTop;
-        const startIndex = Math.max(
-            0,
-            Math.floor(scrollTop / messageHeight) - 1,
-        );
-        const endIndex = Math.min(
-            messageElements.length - 1,
-            startIndex + visibleCount,
-        );
-
-        // Update visibility of message elements
-        for (let i = 0; i < messageElements.length; i++) {
-            const el = messageElements[i];
-            if (!el) continue;
-
-            if (i >= startIndex && i <= endIndex) {
-                el.style.display = "";
-                el.style.visibility = "";
-            } else {
-                el.style.display = "none";
-                el.style.visibility = "hidden";
-            }
-        }
-
-        visibleStart = startIndex;
-        visibleEnd = endIndex;
-    }
-
-    function enableVirtualScrolling() {
-        if (isVirtualScrolling) return;
-        isVirtualScrolling = true;
-
-        // Listen for scroll events
-        chatMessages.addEventListener(
-            "scroll",
-            function () {
-                requestAnimationFrame(updateVirtualScroll);
-            },
-            { passive: true },
-        );
-
-        // Initial update
-        updateVirtualScroll();
-    }
-
     function showExampleQuestions(examples) {
         if (!exampleQuestionsContainer) return;
 

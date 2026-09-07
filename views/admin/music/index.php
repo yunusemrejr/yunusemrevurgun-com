@@ -31,12 +31,9 @@ if ($isArchived) $baseUrl .= '?tab=archived';
 
 $page = "music";
 $pageTitle = "Music";
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
-
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <h1 class="admin-page-title">Music</h1>
                 <p class="admin-page-subtitle">Manage audio tracks</p>
@@ -47,6 +44,13 @@ include __DIR__ . '/../includes/header.php';
                 </button>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
 
         <div class="admin-tabs">
             <a href="<?= FULL_BASE_PATH ?>admin/music?tab=active" class="admin-tab <?= !$isArchived ? 'active' : '' ?>">Active</a>
@@ -69,7 +73,7 @@ include __DIR__ . '/../includes/header.php';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($tracks as $i => $track): 
+                        <?php foreach ($tracks as $i => $track):
                             $duration = $track['duration'] > 0 ? gmdate('i:s', round($track['duration'])) : '--:--';
                             $size = $track['file_size'] > 0 ? round($track['file_size'] / 1024 / 1024, 1) . ' MB' : '--';
                             $recordedDate = !empty($track['recorded_at']) ? date('M d, Y', strtotime($track['recorded_at'])) : '--';
@@ -137,7 +141,7 @@ include __DIR__ . '/../includes/header.php';
             $links = $music->getAllLinks();
             if (count($links) > 0): ?>
             <div class="admin-gallery-grid" id="adminMusicLinksGrid">
-                <?php foreach ($links as $link): 
+                <?php foreach ($links as $link):
                     $platformNames = [
                         'spotify' => 'Spotify',
                         'apple-music' => 'Apple Music',
@@ -195,8 +199,7 @@ include __DIR__ . '/../includes/header.php';
             </div>
             <?php endif; ?>
         </div>
-    </div>
-</main>
+
 <div class="admin-upload-modal" id="uploadModal" tabindex="-1">
     <div class="admin-upload-modal-content">
         <div class="admin-modal-header">

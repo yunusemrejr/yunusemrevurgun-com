@@ -74,7 +74,7 @@ ADMIN TRAVEL PAGE — DARK THEME
   grid-column: 1 / -1;
   text-align: center;
   padding: var(--space-8);
-  color: #8490a4;
+  color: var(--color-ink-slate);
   font-family: var(--font-body);
   font-size: var(--text-sm);
 }

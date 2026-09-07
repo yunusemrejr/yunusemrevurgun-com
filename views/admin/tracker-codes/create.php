@@ -37,17 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['error'] = "Failed to create tracker code.";
     }
 }
-?> 
+?>
 <?php
 // Set page title
 $page = "tracker-codes-create";
 $pageTitle = "Add Tracker Code";
 // Include header
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <p class="admin-page-subtitle">Create a new analytics or tracking code</p>
             </div>
@@ -57,14 +55,20 @@ include __DIR__ . '/../includes/header.php';
                 </a>
             </div>
         </div>
-        
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
         <?php if (isset($_SESSION['error'])): ?>
             <div class="admin-alert admin-alert-danger">
                 <i class="bi bi-exclamation-triangle me-2"></i>
                 <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
             </div>
         <?php endif; ?>
-        
+
         <div class="admin-card">
             <div class="admin-card-header">
                 <h5 class="admin-card-title">
@@ -80,13 +84,13 @@ include __DIR__ . '/../includes/header.php';
                         <input type="text" class="admin-form-control" id="name" name="name" placeholder="e.g., Google Analytics, Facebook Pixel" required>
                         <div class="admin-form-text">Enter a descriptive name for this tracker code</div>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="code" class="admin-form-label">Tracking Code</label>
                         <textarea class="admin-form-control" id="code" name="code" rows="8" placeholder="Paste the full tracking code snippet here..." required></textarea>
                         <div class="admin-form-text">Paste the complete tracking code snippet (script tags included)</div>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <div class="admin-form-check">
                             <input type="checkbox" class="admin-form-check-input" id="is_active" name="is_active" checked>
@@ -94,7 +98,7 @@ include __DIR__ . '/../includes/header.php';
                         </div>
                         <div class="admin-form-text">Uncheck to disable this tracking code without deleting it</div>
                     </div>
-                    
+
                     <div class="admin-form-actions">
                         <button type="submit" class="admin-btn admin-btn-primary">
                             <i class="bi bi-check-circle me-2"></i>Save Tracker Code
@@ -106,6 +110,5 @@ include __DIR__ . '/../includes/header.php';
                 </form>
             </div>
         </div>
-    </div>
-</main>
-<?php include __DIR__ . '/../includes/footer.php'; ?> 
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

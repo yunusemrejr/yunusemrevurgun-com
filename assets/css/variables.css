@@ -1,8 +1,35 @@
+@font-face {
+  font-family: 'Aileron';
+  src: url('../fonts/aileron-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Aileron';
+  src: url('../fonts/aileron-900.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ===== CSS VARIABLES — YEV DESIGN SYSTEM v3.0 ===== */
 /* Single source of truth for all design tokens. */
 /* Muted light background + soft gray text + muted teal accents. */
 
 :root {
+  /* Public layout and accessible ink. */
+  --color-ink-body: #434343;
+  --color-ink-slate: #566178;
+  --color-ink-slate-hover: #48556d;
+  --color-focus-ring: rgba(132, 144, 164, 0.4);
+  --text-5xl: 3.5rem;
+  --text-6xl: 4.5rem;
+  --space-32: 8rem;
+  --z-elevated: 10;
+  --z-navbar: 100;
+  --z-overlay: 1040;
+
   /* ===== RESPONSIVE BREAKPOINTS ===== */
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
@@ -36,9 +63,9 @@
   --color-bg-overlay: rgba(132, 144, 164, 0.4);
 
   /* Text — muted gray hierarchy */
-  --color-text-primary: #a6a6a6;
-  --color-text-secondary: #8fa6a6;
-  --color-text-tertiary: #8490a4;
+  --color-text-primary: #434343;
+  --color-text-secondary: #566178;
+  --color-text-tertiary: #566178;
   --color-text-inverse: #434343;
   --color-text-disabled: #b5b3af;
 
@@ -54,11 +81,11 @@
   /* Borders */
   --color-border: rgba(132, 144, 164, 0.25);
   --color-border-strong: rgba(132, 144, 164, 0.45);
-  --color-border-focus: rgba(132, 144, 164, 0.4);
+  --color-border-focus: #566178;
 
   /* Surfaces */
   --color-surface: rgba(132, 144, 164, 0.06);
-  --color-surface-hover: rgba(132, 144, 164, 0.10);
+  --color-surface-hover: rgba(132, 144, 164, 0.1);
   --color-surface-alt: rgba(132, 144, 164, 0.04);
 
   /* Semantic */
@@ -76,20 +103,22 @@
   --color-info-border: rgba(106, 138, 170, 0.3);
 
   /* ===== TYPOGRAPHY (Aileron display + Canva Sans body) ===== */
-  --font-display: 'Aileron', 'Helvetica Neue', Arial, sans-serif;
-  --font-body: 'Canva Sans', 'Helvetica Neue', Arial, sans-serif;
-  --font-heading: 'Aileron', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'Roboto Mono', Menlo, Monaco, monospace;
+  --font-display: "Aileron", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Canva Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Aileron", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Monaco,
+    monospace;
 
-  --text-xs: 0.75rem;      /* 12px */
-  --text-sm: 0.8125rem;    /* 13px */
-  --text-base: 0.9375rem;  /* 15px */
-  --text-md: 1rem;         /* 16px */
-  --text-lg: 1.125rem;     /* 18px */
-  --text-xl: 1.25rem;      /* 20px */
-  --text-2xl: 1.5rem;      /* 24px */
-  --text-3xl: 1.875rem;    /* 30px */
-  --text-4xl: 2.25rem;     /* 36px */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 13px */
+  --text-base: 1rem; /* 15px */
+  --text-md: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
 
   --text-leading-tight: 1.2;
   --text-leading-normal: 1.5;

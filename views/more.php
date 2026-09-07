@@ -7,7 +7,7 @@ $morePages = [
     [
         'title' => 'YunoBot',
         'href' => FULL_BASE_PATH . 'yunobot',
-        'description' => 'Terminal-style AI chat interface powered by local ML models.',
+        'description' => 'Ask about my work or find a passage in the journal, with links to the source.',
         'icon' => '>',
     ],
     [
@@ -19,7 +19,7 @@ $morePages = [
     [
         'title' => 'Science Corner',
         'href' => FULL_BASE_PATH . 'science-corner',
-        'description' => 'Quotes, equations, and ideas from the greatest scientific minds.',
+        'description' => 'Figures, equations, and ideas from physics, mathematics and computer science.',
         'icon' => 'Σ',
     ],
     [
@@ -54,22 +54,22 @@ $morePages = [
     ],
 ];
 
-$currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');
+
 
 ui_render_head(
-    'More — Yunus Emre Vurgun | Developer',
+    'Explore | Yunus Emre Vurgun’s Projects, Media & Interests',
     'Additional projects and pages by Yunus Emre Vurgun (Yemre) — socials, tools, and experiments.',
 );
 ?>
-<body>
+<body class="ui-collection">
 <div class="ui-page">
     <?php ui_render_navbar('more'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Explore</p>
-            <h1 class="ui-section-title">More</h1>
-            <p class="ui-section-text">Additional projects and experiments alongside the main work.</p>
+            <h1 class="ui-section-title">Explore</h1>
+            <p class="ui-section-text">The other parts of this site: things I make, listen to, study, and keep.</p>
         </section>
 
         <section class="ui-section">
@@ -113,6 +113,6 @@ ui_render_head(
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

@@ -56,7 +56,7 @@ $pageMeta = [
     '<meta name="twitter:data1" content="' . htmlspecialchars($category !== '' ? $category : 'Updates', ENT_QUOTES) . '">',
     '<meta name="twitter:label2" content="Importance">',
     '<meta name="twitter:data2" content="' . htmlspecialchars($importance !== '' ? ucfirst($importance) : 'General', ENT_QUOTES) . '">',
-    '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>',
+    '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>',
 ];
 
 ui_render_head($title, $description, $pageMeta);
@@ -65,7 +65,7 @@ ui_render_head($title, $description, $pageMeta);
 <div class="ui-page">
     <?php ui_render_navbar('Journal'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <div class="ui-update-row" style="margin-bottom: 1.5rem;">
                 <img
@@ -104,6 +104,6 @@ ui_render_head($title, $description, $pageMeta);
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

@@ -19,7 +19,8 @@ $totalMemories = $rmrp->getTotalMemories();
 $totalPages = max(1, (int) ceil($totalMemories / $memoriesPerPage));
 $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 if ($currentPage > $totalPages) {
-    $currentPage = $totalPages;
+    require __DIR__ . '/404.php';
+    return;
 }
 $offset = ($currentPage - 1) * $memoriesPerPage;
 $allMemories = $rmrp->getPaginatedMemories($offset, $memoriesPerPage);
@@ -30,7 +31,10 @@ $qs = function (array $overrides = []) use ($view, $memoriesPerPage): string {
     return '?' . http_build_query($params);
 };
 
-$pageMeta = [];
+$canonicalParams = [];
+if ($memoriesPerPage !== 10) $canonicalParams['per'] = $memoriesPerPage;
+if ($currentPage > 1) $canonicalParams['page'] = $currentPage;
+$pageMeta = ['canonical' => FULL_BASE_PATH . 'rmrp' . ($canonicalParams ? '?' . http_build_query($canonicalParams) : '')];
 if ($totalPages > 1) {
     if ($currentPage > 1) {
         $pageMeta[] = '<link rel="prev" href="' . FULL_BASE_PATH . 'rmrp' . $qs(['page' => $currentPage - 1]) . '">';
@@ -59,7 +63,7 @@ $pageMeta[] = '<script type="application/ld+json">' . json_encode([
     '@type' => 'ItemList',
     'name' => 'Random Memories for Random People by Yunus Emre Vurgun',
     'itemListElement' => $listItems,
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>';
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>';
 
 // Page-specific stylesheet + view-options script (loaded after ui-rebuild.css).
 $rmrpCss = FULL_BASE_PATH . 'assets/css/rmrp.css?v=' . filemtime(dirname(__DIR__) . '/assets/css/rmrp.css');
@@ -73,11 +77,11 @@ $description = 'Fragments, fleeting thoughts, and small moments worth keeping â€
 
 ui_render_head($title, $description, $pageMeta);
 ?>
-<body>
+<body class="ui-collection">
 <div class="ui-page">
     <?php ui_render_navbar('Journal'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Memories</p>
             <h1 class="ui-section-title">Random Memories for Random People</h1>
@@ -149,7 +153,7 @@ ui_render_head($title, $description, $pageMeta);
                             <span class="ui-page-link is-disabled">Previous</span>
                         <?php endif; ?>
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <a class="ui-page-link<?= $i === $currentPage ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>rmrp<?= $qs(['page' => $i]) ?>"><?= $i ?></a>
+                            <a class="ui-page-link<?= $i === $currentPage ? ' is-active' : '' ?>"<?= $i === $currentPage ? ' aria-current="page"' : '' ?> href="<?= FULL_BASE_PATH ?>rmrp<?= $qs(['page' => $i]) ?>"><?= $i ?></a>
                         <?php endfor; ?>
                         <?php if ($currentPage < $totalPages): ?>
                             <a class="ui-page-link" href="<?= FULL_BASE_PATH ?>rmrp<?= $qs(['page' => $currentPage + 1]) ?>">Next</a>
@@ -167,6 +171,6 @@ ui_render_head($title, $description, $pageMeta);
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

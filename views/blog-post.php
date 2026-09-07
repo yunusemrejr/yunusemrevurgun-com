@@ -20,10 +20,11 @@ $publishedDate = date('c', strtotime($post['created_at'] ?? 'now'));
 $modifiedDate = date('c', strtotime($post['updated_at'] ?? $post['created_at'] ?? 'now'));
 $postUrl = rtrim(FULL_BASE_PATH, '/') . '/blog/' . rawurlencode($slug);
 $ogImage = !empty($post['featured_image'])
-    ? FULL_BASE_PATH . ltrim(htmlspecialchars($post['featured_image']), '/')
+    ? FULL_BASE_PATH . ltrim($post['featured_image'], '/')
     : FULL_BASE_PATH . 'assets/images/og-image.png';
 
 $extraMeta = [
+    'canonical' => $postUrl,
     '<meta property="og:type" content="article">',
     '<meta property="og:url" content="' . htmlspecialchars($postUrl) . '">',
     '<meta property="og:title" content="' . htmlspecialchars($title, ENT_QUOTES) . '">',
@@ -77,7 +78,7 @@ $extraMeta = [
         'timeRequired' => 'PT' . $readingTime . 'M',
         'articleBody' => mb_substr($plainText, 0, 2000),
         'inLanguage' => 'en-US',
-    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>',
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>',
 ];
 
 ui_render_head(
@@ -90,15 +91,15 @@ ui_render_head(
 <div class="ui-page">
     <?php ui_render_navbar('Journal'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Journal</p>
             <h1 class="ui-section-title"><?= htmlspecialchars($post['title']) ?></h1>
-            <p class="ui-section-text">Published <?= date('F j, Y', strtotime($post['created_at'] ?? 'now')) ?><?= $modifiedDate !== $publishedDate ? ' · updated ' . date('F j, Y', strtotime($post['updated_at'])) : '' ?></p>
+            <p class="ui-section-text"><a href="<?= FULL_BASE_PATH ?>about">Yunus Emre Vurgun</a> · <?= $readingTime ?> min read<br>Published <?= date('F j, Y', strtotime($post['created_at'] ?? 'now')) ?><?= $modifiedDate !== $publishedDate ? ' · updated ' . date('F j, Y', strtotime($post['updated_at'])) : '' ?></p>
         </section>
 
         <section class="ui-section">
-            <article class="ui-glass-panel" itemscope itemtype="https://schema.org/BlogPosting">
+            <article class="ui-glass-panel">
                 <?php if (!empty($post['featured_image'])): ?>
                     <img class="ui-media" src="<?= FULL_BASE_PATH . htmlspecialchars($post['featured_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
                 <?php endif; ?>
@@ -152,6 +153,6 @@ ui_render_head(
     <?php ui_render_footer(); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

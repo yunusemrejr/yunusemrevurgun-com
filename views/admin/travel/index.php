@@ -12,12 +12,9 @@ $locations = $travel->getAllLocations();
 
 $page = "travel";
 $pageTitle = "Travel";
-include __DIR__ . '/../includes/header.php';
+ob_start();
 ?>
-
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+<div class="admin-page-header">
             <div>
                 <h1 class="admin-page-title">Travel</h1>
                 <p class="admin-page-subtitle">Manage travel locations and photos</p>
@@ -28,6 +25,13 @@ include __DIR__ . '/../includes/header.php';
                 </button>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
+
 
         <!-- Stats -->
         <div class="admin-section">
@@ -64,8 +68,8 @@ include __DIR__ . '/../includes/header.php';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($locations as $location): 
-                            $imageCount = $travel->getTotalImagesByLocation($location['id']);
+                        <?php foreach ($locations as $location):
+                            $imageCount = (int)$location['image_count'];
                             $visitedDate = !empty($location['visited']) ? date('M d, Y', strtotime($location['visited'])) : '—';
                         ?>
                             <tr data-location-id="<?= $location['id'] ?>">
@@ -100,8 +104,7 @@ include __DIR__ . '/../includes/header.php';
             </div>
             <?php endif; ?>
         </div>
-    </div>
-</main>
+
 
 <!-- Add/Edit Location Modal -->
 <div class="admin-upload-modal" id="locationModal" tabindex="-1">
@@ -153,7 +156,7 @@ include __DIR__ . '/../includes/header.php';
         </div>
         <div class="admin-modal-body">
             <input type="hidden" id="photoLocationId" value="">
-            
+
             <!-- Upload Section -->
             <div class="admin-upload-dropzone" id="photoDropzone">
                 <i class="bi bi-cloud-upload admin-upload-dropzone-icon"></i>

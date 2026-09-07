@@ -41,7 +41,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
 
 .rmrp-md-toolbar button:hover {
   background: rgba(132, 144, 164, 0.12);
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
 }
 
 .rmrp-md-toolbar .rmrp-md-sep {
@@ -92,7 +92,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
 }
 
 .rmrp-md-preview a {
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -107,7 +107,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
   margin: 1em 0;
   padding-left: 1em;
   border-left: 2px solid var(--color-border-strong);
-  color: #8490a4;
+  color: var(--color-ink-slate);
   font-style: italic;
 }
 
@@ -139,7 +139,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
 .rmrp-md-help {
   margin-top: var(--space-2);
   font-size: 0.75rem;
-  color: #8490a4;
+  color: var(--color-ink-slate);
   line-height: 1.6;
 }
 

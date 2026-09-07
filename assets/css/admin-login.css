@@ -19,17 +19,6 @@ body.admin-login-body {
   position: relative;
 }
 
-body.admin-login-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(132, 144, 164, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 30% at 80% 90%, rgba(132, 144, 164, 0.05) 0%, transparent 50%);
-  z-index: 1;
-}
-
 /* Animated grid overlay */
 
 
@@ -57,14 +46,14 @@ body.admin-login-body::before {
   font-size: 0.675rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
 }
 
 body.admin-login-container h1.admin-login-title,
 .admin-login-title {
   font-size: var(--text-2xl);
   font-weight: var(--font-light);
-  color: #a6a6a6;
+  color: var(--color-ink-slate);
   text-align: center;
   margin: 0;
   font-family: var(--font-display);
@@ -116,7 +105,7 @@ body.admin-login-container h1.admin-login-title,
 }
 
 .admin-form-label i {
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
   font-size: 0.85rem;
 }
 
@@ -137,7 +126,7 @@ body.admin-login-container h1.admin-login-title,
 }
 
 .admin-form-control::placeholder {
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
 }
 
 /* ===== PASSWORD TOGGLE ===== */
@@ -152,7 +141,7 @@ body.admin-login-container h1.admin-login-title,
   right: 0.625rem;
   background: none;
   border: none;
-  color: #8fa6a6;
+  color: var(--color-ink-slate);
   cursor: pointer;
   padding: 0.25rem;
   transition: color var(--transition-fast);
@@ -163,7 +152,7 @@ body.admin-login-container h1.admin-login-title,
 }
 
 .admin-password-toggle:hover {
-  color: #8490a4;
+  color: var(--color-ink-slate);
 }
 
 /* ===== SUBMIT BUTTON ===== */
@@ -397,3 +386,7 @@ body.admin-login-container h1.admin-login-title,
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.admin-login-container { min-height: 100svh; }
+.admin-login-container input { font-size: 16px; min-height: 44px; }
+.admin-login-container button { min-height: 44px; }

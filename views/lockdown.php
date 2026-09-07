@@ -2,7 +2,9 @@
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
 
-$message = '';
+$message = 'The site is temporarily unavailable. Please check back shortly.';
+http_response_code(503);
+header('Retry-After: 3600');
 
 ui_render_head('Site Maintenance', 'Temporary maintenance mode.');
 ?>
@@ -19,6 +21,6 @@ ui_render_head('Site Maintenance', 'Temporary maintenance mode.');
         </section>
     </main>
 </div>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>

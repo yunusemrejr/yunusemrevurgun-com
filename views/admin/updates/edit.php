@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($title === '') {
         $error = 'Title is required.';
     }
-    
+
     $data = [
         'title' => $title,
         'content' => $content,
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'category' => $category,
         'importance' => $importance
     ];
-    
+
     if (!$error) {
         try {
             $result = $updates->updateUpdate($id, $data);
@@ -90,11 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $page = "updates-edit";
 $pageTitle = "Edit Update";
 // Include header
-include __DIR__ . '/../includes/header.php';
-?> 
-<main class="admin-main">
-    <div class="admin-content">
-        <div class="admin-page-header">
+ob_start();
+?>
+<div class="admin-page-header">
             <div>
                 <p class="admin-page-subtitle">Update announcement details</p>
             </div>
@@ -104,6 +102,12 @@ include __DIR__ . '/../includes/header.php';
                 </a>
             </div>
         </div>
+<?php
+$pageHeader = ob_get_clean();
+include __DIR__ . '/../includes/header.php';
+?>
+
+
 
         <?php if ($success): ?>
             <div class="admin-alert admin-alert-success">
@@ -128,12 +132,12 @@ include __DIR__ . '/../includes/header.php';
             <div class="admin-card-body">
                 <form method="POST" class="admin-form">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                    
+
                     <div class="admin-form-group">
                         <label for="title" class="admin-form-label">Title</label>
                         <input type="text" class="admin-form-control" id="title" name="title" value="<?= htmlspecialchars($update['title']) ?>" placeholder="Enter update title" required>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="content" class="admin-form-label">Description</label>
                         <div class="updates-md-editor">
@@ -158,18 +162,18 @@ include __DIR__ . '/../includes/header.php';
                             Single Enter = line skip, blank line = new paragraph. Links open in a new tab.
                         </div>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="date" class="admin-form-label">Date</label>
                         <input type="date" class="admin-form-control" id="date" name="date" value="<?= htmlspecialchars($update['update_date']) ?>">
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="category" class="admin-form-label">Category</label>
                         <input type="text" class="admin-form-control" id="category" name="category" value="<?= htmlspecialchars($update['category'] ?? '') ?>" placeholder="e.g., Work, Education, Personal">
                         <div class="admin-form-text">Optional: Categorize this update</div>
                     </div>
-                    
+
                     <div class="admin-form-group">
                         <label for="importance" class="admin-form-label">Importance</label>
                         <select class="admin-form-control" id="importance" name="importance">
@@ -226,7 +230,7 @@ include __DIR__ . '/../includes/header.php';
                     </div>
 
                     </div>
-                    
+
                     <div class="admin-form-actions">
                         <button type="submit" class="admin-btn admin-btn-primary">
                             <i class="bi bi-check-circle me-2"></i>Update
@@ -243,11 +247,10 @@ include __DIR__ . '/../includes/header.php';
                 </form>
             </div>
         </div>
-    </div>
-</main>
-        
+
+
 
      <?php
 // Include footer
 include __DIR__ . '/../includes/footer.php';
-?> 
+?>

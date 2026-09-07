@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && hash
     $imageError = false;
     if (empty($error) && isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = __DIR__ . '/../../../uploads/portfolio/';
-        
+
         // Validate MIME type and extension
         $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && hash
         $mime = @mime_content_type($tmpPath) ?: '';
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $size = (int)($_FILES['image']['size'] ?? 0);
-        
+
         if (!in_array($mime, $allowedMime, true)) {
             $error = 'Invalid image format. Allowed: JPEG, PNG, WebP, GIF.';
             $imageError = true;
@@ -83,10 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && hash
             if (!file_exists($upload_dir)) {
                 mkdir($upload_dir, 0755, true);
             }
-            
+
             $filename = uniqid('', true) . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '-', basename($_FILES['image']['name']));
             $upload_file = $upload_dir . $filename;
-            
+
             if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_file)) {
                 $image = 'uploads/portfolio/' . $filename;
             } else {
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && hash
             }
         }
     }
-    
+
     $data = [
         'title' => $title,
         'description' => $description,
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && hash
         'featured' => $featured,
         'image' => $image
     ];
-    
+
     if (empty($error)) {
         try {
             $result = $portfolio->createProject($data);
@@ -136,8 +136,7 @@ $pageTitle = "Create Portfolio Project";
 include __DIR__ . '/../includes/header.php';
 ?>
 
-<main class="admin-main">
-    <div class="admin-content">
+
         <div class="portfolio-admin-form-container">
             <div class="portfolio-admin-back-btn">
                 <a href="<?php echo FULL_BASE_PATH; ?>admin/portfolio" class="portfolio-admin-btn portfolio-admin-btn-secondary">
@@ -154,20 +153,20 @@ include __DIR__ . '/../includes/header.php';
 
             <div class="portfolio-admin-form">
                 <h2 class="admin-page-title" style="margin-bottom: 1.5rem;">Create New Portfolio Project</h2>
-                
+
                 <form method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                    
+
                     <div class="portfolio-admin-form-group">
                         <label for="title" class="portfolio-admin-form-label">Title</label>
                         <input type="text" class="portfolio-admin-form-control" id="title" name="title" required>
                     </div>
-                    
+
                     <div class="portfolio-admin-form-group">
                         <label for="description" class="portfolio-admin-form-label">Description</label>
                         <textarea class="portfolio-admin-form-control" id="description" name="description" rows="5"></textarea>
                     </div>
-                    
+
                     <div class="portfolio-admin-form-group">
                         <label for="technologies" class="portfolio-admin-form-label">Technologies</label>
                         <input type="text" class="portfolio-admin-form-control" id="technologies" name="technologies" placeholder="E.g., HTML, CSS, JavaScript, PHP, MySQL">
@@ -179,32 +178,32 @@ include __DIR__ . '/../includes/header.php';
                         <input type="text" class="portfolio-admin-form-control" id="category" name="category" placeholder="E.g., AI/ML, OT DataOps, Web Dev">
                         <div class="portfolio-admin-form-text">Used for frontend filter buttons</div>
                     </div>
-                    
+
                     <div class="portfolio-admin-form-group">
                         <label for="project_url" class="portfolio-admin-form-label">Project URL</label>
                         <input type="url" class="portfolio-admin-form-control" id="project_url" name="project_url" placeholder="https://example.com">
                     </div>
-                    
+
                     <div class="portfolio-admin-form-group">
                         <label for="github_url" class="portfolio-admin-form-label">GitHub URL</label>
                         <input type="url" class="portfolio-admin-form-control" id="github_url" name="github_url" placeholder="https://github.com/username/repo">
                     </div>
-                    
+
                     <div class="portfolio-admin-form-group">
                         <label for="completion_date" class="portfolio-admin-form-label">Completion Date</label>
                         <input type="date" class="portfolio-admin-form-control" id="completion_date" name="completion_date" value="<?= date('Y-m-d') ?>">
                     </div>
-                    
+
                     <div class="portfolio-admin-form-check">
                         <input type="checkbox" class="portfolio-admin-form-check-input" id="featured" name="featured">
                         <label class="portfolio-admin-form-check-label" for="featured">Featured Project</label>
                     </div>
-                    
+
                     <div class="portfolio-admin-form-group">
                         <label for="image" class="portfolio-admin-form-label">Project Image</label>
                         <input type="file" class="portfolio-admin-form-control" id="image" name="image" accept="image/*">
                     </div>
-                    
+
                     <div class="portfolio-admin-btn-group">
                         <button type="submit" class="portfolio-admin-btn portfolio-admin-btn-primary">
                             <i class="bi bi-check-circle me-2"></i>Create Project
@@ -213,11 +212,10 @@ include __DIR__ . '/../includes/header.php';
                 </form>
             </div>
         </div>
-    </div>
-</main>
-        
-  
+
+
+
     <?php
 // Include footer
 include __DIR__ . '/../includes/footer.php';
-?>  
+?>

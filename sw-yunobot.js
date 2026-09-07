@@ -1,220 +1,28 @@
-/**
- * YunoBot Service Worker - Offline Support & Caching
- * 
- * Features:
- * - Cache JS files for offline use
- * - Fallback responses when offline
- * - Stale-while-revalidate strategy for assets
- * (YunoBot runs on a custom neural network shipped with the page —
- *  no external model downloads to cache.)
- */
-
-const CACHE_NAME = 'yunobot-v1';
-const CACHE_VERSION = '20260829b';
-
-// Assets to cache immediately
-const STATIC_ASSETS = [
-    // Core chat page
-    './',
-    'yunobot',
-    
-    // JS files
-    'assets/js/yunobot/nn-weights.js',
-    'assets/js/yunobot/nn-engine.js',
-    'assets/js/yunobot/knowledge-pack.js',
-    'assets/js/yunobot/kb.js',
-    'assets/js/yunobot/ml-engine.js',
-    'assets/js/yunobot.js',
-    'assets/js/yunobot/brain.wasm',
-    
-    // CSS
-    'assets/css/yunobot.css',
-];
-
-// ============================================================
-// INSTALL - Pre-cache static assets
-// ============================================================
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME + '-' + CACHE_VERSION)
-            .then((cache) => {
-                console.log('[YunoBot SW] Pre-caching static assets');
-                return cache.addAll(STATIC_ASSETS.map(path => {
-                    // Convert relative paths to absolute
-                    return new URL(path, location.href).href;
-                })).catch(err => {
-                    console.log('[YunoBot SW] Some assets failed to cache:', err);
-                    // Don't fail install - partial cache is still useful
-                });
-            })
-            .then(() => {
-                console.log('[YunoBot SW] Pre-caching complete');
-                return self.skipWaiting();
-            })
-    );
-});
-
-// ============================================================
-// ACTIVATE - Clean up old caches
-// ============================================================
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys()
-            .then((cacheNames) => {
-                return Promise.all(
-                    cacheNames
-                        .filter((name) => name.startsWith(CACHE_NAME) && name !== CACHE_NAME + '-' + CACHE_VERSION)
-                        .map((name) => {
-                            console.log('[YunoBot SW] Deleting old cache:', name);
-                            return caches.delete(name);
-                        })
-                );
-            })
-            .then(() => {
-                console.log('[YunoBot SW] Activated');
-                return self.clients.claim();
-            })
-    );
-});
-
-// ============================================================
-// FETCH - Network first with cache fallback for API, 
-//         Cache first with network fallback for static assets
-// ============================================================
-self.addEventListener('fetch', (event) => {
-    const { request } = event;
-    const url = new URL(request.url);
-    
-    // Skip non-GET requests
-    if (request.method !== 'GET') return;
-    
-    // Skip cross-origin requests
-    const isSameOrigin = url.origin === location.origin;
-    if (!isSameOrigin) return;
-    
-    // ============================================================
-    // Strategy 1: Cache-first for static JS/CSS
-    // ============================================================
-    if (isSameOrigin && (
-        url.pathname.endsWith('.js') ||
-        url.pathname.endsWith('.css') ||
-        url.pathname.endsWith('.html') ||
-        url.pathname.endsWith('.wasm')
-    )) {
-        event.respondWith(
-            caches.match(request)
-                .then((cachedResponse) => {
-                    if (cachedResponse) {
-                        // Return cached version immediately
-                        // But also fetch fresh version in background
-                        fetch(request).then((response) => {
-                            if (response.ok) {
-                                caches.open(CACHE_NAME + '-' + CACHE_VERSION)
-                                    .then((cache) => cache.put(request, response));
-                            }
-                        }).catch(() => {
-                            // Network failed - cached version already returned
-                        });
-                        return cachedResponse;
-                    }
-                    
-                    // Not cached - fetch from network
-                    return fetch(request)
-                        .then((response) => {
-                            if (!response.ok) throw new Error('Network error');
-                            const clone = response.clone();
-                            caches.open(CACHE_NAME + '-' + CACHE_VERSION)
-                                .then((cache) => cache.put(request, clone));
-                            return response;
-                        })
-                        .catch(() => {
-                            // Offline - return fallback for HTML pages
-                            if (request.destination === 'document') {
-                                return caches.match('./') || caches.match('yunobot');
-                            }
-                            return null;
-                        });
-                })
-        );
-        return;
-    }
-    
-    // ============================================================
-    // Strategy 2: Default - network first
-    // ============================================================
-    event.respondWith(
-        fetch(request)
-            .catch(() => {
-                // Completely offline - return null (let app handle gracefully)
-                return null;
-            })
-    );
-});
-
-// ============================================================
-// BACKGROUND SYNC - For when we need to sync data when back online
-// ============================================================
-self.addEventListener('sync', (event) => {
-    if (event.tag === 'yunobot-sync') {
-        event.waitUntil(
-            // Process any pending sync tasks
-            Promise.resolve().then(() => {
-                console.log('[YunoBot SW] Background sync completed');
-            })
-        );
-    }
-});
-
-// ============================================================
-// PUSH NOTIFICATIONS (Future use)
-// ============================================================
-self.addEventListener('push', (event) => {
-    if (!event.data) return;
-    
-    const data = event.data.json();
-    const options = {
-        body: data.body || 'New message from YunoBot',
-        icon: '/assets/images/favicon.svg?v=3',
-        badge: '/assets/images/favicon.svg?v=3',
-        tag: 'yunobot-notification',
-        requireInteraction: false,
-    };
-    
-    event.waitUntil(
-        self.registration.showNotification(data.title || 'YunoBot', options)
-    );
-});
-
-// ============================================================
-// MESSAGE HANDLER - For communication with main thread
-// ============================================================
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
-    }
-    
-    if (event.data && event.data.type === 'CLEAR_CACHE') {
-        event.waitUntil(
-            caches.keys()
-                .then((names) => Promise.all(names.map((n) => caches.delete(n))))
-                .then(() => {
-                    event.ports[0]?.postMessage({ success: true });
-                })
-        );
-    }
-    
-    if (event.data && event.data.type === 'CACHE_STATUS') {
-        event.waitUntil(
-            caches.keys()
-                .then((names) => {
-                    return {
-                        caches: names,
-                        version: CACHE_VERSION,
-                    };
-                })
-                .then((status) => {
-                    event.ports[0]?.postMessage(status);
-                })
-        );
-    }
+/* YunoBot: cache only its public page/assets. Never cache API or admin traffic. */
+const CACHE = 'yunobot-v2-20260908';
+self.addEventListener('install', event => event.waitUntil(self.skipWaiting()));
+self.addEventListener('activate', event => event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => name.startsWith('yunobot-') && name !== CACHE).map(name => caches.delete(name)));
+    await self.clients.claim();
+})()));
+self.addEventListener('fetch', event => {
+    const request=event.request, url=new URL(request.url);
+    if(request.method !== 'GET' || url.origin !== self.location.origin) return;
+    const page=/\/yunobot\/?$/.test(url.pathname);
+    const asset=/\/assets\//.test(url.pathname) && ['script','style','font','image'].includes(request.destination);
+    if(!page && !asset) return;
+    event.respondWith((async () => {
+        const cache=await caches.open(CACHE);
+        const stored=await cache.match(request);
+        if(asset && stored)return stored;
+        try {
+            const response=await fetch(request);
+            if(response.ok && !/no-store|private/i.test(response.headers.get('Cache-Control')||''))await cache.put(request,response.clone());
+            return response;
+        } catch(error) {
+            if(stored)return stored;
+            return new Response(page?'This page is unavailable offline. Reconnect and reload.':'', {status:503,headers:{'Content-Type':'text/plain'}});
+        }
+    })());
 });

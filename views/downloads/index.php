@@ -6,6 +6,7 @@
  */
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
+require_once dirname(__DIR__, 2) . '/views/includes/collection.php';
 require_once dirname(__DIR__, 2) . '/models/Downloads.php';
 
 $downloads = new Downloads();
@@ -15,14 +16,14 @@ $thumbBase = FULL_BASE_PATH . Downloads::UPLOAD_DIR . '/';
 ui_render_head(
     'Downloads | Yunus Emre Vurgun',
     'Desktop and offline apps I have built — free downloads, hosted on GitHub.',
-    ['downloads' => true]
+    ['downloads' => true, ui_collection_schema('Downloads', 'downloads', array_column($list, 'title'), array_map(fn($item) => 'download-' . $item['id'], $list))]
 );
 ?>
-<body>
+<body class="ui-collection">
 <div class="ui-page">
     <?php ui_render_navbar('downloads'); ?>
 
-    <main class="ui-main">
+    <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Software</p>
             <h1 class="ui-section-title">Downloads</h1>
@@ -37,10 +38,10 @@ ui_render_head(
                         $dependencies = Downloads::decodeList($item['dependencies'] ?? null);
                         $title = htmlspecialchars($item['title'] ?? 'Untitled');
                     ?>
-                        <article class="ui-card ui-download-card">
+                        <article class="ui-card ui-download-card" id="download-<?= (int)$item['id'] ?>">
                             <div class="ui-download-media">
                                 <?php if (!empty($item['thumbnail'])): ?>
-                                    <img class="ui-download-thumb" src="<?= htmlspecialchars($thumbBase . $item['thumbnail']) ?>" alt="<?= $title ?> thumbnail" loading="lazy">
+                                    <img class="ui-download-thumb" src="<?= htmlspecialchars($thumbBase . $item['thumbnail']) ?>" alt="<?= $title ?> thumbnail" loading="lazy" decoding="async">
                                 <?php else: ?>
                                     <div class="ui-download-placeholder" aria-hidden="true">
                                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -74,7 +75,7 @@ ui_render_head(
                                 <div class="ui-download-footer">
                                     <a class="ui-btn ui-btn-primary" href="<?= htmlspecialchars($item['download_url'] ?? '#') ?>" target="_blank" rel="noopener noreferrer">
                                         <svg class="ui-download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                        Download
+                                        Download <?= $title ?> ↗
                                     </a>
                                 </div>
                             </div>
@@ -83,7 +84,7 @@ ui_render_head(
                 </div>
             <?php else: ?>
                 <div class="ui-downloads-empty">
-                    <p>No downloads available yet. Check back soon.</p>
+                    <p>No releases are listed here yet.</p><a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>portfolio">Browse projects</a>
                 </div>
             <?php endif; ?>
         </section>
@@ -93,6 +94,6 @@ ui_render_head(
 </div>
 
 <?php ui_render_tracker_codes(dirname(__DIR__, 2)); ?>
-<?php ui_render_gumroad_widget(); ?>
+
 </body>
 </html>
