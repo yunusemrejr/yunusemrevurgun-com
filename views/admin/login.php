@@ -200,7 +200,7 @@ function turnstileEnabled(): bool {
 }
 
 function verifyTurnstile(string $token): bool {
-    if ($token === '') {
+    if ($token === '' || strlen($token) > 2048) {
         return false;
     }
     $ch = curl_init('https://challenges.cloudflare.com/turnstile/v0/siteverify');
@@ -220,7 +220,8 @@ function verifyTurnstile(string $token): bool {
         return false;
     }
     $data = json_decode($response, true);
-    return !empty($data['success']);
+    return is_array($data) && ($data['success'] ?? false) === true
+        && strtolower((string)($data['hostname'] ?? '')) === strtolower((string)parse_url(FULL_BASE_PATH, PHP_URL_HOST));
 }
 
 // Generate fallback CAPTCHA if not already set or if explicitly refreshing (GET only, not on POST)
@@ -233,6 +234,12 @@ if (!turnstileEnabled() && $_SERVER['REQUEST_METHOD'] !== 'POST' && (!isset($_SE
 
 // Two-step login: Step 1 = CAPTCHA gate, Step 2 = credentials
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    foreach (['username', 'password', 'csrf_token', 'cf-turnstile-response', 'captcha_answer', 'website'] as $field) {
+        if (isset($_POST[$field]) && !is_string($_POST[$field])) {
+            http_response_code(422);
+            exit('Invalid login form. Please reload the page.');
+        }
+    }
     $error = '';
     $csrfToken = $_POST['csrf_token'] ?? '';
 
@@ -250,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $remaining = getLoginDelaySeconds($record) - (time() - (int)($record['last_failure'] ?? time()));
         $remaining = max(1, $remaining);
         $error = "Too many failed attempts. Please wait about " . $remaining . " seconds and try again.";
-    } elseif (!hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
+    } elseif (!CSRFProtection::validateToken($csrfToken)) {
         // A stale token means the page and the session are out of sync
         // (cached/back-forward page, new session, second tab) — the fix is a
         // reload, not a penalty. Counting this as a login failure turned a

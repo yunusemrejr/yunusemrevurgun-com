@@ -111,10 +111,8 @@ class Downloads {
 
         // Remove the thumbnail file once the row is gone.
         if ($result && !empty($download['thumbnail'])) {
-            $path = dirname(__DIR__) . '/' . self::UPLOAD_DIR . '/' . $download['thumbnail'];
-            if (is_file($path)) {
-                unlink($path);
-            }
+            require_once __DIR__ . '/../includes/upload_files.php';
+            removeUploadFile(dirname(__DIR__) . '/' . self::UPLOAD_DIR, $download['thumbnail']);
         }
         return $result;
     }

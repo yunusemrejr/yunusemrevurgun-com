@@ -95,6 +95,12 @@ class Router {
             return;
         }
 
+        // Guard the resolved route too: a query-string route must not bypass URI middleware.
+        if (($url === 'admin' || str_starts_with($url, 'admin/')) && $url !== 'admin/login') {
+            require_once dirname(__DIR__) . '/includes/admin_request.php';
+            guardAdminRequest(str_starts_with($url, 'admin/api/'));
+        }
+
         // Handle root URL (empty string)
         if (empty($url)) {
             $url = '';

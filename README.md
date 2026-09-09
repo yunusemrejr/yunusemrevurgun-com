@@ -108,3 +108,24 @@ The behavioral suite covers 47 cases/checks, and the source suite covers 16 incl
 Post-Code and Science Corner share searchable category filters, result counts, a complete topic index, stable entry links and matching CollectionPage/ItemList structured data. The decorative one-page pagination is removed. Content stays visible without JavaScript. Entrance animations use progressive enhancement and respect reduced motion.
 
 Music has keyboard-accessible seeking, truthful play/mute labels and visible playback failures; it no longer intercepts keyboard shortcuts across the whole document. Video embeds have descriptive titles and preserve keyboard focus. Music, videos and downloads expose structured collections tied to real card IDs. Comedy defers Tenor animations until requested. The auto-opening floating book widget and its third-party proxy fetches are replaced by a normal Books footer link, keeping controls unobstructed. The Explore page provides clearer descriptions and links across the smaller sections. Mobile checks cover 320px and 390px widths.
+
+## Admin hardening (2026-09-09)
+
+Password and Cloudflare Turnstile login remain unchanged. Routed admin actions,
+direct admin APIs and model write guards now share session validation. Mutations
+reject invalid CSRF types, unsupported methods, cross-site browser submissions and
+requests larger than PHP's configured body limit. CSRF tokens remain stable across
+tabs. Direct access to view templates is denied by Apache.
+
+Turnstile verification also checks the configured site's hostname. Client IP
+headers are trusted only when the connection peer belongs to Cloudflare's published
+IPv4/IPv6 ranges (checked 2026-09-09); other forwarded headers cannot change the
+rate-limit identity. If the host already restores REMOTE_ADDR, that address is used.
+
+Gallery deletion removes travel references in the same transaction. Travel location
+deletion cleans up its own uploads after commit and preserves shared gallery files.
+Repeated gallery linking is idempotent; referenced filenames come from the database.
+Media deletion refuses traversal paths and symlinks. No new schema migration is required.
+
+Additional local checks: `php dev/qa/admin_security.php` and
+`python3 dev/qa/admin_http_security.py` (local preview on port 8817 only).

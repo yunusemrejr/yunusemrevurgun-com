@@ -319,18 +319,25 @@ class Gallery {
             return false;
         }
 
-        // Delete from database first (safer: if DB delete fails, file is preserved)
-        $query = "DELETE FROM gallery_images WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $result = $stmt->execute();
-
-        // Delete the file only after DB deletion succeeds
-        if ($result && $image['filename']) {
-            $filepath = dirname(__DIR__) . '/uploads/gallery/' . $image['filename'];
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
+        // Initialize legacy travel schema before the transaction (MySQL DDL commits).
+        require_once __DIR__ . '/Travel.php';
+        $travel = new Travel();
+        $travel->getImagesByLocation(0); // Ensure legacy source columns before BEGIN.
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare("DELETE FROM travel_location_images WHERE source = 'gallery' AND gallery_image_id = :id");
+            $stmt->execute([':id' => $id]);
+            $stmt = $this->db->prepare('DELETE FROM gallery_images WHERE id = :id');
+            $stmt->execute([':id' => $id]);
+            $result = $stmt->rowCount() > 0;
+            $this->db->commit();
+        } catch (Throwable $error) {
+            $this->db->rollBack();
+            throw $error;
+        }
+        if ($result) {
+            require_once __DIR__ . '/../includes/upload_files.php';
+            removeUploadFile(dirname(__DIR__) . '/uploads/gallery', $image['filename']);
         }
 
         return $result;

@@ -180,10 +180,8 @@ class Videos {
         $result = $stmt->execute();
 
         if ($result && $video['type'] === 'upload' && $video['filename']) {
-            $filepath = dirname(__DIR__) . '/uploads/videos/' . $video['filename'];
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
+            require_once __DIR__ . '/../includes/upload_files.php';
+            removeUploadFile(dirname(__DIR__) . '/uploads/videos', $video['filename']);
         }
 
         return $result;

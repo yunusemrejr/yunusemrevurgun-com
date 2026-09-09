@@ -128,24 +128,36 @@ class RateLimiter {
      * Get client IP address (Cloudflare-aware)
      */
     public static function getClientIP() {
-        $ipKeys = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'];
-        
-        foreach ($ipKeys as $key) {
-            if (array_key_exists($key, $_SERVER) === true) {
-                $ip = $_SERVER[$key];
-                if (strpos($ip, ',') !== false) {
-                    $ip = explode(',', $ip)[0];
-                }
-                $ip = trim($ip);
-                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-                    return $ip;
-                }
+        $peer = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        // Only Cloudflare peers may supply CF-Connecting-IP. Arbitrary forwarded
+        // headers otherwise let a direct client choose a fresh rate-limit identity.
+        // Sources: https://www.cloudflare.com/ips-v4 and /ips-v6 (2026-09-09).
+        $ranges = ['173.245.48.0/20','103.21.244.0/22','103.22.200.0/22','103.31.4.0/22',
+            '141.101.64.0/18','108.162.192.0/18','190.93.240.0/20','188.114.96.0/20',
+            '197.234.240.0/22','198.41.128.0/17','162.158.0.0/15','104.16.0.0/13',
+            '104.24.0.0/14','172.64.0.0/13','131.0.72.0/22','2400:cb00::/32',
+            '2606:4700::/32','2803:f800::/32','2405:b500::/32','2405:8100::/32',
+            '2a06:98c0::/29','2c0f:f248::/32'];
+        $forwarded = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? '';
+        if (is_string($forwarded) && filter_var($forwarded, FILTER_VALIDATE_IP)) {
+            foreach ($ranges as $range) {
+                if (self::inNetwork($peer, $range)) return $forwarded;
             }
         }
-        
-        return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        return $peer;
     }
-    
+
+    private static function inNetwork(string $ip, string $network): bool {
+        [$address, $bits] = explode('/', $network);
+        $packed = @inet_pton($ip);
+        $base = inet_pton($address);
+        if ($packed === false || strlen($packed) !== strlen($base)) return false;
+        $whole = intdiv((int)$bits, 8);
+        $rest = (int)$bits % 8;
+        return substr($packed, 0, $whole) === substr($base, 0, $whole)
+            && (!$rest || ((ord($packed[$whole]) ^ ord($base[$whole])) & (255 << (8 - $rest))) === 0);
+    }
+
     /**
      * Load rate limit data
      */

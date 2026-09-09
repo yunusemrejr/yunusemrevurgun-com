@@ -55,7 +55,7 @@ function requireAdminSession(bool $allowCli = true): void {
     if (PHP_SESSION_NONE === session_status()) {
         session_start();
     }
-    if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    if (!verifyAdminSession()) {
         if ($allowCli && php_sapi_name() === 'cli') {
             return;
         }
@@ -68,7 +68,8 @@ function verifyAdminSession(): bool {
     if (PHP_SESSION_NONE === session_status()) {
         session_start();
     }
-    return isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+    require_once __DIR__ . '/models/Auth.php';
+    return Auth::checkLogin(false);
 }
 
 function verifyAdminAction() {
@@ -87,4 +88,9 @@ function verifyAdminAction() {
         exit;
     }
     return true;
+}
+// Direct API scripts bypass index.php; apply the same session and mutation checks.
+if (preg_match('#^/api/admin(?:/|$)#', (string)parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH))) {
+    require_once __DIR__ . '/includes/admin_request.php';
+    guardAdminRequest(true);
 }

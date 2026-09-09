@@ -165,10 +165,8 @@ class Music {
         $result = $stmt->execute();
 
         if ($result && $track['filename']) {
-            $filepath = dirname(__DIR__) . '/uploads/music/' . $track['filename'];
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
+            require_once __DIR__ . '/../includes/upload_files.php';
+            removeUploadFile(dirname(__DIR__) . '/uploads/music', $track['filename']);
         }
 
         return $result;

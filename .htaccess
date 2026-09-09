@@ -45,7 +45,7 @@ RewriteRule ^index/?$ / [R=301,L]
 <FilesMatch "^(csrf_log|login_attempts|rate_limit_storage|error_log|sessionlog)\.(txt|json|log)$">
     Require all denied
 </FilesMatch>
-RewriteRule ^(config|dev|includes|middleware|models|router|scripts|\.git|\.codex|\.agents|\.agent_memory|\.pi|\.kilo|\.agent-logs|\.claude|\.qwen|\.backup|_backups)/ - [F,L,NC]
+RewriteRule ^(config|dev|views|includes|middleware|models|router|scripts|\.git|\.codex|\.agents|\.agent_memory|\.pi|\.kilo|\.agent-logs|\.claude|\.qwen|\.backup|_backups)/ - [F,L,NC]
 
 # Prevent HTTP verb abuse
 RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)$ [NC]

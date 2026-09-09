@@ -136,16 +136,26 @@ class Travel {
     public function deleteLocation($id) {
         requireAdminSession(false);
 
-        // Delete associated images from DB first (files handled by caller)
-        $query = "DELETE FROM travel_location_images WHERE location_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $query = "DELETE FROM travel_locations WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        return $stmt->execute() && $stmt->rowCount() > 0;
+        $images = $this->getImagesByLocation($id);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare('DELETE FROM travel_location_images WHERE location_id = :id');
+            $stmt->execute([':id' => $id]);
+            $stmt = $this->db->prepare('DELETE FROM travel_locations WHERE id = :id');
+            $stmt->execute([':id' => $id]);
+            $deleted = $stmt->rowCount() > 0;
+            $this->db->commit();
+        } catch (Throwable $error) {
+            $this->db->rollBack();
+            throw $error;
+        }
+        require_once __DIR__ . '/../includes/upload_files.php';
+        foreach ($images as $image) {
+            if (($image['source'] ?? 'upload') === 'upload') {
+                removeUploadFile(dirname(__DIR__) . '/uploads/travel', $image['filename']);
+            }
+        }
+        return $deleted;
     }
 
     public function getTotalLocations() {
@@ -230,6 +240,15 @@ class Travel {
         requireAdminSession(false);
 
         $this->migrateSourceColumn();
+        $stmt = $this->db->prepare("SELECT filename FROM gallery_images WHERE id = :id AND is_archived = 0");
+        $stmt->execute([':id' => $galleryImageId]);
+        $galleryFilename = $stmt->fetchColumn();
+        $location = $this->db->prepare('SELECT id FROM travel_locations WHERE id = :id');
+        $location->execute([':id' => $locationId]);
+        if (!$galleryFilename || !$location->fetchColumn()) return false;
+        $exists = $this->db->prepare("SELECT id FROM travel_location_images WHERE location_id = :location AND gallery_image_id = :image AND source = 'gallery'");
+        $exists->execute([':location' => $locationId, ':image' => $galleryImageId]);
+        if ($exists->fetchColumn()) return true;
         $query = "INSERT INTO travel_location_images (location_id, filename, title, source, gallery_image_id, sort_order) 
                   VALUES (:location_id, :filename, :title, 'gallery', :gallery_image_id, :sort_order)";
         $stmt = $this->db->prepare($query);
@@ -261,10 +280,8 @@ class Travel {
 
         // Only delete the physical file if it was an uploaded image (not a gallery reference)
         if ($result && !empty($image['filename']) && ($image['source'] ?? 'upload') === 'upload') {
-            $filepath = dirname(__DIR__) . '/uploads/travel/' . $image['filename'];
-            if (file_exists($filepath)) {
-                unlink($filepath);
-            }
+            require_once __DIR__ . '/../includes/upload_files.php';
+            removeUploadFile(dirname(__DIR__) . '/uploads/travel', $image['filename']);
         }
 
         return $result;

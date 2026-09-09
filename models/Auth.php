@@ -70,7 +70,7 @@ class Auth {
         }
     }
 
-    public static function checkLogin() {
+    public static function checkLogin(bool $redirect = true) {
         if (function_exists('ensureSessionStarted')) {
             ensureSessionStarted();
         } elseif (session_status() === PHP_SESSION_NONE) {
@@ -78,22 +78,24 @@ class Auth {
         }
 
         // Check if user is logged in and session is valid
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['last_activity'])) {
-            self::redirectToLoginIfWeb();
+        if (($_SESSION['admin_logged_in'] ?? false) !== true || !isset($_SESSION['user_id'], $_SESSION['last_activity'], $_SESSION['admin_user_agent'])) {
+            if ($redirect) self::redirectToLoginIfWeb();
             return false;
         }
 
         $currentAgent = self::uaFingerprint($_SERVER['HTTP_USER_AGENT'] ?? '');
         if (isset($_SESSION['admin_user_agent']) && !hash_equals($_SESSION['admin_user_agent'], $currentAgent)) {
+            $_SESSION = [];
             session_destroy();
-            self::redirectToLoginIfWeb();
+            if ($redirect) self::redirectToLoginIfWeb();
             return false;
         }
 
         // Check session timeout
         if (time() - $_SESSION['last_activity'] > self::SESSION_IDLE_TIMEOUT) {
+            $_SESSION = [];
             session_destroy();
-            self::redirectToLoginIfWeb(true);
+            if ($redirect) self::redirectToLoginIfWeb(true);
             return false;
         }
 
@@ -129,6 +131,7 @@ class Auth {
                 $params['httponly']
             );
         }
+        $_SESSION = [];
         session_destroy();
         header('Location: ' . FULL_BASE_PATH . 'admin/login');
         exit;
@@ -140,26 +143,6 @@ class Auth {
      * @return bool True if logged in, false otherwise
      */
     public static function isLoggedIn() {
-        if (function_exists('ensureSessionStarted')) {
-            ensureSessionStarted();
-        } elseif (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['admin_user_agent'])) {
-            return false;
-        }
-        $currentUA = self::uaFingerprint($_SERVER['HTTP_USER_AGENT'] ?? '');
-        if (!hash_equals($_SESSION['admin_user_agent'], $currentUA)) {
-            return false;
-        }
-        if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > self::SESSION_IDLE_TIMEOUT) {
-            unset($_SESSION['user_id']);
-            return false;
-        }
-        $_SESSION['last_activity'] = time();
-        return true;
+        return self::checkLogin(false);
     }
 }
-
-
-
