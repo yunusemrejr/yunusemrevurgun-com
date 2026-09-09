@@ -1,5 +1,5 @@
 /* YunoBot: cache only its public page/assets. Never cache API or admin traffic. */
-const CACHE = 'yunobot-v2-20260908';
+const CACHE = 'yunobot-wasm-v3-20260909';
 self.addEventListener('install', event => event.waitUntil(self.skipWaiting()));
 self.addEventListener('activate', event => event.waitUntil((async () => {
     const names = await caches.keys();
@@ -10,7 +10,7 @@ self.addEventListener('fetch', event => {
     const request=event.request, url=new URL(request.url);
     if(request.method !== 'GET' || url.origin !== self.location.origin) return;
     const page=/\/yunobot\/?$/.test(url.pathname);
-    const asset=/\/assets\//.test(url.pathname) && ['script','style','font','image'].includes(request.destination);
+    const asset=/\/assets\//.test(url.pathname) && (['script','style','font','image','worker'].includes(request.destination) || /\/yunobot\/core\.wasm$/.test(url.pathname));
     if(!page && !asset) return;
     event.respondWith((async () => {
         const cache=await caches.open(CACHE);

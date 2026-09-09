@@ -30,7 +30,35 @@ class YunoBotKnowledge {
                 if ($chunk !== '') $passages[] = $this->passage($row, $chunk, $base);
             }
         }
-        return ['version'=>2, 'scope'=>'blog', 'publishedUrls'=>array_map(fn($slug)=>$base.'/blog/'.rawurlencode($slug),$urls), 'passages'=>$passages];
+        $publishedUrls = array_map(fn($slug)=>$base.'/blog/'.rawurlencode($slug), $urls);
+        $scopes = ['blog'];
+        // Select public display fields explicitly; never export cross-post tokens,
+        // admin notes, creator IDs, image filenames or unpublished blog content.
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $tables = $this->db->query($driver === 'sqlite' ? "SELECT name FROM sqlite_master WHERE type='table'" : 'SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
+        $collections = [
+            ['updates', 'updates', 'SELECT id, title, description, update_date FROM updates ORDER BY update_date DESC LIMIT 200'],
+            ['portfolio_projects', 'portfolio', 'SELECT id, title, description, technologies FROM portfolio_projects ORDER BY id DESC LIMIT 200'],
+            ['travel_locations', 'travel', 'SELECT id, country, city, visited FROM travel_locations ORDER BY id DESC LIMIT 300'],
+            ['gallery_images', 'gallery', 'SELECT id, title FROM gallery_images WHERE is_archived = 0 ORDER BY id DESC LIMIT 300'],
+        ];
+        foreach ($collections as [$table, $page, $query]) {
+            if (!in_array($table, $tables, true)) continue;
+            $scopes[] = $page;
+            foreach ($this->db->query($query)->fetchAll(PDO::FETCH_ASSOC) as $item) {
+                $title = $page === 'travel' ? $item['city'] . ', ' . $item['country'] : trim((string)$item['title']);
+                $url = $base . ($page === 'updates' ? '/updates/' . (int)$item['id'] : '/' . $page);
+                $publishedUrls[] = $url;
+                $text = $title;
+                if ($page === 'updates') $text .= ' — ' . $item['update_date'] . '. ' . $item['description'];
+                if ($page === 'portfolio') $text .= '. ' . $item['description'] . ' Technologies: ' . $item['technologies'];
+                if ($page === 'travel') $text = 'Travel entry: ' . $text . (!empty($item['visited']) ? '. Visit date: ' . $item['visited'] : '');
+                if ($page === 'gallery') $text = 'Public gallery image titled “' . $title . '”. Image contents are not automatically analysed.';
+                $text = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags(HtmlSanitizer::clean(mb_substr($text, 0, 12000))), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+                if ($title !== '' && $text !== '') $passages[] = ['page'=>$page,'url'=>$url,'title'=>$title,'heading'=>$title,'text'=>$text];
+            }
+        }
+        return ['version'=>2, 'scope'=>'blog', 'scopes'=>$scopes, 'publishedUrls'=>array_values(array_unique($publishedUrls)), 'passages'=>$passages];
     }
     private function passage(array $row, string $text, string $base): array {
         return ['page'=>'blog','url'=>$base.'/blog/'.rawurlencode($row['slug']),'title'=>$row['title'],'heading'=>$row['title'],'text'=>$text];

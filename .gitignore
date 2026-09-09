@@ -41,3 +41,6 @@ output/playwright/
 
 # Local agent task output
 .pi/
+
+# Reproducible C++ model header; shipping binary is versioned.
+dev/yunobot-wasm/generated.hpp

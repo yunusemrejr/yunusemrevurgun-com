@@ -228,7 +228,7 @@
     function clearChat() {
         chatMessages.innerHTML = "";
         chatVersion++;
-        mlEngine = new window.YunoBotMLEngine();
+        mlEngine?.reset?.();
         chatInput.disabled = false;
         sendButton.disabled = false;
         messageCounter = 0;
@@ -244,7 +244,7 @@
 
     function getInitialExamples() {
         return [
-            "What does Yunus do at ASP?",
+            "hey kanka whats your name?",
             "What is Mr. Graphy?",
             "Find writing about edge AI",
             "Yunus nerede okudu?",
@@ -338,7 +338,7 @@
                 updateStatus("ready", "Ready");
             };
             mlEngine.onError = function () {
-                updateStatus("ready", "Source search available");
+                updateStatus("error", "Unavailable — reload to retry");
             };
 
             // Check if already ready (unlikely but possible)
@@ -350,7 +350,7 @@
         // Fallback: if worker never initializes within 10 seconds, show offline mode
         setTimeout(function () {
             if (mlEngine && !mlEngine.workerReady) {
-                updateStatus("ready", "Source search available");
+                updateStatus("error", "Unavailable — reload to retry");
             }
         }, 10000);
     }

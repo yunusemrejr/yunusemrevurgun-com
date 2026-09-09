@@ -4,7 +4,7 @@ require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 
 ui_render_head(
     'YunoBot | Yunus Emre Vurgun',
-    'Ask YunoBot about Yunus Emre Vurgun, his projects and writing. Local neural matching, source-linked answers, and English or Turkish questions.',
+    'Ask YunoBot about Yunus Emre Vurgun, his projects and writing. Local WebAssembly inference, source-linked answers, and English, Turkish or mixed-language conversation.',
     ['yunobot' => true]
 );
 ?>
@@ -16,7 +16,7 @@ ui_render_head(
         <section class="ui-section">
             <p class="ui-eyebrow">AI Assistant</p>
             <h1 class="ui-section-title">YunoBot</h1>
-            <p class="ui-section-text">Ask about my work, find something in the journal, or explore a project. YunoBot matches your question locally and answers from this site, with links you can check.</p>
+            <p class="ui-section-text">Say hello, ask about my work, or explore a project or journal topic. English, Türkçe, or a bit of both — YunoBot runs locally and links the sources behind its site answers.</p>
         </section>
 
         <section class="ui-section ui-yunobot-workspace" aria-label="Ask YunoBot">
@@ -77,8 +77,8 @@ ui_render_head(
                 <p class="ui-eyebrow">A guide to this site</p>
                 <h2>Start with something specific.</h2>
                 <p>A project name, a question about my background, or a topic from the journal gives YunoBot a useful starting point.</p>
-                <ul><li>Ask in English or Turkish.</li><li>Check the linked source for context.</li><li>Use Clear to start a new conversation.</li></ul>
-                <details><summary>How it works &amp; privacy</summary><p>A small neural classifier recognizes topics; local search finds relevant passages. It selects reviewed answers or quotes the source, and can still misunderstand a question.</p><p>The model and public source index load with the page. Chat messages stay in browser memory and are not sent to an AI service. Source links open the relevant page.</p></details>
+                <ul><li>Ask in English, Turkish, or both.</li><li>Check the linked source for context.</li><li>Use Clear to start a new conversation.</li></ul>
+                <details><summary>How it works &amp; privacy</summary><p>A C++ WebAssembly core classifies questions, searches public sources and keeps conversation context. Casual replies use reviewed sentence parts; factual answers quote or link their sources. It can still misunderstand a question.</p><p>The model and public source index load with the page. Chat messages stay in browser memory and are not sent to an AI service. Source links open the relevant page.</p></details>
             </aside>
         </section>
     </main>
@@ -87,16 +87,15 @@ ui_render_head(
 </div>
 
 <!-- ============================================================
-     Custom neural network — weights + runtime ship with the page.
-     No CDN, no external model download: instant load, instant answers.
+     C++ WebAssembly core — worker, model and public data stay first-party.
+     Versioned assets; messages are processed locally.
      ============================================================ -->
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/text.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/text.js') ?>" defer></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/answers.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/answers.js') ?>" defer></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/nn-weights.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/nn-weights.js') ?>" defer></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/nn-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/nn-engine.js') ?>" defer></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/knowledge-pack.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/knowledge-pack.js') ?>" defer></script>
-<script data-cfasync="false" data-live-source="<?= getenv('MODE') === 'development' ? '' : FULL_BASE_PATH . 'api/yunobot-knowledge.php' ?>" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/kb.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/kb.js') ?>" defer></script>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot/ml-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/ml-engine.js') ?>" defer></script>
+<script data-cfasync="false"
+    data-worker="<?= FULL_BASE_PATH ?>assets/js/yunobot/wasm-worker.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/wasm-worker.js') ?>"
+    data-wasm="<?= FULL_BASE_PATH ?>assets/js/yunobot/core.wasm?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/core.wasm') ?>"
+    data-corpus="<?= FULL_BASE_PATH ?>assets/js/yunobot/knowledge-pack.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/knowledge-pack.js') ?>"
+    data-live="<?= getenv('MODE') === 'development' ? '' : FULL_BASE_PATH . 'api/yunobot-knowledge.php' ?>"
+    src="<?= FULL_BASE_PATH ?>assets/js/yunobot/wasm-engine.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot/wasm-engine.js') ?>" defer></script>
 <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/yunobot.js?v=<?= filemtime(dirname(__DIR__, 2) . '/assets/js/yunobot.js') ?>" defer></script>
 
 <!-- ============================================================
@@ -106,7 +105,7 @@ ui_render_head(
 // Register service worker for offline support (only in production, scoped to yunobot)
 if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('<?= FULL_BASE_PATH ?>sw-yunobot.js', { scope: '<?= FULL_BASE_PATH ?>yunobot' })
+        navigator.serviceWorker.register('<?= FULL_BASE_PATH ?>sw-yunobot.js?v=<?= filemtime(dirname(__DIR__, 2) . '/sw-yunobot.js') ?>', { scope: '<?= FULL_BASE_PATH ?>yunobot' })
             .then(function(registration) {
                 console.log('[YunoBot SW] Registered:', registration.scope);
             })
