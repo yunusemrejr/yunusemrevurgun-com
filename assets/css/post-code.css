@@ -34,7 +34,7 @@
 }
 
 .ui-postcode-tag:hover {
-  color: #434343;
+  color: var(--color-ink-body);
   border-color: var(--color-border-strong);
   background-color: var(--color-surface-hover);
 }
@@ -50,7 +50,7 @@
 }
 
 .ui-code-block mjx-container {
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
 }
 
 .ui-code-block mjx-container svg {
@@ -59,9 +59,9 @@
 
 /* Ensure MathJax SVG inherits proper color in dark theme */
 .mjx-chtml {
-  color: #434343;
+  color: var(--color-ink-body);
 }
 
 .mjx-chtml .mjx-math {
-  color: #434343;
+  color: var(--color-ink-body);
 }

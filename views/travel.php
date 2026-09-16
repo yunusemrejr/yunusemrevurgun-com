@@ -85,9 +85,9 @@ ui_render_head(
             .ui-toggle-btn {
                 padding: 0.5rem 1.25rem;
                 border-radius: 0;
-                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
+                border: 1px solid var(--color-border, var(--color-border));
                 background: transparent;
-                color: var(--color-text-secondary, #8fa6a6);
+                color: var(--color-text-secondary, var(--color-accent-secondary));
                 cursor: pointer;
                 font-size: 0.75rem;
                 font-weight: 500;
@@ -97,21 +97,21 @@ ui_render_head(
                 transition: all 0.2s ease;
             }
             .ui-toggle-btn:hover {
-                background: rgba(132,144,164,0.08);
-                color: var(--color-ink-body, #434343);
+                background: var(--color-bg-subtle);
+                color: var(--color-ink-body, var(--color-ink-body));
             }
             .ui-toggle-btn.is-active {
-                background: var(--color-text-primary, #a6a6a6);
-                color: var(--color-bg-primary, #e3e2de);
-                border-color: var(--color-text-primary, #a6a6a6);
+                background: var(--color-text-primary, var(--color-text-tertiary));
+                color: var(--color-bg-primary, var(--color-bg-primary));
+                border-color: var(--color-text-primary, var(--color-text-tertiary));
             }
             .ui-map-view-container {
                 position: relative;
                 width: 100%;
                 height: 65vh;
                 min-height: 450px;
-                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
-                background: var(--color-bg-primary, #e3e2de);
+                border: 1px solid var(--color-border, var(--color-border));
+                background: var(--color-bg-primary, var(--color-bg-primary));
             }
             .ui-map-view {
                 position: absolute;
@@ -143,7 +143,7 @@ ui_render_head(
                 background: rgba(227,226,222,0.85);
                 backdrop-filter: blur(10px);
                 padding: 1rem 1.5rem;
-                border: 1px solid var(--color-border-strong, rgba(132,144,164,0.45));
+                border: 1px solid var(--color-border-strong, var(--color-border-strong));
             }
             .ui-overlay-stat-item {
                 display: flex;
@@ -152,12 +152,12 @@ ui_render_head(
             .ui-overlay-stat-value {
                 font-size: 1.25rem;
                 font-weight: 700;
-                color: #434343;
+                color: var(--color-ink-body);
                 font-family: var(--font-mono, ui-monospace, monospace);
             }
             .ui-overlay-stat-label {
                 font-size: 0.7rem;
-                color: var(--color-text-secondary, #8fa6a6);
+                color: var(--color-text-secondary, var(--color-accent-secondary));
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
                 font-family: var(--font-mono, ui-monospace, monospace);
@@ -170,9 +170,9 @@ ui_render_head(
                 display: block;
                 width: 10px;
                 height: 10px;
-                background: #8490a4;
+                background: var(--color-accent);
                 border-radius: 0;
-                border: 2px solid var(--color-bg-primary, #e3e2de);
+                border: 2px solid var(--color-bg-primary, var(--color-bg-primary));
                 transition: transform 0.2s ease;
             }
             .ui-map-dot:hover .ui-map-dot-core {
@@ -180,9 +180,9 @@ ui_render_head(
             }
             .leaflet-popup-content-wrapper {
                 background: var(--color-bg-elevated, #edeceb) !important;
-                color: #434343 !important;
+                color: var(--color-ink-body) !important;
                 border-radius: 0 !important;
-                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
+                border: 1px solid var(--color-border, var(--color-border));
             }
             .leaflet-popup-tip {
                 background: var(--color-bg-elevated, #edeceb) !important;
@@ -197,7 +197,7 @@ ui_render_head(
                 aspect-ratio: 4/3;
                 border-radius: 0;
                 overflow: hidden;
-                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
+                border: 1px solid var(--color-border, var(--color-border));
                 background: var(--color-bg-card, #f5f4f1);
             }
             .ui-travel-image-wrap img {
@@ -238,7 +238,7 @@ ui_render_head(
             .ui-travel-modal-panel {
                 position: relative;
                 background: var(--color-bg-elevated, #edeceb);
-                border: 1px solid var(--color-border-strong, rgba(132,144,164,0.45));
+                border: 1px solid var(--color-border-strong, var(--color-border-strong));
                 padding: 2rem;
                 max-width: 560px;
                 width: 90%;
@@ -252,8 +252,8 @@ ui_render_head(
                 width: 28px;
                 height: 28px;
                 background: transparent;
-                border: 1px solid var(--color-border, rgba(132,144,164,0.25));
-                color: var(--color-text-secondary, #8fa6a6);
+                border: 1px solid var(--color-border, var(--color-border));
+                color: var(--color-text-secondary, var(--color-accent-secondary));
                 cursor: pointer;
                 font-size: 1.1rem;
                 display: flex;
@@ -262,19 +262,19 @@ ui_render_head(
                 transition: all 0.2s ease;
             }
             .ui-travel-modal-close:hover {
-                background: rgba(132,144,164,0.08);
-                color: #434343;
+                background: var(--color-bg-subtle);
+                color: var(--color-ink-body);
             }
             .ui-card-title {
                 font-size: 1.25rem;
                 font-weight: 600;
-                color: #434343;
+                color: var(--color-ink-body);
                 margin-bottom: 0.25rem;
                 font-family: var(--font-mono, ui-monospace, monospace);
             }
             .ui-card-meta {
                 font-size: 0.8rem;
-                color: var(--color-text-secondary, #8fa6a6);
+                color: var(--color-text-secondary, var(--color-accent-secondary));
                 font-family: var(--font-mono, ui-monospace, monospace);
                 margin-bottom: 1rem;
             }

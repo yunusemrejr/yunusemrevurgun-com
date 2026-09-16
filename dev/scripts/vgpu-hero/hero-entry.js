@@ -8,10 +8,10 @@
  *   -> writes assets/js/vgpu-hero.min.js (IIFE, self-contained, committed)
  *
  * Design: quiet topographic contour lines (fbm value-noise field) drifting
- * slowly over the #e3e2de paper background. The pointer raises a soft hill
+ * slowly over the deep room background. The pointer raises a soft hill
  * that bends the contours toward it — interaction as terrain, not decoration.
- * All colors from dev/new_design_plan_and_assets/palette.md:
- *   bg #e3e2de, ink #8490a4, secondary #8fa6a6, body #575757.
+ * Palette mirrors the public tokens in assets/css/variables.css:
+ *   bg #15120f, ink (lamplight amber) #e0a33f, secondary #8ea6c8.
  * Fallback: no WebGPU / init failure -> canvas stays hidden (CSS bg + HTML
  * hero text carry the page). prefers-reduced-motion -> single static frame.
  */
@@ -85,13 +85,13 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
   let gm = min(fract(vm), 1.0 - fract(vm));
   let major = 1.0 - smoothstep(0.0, wm, gm);
 
-  let bg = vec3f(0.890, 0.886, 0.871);          // #e3e2de
-  let ink = vec3f(0.518, 0.565, 0.643);         // #8490a4
-  let sec = vec3f(0.561, 0.651, 0.651);         // #8fa6a6
+  let bg = vec3f(0.082, 0.071, 0.059);          // #15120f room
+  let ink = vec3f(0.878, 0.639, 0.247);         // #e0a33f lamplight
+  let sec = vec3f(0.557, 0.651, 0.784);         // #8ea6c8
 
   var col = bg;
-  col = mix(col, ink, line * 0.42);
-  col = mix(col, ink, major * 0.30);
+  col = mix(col, ink, line * 0.24);
+  col = mix(col, ink, major * 0.17);
 
   // soft secondary tint hugging the pointer hill (feedback, not glow)
   let halo = exp(-d2 * 9.0) * params.glow;

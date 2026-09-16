@@ -69,7 +69,7 @@
 
 .ui-download-deps {
   font-size: var(--text-sm);
-  color: #434343;
+  color: var(--color-ink-body);
   line-height: 1.6;
   margin: 0;
   padding-left: var(--space-4);

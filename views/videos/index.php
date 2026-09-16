@@ -219,7 +219,7 @@ ui_render_head(
 }
 .ui-video-desc {
     font-size: 0.875rem;
-    color: #434343;
+    color: var(--color-ink-body);
     margin: 0 0 6px;
     line-height: 1.5;
 }

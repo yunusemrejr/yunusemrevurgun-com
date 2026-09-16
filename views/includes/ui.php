@@ -20,7 +20,7 @@ if (!function_exists('ui_render_head')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#e3e2de">
+    <meta name="theme-color" content="#15120f">
     <?php
     // Pages may override the index directive via extraMeta['robots'] (e.g. the
     // search results page, which is thin and has an unbounded ?q= URL space).

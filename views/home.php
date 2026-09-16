@@ -100,6 +100,10 @@ ui_render_head(
     <canvas class="ui-hero-canvas" aria-hidden="true"></canvas>
     <div class="ui-hero-content">
         <h1 class="ui-hero-title">Yemre</h1>
+        <figure class="ui-hero-frame">
+            <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" decoding="async" fetchpriority="high"
+                 alt="Yemre in a hoodie working at a vintage CRT computer, surrounded by machine-learning and C++ books under a desk lamp.">
+        </figure>
         <p class="ui-hero-tagline">The world of a developer</p>
         <p class="ui-hero-lede">They say you’re the average of the five people you spend the most time with. I’m carefully curating mine.</p>
         <div class="ui-hero-actions">

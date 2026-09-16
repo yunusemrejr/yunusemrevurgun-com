@@ -6,6 +6,7 @@
  *   -> writes assets/js/vgpu-pages.min.js (IIFE, self-contained, committed)
  *
  * Same palette + fallback philosophy as the landing hero (dev/scripts/
+ * vgpu-hero/); colors mirror assets/css/variables.css.
  * vgpu-hero/hero-entry.js), but every page gets its OWN quiet effect instead
  * of the contour field. All effects are ambient only (no pointer tracking —
  * content sits above them and they must never fight the UI):
@@ -60,9 +61,9 @@ fn fbm(p: vec2f) -> f32 {
   return v;
 }
 
-const BG = vec3f(0.890, 0.886, 0.871);   // #e3e2de paper
-const INK = vec3f(0.518, 0.565, 0.643);  // #8490a4
-const SEC = vec3f(0.561, 0.651, 0.651);  // #8fa6a6
+const BG = vec3f(0.082, 0.071, 0.059);   // #15120f room
+const INK = vec3f(0.878, 0.639, 0.247);  // #e0a33f lamplight
+const SEC = vec3f(0.557, 0.651, 0.784);  // #8ea6c8
 `;
 
 /* About — wind: brief gusts of paper wisps blown in from the top-left.
