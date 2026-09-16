@@ -1,6 +1,6 @@
 /* ============================================
    YUNOBOT PAGE — YEV Design System
-   Light muted palette, sharp corners, Aileron
+   Warm dark palette, sharp corners, Fraunces + Inter
    ============================================ */
 
 /* ===== CUSTOM PROPERTIES ===== */
@@ -161,7 +161,7 @@
  flex-direction: row;
 }
 
-/* Avatars — square, Aileron */
+/* Avatars — square */
 .message-avatar {
  width: 28px;
  height: 28px;

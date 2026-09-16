@@ -206,11 +206,11 @@ body .ui-cards-section {
   gap: var(--space-10);
 }
 
-/* YEMRE Wordmark — Aileron Black, title case */
+/* YEMRE Wordmark — Fraunces, title case */
 .ui-wordmark {
   font-family: var(--font-display);
   font-size: var(--text-xl);
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--color-ink-body);
   text-decoration: none;

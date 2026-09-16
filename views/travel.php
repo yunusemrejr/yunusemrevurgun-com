@@ -140,7 +140,7 @@ ui_render_head(
                 z-index: 10;
                 display: flex;
                 gap: 2rem;
-                background: rgba(227,226,222,0.85);
+                background: var(--color-bg-overlay);
                 backdrop-filter: blur(10px);
                 padding: 1rem 1.5rem;
                 border: 1px solid var(--color-border-strong, var(--color-border-strong));
@@ -178,14 +178,21 @@ ui_render_head(
             .ui-map-dot:hover .ui-map-dot-core {
                 transform: scale(1.5);
             }
+            /* The keyless OSM basemap has no dark variant, and switching tile
+               providers needs API keys plus a CSP change, so the tile pane is
+               inverted to sit in the room palette. Markers, controls and
+               attribution live in other panes and stay untinted. */
+            .leaflet-tile-pane {
+                filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9);
+            }
             .leaflet-popup-content-wrapper {
-                background: var(--color-bg-elevated, #edeceb) !important;
+                background: var(--color-bg-elevated) !important;
                 color: var(--color-ink-body) !important;
                 border-radius: 0 !important;
                 border: 1px solid var(--color-border, var(--color-border));
             }
             .leaflet-popup-tip {
-                background: var(--color-bg-elevated, #edeceb) !important;
+                background: var(--color-bg-elevated) !important;
             }
             .ui-travel-modal-grid {
                 display: grid;
@@ -198,7 +205,7 @@ ui_render_head(
                 border-radius: 0;
                 overflow: hidden;
                 border: 1px solid var(--color-border, var(--color-border));
-                background: var(--color-bg-card, #f5f4f1);
+                background: var(--color-bg-card);
             }
             .ui-travel-image-wrap img {
                 width: 100%;
@@ -233,11 +240,11 @@ ui_render_head(
             .ui-travel-modal-backdrop {
                 position: absolute;
                 inset: 0;
-                background: rgba(227,226,222,0.7);
+                background: var(--color-bg-overlay);
             }
             .ui-travel-modal-panel {
                 position: relative;
-                background: var(--color-bg-elevated, #edeceb);
+                background: var(--color-bg-elevated);
                 border: 1px solid var(--color-border-strong, var(--color-border-strong));
                 padding: 2rem;
                 max-width: 560px;

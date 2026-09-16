@@ -295,6 +295,17 @@ body.admin-login-body {
 
   --brand-portrait-border: 4px solid #f5f4f1;
   --brand-portrait-shadow: 12px 12px 24px rgba(132, 144, 164, 0.25);
-  --brand-monogram-color: #434343;
-  --brand-grid-color: rgba(132, 144, 164, 0.12);
+  --brand-monogram-color: var(--color-text-primary);
+  --brand-grid-color: var(--color-grid);
+  --brand-bg-charcoal: var(--color-bg-primary);
+
+  /* Variable aliases substitute against the values in scope where they are
+     declared, so the :root aliases above keep their public values on admin
+     screens unless they are repeated here. */
+  --color-bg: var(--color-bg-primary);
+  --color-brand: var(--color-accent);
+  --color-brand-hover: var(--color-accent-hover);
+  --color-brand-subtle: var(--color-accent-subtle);
+  --color-brand-border: var(--color-border-focus);
+  --color-border-default: var(--color-border);
 }
