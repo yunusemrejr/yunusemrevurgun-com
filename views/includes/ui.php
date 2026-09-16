@@ -45,15 +45,17 @@ if (!function_exists('ui_render_head')) {
     ?>
     <link rel="canonical" href="<?= htmlspecialchars($canonical) ?>">
     <?php
-    // Default Open Graph / social-share image: the home hero rendered to a
-    // 1200x630 PNG (social platforms don't render SVG). Regenerate with
-    // dev/scripts/build-og-image.sh when assets/images/desktop.svg changes.
+    // Default Open Graph / social-share image: the landing photograph composed
+    // into a 1200x630 card. Regenerate with dev/scripts/build-og-image.sh after
+    // the photograph or the palette tokens change. Versioned with filemtime so
+    // platforms and intermediary caches pick up a regenerated card.
     // Pages may override the social-share image via extraMeta['og_image']
     // (emitted BEFORE any page-specific og:image tag so it wins for crawlers
-    // that use the first tag). Default: the home hero rendered to 1200x630 PNG.
+    // that use the first tag).
+    $ogImageFile = __DIR__ . '/../../assets/images/og-image.png';
     $defaultOgImage = (is_string($extraMeta['og_image'] ?? null) && $extraMeta['og_image'] !== '')
         ? $extraMeta['og_image']
-        : FULL_BASE_PATH . 'assets/images/og-image.png';
+        : FULL_BASE_PATH . 'assets/images/og-image.png?v=' . (@filemtime($ogImageFile) ?: '1');
     $defaultOgTitle = htmlspecialchars($title, ENT_QUOTES);
     $defaultOgDesc = htmlspecialchars($description, ENT_QUOTES);
     // Declaring the raster's real size lets platforms reserve preview space in one
