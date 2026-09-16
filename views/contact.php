@@ -70,14 +70,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrfToken = $_POST['csrf_token'] ?? '';
     $honeypot = trim($_POST['website'] ?? '');
 
+    // Every gate below must stop the send: without this flag a submission that
+    // failed CSRF, the honeypot or the rate limit can still reach sendEmail().
+    $submitBlocked = false;
     if (!CSRFProtection::validateToken($csrfToken)) {
         $error = 'Security token expired. Please refresh and try again.';
+        $submitBlocked = true;
     } elseif (!empty($honeypot)) {
+        // Honeypot hit: acknowledge to the bot, never send.
         $success = true;
+        $submitBlocked = true;
     } elseif (RateLimiter::isRateLimited()) {
         $error = 'Too many attempts. Please wait before sending another message.';
+        $submitBlocked = true;
     } elseif (!DoubleSubmitProtection::canSubmit('contact')) {
         $error = 'Please wait a few seconds before submitting again.';
+        $submitBlocked = true;
     }
 
     $captchaValid = false;
@@ -136,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Please fix the errors below.';
     } elseif ($error === null && $captchaError) {
         $error = $captchaError;
-    } elseif ($captchaValid && empty($fieldErrors)) {
+    } elseif (!$submitBlocked && $captchaValid && empty($fieldErrors)) {
         try {
             $contact = new Contact();
             if ($contact->sendEmail($data)) {

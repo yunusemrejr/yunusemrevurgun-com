@@ -36,6 +36,22 @@ assert p.canonical==[base+'/updates?page=2'],p.canonical;checks+=1
 _,_,html=get('/updates?per=20&page=2');p=Page();p.feed(html)
 assert p.canonical==[base+'/updates?per=20&page=2'],p.canonical;checks+=1
 status,_,_=get('/api/admin/regenerate-sitemap.php',b'csrf_token=invalid');assert status in (401,403),status;checks+=1
+# Contact form gates: a POST that fails CSRF must not reach the mailer. The
+# rendered page proves it -- a send attempt overwrites the CSRF error with the
+# mailer's failure banner, so a blocked submission must show neither banner.
+from urllib.parse import urlencode
+import re as _re
+_,_,page=get('/contact')
+field=lambda name:_re.search(r'name="'+name+r'" value="([^"]+)"',page).group(1)
+question=_re.search(r'ui-captcha-question">([^<]+)<',page).group(1)
+left,operator,right=_re.match(r'\s*(\d+)\s*([+-])\s*(\d+)',question).groups()
+answer=int(left)+int(right) if operator=='+' else int(left)-int(right)
+blocked=urlencode({'csrf_token':'invalid-token','name':'Gate Check','email':'gate-check@example.com','subject':'Gate check','message':'Local verification of the contact form gates.','captcha_answer':answer,'captcha_hash':field('captcha_hash')}).encode()
+status,_,html=get('/contact',blocked)
+assert status==200,status
+assert 'Security token expired' in html,(status,'blocked submission did not report the CSRF failure')
+assert 'Failed to send message' not in html and 'message has been sent' not in html,'blocked submission reached the mailer'
+checks+=1
 get('/dev/tests/login_as_admin.php?to=/admin/dashboard')
 admin=['dashboard','blog','blog/create','portfolio','portfolio/create','gallery','updates','updates/create','updates/edit?id=23','rmrp','rmrp/create','music','videos','downloads','socials','travel','settings','tracker-codes','tracker-codes/create','search']
 for path in admin:
