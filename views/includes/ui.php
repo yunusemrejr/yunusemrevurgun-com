@@ -238,8 +238,52 @@ if (!function_exists('ui_render_navbar')) {
 
 
 
+if (!function_exists('ui_hampton_asset')) {
+    // Versioned URL for a decorative cameo asset, or null when it is absent
+    // (a missing cameo must never break a page). Regeneration notes:
+    // dev/scripts/build-hampton-cameo.sh.
+    function ui_hampton_asset(string $file): ?string
+    {
+        $path = __DIR__ . '/../../assets/images/' . $file;
+        return is_file($path)
+            ? FULL_BASE_PATH . 'assets/images/' . $file . '?v=' . filemtime($path)
+            : null;
+    }
+}
+
+if (!function_exists('ui_render_hampton')) {
+    /**
+     * Decorative Hampton the Hampster cameo: the 2001 hamsterdance.com dance
+     * loop with its white background removed and halved to 58x69.
+     *
+     * Ornament only — hidden from assistive tech, not focusable, pointer events
+     * off, and parked in a margin the page already owns so it never covers a
+     * control. The still frame covers visitors who prefer reduced motion.
+     */
+    function ui_render_hampton(string $variant): void
+    {
+        $gif = ui_hampton_asset('hampton.gif');
+        if ($gif === null) return;
+        $still = ui_hampton_asset('hampton-still.png');
+        $variant = preg_replace('/[^a-z0-9-]/', '', strtolower($variant));
+        if ($variant === '') $variant = 'footer-right';
+        ?>
+<span class="ui-hampton ui-hampton--<?= htmlspecialchars($variant) ?>" aria-hidden="true">
+    <picture>
+        <?php if ($still !== null): ?><source srcset="<?= htmlspecialchars($still) ?>" media="(prefers-reduced-motion: reduce)"><?php endif; ?>
+        <img class="ui-hampton-img" src="<?= htmlspecialchars($gif) ?>" width="58" height="69" alt="" loading="lazy" decoding="async">
+    </picture>
+</span>
+<?php
+    }
+}
+
 if (!function_exists('ui_render_footer')) {
-    function ui_render_footer(): void
+    /**
+     * @param string|null $hampton Optional decorative cameo variant to park in
+     *        the footer corner (see ui_render_hampton). Null renders nothing.
+     */
+    function ui_render_footer(?string $hampton = null): void
     {
         $socialsModel = new Socials();
         ?>
@@ -284,6 +328,7 @@ if (!function_exists('ui_render_footer')) {
         <a href="<?= FULL_BASE_PATH ?>privacy">Privacy</a>
         <a href="<?= FULL_BASE_PATH ?>contact">Contact</a>
     </nav>
+    <?php if ($hampton !== null) ui_render_hampton($hampton); ?>
 </footer>
 <?php if ($hasPopup): ?>
 <div class="ui-x-popup" id="uiXPopup" aria-hidden="true">

@@ -278,6 +278,7 @@ ui_render_head(
                 <?php foreach ($categories as $key => $label): ?>
                     <button class="ui-filter-pill<?= $key === 'all' ? ' is-active' : '' ?>" type="button" data-filter="<?= htmlspecialchars($key) ?>" aria-pressed="<?= $key === 'all' ? 'true' : 'false' ?>"><?= htmlspecialchars($label) ?></button>
                 <?php endforeach; ?>
+                <?php ui_render_hampton('filters'); ?>
             </div>
 
             <div class="ui-feed-list" id="scienceFeed">

@@ -2376,6 +2376,85 @@ body.ui-landing::before {
   }
 }
 
+/* ===== HAMPTON CAMEO (hamsterdance.com, 2001) ===== */
+/* One ornamental cameo per page: the original dance loop with its white
+   background removed and halved to a 58x69 asset. Every variant sits in space
+   the page already owns — a footer corner strip, the end of a filter row, the
+   chat status bar — so it never covers a control or text. */
+.ui-hampton {
+  display: inline-flex;
+  align-items: flex-end;
+  line-height: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ui-hampton-img {
+  display: block;
+  width: 52px;
+  height: auto;
+  /* 2001 pixel art: keep the edges hard instead of smearing them. */
+  image-rendering: pixelated;
+  /* The site-wide grayscale treatment exists for photography. This is a
+     palette-matched ornament (amber, white, black) with no hover reveal to
+     borrow, because it deliberately takes no pointer events. */
+  filter: none;
+}
+
+/* Footer corner: its own row, so it cannot land on the copyright line or on
+   footer links that wrap, and it never widens the page. */
+.ui-hampton--footer-left,
+.ui-hampton--footer-right {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: var(--space-2) auto 0;
+}
+
+.ui-hampton--footer-left {
+  justify-content: flex-start;
+}
+
+/* Mirrored on /travel so the same cameo reads as a different visitor. */
+.ui-hampton--footer-left .ui-hampton-img {
+  transform: scaleX(-1);
+}
+
+.ui-hampton--footer-right {
+  justify-content: flex-end;
+}
+
+/* Landing footer: the shared inner column already centres its children. */
+.ui-hampton--landing-right {
+  align-self: flex-end;
+  margin-top: calc(-1 * var(--space-2));
+}
+
+/* Science Corner: stands at the end of the category filter row. */
+.ui-hampton--filters {
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+/* YunoBot: right end of the chat status bar, clear of the status text. */
+.ui-hampton--status {
+  align-self: center;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.ui-hampton--status .ui-hampton-img {
+  width: 30px;
+}
+
+@media (max-width: 768px) {
+  .ui-hampton-img {
+    width: 40px;
+  }
+  .ui-hampton--status .ui-hampton-img {
+    width: 26px;
+  }
+}
+
 /* ===== COMEDY PAGE ===== */
 .comedy-socials {
   display: grid;

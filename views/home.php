@@ -179,6 +179,7 @@ ui_render_head(
             </ul>
         </nav>
         <p class="ui-landing-footer-copy">© <?= date('Y') ?> Yemre. All rights reserved.</p>
+        <?php ui_render_hampton('landing-right'); ?>
     </div>
 </footer>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>

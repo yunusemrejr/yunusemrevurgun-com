@@ -110,7 +110,7 @@ ui_render_head(
         <?php endif; ?>
     </main>
 
-    <?php ui_render_footer(); ?>
+    <?php ui_render_footer('footer-right'); ?>
 </div>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 

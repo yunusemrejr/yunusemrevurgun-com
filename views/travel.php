@@ -429,7 +429,7 @@ ui_render_head(
         </section>
     </main>
 
-    <?php ui_render_footer(); ?>
+    <?php ui_render_footer('footer-left'); ?>
 </div>
 
 <div class="ui-travel-modal" id="travelImageModal" aria-hidden="true">

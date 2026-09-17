@@ -26,6 +26,7 @@ ui_render_head(
                     <div class="chat-status-bar" role="status" aria-live="polite">
                         <span class="chat-status-dot" id="statusDot"></span>
                         <span class="chat-status-text" id="statusText">Initializing...</span>
+                        <?php ui_render_hampton('status'); ?>
                     </div>
 
                     <!-- Messages Area -->
