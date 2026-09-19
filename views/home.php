@@ -93,16 +93,18 @@ ui_render_head(
 <body class="ui-landing">
 <a class="ui-skip-link" href="#home-archive">Skip to explore</a>
 <main id="main-content" tabindex="-1">
-<!-- vgpu WebGPU hero (bundled from dev/scripts/vgpu-hero/hero-entry.js).
-     Falls back to plain palette background + HTML text when WebGPU is
-     unavailable; prefers-reduced-motion renders one static frame. -->
+<!-- Procedural WebGL study; content remains available without graphics. -->
 <div class="ui-hero ui-hero--fallback">
     <canvas class="ui-hero-canvas" aria-hidden="true"></canvas>
+    <button class="ui-scene-toggle" type="button" data-scene-toggle aria-pressed="false" hidden>Pause background</button>
     <div class="ui-hero-content">
         <h1 class="ui-hero-title">Yemre</h1>
         <figure class="ui-hero-frame">
+            <a class="ui-hero-image-link" href="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" data-image-expand aria-label="Enlarge the study image" aria-haspopup="dialog">
             <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" decoding="async" fetchpriority="high"
                  alt="Yemre in a hoodie working at a vintage CRT computer, surrounded by machine-learning and C++ books under a desk lamp.">
+                <span class="ui-image-expand-hint" aria-hidden="true">View details ↗</span>
+            </a>
         </figure>
         <p class="ui-hero-tagline">The world of a developer</p>
         <p class="ui-hero-lede">They say you’re the average of the five people you spend the most time with. I’m carefully curating mine.</p>
@@ -167,6 +169,19 @@ ui_render_head(
     <?php endif; ?>
 </div>
 </main>
+<dialog class="ui-image-dialog" aria-labelledby="hero-image-title">
+    <div class="ui-image-dialog-bar">
+        <p id="hero-image-title">The study · a closer look</p>
+        <button type="button" class="ui-image-dialog-close" autofocus>Close <span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ui-image-dialog-scroll">
+        <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" loading="lazy" alt="Yemre at a vintage CRT computer, with programming and machine-learning books, cables, and a warm desk lamp.">
+    </div>
+    <div class="ui-image-dialog-tools">
+        <button type="button" data-image-zoom aria-pressed="false">Original size</button>
+        <a href="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" target="_blank" rel="noopener">Open image ↗</a>
+    </div>
+</dialog>
 
 <footer class="ui-landing-footer">
     <div class="ui-landing-footer-inner">

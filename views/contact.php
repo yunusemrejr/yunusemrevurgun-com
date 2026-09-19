@@ -198,7 +198,7 @@ ui_render_head(
                     <form class="ui-form" method="post" action="<?= FULL_BASE_PATH ?>contact" id="contactForm" novalidate>
                         <?= CSRFProtection::getHiddenInput() ?>
                         <input type="hidden" name="submission_id" id="submissionId" value="">
-                        <input type="text" name="website" id="website" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;">
+                        <input type="text" name="website" id="website" value="" aria-hidden="true" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;">
 
                         <div>
                             <label class="ui-field-label" for="name">Name</label>

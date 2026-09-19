@@ -76,7 +76,8 @@
 }
 
 .ui-updates-per select:focus {
- outline: none;
+ outline: 2px solid var(--color-accent);
+ outline-offset: 3px;
  background-color: var(--color-bg-card);
 }
 
@@ -184,3 +185,8 @@
 .has-js .ui-per-apply {
  display: none;
 }
+
+/* Archive controls keep the public reading font and visible boundaries. */
+.ui-view-toggle a, .ui-updates-count, .ui-updates-per, .ui-updates-per select { font-family: var(--font-body); }
+.ui-view-toggle a, .ui-updates-per select { min-height: 44px; }
+.ui-updates-per select { background-color: var(--color-bg-elevated); border-color: var(--color-control-border); }

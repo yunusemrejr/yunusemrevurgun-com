@@ -53,7 +53,7 @@
 }
 
 .ui-music-track-number {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   color: var(--color-accent);
 }
@@ -77,7 +77,7 @@
 }
 
 .ui-music-track-desc {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   color: var(--color-accent);
   white-space: nowrap;
@@ -86,8 +86,8 @@
 }
 
 .ui-music-track-date {
-  font-family: var(--font-display);
-  font-size: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
   color: var(--color-accent-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -98,7 +98,7 @@
 }
 
 .ui-music-track-duration {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   color: var(--color-accent);
   font-variant-numeric: tabular-nums;
@@ -119,10 +119,11 @@
   transition: all var(--transition-fast);
 }
 
-.ui-music-play-btn:hover {
+.ui-music-play-btn:hover,
+.ui-music-track.is-active .ui-music-play-btn:hover {
   background: var(--color-accent);
   border-color: var(--color-accent);
-  color: var(--color-ink-body);
+  color: var(--color-text-inverse);
 }
 
 .ui-music-track.is-active .ui-music-play-btn {
@@ -196,7 +197,7 @@
 
 .ui-music-player-btn-play:hover {
   background: var(--color-accent);
-  color: var(--color-ink-body);
+  color: var(--color-text-inverse);
 }
 
 .ui-music-player-progress {
@@ -208,7 +209,7 @@
 }
 
 .ui-music-player-time {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--text-xs);
   color: var(--color-accent);
   font-variant-numeric: tabular-nums;
@@ -280,7 +281,7 @@
   text-align: center;
   padding: var(--space-12) var(--space-4);
   color: var(--color-accent);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--text-sm);
 }
 

@@ -648,8 +648,44 @@
     });
   }
 
+  function initHeroImage() {
+    const trigger = q('[data-image-expand]');
+    const dialog = q('.ui-image-dialog');
+    if (!trigger || !dialog || typeof dialog.showModal !== 'function') return;
+    const close = q('.ui-image-dialog-close', dialog);
+    const zoom = q('[data-image-zoom]', dialog);
+    const scroller = q('.ui-image-dialog-scroll', dialog);
+    let previousOverflow = '';
+    const announce = () => document.dispatchEvent(new Event('hero-dialog-change'));
+    trigger.addEventListener('click', event => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      dialog.showModal();
+      announce();
+    });
+    close.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', () => {
+      document.body.style.overflow = previousOverflow;
+      dialog.classList.remove('is-zoomed');
+      zoom.setAttribute('aria-pressed', 'false');
+      zoom.textContent = 'Original size';
+      trigger.focus({ preventScroll: true });
+      announce();
+    });
+    zoom.addEventListener('click', () => {
+      const expanded = dialog.classList.toggle('is-zoomed');
+      zoom.setAttribute('aria-pressed', String(expanded));
+      zoom.textContent = expanded ? 'Fit to screen' : 'Original size';
+      scroller.scrollTo(0, 0);
+    });
+  }
+
   function init() {
 
+    initHeroImage();
     initAboutCommandCenter();
     initPortfolioFilters();
     initSlideshow();

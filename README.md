@@ -10,11 +10,13 @@ Personal website and publishing tools. Server-rendered PHP; no application frame
 
 - Production: MySQL on Namecheap, Apache/LiteSpeed-compatible rewrites in `.htaccess`, Cloudflare in front. The repository handoff records PHP 8.2 FPM; verify the running version with the host when deploying. Local checks for this change ran on PHP 8.5.
 - Local: SQLite in `dev/test_db.sqlite`; explicitly choose SQLite when starting the server to avoid using a configured MySQL database.
-- Public UI: plain HTML, CSS, JavaScript; self-hosted Aileron. Body copy uses system sans-serif when Canva Sans is unavailable. Shared tokens and fonts are in `assets/css/variables.css`; public components are in `ui-rebuild.css`.
+- Public UI: plain HTML, CSS, JavaScript; self-hosted Fraunces headings and Inter text/controls, with a warm charcoal, parchment and amber palette. Shared tokens and fonts are in `assets/css/variables.css`; public components are in `ui-rebuild.css`.
 - Admin: jQuery 3.6, Bootstrap 5.3.2, Bootstrap Icons and Font Awesome from their existing CDNs. `admin.css` owns components; `admin-space.css` owns the responsive shell; page styles and scripts are loaded only for the relevant section.
 - Travel: Leaflet 1.9.4, database-backed locations/images, static JSON fallback for an empty database. Images come from uploads or the existing travel assets.
 - YunoBot: local neural intent recognition, reviewed English/Turkish answers, source passage retrieval, and a public blog snapshot endpoint. No prompt is sent to a remote model. See the reproducible training and evaluation workflow below. The old WASM ranker and duplicated rule engine have been replaced.
-- Optional decorative WebGPU bundles: generated under `dev/scripts/vgpu-hero/` and `dev/scripts/vgpu-pages/`. They load after idle only on supported devices without coarse pointers, reduced motion, or data saving. Content and navigation do not depend on them.
+- Landing decoration: `dev/scripts/vgpu-hero/` builds a self-hosted Three.js/WebGL scene with procedural CRTs, microcontrollers, books, floppy disks, keyboards, jumper wires, an articulated robot arm and a sense/plan/act loop. Models are merged by object, with shared lighting and no external model downloads. The quiet water sheet and camera parallax keep the central photograph clear. It supports touch screens, caps rendering at 24 fps (18 on narrow screens) and DPR at 1.25 (1 on narrow screens), and pauses when hidden, offscreen or behind the image dialog. Reduced motion renders a still; data saving skips the download; unavailable/lost WebGL uses the CSS background. A visible pause control is provided.
+- The central landing image opens in a native dialog with fit/original-size controls, Escape/Close handling, scroll containment and focus restoration. Without JavaScript it remains a direct image link.
+- Other optional page effects: the WebGPU bundle under `dev/scripts/vgpu-pages/` still loads after idle only on supported devices without coarse pointers, reduced motion, or data saving. Content and navigation do not depend on decoration.
 - Decorative cameo: `assets/images/hampton.gif` is the archived 2001 hamsterdance.com dance loop with its white background removed — only white connected to the frame border, so the character's own white fur stays — and halved to 58x69. `/`, `/travel`, `/more`, `/science-corner` and `/yunobot` park one copy in a footer corner, at the end of the category filters or on the chat status bar through `ui_render_hampton()`. The markup is hidden from assistive tech, never focusable, sits in space the page already owns, and `hampton-still.png` replaces the motion when the visitor prefers reduced motion. `dev/scripts/build-hampton-cameo.sh` rebuilds both files from the archived original and verifies frame count, transparency and loop; it needs network access to web.archive.org plus curl, ffmpeg, ImageMagick and Pillow.
 - Media: gallery and travel upload workflows, local music/video media, external video embeds loaded on demand, downloads linking to release binaries, a normal footer link to the existing Gumroad bookstore, database-controlled social profiles and tracker snippets.
 - Contact: `api/contact.php`, CSRF/rate limiting/captcha, `models/Contact.php`. No email was sent during QA.
@@ -69,6 +71,29 @@ The PHP regression test uses an in-memory SQLite database. The HTTP test is rest
 Checks cover sanitizer attack cases, Unicode/formatting preservation, published-only sitemap entries, no local sitemap overwrites, grouped travel queries, editor module selection, public/admin landmarks, status codes, canonical URLs, valid XML feeds and CSRF failures. Browser testing covers mobile layouts, menu focus restoration, gallery dialog Escape cancellation and explicit browser-draft recovery.
 
 Local fixtures do not reproduce every production media file. Production MySQL, Apache/Cloudflare behavior, email delivery, social posting and real file uploads still need a release smoke test on the actual host; they were not exercised destructively from this environment.
+
+## Public design verification
+
+Public form boundaries and focus rings are explicit; native controls use the dark
+color scheme. Placeholder and pagination text use readable secondary ink. Chat
+source links, hints, and music hover/selected controls use foregrounds appropriate
+to their actual surfaces. Admin theme tokens and hamster assets are unchanged.
+
+The landing scene is about 129 KiB gzip, 4,740 triangles and 21 draw calls, loaded
+at idle. These are build/scene budgets, not real-user device performance claims.
+Rebuild and verify the public UI against the local SQLite preview:
+
+```sh
+npm ci --prefix dev/scripts/vgpu-hero
+npm run build --prefix dev/scripts/vgpu-hero
+# Install Playwright Chromium, or set CHROMIUM_EXECUTABLE to an existing browser.
+npm test --prefix dev/scripts/vgpu-hero
+```
+
+The browser suite checks contrast, control names and horizontal overflow on the
+public routes at 1440, 390 and 320 px, the image dialog and zoom, reduced motion,
+manual/offscreen pausing, music hover states, and the preserved admin palette.
+It writes screenshots and results to ignored `dev/_work/ui-verification/`.
 
 ## Technical SEO and ongoing discovery
 
