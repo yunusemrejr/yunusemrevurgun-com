@@ -20,7 +20,7 @@ $aboutSchema = [
                 'additionalName' => 'Yemre',
                 'alternateName' => ['Yemre', 'YEV', 'yunusemrejr', 'Yemrevu'],
                 'url' => rtrim(FULL_BASE_PATH, '/') . '/',
-                'image' => FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg',
+                'image' => ui_portrait_url(),
                 'description' => 'Developer and IT specialist based in Istanbul, specializing in computational intelligence, AI/ML systems, and operational technology.',
                 'jobTitle' => 'Software Developer & IT Specialist',
                 'worksFor' => ['@type' => 'Organization', 'name' => 'ASP Otomasyon A.Ş.'],

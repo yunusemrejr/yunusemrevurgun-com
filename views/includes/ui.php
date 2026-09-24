@@ -240,6 +240,20 @@ if (!function_exists('ui_hampton_asset')) {
     }
 }
 
+if (!function_exists('ui_portrait_url')) {
+    // Versioned URL for the masthead portrait and the Person schema image.
+    // The pencil sketch replaced the photograph at the same filename, so the
+    // URL has to change with the file or browsers and the CDN edge keep the
+    // cached old bytes for up to the image max-age.
+    function ui_portrait_url(): string
+    {
+        $path = __DIR__ . '/../../assets/images/yunus-emre-vurgun-portrait.jpg';
+        $version = @filemtime($path);
+        return FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg'
+            . ($version ? '?v=' . $version : '');
+    }
+}
+
 if (!function_exists('ui_render_hampton')) {
     /**
      * Decorative Hampton the Hampster cameo: the 2001 hamsterdance.com dance

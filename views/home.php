@@ -55,7 +55,7 @@ $homeSchema = [
             'additionalName' => 'Yemre',
             'alternateName' => ['Yemre', 'YEV', 'yunusemrejr', 'Yemrevu'],
             'url' => rtrim(FULL_BASE_PATH, '/') . '/',
-            'image' => FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg',
+            'image' => ui_portrait_url(),
             'description' => 'Software developer and IT specialist (Yemre, YEV, yunusemrejr) focusing on computational intelligence, AI/ML systems, operational technology, and industrial automation.',
             'knowsAbout' => [
                 'software development',
@@ -125,7 +125,7 @@ ui_render_head(
             </nav>
         </div>
         <figure class="ui-masthead-figure">
-            <img src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg" width="1000" height="1250" decoding="async" fetchpriority="high"
+            <img src="<?= ui_portrait_url() ?>" width="1000" height="1250" decoding="async" fetchpriority="high"
                  alt="Pencil portrait of Yunus Emre Vurgun.">
             <figcaption>Yunus Emre Vurgun — Istanbul.</figcaption>
         </figure>
