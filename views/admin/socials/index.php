@@ -179,15 +179,15 @@ include __DIR__ . '/../includes/header.php';
 <?php
 $pageScripts = '
 <style>
-.soc-icon-cell { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: #434343; flex-shrink: 0; }
+.soc-icon-cell { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: var(--color-ink-body); flex-shrink: 0; }
 .soc-icon-cell svg { width: 22px; height: 22px; }
 .soc-icon-picker { display: flex; align-items: center; gap: 12px; }
 .soc-icon-picker select { flex: 1; }
-.soc-icon-preview { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: #434343; }
+.soc-icon-preview { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: var(--color-ink-body); }
 .soc-icon-preview svg { width: 24px; height: 24px; }
 .admin-form-check { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
 .admin-form-check input { width: 16px; height: 16px; }
-.admin-form-check label { color: #434343; font-size: 0.9rem; }
+.admin-form-check label { color: var(--color-ink-body); font-size: 0.9rem; }
 </style>
 <script>
 (function() {

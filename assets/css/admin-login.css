@@ -5,9 +5,9 @@ ADMIN LOGIN PAGE — POLISHED DARK THEME
 */
 
 :root {
-  --login-accent: var(--color-brand, #8490a4);
-  --login-accent-hover: var(--color-brand-hover, #6e7a90);
-  --login-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
+  --login-accent: var(--color-brand);
+  --login-accent-hover: var(--color-brand-hover);
+  --login-accent-subtle: var(--color-brand-subtle);
 }
 
 body.admin-login-body {
@@ -96,7 +96,7 @@ body.admin-login-container h1.admin-login-title,
   font-family: var(--font-body);
   font-weight: var(--font-medium);
   font-size: var(--text-sm);
-  color: #434343;
+  color: var(--color-ink-body);
   margin-bottom: var(--space-2);
 }
 
@@ -110,7 +110,7 @@ body.admin-login-container h1.admin-login-title,
   padding: 0.5625rem 0.875rem;
   background: var(--color-bg-elevated);
   border: none;
-  color: #434343;
+  color: var(--color-ink-body);
   font-family: var(--font-body);
   font-size: var(--text-md);
   transition: background-color var(--transition-fast);
@@ -156,9 +156,9 @@ body.admin-login-container h1.admin-login-title,
   width: 100%;
   padding: 0.6875rem 1.5rem;
   margin-top: var(--space-2);
-  background: #8fa6a6;
+  background: var(--color-accent);
   border: none;
-  color: #e3e2de;
+  color: var(--color-text-inverse);
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   font-size: var(--text-sm);
@@ -171,7 +171,7 @@ body.admin-login-container h1.admin-login-title,
 }
 
 .admin-login-submit:hover {
-  background: #8490a4;
+  background: var(--color-accent);
 }
 
 .admin-login-submit:active {
@@ -218,18 +218,18 @@ body.admin-login-container h1.admin-login-title,
 }
 
 .admin-alert-danger {
-  background: rgba(168,34,30,0.08);
-  color: #a8221e;
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
 }
 
 .admin-alert-warning {
-  background: rgba(234,179,8,0.08);
-  color: #ca8a04;
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
 }
 
 .admin-alert-info {
   background: var(--login-accent-subtle);
-  border-color: var(--color-brand-border, rgba(132, 144, 164, 0.3));
+  border-color: var(--color-brand-border);
   color: var(--login-accent);
 }
 
@@ -250,14 +250,14 @@ body.admin-login-container h1.admin-login-title,
   min-width: 90px;
   text-align: center;
   font-family: var(--font-display);
-  color: #434343;
+  color: var(--color-ink-body);
   user-select: none;
 }
 
 #refresh-captcha {
   background: transparent !important;
   border: none !important;
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   padding: 0.4375rem !important;
   min-width: 38px;
   height: 38px;
@@ -269,8 +269,8 @@ body.admin-login-container h1.admin-login-title,
 }
 
 #refresh-captcha:hover {
-  background: rgba(132,144,164,0.08) !important;
-  color: #8fa6a6 !important;
+  background: var(--color-surface) !important;
+  color: var(--color-accent) !important;
 }
 
 #refresh-captcha i {
@@ -280,7 +280,7 @@ body.admin-login-container h1.admin-login-title,
 
 /* ===== FIELD ERROR ===== */
 .field-error {
-  color: #a8221e;
+  color: var(--color-danger);
   font-size: 0.775rem;
   margin-top: 0.375rem;
 }
@@ -358,7 +358,7 @@ body.admin-login-container h1.admin-login-title,
 .admin-password-toggle:focus-visible,
 .admin-login-submit:focus-visible,
 #refresh-captcha:focus-visible {
-  outline: 2px solid #8fa6a6;
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 

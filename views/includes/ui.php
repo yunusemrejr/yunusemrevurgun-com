@@ -100,9 +100,10 @@ if (!function_exists('ui_render_head')) {
     <?php $faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg?v=' . filemtime(__DIR__ . '/../../assets/images/favicon.svg'); ?>
     <link rel="icon" type="image/svg+xml" href="<?= $faviconUrl ?>">
     <link rel="shortcut icon" href="<?= $faviconUrl ?>">
-    <link rel="apple-touch-icon" href="<?= $faviconUrl ?>">
-    <meta name="msapplication-TileImage" content="<?= $faviconUrl ?>">
-    <link rel="mask-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg" color="#566178">
+    <?php $touchIconUrl = FULL_BASE_PATH . 'assets/images/pwa-icon-192.png?v=' . filemtime(__DIR__ . '/../../assets/images/pwa-icon-192.png'); ?>
+    <link rel="apple-touch-icon" href="<?= $touchIconUrl ?>">
+    <meta name="msapplication-TileImage" content="<?= $touchIconUrl ?>">
+    <link rel="mask-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg" color="#e0a33f">
     <?php $collectionPage = in_array(trim($requestPath, '/'), ['post-code','science-corner','comedy','music','videos','downloads','more','rmrp'], true); ?>
     <?php if ($collectionPage): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/collections.css?v=<?= filemtime(__DIR__ . '/../../assets/css/collections.css') ?>">

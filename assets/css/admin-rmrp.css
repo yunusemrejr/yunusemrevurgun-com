@@ -1,6 +1,6 @@
 /*
 ================================================================================
-ADMIN RMRP PAGE — "Random Memories for Random People" (light theme).
+ADMIN RMRP PAGE — "Random Memories for Random People" (polished dark theme).
 Base cards/tables/buttons/badges/forms come from admin.css; this file only
 adds the markdown editor kit (mirror of the updates-md-* block in
 admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
@@ -31,7 +31,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
   padding: 0 10px;
   background: transparent;
   border: 1px solid transparent;
-  color: #434343;
+  color: var(--color-ink-body);
   font-size: 0.8rem;
   cursor: pointer;
   transition:
@@ -40,7 +40,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
 }
 
 .rmrp-md-toolbar button:hover {
-  background: rgba(132, 144, 164, 0.12);
+  background: var(--color-bg-subtle);
   color: var(--color-ink-slate);
 }
 
@@ -69,7 +69,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
   background: var(--color-bg-subtle);
   padding: var(--space-5);
   min-height: 80px;
-  color: #434343;
+  color: var(--color-ink-body);
   font-size: 0.9rem;
   line-height: 1.7;
 }
@@ -87,7 +87,7 @@ admin-updates.css, with rmrp class names) plus small rmrp-specific accents.
 .rmrp-md-preview h4 {
   font-family: var(--font-display) !important;
   font-weight: var(--font-normal) !important;
-  color: #a6a6a6 !important;
+  color: var(--color-text-tertiary) !important;
   margin: 1.25em 0 0.6em;
 }
 

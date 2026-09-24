@@ -42,7 +42,8 @@ $adminNavItems = [
     ['id' => 'export', 'label' => 'Export', 'href' => FULL_BASE_PATH . 'api/admin/export.php', 'download' => true],
 ];
 
-$faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg?v=3';
+$faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg?v=' . (@filemtime(dirname(__DIR__, 3) . '/assets/images/favicon.svg') ?: '1');
+$touchIconUrl = FULL_BASE_PATH . 'assets/images/pwa-icon-192.png?v=' . (@filemtime(dirname(__DIR__, 3) . '/assets/images/pwa-icon-192.png') ?: '1');
 $faviconMime = 'image/svg+xml';
 ?>
 <!DOCTYPE html>
@@ -50,7 +51,7 @@ $faviconMime = 'image/svg+xml';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#e3e2de">
+    <meta name="theme-color" content="#15120f">
     <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
     <meta name="description" content="Admin Panel - <?php echo htmlspecialchars($pageTitle); ?>">
     <meta name="robots" content="noindex, nofollow">
@@ -58,8 +59,8 @@ $faviconMime = 'image/svg+xml';
 
     <link rel="icon" type="<?php echo htmlspecialchars($faviconMime); ?>" href="<?php echo $faviconUrl; ?>">
     <link rel="shortcut icon" href="<?php echo $faviconUrl; ?>">
-    <link rel="apple-touch-icon" href="<?php echo $faviconUrl; ?>">
-    <meta name="msapplication-TileImage" content="<?php echo $faviconUrl; ?>">
+    <link rel="apple-touch-icon" href="<?php echo $touchIconUrl; ?>">
+    <meta name="msapplication-TileImage" content="<?php echo $touchIconUrl; ?>">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">

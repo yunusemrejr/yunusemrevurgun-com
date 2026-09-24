@@ -5,16 +5,16 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
 */
 
 :root {
-  --blog-accent: var(--color-brand, #4a7c59);
-  --blog-accent-hover: var(--color-brand-hover, #5d9369);
-  --blog-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
+  --blog-accent: var(--color-brand);
+  --blog-accent-hover: var(--color-brand-hover);
+  --blog-accent-subtle: var(--color-brand-subtle);
 }
 
 .admin-content .admin-page-title {
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   letter-spacing: var(--text-tracking-tight);
   margin: 0;
 }
@@ -44,14 +44,14 @@ ADMIN BLOG PAGES — POLISHED DARK THEME
   font-family: var(--font-body);
   font-weight: var(--font-medium);
   font-size: var(--text-sm);
-  color: #434343;
+  color: var(--color-ink-body);
   margin-bottom: var(--space-2);
 }
 
 .blog-admin-form-control {
   width: 100%;
   background: var(--color-bg-elevated);
-  color: #434343;
+  color: var(--color-ink-body);
   padding: 0.5625rem 0.875rem;
   font-family: var(--font-body);
   font-size: var(--text-md);
@@ -80,7 +80,7 @@ textarea.blog-admin-form-control,
 select.blog-admin-form-control {
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.45)' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(236,226,208,0.45)' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   padding-right: 2.5rem;
@@ -131,7 +131,7 @@ select.blog-admin-form-control {
   font-family: var(--font-display);
   font-weight: var(--font-medium);
   margin: 1.25rem 0 0.5rem;
-  color: #434343;
+  color: var(--color-ink-body);
 }
 
 .blog-admin-content-editor a {
@@ -192,7 +192,7 @@ select.blog-admin-form-control {
   background: var(--color-bg-elevated);
   font-family: var(--font-body);
   line-height: var(--text-leading-relaxed);
-  color: #434343;
+  color: var(--color-ink-body);
 }
 
 .blog-admin-preview:empty:before {
@@ -233,7 +233,7 @@ select.blog-admin-form-control {
   transition: all var(--transition-fast);
   font-size: var(--text-sm);
   background: transparent;
-  color: #434343;
+  color: var(--color-ink-body);
   min-height: 36px;
   white-space: nowrap;
 }
@@ -244,20 +244,20 @@ select.blog-admin-form-control {
 }
 
 .blog-admin-btn-primary {
-  background: #8fa6a6;
+  background: var(--color-accent);
   color: var(--color-bg);
-  border-color: #434343;
+  border-color: var(--color-accent);
 }
 
 .blog-admin-btn-primary:hover {
-  background: #8490a4;
-  border-color: #8fa6a6;
+  background: var(--color-accent);
+  border-color: var(--color-accent);
   color: var(--color-bg);
 }
 
 .blog-admin-btn-secondary {
   background: transparent;
-  color: #434343;
+  color: var(--color-ink-body);
 }
 
 .blog-admin-btn-secondary:hover {
@@ -360,7 +360,7 @@ select.blog-admin-form-control {
 }
 
 .blog-admin-table strong {
-  color: #434343;
+  color: var(--color-ink-body);
   font-weight: var(--font-medium);
 }
 
@@ -421,7 +421,7 @@ select.blog-admin-form-control {
 
 .blog-admin-pagination .page-link {
   background: var(--color-bg-subtle) !important;
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   padding: 0.4375rem 0.75rem !important;
   transition: all var(--transition-fast) !important;
   font-family: var(--font-body) !important;
@@ -441,8 +441,8 @@ select.blog-admin-form-control {
 }
 
 .blog-admin-pagination .page-item.active .page-link {
-  background: #8fa6a6 !important;
-  border-color: #434343 !important;
+  background: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
   color: var(--color-bg) !important;
 }
 

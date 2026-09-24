@@ -5,9 +5,9 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 */
 
 :root {
-  --tracker-accent: var(--color-brand, #4a7c59);
-  --tracker-accent-hover: var(--color-brand-hover, #5d9369);
-  --tracker-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
+  --tracker-accent: var(--color-brand);
+  --tracker-accent-hover: var(--color-brand-hover);
+  --tracker-accent-subtle: var(--color-brand-subtle);
 }
 
 /* ===== PAGE HEADER ===== */
@@ -32,14 +32,14 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   margin: 0 0 var(--space-1) 0;
 }
 
 .admin-content .admin-page-subtitle {
   font-family: var(--font-body);
   font-weight: var(--font-normal);
-  color: #8490a4 !important;
+  color: var(--color-accent) !important;
   margin: 0;
   font-size: var(--text-sm);
 }
@@ -64,7 +64,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-normal);
   font-size: var(--text-md);
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   margin: 0;
 }
 
@@ -75,7 +75,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 
 .admin-content .admin-card-body {
   padding: var(--space-6);
-  color: #8fa6a6 !important;
+  color: var(--color-accent) !important;
   background: transparent;
   font-family: var(--font-body);
 }
@@ -111,7 +111,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 
 .admin-tracker-table th {
   background: var(--color-bg-elevated);
-  color: #8490a4 !important;
+  color: var(--color-accent) !important;
   font-family: var(--font-display);
   font-weight: var(--font-normal);
   font-size: 0.675rem;
@@ -124,7 +124,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 }
 
 .admin-tracker-table td {
-  color: #8fa6a6 !important;
+  color: var(--color-accent) !important;
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   padding: 0.875rem 1rem;
@@ -164,13 +164,13 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 }
 
 .admin-badge-success {
-  background: rgba(34, 197, 94, 0.12) !important;
+  background: var(--color-success-bg) !important;
   color: var(--color-success) !important;
-  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+  border: 1px solid var(--color-success-border) !important;
 }
 
 .admin-badge-secondary {
-  background: rgba(138, 133, 128, 0.1);
+  background: var(--color-bg-subtle);
   color: var(--color-ink-slate);
 }
 
@@ -203,7 +203,7 @@ ADMIN TRACKER CODES — POLISHED DARK THEME
 .admin-empty-state {
   text-align: center;
   padding: var(--space-10) var(--space-6);
-  color: #8490a4 !important;
+  color: var(--color-accent) !important;
   font-family: var(--font-body);
   display: flex;
   flex-direction: column;

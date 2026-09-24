@@ -96,5 +96,5 @@ ADMIN TRAVEL PAGE — DARK THEME
 
 /* Bootstrap's default hot-pink <code> color is off-palette — use site body color. */
 .admin-table code {
-  color: #434343;
+  color: var(--color-ink-body);
 }

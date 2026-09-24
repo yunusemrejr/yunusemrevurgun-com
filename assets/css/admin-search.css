@@ -5,8 +5,8 @@ ADMIN SEARCH — POLISHED DARK THEME
 */
 
 :root {
-  --search-accent: var(--color-text-primary, #ffffff);
-  --search-accent-subtle: var(--color-accent-subtle, rgba(255, 255, 255, 0.06));
+  --search-accent: var(--color-text-primary);
+  --search-accent-subtle: var(--color-accent-subtle);
 }
 
 /* ===== SEARCH INPUT ===== */
@@ -34,7 +34,7 @@ ADMIN SEARCH — POLISHED DARK THEME
   background: transparent;
   border: none;
   outline: none;
-  color: #434343;
+  color: var(--color-ink-body);
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   font-size: var(--text-sm);
@@ -60,7 +60,7 @@ ADMIN SEARCH — POLISHED DARK THEME
 }
 
 .admin-search-button:hover {
-  color: #434343;
+  color: var(--color-ink-body);
 }
 
 /* ===== DROPDOWN RESULTS ===== */
@@ -132,13 +132,13 @@ ADMIN SEARCH — POLISHED DARK THEME
 }
 
 .search-section li.search-item-published {
-  background: rgba(34, 197, 94, 0.06);
-  border-left: 2px solid rgba(34, 197, 94, 0.4);
+  background: var(--color-success-bg);
+  border-left: 2px solid var(--color-success-border);
 }
 
 .search-section li.search-item-draft {
-  background: rgba(234, 179, 8, 0.06);
-  border-left: 2px solid rgba(234, 179, 8, 0.4);
+  background: var(--color-warning-bg);
+  border-left: 2px solid var(--color-warning-border);
 }
 
 .search-section a {
@@ -147,7 +147,7 @@ ADMIN SEARCH — POLISHED DARK THEME
   justify-content: space-between;
   gap: var(--space-2);
   padding: 0.4375rem 0.625rem;
-  color: #434343;
+  color: var(--color-ink-body);
   text-decoration: none;
   transition: background-color var(--transition-fast);
   font-family: var(--font-body);
@@ -165,18 +165,18 @@ ADMIN SEARCH — POLISHED DARK THEME
 }
 
 .search-section li.search-item-published a:hover {
-  background: rgba(34, 197, 94, 0.12);
-  color: #434343;
+  background: var(--color-success-bg);
+  color: var(--color-ink-body);
 }
 
 .search-section li.search-item-draft a:hover {
-  background: rgba(234, 179, 8, 0.12);
-  color: #434343;
+  background: var(--color-warning-bg);
+  color: var(--color-ink-body);
 }
 
 .search-section a:hover {
   background: var(--search-accent-subtle);
-  color: #434343;
+  color: var(--color-ink-body);
 }
 
 /* ===== LOADING ===== */
@@ -195,7 +195,7 @@ ADMIN SEARCH — POLISHED DARK THEME
   height: 14px;
   margin-left: var(--space-2);
   border: 2px solid var(--color-border);
-  border-top-color: #8fa6a6;
+  border-top-color: var(--color-accent);
   animation: spin 0.8s linear infinite;
   vertical-align: middle;
 }
@@ -237,15 +237,15 @@ ADMIN SEARCH — POLISHED DARK THEME
 }
 
 .search-section .admin-badge-success {
-  background: rgba(34, 197, 94, 0.15) !important;
+  background: var(--color-success-bg) !important;
   color: #22c55e !important;
-  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+  border: 1px solid var(--color-success-border) !important;
 }
 
 .search-section .admin-badge-warning {
-  background: rgba(234, 179, 8, 0.15) !important;
+  background: var(--color-warning-bg) !important;
   color: #eab308 !important;
-  border: 1px solid rgba(234, 179, 8, 0.3) !important;
+  border: 1px solid var(--color-warning-border) !important;
 }
 
 /* ===== FOCUS ===== */

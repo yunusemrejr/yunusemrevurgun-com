@@ -315,15 +315,15 @@ $pageScripts = '
   border: 1px solid var(--color-border);
   padding: 12px 14px;
   font-size: 0.875rem;
-  color: #434343;
+  color: var(--color-ink-body);
   white-space: pre-wrap;
   word-break: break-word;
   min-height: 70px;
   margin-top: 6px;
 }
 .admin-mastodon-preview.is-over {
-  border-color: #a66060;
-  color: #a66060;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 </style>
 <script>

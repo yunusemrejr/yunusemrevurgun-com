@@ -234,11 +234,11 @@
                                 imgSrc = imageBase + photo.filename;
                             }
                             var isGallery = photo.source === 'gallery';
-                            var sourceLabel = isGallery ? '<span class="admin-badge" style="background:#8490a4;color:#fff;font-size:0.65rem;padding:0.1rem 0.4rem;">Gallery</span>' : '';
+                            var sourceLabel = isGallery ? '<span class="admin-badge" style="background:var(--color-accent);color:var(--color-text-inverse);font-size:0.65rem;padding:0.1rem 0.4rem;">Gallery</span>' : '';
 
                             var actionBtn;
                             if (isGallery) {
-                                actionBtn = '<button class="admin-btn admin-btn-sm" style="background:#e3e2de;color:#575757;border:1px solid rgba(132,144,164,0.25);" data-action="unlink-photo" data-id="' + photo.id + '"><i class="bi bi-link-45deg"></i> Unlink</button>';
+                                actionBtn = '<button class="admin-btn admin-btn-sm" style="background:var(--color-bg-elevated);color:var(--color-ink-slate);border:1px solid var(--color-border);" data-action="unlink-photo" data-id="' + photo.id + '"><i class="bi bi-link-45deg"></i> Unlink</button>';
                             } else {
                                 actionBtn = actionBtn;
                             }

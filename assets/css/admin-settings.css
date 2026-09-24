@@ -5,12 +5,9 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 */
 
 :root {
-  --settings-accent: var(--color-brand, #4a7c59);
-  --settings-accent-hover: var(--color-brand-hover, #5d9369);
-  --settings-accent-subtle: var(
-    --color-brand-subtle,
-    rgba(132, 144, 164, 0.12)
-  );
+  --settings-accent: var(--color-brand);
+  --settings-accent-hover: var(--color-brand-hover);
+  --settings-accent-subtle: var(--color-brand-subtle);
 }
 
 /* ===== LAYOUT ===== */
@@ -18,7 +15,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   margin: 0;
 }
 
@@ -45,7 +42,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
   font-family: var(--font-display);
   font-weight: var(--font-normal);
   font-size: var(--text-lg);
-  color: #434343;
+  color: var(--color-ink-body);
   margin: 0;
 }
 
@@ -107,7 +104,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
   width: 16px;
   left: 3px;
   bottom: 3px;
-  background-color: #8490a4;
+  background-color: var(--color-accent);
   transition: var(--transition-fast);
 }
 
@@ -118,7 +115,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 
 .settings-switch input:checked + .settings-switch-slider:before {
   transform: translateX(20px);
-  background-color: white;
+  background-color: var(--color-text-primary);
 }
 
 .settings-switch input:focus-visible + .settings-switch-slider {
@@ -137,7 +134,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
   font-family: var(--font-body);
   font-weight: var(--font-medium);
   font-size: var(--text-sm);
-  color: #434343;
+  color: var(--color-ink-body);
   margin: 0;
 }
 
@@ -155,7 +152,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
   font-family: var(--font-body);
   font-weight: var(--font-medium);
   font-size: var(--text-sm);
-  color: #434343;
+  color: var(--color-ink-body);
   margin-bottom: 0;
   display: block;
 }
@@ -165,7 +162,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
   width: 100%;
   padding: 0.5625rem 0.875rem;
   background: var(--color-bg-elevated);
-  color: #434343;
+  color: var(--color-ink-body);
   font-family: var(--font-body);
   font-weight: var(--font-normal);
   font-size: var(--text-md);
@@ -205,7 +202,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 /* ===== BUTTON ===== */
 .settings-btn {
   padding: 0.5625rem 1.5rem;
-  background: #8fa6a6;
+  background: var(--color-accent);
   border: 1px solid var(--color-text-primary);
   color: var(--color-bg);
   font-family: var(--font-body);
@@ -218,8 +215,8 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 }
 
 .settings-btn:hover {
-  background: #8490a4;
-  border-color: #8fa6a6;
+  background: var(--color-accent);
+  border-color: var(--color-accent);
   color: var(--color-bg);
 }
 
@@ -236,7 +233,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 .settings-alert {
   padding: var(--space-4) var(--space-5);
   background: var(--color-bg-subtle);
-  color: #434343;
+  color: var(--color-ink-body);
   font-family: var(--font-body);
   font-size: var(--text-sm);
   margin-bottom: var(--space-4);
@@ -275,7 +272,7 @@ ADMIN SETTINGS PAGE — POLISHED DARK THEME
 }
 
 .settings-alert-close:hover {
-  color: #434343;
+  color: var(--color-ink-body);
   background: var(--settings-accent-subtle);
 }
 

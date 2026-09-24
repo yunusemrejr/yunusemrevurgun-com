@@ -1,13 +1,13 @@
 /*
 ================================================================================
-ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
+ADMIN UPDATES PAGE — POLISHED DARK THEME (matches the rest of the admin panel)
 ================================================================================
 */
 
 :root {
-  --updates-accent: var(--color-brand, #4a7c59);
-  --updates-accent-hover: var(--color-brand-hover, #5d9369);
-  --updates-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
+  --updates-accent: var(--color-brand);
+  --updates-accent-hover: var(--color-brand-hover);
+  --updates-accent-subtle: var(--color-brand-subtle);
 }
 
 /* ===== PAGE HEADER ===== */
@@ -33,7 +33,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
   font-family: var(--font-display) !important;
   font-weight: var(--font-light) !important;
   font-size: var(--text-3xl) !important;
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   letter-spacing: var(--text-tracking-tight) !important;
   margin: 0 !important;
 }
@@ -41,7 +41,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 .admin-page-subtitle {
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal);
-  color: #8490a4 !important;
+  color: var(--color-accent) !important;
   font-size: var(--text-sm);
   margin: 0;
 }
@@ -64,14 +64,14 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 .admin-card-title {
   font-family: var(--font-display) !important;
   font-weight: var(--font-normal) !important;
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   font-size: var(--text-md) !important;
   margin: 0 !important;
 }
 
 .admin-card-body {
   padding: var(--space-6) !important;
-  color: #8fa6a6 !important;
+  color: var(--color-accent) !important;
   background: transparent !important;
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal);
@@ -116,7 +116,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 
 .admin-updates-table th {
   background: var(--color-bg-elevated) !important;
-  color: #8490a4 !important;
+  color: var(--color-accent) !important;
   font-family: var(--font-display) !important;
   font-weight: var(--font-normal);
   font-size: 0.675rem;
@@ -129,7 +129,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 }
 
 .admin-updates-table td {
-  color: #8fa6a6 !important;
+  color: var(--color-accent) !important;
   font-family: var(--font-body) !important;
   font-weight: var(--font-normal);
   padding: 0.875rem 1rem;
@@ -165,15 +165,15 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 }
 
 .admin-badge-danger {
-  background: rgba(239, 68, 68, 0.1) !important;
+  background: var(--color-danger-bg) !important;
   color: var(--color-danger) !important;
-  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  border: 1px solid var(--color-danger-border) !important;
 }
 
 .admin-badge-warning {
-  background: rgba(234, 179, 8, 0.1) !important;
+  background: var(--color-warning-bg) !important;
   color: var(--color-warning) !important;
-  border: 1px solid rgba(234, 179, 8, 0.3) !important;
+  border: 1px solid var(--color-warning-border) !important;
 }
 
 .admin-badge-info {
@@ -204,7 +204,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 .admin-empty-state {
   text-align: center;
   padding: var(--space-10) var(--space-6);
-  color: #8490a4 !important;
+  color: var(--color-accent) !important;
   font-family: var(--font-body) !important;
 }
 
@@ -227,7 +227,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 
 .admin-content .pagination .page-link {
   background: var(--color-bg-subtle) !important;
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   padding: 0.4375rem 0.75rem !important;
   transition: all var(--transition-fast) !important;
   font-family: var(--font-body) !important;
@@ -247,8 +247,8 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 }
 
 .admin-content .pagination .page-item.active .page-link {
-  background: #8fa6a6 !important;
-  border-color: #434343 !important;
+  background: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
   color: var(--color-bg) !important;
 }
 
@@ -256,7 +256,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
   opacity: 0.4;
   cursor: not-allowed;
   background: var(--color-bg-subtle) !important;
-  color: #8490a4 !important;
+  color: var(--color-accent) !important;
 }
 
 /* ===== ACTION BUTTONS ===== */
@@ -345,7 +345,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
   padding: 0 10px;
   background: transparent;
   border: 1px solid transparent;
-  color: #434343;
+  color: var(--color-ink-body);
   font-size: 0.8rem;
   cursor: pointer;
   transition:
@@ -354,7 +354,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 }
 
 .updates-md-toolbar button:hover {
-  background: rgba(132, 144, 164, 0.12);
+  background: var(--color-bg-subtle);
   color: var(--color-ink-slate);
 }
 
@@ -383,7 +383,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
   background: var(--color-bg-subtle);
   padding: var(--space-5);
   min-height: 80px;
-  color: #434343;
+  color: var(--color-ink-body);
   font-size: 0.9rem;
   line-height: 1.7;
 }
@@ -401,7 +401,7 @@ ADMIN UPDATES PAGE — LIGHT THEME (matches the rest of the admin panel)
 .updates-md-preview h4 {
   font-family: var(--font-display) !important;
   font-weight: var(--font-normal) !important;
-  color: #a6a6a6 !important;
+  color: var(--color-text-tertiary) !important;
   margin: 1.25em 0 0.6em;
 }
 

@@ -256,7 +256,7 @@ $pageScripts = '
     border-radius: 4px;
     object-fit: cover;
     flex-shrink: 0;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-border);
 }
 .admin-form-help {
     display: block;
@@ -265,7 +265,7 @@ $pageScripts = '
     font-size: 0.85em;
 }
 .admin-form-required {
-    color: #a66060;
+    color: var(--color-danger);
 }
 </style>
 <script>

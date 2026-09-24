@@ -70,7 +70,7 @@ ui_render_head($title, $description, $pageMeta);
             <div class="ui-update-row" style="margin-bottom: 1.5rem;">
                 <img
                     class="ui-update-avatar"
-                    src="<?= FULL_BASE_PATH ?>assets/images/favicon.svg"
+                    src="<?= FULL_BASE_PATH ?>assets/images/pfp-avatar.webp"
                     alt="Yunus Emre Vurgun"
                     loading="eager"
                 >

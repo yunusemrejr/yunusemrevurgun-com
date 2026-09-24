@@ -1,14 +1,14 @@
 /*
 ================================================================================
-ADMIN GALLERY PAGES — LIGHT THEME (site palette: #e3e2de / #434343 / #8fa6a6)
+ADMIN GALLERY PAGES — POLISHED DARK THEME (public editorial palette tokens)
 Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages).
 ================================================================================
 */
 
 :root {
-  --gallery-accent: var(--color-brand, #4a7c59);
-  --gallery-accent-hover: var(--color-brand-hover, #5d9369);
-  --gallery-accent-subtle: var(--color-brand-subtle, rgba(132, 144, 164, 0.12));
+  --gallery-accent: var(--color-brand);
+  --gallery-accent-hover: var(--color-brand-hover);
+  --gallery-accent-subtle: var(--color-brand-subtle);
 }
 
 /* ===== GRID ===== */
@@ -79,8 +79,9 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 
 .admin-gallery-overlay .admin-btn {
   background: rgba(0, 0, 0, 0.55);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  /* Sits on a dark scrim over a photo: keep parchment ink, not the inverse. */
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-strong);
   padding: 0.35rem 0.5rem;
   width: 32px;
   height: 32px;
@@ -92,7 +93,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 
 .admin-gallery-overlay .admin-btn:hover {
   background: rgba(0, 0, 0, 0.8);
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: var(--color-border-strong);
 }
 
 /* ===== CARD BODY ===== */
@@ -108,7 +109,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   font-family: var(--font-body);
   font-weight: var(--font-medium);
   font-size: var(--text-md);
-  color: #434343;
+  color: var(--color-ink-body);
   margin: 0 0 var(--space-2);
   line-height: var(--text-leading-tight);
   overflow: hidden;
@@ -141,14 +142,14 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   min-height: 30px;
 }
 
-/* Button colors come from admin.css semantic button styles (light theme). */
+/* Button colors come from admin.css semantic button styles (dark theme). */
 
 /* ===== EMPTY STATE ===== */
 .admin-alert.admin-alert-info {
   background: var(--color-bg-subtle);
   padding: var(--space-10) var(--space-6);
   text-align: center;
-  color: #434343;
+  color: var(--color-ink-body);
   font-family: var(--font-body);
   display: flex;
   flex-direction: column;
@@ -196,7 +197,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 }
 
 .admin-gallery-tab:hover {
-  color: #434343;
+  color: var(--color-ink-body);
   background: var(--gallery-accent-subtle);
 }
 
@@ -225,7 +226,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 
 .admin-gallery-badge-archived {
   background: var(--gallery-accent);
-  color: #fff;
+  color: var(--color-text-inverse);
 }
 
 /* ===== PAGE TITLE ===== */
@@ -233,7 +234,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-3xl);
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   margin: 0;
 }
 
@@ -314,13 +315,13 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 }
 
 .admin-tab:hover {
-  color: #434343;
+  color: var(--color-ink-body);
   border-bottom-color: var(--color-border-strong);
 }
 
 .admin-tab.active {
-  color: #434343;
-  border-bottom-color: var(--color-brand, #4a7c59);
+  color: var(--color-ink-body);
+  border-bottom-color: var(--color-brand);
 }
 
 /* ===== MODAL CLOSE ===== */
@@ -336,7 +337,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 }
 
 .modal-close:hover {
-  color: #434343;
+  color: var(--color-ink-body);
 }
 
 /* ===== PAGINATION ===== */
@@ -353,7 +354,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 
 .gallery-pagination .page-link {
   background: var(--color-bg-subtle) !important;
-  color: #434343 !important;
+  color: var(--color-ink-body) !important;
   padding: 0.4375rem 0.75rem !important;
   transition: all var(--transition-fast) !important;
   font-family: var(--font-body) !important;
@@ -373,8 +374,8 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 }
 
 .gallery-pagination .page-item.active .page-link {
-  background: #8fa6a6 !important;
-  border-color: #434343 !important;
+  background: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
   color: var(--color-bg) !important;
 }
 
@@ -399,7 +400,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   font-family: var(--font-display);
   font-weight: var(--font-light);
   font-size: var(--text-xl);
-  color: #434343;
+  color: var(--color-ink-body);
   margin: 0;
 }
 
@@ -430,7 +431,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   font-family: var(--font-display);
   font-weight: var(--font-normal);
   font-size: var(--text-lg);
-  color: #434343;
+  color: var(--color-ink-body);
   margin: 0 0 var(--space-1);
 }
 
@@ -473,7 +474,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   padding: 0.375rem 0.5rem;
   font-family: var(--font-body);
   font-size: 0.75rem;
-  color: #434343;
+  color: var(--color-ink-body);
   background: var(--color-bg-elevated);
   cursor: pointer;
   transition: border-color var(--transition-fast);
@@ -484,7 +485,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 
 .admin-album-select:focus {
   outline: none;
-  border-color: var(--color-brand, #4a7c59);
+  border-color: var(--color-brand);
   box-shadow: var(--shadow-focus);
 }
 
@@ -493,7 +494,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   padding: 0.5rem 0.75rem;
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  color: #434343;
+  color: var(--color-ink-body);
   background: var(--color-bg-elevated);
   cursor: pointer;
   transition: border-color var(--transition-fast);
@@ -501,7 +502,7 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 
 .admin-form-select:focus {
   outline: none;
-  border-color: var(--color-brand, #4a7c59);
+  border-color: var(--color-brand);
   box-shadow: var(--shadow-focus);
 }
 

@@ -354,14 +354,15 @@ if (strpos($currentPath, '/admin') !== false &&
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#e3e2de">
+    <meta name="theme-color" content="#15120f">
     <meta name="description" content="Admin Login - Yunus Emre Vurgun Personal Website Administration">
     <meta name="robots" content="noindex, nofollow">
     <title>Admin Login | Yunus Emre Vurgun</title>
-    <link rel="icon" type="image/svg+xml" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
-    <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
-    <link rel="apple-touch-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
-    <meta name="msapplication-TileImage" content="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=3">
+    <?php $adminAssetV = static fn(string $rel): string => (@filemtime(dirname(__DIR__, 2) . '/' . $rel) ?: '1'); ?>
+    <link rel="icon" type="image/svg+xml" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=<?= $adminAssetV('assets/images/favicon.svg') ?>">
+    <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=<?= $adminAssetV('assets/images/favicon.svg') ?>">
+    <link rel="apple-touch-icon" href="<?= FULL_BASE_PATH ?>assets/images/pwa-icon-192.png?v=<?= $adminAssetV('assets/images/pwa-icon-192.png') ?>">
+    <meta name="msapplication-TileImage" content="<?= FULL_BASE_PATH ?>assets/images/pwa-icon-192.png?v=<?= $adminAssetV('assets/images/pwa-icon-192.png') ?>">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -377,7 +378,7 @@ if (strpos($currentPath, '/admin') !== false &&
 </head>
 <body class="admin-login-body">
     <noscript>
-        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3e2de; color: #434343; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg-primary); color: var(--color-text-primary); display: flex; align-items: center; justify-content: center; z-index: 9999;">
             <div style="text-align: center; padding: 2rem;">
                 <h1 style="font-family: 'Aileron', 'Helvetica Neue', Arial, sans-serif;">JavaScript Required</h1>
                 <p>This page requires JavaScript to function properly.</p>

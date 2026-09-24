@@ -203,7 +203,7 @@ include __DIR__ . '/../includes/header.php';
                                 <span class="admin-badge admin-badge-info">Pending</span>
                             <?php elseif ($mSync === 'failed'): ?>
                                 <span class="admin-badge admin-badge-danger" title="<?= htmlspecialchars($mErr, ENT_QUOTES) ?>">Failed</span>
-                                <?php if ($mErr !== ''): ?><span class="admin-form-text" style="color:#a66060;"><?= htmlspecialchars(mb_strimwidth($mErr, 0, 100, '…')) ?></span><?php endif; ?>
+                                <?php if ($mErr !== ''): ?><span class="admin-form-text" style="color:var(--color-danger);"><?= htmlspecialchars(mb_strimwidth($mErr, 0, 100, '…')) ?></span><?php endif; ?>
                             <?php else: ?>
                                 <span class="admin-badge admin-badge-secondary">Not posted</span>
                             <?php endif; ?>
@@ -217,7 +217,7 @@ include __DIR__ . '/../includes/header.php';
                                 <span class="admin-badge admin-badge-info">Pending</span>
                             <?php elseif ($bSync === 'failed'): ?>
                                 <span class="admin-badge admin-badge-danger" title="<?= htmlspecialchars($bErr, ENT_QUOTES) ?>">Failed</span>
-                                <?php if ($bErr !== ''): ?><span class="admin-form-text" style="color:#a66060;"><?= htmlspecialchars(mb_strimwidth($bErr, 0, 100, '…')) ?></span><?php endif; ?>
+                                <?php if ($bErr !== ''): ?><span class="admin-form-text" style="color:var(--color-danger);"><?= htmlspecialchars(mb_strimwidth($bErr, 0, 100, '…')) ?></span><?php endif; ?>
                             <?php else: ?>
                                 <span class="admin-badge admin-badge-secondary">Not posted</span>
                             <?php endif; ?>

@@ -26,7 +26,7 @@
 .admin-btn-sm { padding: 8px 12px; }
 .admin-btn-primary { background: var(--color-ink-slate); color: var(--color-bg-card); }
 .admin-btn-primary:hover { background: var(--color-ink-slate-hover); color: var(--color-bg-card); }
-.admin-btn-danger { color: #803f3f; }
+.admin-btn-danger { color: var(--color-danger); }
 .admin-form-control, .blog-admin-form-control, .admin-input, .admin-select, .form-control, .form-select { font-size: 1rem; min-height: 44px; color: var(--color-ink-body); }
 .admin-form-label, .blog-admin-form-label, .admin-label { color: var(--color-ink-body); font-size: .875rem; }
 .admin-form, .blog-admin-form { min-width: 0; }

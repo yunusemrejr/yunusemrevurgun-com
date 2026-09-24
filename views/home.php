@@ -125,8 +125,8 @@ ui_render_head(
             </nav>
         </div>
         <figure class="ui-masthead-figure">
-            <img src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg" width="1024" height="1024" decoding="async" fetchpriority="high"
-                 alt="Portrait of Yunus Emre Vurgun.">
+            <img src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg" width="1000" height="1250" decoding="async" fetchpriority="high"
+                 alt="Pencil portrait of Yunus Emre Vurgun.">
             <figcaption>Yunus Emre Vurgun — Istanbul.</figcaption>
         </figure>
     </div>

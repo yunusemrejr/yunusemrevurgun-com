@@ -135,7 +135,7 @@ include __DIR__ . '/../includes/header.php';
                     <i class="bi bi-plus-lg me-2"></i>Add Link
                 </button>
             </div>
-            <p style="font-size:0.85rem;color:#8fa6a6;margin-bottom:1rem;">Links to external platforms like Spotify, Apple Music, etc.</p>
+            <p style="font-size:0.85rem;color:var(--color-accent);margin-bottom:1rem;">Links to external platforms like Spotify, Apple Music, etc.</p>
 
             <?php
             $links = $music->getAllLinks();
@@ -174,11 +174,11 @@ include __DIR__ . '/../includes/header.php';
                                 <h5 class="admin-card-title"><?= htmlspecialchars($link['title']) ?></h5>
                                 <p class="admin-card-text" style="font-size:0.8rem;"><?= htmlspecialchars($pname) ?></p>
                                 <?php if (!empty($link['description'])): ?>
-                                <p class="admin-card-text" style="font-size:0.75rem;color:#8fa6a6;"><?= htmlspecialchars(mb_substr($link['description'], 0, 100)) ?></p>
+                                <p class="admin-card-text" style="font-size:0.75rem;color:var(--color-accent);"><?= htmlspecialchars(mb_substr($link['description'], 0, 100)) ?></p>
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <div class="admin-card-body" style="border-top:1px solid rgba(132,144,164,0.15);padding-top:0.5rem;">
+                        <div class="admin-card-body" style="border-top:1px solid var(--color-bg-subtle);padding-top:0.5rem;">
                             <div style="display:flex;gap:0.5rem;">
                                 <button class="admin-btn admin-btn-secondary admin-btn-sm" data-action="edit-link" data-id="<?= $link['id'] ?>" data-title="<?= htmlspecialchars($link['title'], ENT_QUOTES) ?>" data-url="<?= htmlspecialchars($link['url'], ENT_QUOTES) ?>" data-platform="<?= htmlspecialchars($link['platform'], ENT_QUOTES) ?>" data-description="<?= htmlspecialchars($link['description'] ?? '', ENT_QUOTES) ?>">
                                     <i class="bi bi-pencil"></i> Edit
