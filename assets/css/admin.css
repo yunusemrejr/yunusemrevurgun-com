@@ -64,7 +64,6 @@ a:hover {
   background-color: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
   height: var(--admin-topbar-height);
-  backdrop-filter: blur(8px);
 }
 
 .admin-ui-topbar-row {
@@ -331,38 +330,13 @@ a:hover {
 
 .admin-stat-card {
   background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
   padding: var(--space-6);
   text-align: center;
-  transition:
-    border-color var(--transition-base),
-    background-color var(--transition-base);
-  position: relative;
-  overflow: hidden;
-}
-
-.admin-stat-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-border-strong),
-    transparent
-  );
-  opacity: 0;
-  transition: opacity var(--transition-base);
 }
 
 .admin-stat-card:hover {
   background-color: var(--color-bg-hover);
-}
-
-.admin-stat-card:hover::before {
-  opacity: 1;
 }
 
 .admin-stat-icon {
@@ -1043,32 +1017,9 @@ select.admin-form-control {
   align-items: center;
   justify-content: center;
   background-color: var(--color-bg);
-  position: relative;
-  overflow-x: hidden;
-}
-
-.admin-login-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      ellipse 60% 40% at 20% 10%,
-      rgba(132, 144, 164, 0.08) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse 50% 30% at 80% 90%,
-      rgba(132, 144, 164, 0.05) 0%,
-      transparent 50%
-    );
-  z-index: 1;
 }
 
 .admin-login-container {
-  position: relative;
-  z-index: 10;
   width: 100%;
   max-width: 420px;
   padding: var(--space-8) var(--space-4);
@@ -1084,7 +1035,7 @@ select.admin-form-control {
   height: 4rem;
   object-fit: cover;
   margin-bottom: var(--space-3);
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--color-border-strong);
 }
 
 .admin-login-kicker {
@@ -1158,41 +1109,6 @@ select.admin-form-control {
 
 .admin-password-toggle:hover {
   color: #434343;
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.admin-fade-in {
-  animation: fadeIn var(--transition-base) ease forwards;
-}
-
-.admin-slide-up {
-  animation: slideUp var(--transition-slow) ease forwards;
 }
 
 /* ===== DASHBOARD-SPECIFIC ===== */

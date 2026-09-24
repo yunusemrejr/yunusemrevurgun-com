@@ -9,23 +9,6 @@
     return Array.from((root || document).querySelectorAll(selector));
   }
 
-  function initAboutCommandCenter() {
-    qa('.ui-command-card').forEach((card, index) => {
-      const trigger = q('.ui-command-trigger', card);
-      const panel = q('.ui-command-panel', card);
-      if (!trigger || !panel) return;
-      panel.id = 'about-section-' + index;
-      trigger.setAttribute('aria-controls', panel.id);
-      function setOpen(open) {
-        card.classList.toggle('is-open', open);
-        trigger.setAttribute('aria-expanded', String(open));
-        panel.hidden = !open;
-      }
-      setOpen(index === 0);
-      trigger.addEventListener('click', () => setOpen(panel.hidden));
-    });
-  }
-
   function initPortfolioFilters() {
     const bar = q(".ui-archive-filters");
     if (!bar) return;
@@ -584,31 +567,6 @@
     });
   }
 
-  function initGrayscaleTapReveal() {
-    // On touch devices, toggle .is-revealed on tap for interactive media
-    var isTouch =
-      window.matchMedia &&
-      window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-    if (!isTouch) return;
-
-    var selectors = [
-      ".ui-slideshow-slide",
-      ".ui-photo-box",
-      ".ui-travel-modal-grid img",
-      ".ui-project-card",
-      ".ui-card",
-      ".ui-profile-frame",
-    ];
-
-    selectors.forEach((sel) => {
-      qa(sel).forEach((el) => {
-        el.addEventListener("click", () => {
-          el.classList.toggle("is-revealed");
-        });
-      });
-    });
-  }
-
   function initXPopup() {
     const trigger = q("[data-x-popup-trigger]");
     const popup = q("#uiXPopup");
@@ -648,50 +606,11 @@
     });
   }
 
-  function initHeroImage() {
-    const trigger = q('[data-image-expand]');
-    const dialog = q('.ui-image-dialog');
-    if (!trigger || !dialog || typeof dialog.showModal !== 'function') return;
-    const close = q('.ui-image-dialog-close', dialog);
-    const zoom = q('[data-image-zoom]', dialog);
-    const scroller = q('.ui-image-dialog-scroll', dialog);
-    let previousOverflow = '';
-    const announce = () => document.dispatchEvent(new Event('hero-dialog-change'));
-    trigger.addEventListener('click', event => {
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      event.preventDefault();
-      previousOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      dialog.showModal();
-      announce();
-    });
-    close.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
-    dialog.addEventListener('close', () => {
-      document.body.style.overflow = previousOverflow;
-      dialog.classList.remove('is-zoomed');
-      zoom.setAttribute('aria-pressed', 'false');
-      zoom.textContent = 'Original size';
-      trigger.focus({ preventScroll: true });
-      announce();
-    });
-    zoom.addEventListener('click', () => {
-      const expanded = dialog.classList.toggle('is-zoomed');
-      zoom.setAttribute('aria-pressed', String(expanded));
-      zoom.textContent = expanded ? 'Fit to screen' : 'Original size';
-      scroller.scrollTo(0, 0);
-    });
-  }
-
   function init() {
-
-    initHeroImage();
-    initAboutCommandCenter();
     initPortfolioFilters();
     initSlideshow();
     initYunobotArchitectureModal();
     initYunobotTerminal();
-    initGrayscaleTapReveal();
     initXPopup();
   }
 

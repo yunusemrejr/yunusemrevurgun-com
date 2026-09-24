@@ -14,7 +14,7 @@ ui_render_head('Privacy Policy', 'Privacy policy for yunusemrevurgun.com');
             <p class="ui-section-text">Last updated: <?= date('F d, Y') ?></p>
         </section>
         <section class="ui-section">
-            <article class="ui-glass-panel ui-rich-content">
+            <article class="ui-rich-content">
                 <h2>Information We Collect</h2>
                 <p>We collect technical usage data (IP, browser/device details, timestamps, referrer) and contact form submissions (name, email, message).</p>
                 <h2>How We Use Data</h2>

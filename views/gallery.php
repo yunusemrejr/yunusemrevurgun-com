@@ -39,6 +39,12 @@ ui_render_head(
     <?php ui_render_navbar('Gallery'); ?>
 
     <main class="ui-main" id="main-content" tabindex="-1">
+        <noscript><style>
+            /* Without JavaScript the sets degrade to plain stacked figures. */
+            .ui-slideshow-track { display: block; }
+            .ui-slideshow-slide { display: block; margin-bottom: var(--space-4); }
+            .ui-slideshow-arrow, .ui-slideshow-meta { display: none; }
+        </style></noscript>
         <section class="ui-section">
             <p class="ui-eyebrow">Archive</p>
             <h1 class="ui-section-title">Gallery</h1>

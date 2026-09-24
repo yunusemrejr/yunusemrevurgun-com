@@ -2,8 +2,7 @@
    Public /downloads — desktop & offline apps.
    Reuses .ui-card / .ui-card-title / .ui-card-text / .ui-tags / .ui-tag /
    .ui-btn from ui-rebuild.css. Only layout + download-specific bits live here.
-   Thumbnails inherit the site-wide grayscale treatment (global img rule) and
-   reveal colour on card hover via the existing `.ui-card:hover img` rule. */
+   One flat bordered tile per app: screenshots are documentary, shown as-is. */
 
 .ui-downloads-grid {
   display: grid;

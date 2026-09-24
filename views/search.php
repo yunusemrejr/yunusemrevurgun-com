@@ -75,47 +75,41 @@ ui_render_head(
             <?php elseif ($totalResults === 0): ?>
                 <div class="ui-empty">No results found for "<?= htmlspecialchars($sanitizedQuery) ?>".</div>
             <?php else: ?>
-                <p style="margin-bottom: 1.5rem; color: var(--color-text-secondary);">
+                <p class="ui-search-count">
                     Found <?= $totalResults ?> result<?= $totalResults === 1 ? '' : 's' ?> for "<?= htmlspecialchars($sanitizedQuery) ?>".
                 </p>
 
                 <?php if (($type === 'all' || $type === 'blog') && !empty($results['blog'])): ?>
-                    <h2 style="font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; margin-bottom: 1rem;">Blog</h2>
-                    <div class="ui-grid" style="margin-bottom: 2rem;">
+                    <h2 class="ui-section-subtitle">Blog</h2>
+                    <ul class="ui-reading-list" role="list" style="margin-bottom: 2rem;">
                         <?php foreach ($results['blog'] as $item): ?>
-                            <a class="ui-link-card" href="<?= htmlspecialchars($item['url']) ?>">
-                                <h3 class="ui-card-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></h3>
-                                <p class="ui-card-text"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['excerpt'] ?? '')), 0, 140)) ?>...</p>
-                            </a>
+                            <li><a href="<?= htmlspecialchars($item['url']) ?>">
+                                <span><span class="ui-reading-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></span><span class="ui-reading-excerpt"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['excerpt'] ?? '')), 0, 140)) ?>...</span></span>
+                            </a></li>
                         <?php endforeach; ?>
-                    </div>
+                    </ul>
                 <?php endif; ?>
 
                 <?php if (($type === 'all' || $type === 'updates') && !empty($results['updates'])): ?>
-                    <h2 style="font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; margin-bottom: 1rem;">Updates</h2>
-                    <div class="ui-grid" style="margin-bottom: 2rem;">
+                    <h2 class="ui-section-subtitle">Updates</h2>
+                    <ul class="ui-reading-list" role="list" style="margin-bottom: 2rem;">
                         <?php foreach ($results['updates'] as $item): ?>
-                            <a class="ui-link-card" href="<?= FULL_BASE_PATH . 'updates/' . intval($item['id']) ?>">
-                                <h3 class="ui-card-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></h3>
-                                <p class="ui-card-text"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['content'] ?? '')), 0, 140)) ?>...</p>
-                            </a>
+                            <li><a href="<?= FULL_BASE_PATH . 'updates/' . intval($item['id']) ?>">
+                                <span><span class="ui-reading-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></span><span class="ui-reading-excerpt"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['content'] ?? '')), 0, 140)) ?>...</span></span>
+                            </a></li>
                         <?php endforeach; ?>
-                    </div>
+                    </ul>
                 <?php endif; ?>
 
                 <?php if (($type === 'all' || $type === 'portfolio') && !empty($results['portfolio'])): ?>
-                    <h2 style="font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; margin-bottom: 1rem;">Portfolio</h2>
-                    <div class="ui-grid">
+                    <h2 class="ui-section-subtitle">Portfolio</h2>
+                    <ul class="ui-reading-list" role="list">
                         <?php foreach ($results['portfolio'] as $item): ?>
-                            <a class="ui-link-card" href="<?= FULL_BASE_PATH ?>portfolio#project-<?= (int)$item['id'] ?>">
-                                <?php if (!empty($item['image_url'])): ?>
-                                    <img class="ui-media" src="<?= htmlspecialchars($item['image_url']) ?>" alt="<?= htmlspecialchars($item['title']) ?>">
-                                <?php endif; ?>
-                                <h3 class="ui-card-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></h3>
-                                <p class="ui-card-text"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['description'] ?? '')), 0, 140)) ?>...</p>
-                            </a>
+                            <li><a href="<?= FULL_BASE_PATH ?>portfolio#project-<?= (int)$item['id'] ?>">
+                                <span><span class="ui-reading-title"><?= htmlspecialchars(html_entity_decode($item['title']), ENT_QUOTES) ?></span><span class="ui-reading-excerpt"><?= htmlspecialchars(mb_substr(strip_tags(html_entity_decode($item['description'] ?? '')), 0, 140)) ?>...</span></span>
+                            </a></li>
                         <?php endforeach; ?>
-                    </div>
+                    </ul>
                 <?php endif; ?>
             <?php endif; ?>
         </section>

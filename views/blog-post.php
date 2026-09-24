@@ -99,17 +99,19 @@ ui_render_head(
         </section>
 
         <section class="ui-section">
-            <article class="ui-glass-panel">
+            <article>
                 <?php if (!empty($post['featured_image'])): ?>
-                    <img class="ui-media" src="<?= FULL_BASE_PATH . htmlspecialchars($post['featured_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
+                    <figure class="ui-figure" style="margin-bottom: var(--space-6);">
+                        <img src="<?= FULL_BASE_PATH . htmlspecialchars($post['featured_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
+                    </figure>
                 <?php endif; ?>
                 <div class="ui-rich-content"><?= ui_sanitize_html($post['content'] ?? '') ?></div>
             </article>
-            <div class="ui-tags" style="margin-top: 1.5rem;">
-                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>blog">← Back to Blog</a>
-                <a class="ui-btn ui-btn-secondary" href="https://twitter.com/intent/tweet?text=<?= rawurlencode($title) ?>&url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on X</a>
-                <a class="ui-btn ui-btn-secondary" href="https://www.linkedin.com/sharing/share-offsite/?url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
-                <button class="ui-btn ui-btn-secondary" type="button" onclick="navigator.clipboard.writeText('<?= htmlspecialchars($postUrl, ENT_QUOTES) ?>');this.textContent='Copied';">Copy link</button>
+            <div class="ui-doc-links">
+                <a href="<?= FULL_BASE_PATH ?>blog">← Back to Blog</a>
+                <a href="https://twitter.com/intent/tweet?text=<?= rawurlencode($title) ?>&url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on X</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
+                <button class="ui-doc-link-btn" type="button" onclick="navigator.clipboard.writeText('<?= htmlspecialchars($postUrl, ENT_QUOTES) ?>');this.textContent='Copied';">Copy link</button>
             </div>
         </section>
 
@@ -125,27 +127,25 @@ ui_render_head(
         ?>
         <?php if ($morePosts !== []): ?>
         <section class="ui-section">
-            <p class="ui-eyebrow">Continue</p>
             <h2 class="ui-section-title">Keep reading</h2>
-            <div class="ui-grid" style="margin-top: 1.5rem;">
+            <ul class="ui-reading-list" role="list">
                 <?php foreach ($morePosts as $more): ?>
-                <a class="ui-link-card" href="<?= FULL_BASE_PATH ?>blog/<?= rawurlencode($more['slug']) ?>">
-                    <h3 class="ui-card-title"><?= htmlspecialchars($more['title']) ?></h3>
-                    <p class="ui-card-meta"><?= date('F j, Y', strtotime($more['created_at'] ?? 'now')) ?></p>
-                </a>
+                <li><a href="<?= FULL_BASE_PATH ?>blog/<?= rawurlencode($more['slug']) ?>">
+                    <span class="ui-reading-title"><?= htmlspecialchars($more['title']) ?></span>
+                    <span class="ui-reading-date"><time datetime="<?= date('c', strtotime($more['created_at'] ?? 'now')) ?>"><?= date('F j, Y', strtotime($more['created_at'] ?? 'now')) ?></time></span>
+                </a></li>
                 <?php endforeach; ?>
-            </div>
+            </ul>
         </section>
         <?php endif; ?>
 
         <section class="ui-section">
-            <p class="ui-eyebrow">The author</p>
             <h2 class="ui-section-title">Yunus Emre Vurgun</h2>
             <p class="ui-section-text">Software developer and IT specialist in Istanbul, working on AI/ML systems, operational technology and industrial automation at ASP Otomasyon A.Ş.</p>
-            <div class="ui-tags">
-                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>about">About &amp; CV</a>
-                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>portfolio">Project archive</a>
-                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>contact">Contact</a>
+            <div class="ui-doc-links">
+                <a href="<?= FULL_BASE_PATH ?>about">About &amp; CV</a>
+                <a href="<?= FULL_BASE_PATH ?>portfolio">Project archive</a>
+                <a href="<?= FULL_BASE_PATH ?>contact">Contact</a>
             </div>
         </section>
     </main>

@@ -91,61 +91,84 @@ ui_render_head(
 );
 ?>
 <body class="ui-landing">
-<a class="ui-skip-link" href="#home-archive">Skip to explore</a>
-<main id="main-content" tabindex="-1">
-<!-- Procedural WebGL study; content remains available without graphics. -->
-<div class="ui-hero ui-hero--fallback">
-    <canvas class="ui-hero-canvas" aria-hidden="true"></canvas>
-    <button class="ui-scene-toggle" type="button" data-scene-toggle aria-pressed="false" hidden>Pause background</button>
-    <div class="ui-hero-content">
-        <h1 class="ui-hero-title">Yemre</h1>
-        <figure class="ui-hero-frame">
-            <a class="ui-hero-image-link" href="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" data-image-expand aria-label="Enlarge the study image" aria-haspopup="dialog">
-            <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" decoding="async" fetchpriority="high"
-                 alt="Yemre in a hoodie working at a vintage CRT computer, surrounded by machine-learning and C++ books under a desk lamp.">
-                <span class="ui-image-expand-hint" aria-hidden="true">View details ↗</span>
-            </a>
-        </figure>
-        <p class="ui-hero-tagline">The world of a developer</p>
-        <p class="ui-hero-lede">They say you’re the average of the five people you spend the most time with. I’m carefully curating mine.</p>
-        <div class="ui-hero-actions">
-            <a class="ui-landing-btn ui-landing-btn-primary" href="<?= FULL_BASE_PATH ?>about">About me</a>
-            <a class="ui-landing-btn ui-landing-btn-secondary" href="<?= FULL_BASE_PATH ?>portfolio">See my work</a>
-        </div>
-        <a class="ui-landing-explore" href="#home-archive">Explore the archive ↓</a>
-    </div>
-</div>
+<div class="ui-page">
+    <?php ui_render_navbar('home'); ?>
 
-<!-- Landing brief: the hero carries the brand voice, this carries the facts.
-     Below the fold, so the visual identity is untouched; it exists so a first
-     visit can answer "who is this and what has he built" without clicking, and
-     so the most-linked URL on the site has crawlable substance. -->
-<div class="ui-landing-brief" id="home-archive" tabindex="-1">
+<main class="ui-landing-main" id="main-content" tabindex="-1">
+<!-- Front page of the record: name, current identity, facts, and actions.
+     The most-linked URL answers "who is this" without scrolling or clicking. -->
+<header class="ui-masthead">
+    <div class="ui-masthead-grid">
+        <div>
+            <p class="ui-masthead-eyebrow">Istanbul · Operational technology &amp; AI</p>
+            <h1 class="ui-masthead-title">Yunus Emre Vurgun</h1>
+            <p class="ui-masthead-role">Software developer &amp; IT specialist</p>
+            <p class="ui-masthead-lede">AI/ML systems, industrial automation, and the internal tools a factory floor depends on — documented as it is built, at ASP&nbsp;Otomasyon&nbsp;A.Ş.</p>
+            <dl class="ui-masthead-facts">
+                <div class="ui-masthead-fact">
+                    <dt class="ui-masthead-fact-term">Currently</dt>
+                    <dd class="ui-masthead-fact-value">Software Developer &amp; IT Specialist, ASP&nbsp;Otomasyon&nbsp;A.Ş.</dd>
+                </div>
+                <div class="ui-masthead-fact">
+                    <dt class="ui-masthead-fact-term">Focus</dt>
+                    <dd class="ui-masthead-fact-value">AI/ML systems · Industrial automation · Internal tools</dd>
+                </div>
+                <div class="ui-masthead-fact">
+                    <dt class="ui-masthead-fact-term">This site</dt>
+                    <dd class="ui-masthead-fact-value"><?= $archiveLine !== null ? htmlspecialchars(ucfirst($archiveLine)) : 'Projects, journal, and notes' ?></dd>
+                </div>
+            </dl>
+            <nav class="ui-masthead-links" aria-label="Start here">
+                <a href="<?= FULL_BASE_PATH ?>about">About &amp; CV →</a>
+                <a href="<?= FULL_BASE_PATH ?>portfolio">Selected work →</a>
+                <a href="<?= FULL_BASE_PATH ?>contact">Contact →</a>
+            </nav>
+        </div>
+        <figure class="ui-masthead-figure">
+            <img src="<?= FULL_BASE_PATH ?>assets/images/yunus-emre-vurgun-portrait.jpg" width="1024" height="1024" decoding="async" fetchpriority="high"
+                 alt="Portrait of Yunus Emre Vurgun.">
+            <figcaption>Yunus Emre Vurgun — Istanbul.</figcaption>
+        </figure>
+    </div>
+</header>
+
+<div class="ui-landing-brief">
     <section class="ui-section">
-        <p class="ui-eyebrow">Istanbul · Operational technology &amp; AI</p>
-        <h2 class="ui-brief-title">Software developer and IT specialist building systems that have to keep running.</h2>
-        <p class="ui-section-text">AI/ML systems, industrial automation, and the internal tools a factory floor depends on — documented as it is built.<?= $archiveLine !== null ? ' This archive holds ' . htmlspecialchars($archiveLine) : '' ?></p>
+        <h2 class="ui-brief-title">Systems that have to keep running.</h2>
+        <div class="ui-landing-study">
+            <div>
+                <p class="ui-section-text">They say you’re the average of the five people you spend the most time with. I’m carefully curating mine — and the systems I build: architecturally robust, computationally efficient, grounded in time-resistant fundamentals.</p>
+                <p class="ui-section-text">From CPU-optimized neural network experiments to industrial automation, the work is documented here as it happens.</p>
+                <a class="ui-more-link" href="<?= FULL_BASE_PATH ?>about">Full profile, education, and work history →</a>
+            </div>
+            <figure>
+                <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" decoding="async" loading="lazy"
+                     alt="Yemre in a hoodie working at a vintage CRT computer, surrounded by machine-learning and C++ books under a desk lamp.">
+                <figcaption>The study: a vintage CRT, machine-learning and C++ books, and a desk lamp.</figcaption>
+            </figure>
+        </div>
     </section>
 
     <section class="ui-section">
+        <h2 class="ui-brief-title">Inside this site</h2>
         <div class="ui-more-grid">
             <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>portfolio">
-                <span class="ui-more-icon" aria-hidden="true">[]</span>
+                <span class="ui-more-icon" aria-hidden="true">01</span>
                 <h3 class="ui-more-title">Project archive</h3>
                 <p class="ui-more-desc">Systems across AI/ML, operational technology, industrial automation and web infrastructure — with the stack each one runs on.</p>
             </a>
             <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>blog">
-                <span class="ui-more-icon" aria-hidden="true">¶</span>
+                <span class="ui-more-icon" aria-hidden="true">02</span>
                 <h3 class="ui-more-title">Journal</h3>
                 <p class="ui-more-desc">Long-form notes on AI capability trends, model releases, free internet access, and post-code engineering.</p>
             </a>
             <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>yunobot">
-                <span class="ui-more-icon" aria-hidden="true">>_</span>
+                <span class="ui-more-icon" aria-hidden="true">03</span>
                 <h3 class="ui-more-title">YunoBot</h3>
                 <p class="ui-more-desc">An assistant that answers questions about this site entirely in your browser — no server call, no API key.</p>
             </a>
             <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>about">
-                <span class="ui-more-icon" aria-hidden="true">@</span>
+                <span class="ui-more-icon" aria-hidden="true">04</span>
                 <h3 class="ui-more-title">About &amp; CV</h3>
                 <p class="ui-more-desc">Education, work history at ASP Otomasyon A.Ş., certifications, and where to reach me.</p>
             </a>
@@ -153,7 +176,6 @@ ui_render_head(
     </section>
     <?php if ($latestWriting): ?>
     <section class="ui-section">
-        <p class="ui-eyebrow">From the journal</p>
         <h2 class="ui-section-title">Latest writing</h2>
         <div class="ui-feed-list">
             <?php foreach ($latestWriting as $entry): ?>
@@ -164,24 +186,12 @@ ui_render_head(
             </article>
             <?php endforeach; ?>
         </div>
-        <a class="ui-landing-explore" href="<?= FULL_BASE_PATH ?>blog">All writing →</a>
+        <a class="ui-more-link" href="<?= FULL_BASE_PATH ?>blog">All writing →</a>
     </section>
     <?php endif; ?>
 </div>
 </main>
-<dialog class="ui-image-dialog" aria-labelledby="hero-image-title">
-    <div class="ui-image-dialog-bar">
-        <p id="hero-image-title">The study · a closer look</p>
-        <button type="button" class="ui-image-dialog-close" autofocus>Close <span aria-hidden="true">×</span></button>
-    </div>
-    <div class="ui-image-dialog-scroll">
-        <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" loading="lazy" alt="Yemre at a vintage CRT computer, with programming and machine-learning books, cables, and a warm desk lamp.">
-    </div>
-    <div class="ui-image-dialog-tools">
-        <button type="button" data-image-zoom aria-pressed="false">Original size</button>
-        <a href="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" target="_blank" rel="noopener">Open image ↗</a>
-    </div>
-</dialog>
+</div>
 
 <footer class="ui-landing-footer">
     <div class="ui-landing-footer-inner">
@@ -198,7 +208,7 @@ ui_render_head(
     </div>
 </footer>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
+<script src="<?= FULL_BASE_PATH ?>assets/js/navigation.js?v=<?= filemtime(__DIR__ . '/../assets/js/navigation.js') ?>"></script>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../assets/js/ui-interactions.js') ?>"></script>
-<script src="<?= FULL_BASE_PATH ?>assets/js/decorative-effects.js?v=<?= filemtime(__DIR__ . '/../assets/js/decorative-effects.js') ?>" data-effect-src="<?= FULL_BASE_PATH ?>assets/js/vgpu-hero.min.js?v=<?= filemtime(__DIR__ . '/../assets/js/vgpu-hero.min.js') ?>" data-effect-kind="hero"></script>
 </body>
 </html>

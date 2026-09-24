@@ -37,7 +37,6 @@ body.admin-login-body {
 .admin-login-identity {
   text-align: center;
   margin-bottom: var(--space-6);
-  animation: fadeIn 0.5s ease forwards;
 }
 
 .admin-login-kicker {
@@ -65,15 +64,12 @@ body.admin-login-container h1.admin-login-title,
 .admin-login-form-container {
   width: 100%;
   max-width: 400px;
-  animation: slideUp 0.5s ease 0.1s forwards;
-  opacity: 0;
 }
 
 .admin-login-form {
   background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
   padding: var(--space-8);
-  box-shadow: var(--shadow-xl);
-  backdrop-filter: blur(12px);
 }
 
 .admin-login-trap {
@@ -355,11 +351,6 @@ body.admin-login-container h1.admin-login-title,
   .admin-login-submit.loading .btn-loading i {
     animation: none;
   }
-
-  body.admin-login-body::before,
-  body.admin-login-body::after {
-    display: none;
-  }
 }
 
 /* ===== FOCUS VISIBLE ===== */
@@ -372,16 +363,7 @@ body.admin-login-container h1.admin-login-title,
 }
 
 /* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* Only the submit-button spinner remains: it communicates loading state. */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

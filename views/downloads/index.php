@@ -84,7 +84,7 @@ ui_render_head(
                 </div>
             <?php else: ?>
                 <div class="ui-downloads-empty">
-                    <p>No releases are listed here yet.</p><a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>portfolio">Browse projects</a>
+                    <p>No releases are listed here yet.</p><a class="ui-more-link" href="<?= FULL_BASE_PATH ?>portfolio">Browse projects →</a>
                 </div>
             <?php endif; ?>
         </section>

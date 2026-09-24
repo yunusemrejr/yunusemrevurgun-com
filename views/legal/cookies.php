@@ -14,7 +14,7 @@ ui_render_head('Cookie Policy', 'Cookie policy for yunusemrevurgun.com');
             <p class="ui-section-text">Last updated: <?= date('F d, Y') ?></p>
         </section>
         <section class="ui-section">
-            <article class="ui-glass-panel ui-rich-content">
+            <article class="ui-rich-content">
                 <h2>What We Use Cookies For</h2>
                 <p>Cookies support session integrity, CSRF protection, and core site functionality.</p>
                 <h2>Cookie Types</h2>

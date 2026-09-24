@@ -149,44 +149,32 @@ if (!function_exists('ui_nav_items')) {
     }
 }
 
-if (!function_exists('ui_page_fx')) {
-    // Per-page ambient WebGPU background. One canvas + one shared bundle
-    // (assets/js/vgpu-pages.min.js); pages without an entry render nothing.
-    // Effect shaders live in dev/scripts/vgpu-pages/pages-entry.js.
-    function ui_page_fx(): ?string
-    {
-        static $fxMap = [
-            'about' => 'wind',          // gusty paper wisps from top-left
-            'rmrp' => 'memories',       // fading dust specks
-            'music' => 'wave',          // thin undulating waveform ribbon
-            'comedy' => 'bubbles',      // sparse rising rings
-            'science-corner' => 'lattice', // nodes slowly lighting up
-            'post-code' => 'grid',      // blueprint grid + scan pulses
-        ];
-        $fxPage = strtok(trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '', '/'), '/');
-        return is_string($fxPage) ? ($fxMap[$fxPage] ?? null) : null;
-    }
-}
-
 if (!function_exists('ui_render_navbar')) {
     function ui_render_navbar(string $active = '', bool $isHome = false): void
     {
-        $activeAliases = [
-            'work' => 'portfolio',
-            'studio' => 'about',
-            'experiments' => 'travel',
-            'journal' => 'blog',
-        ];
+        // Active state is path-driven: the request path decides, so two items
+        // can never light at once. The legacy $active label is only a
+        // fallback when the path matches no top-level section. Pages grouped
+        // under /more light the More entry instead of nothing.
         $normalizedActive = strtolower(trim($active));
-        if (isset($activeAliases[$normalizedActive])) {
-            $normalizedActive = $activeAliases[$normalizedActive];
-        }
         $requestPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');
         $requestPath = strtolower($requestPath);
         if ($requestPath === '') {
             $requestPath = 'home';
         }
-        $pageFx = ui_page_fx();
+        $morePaths = ['yunobot', 'post-code', 'science-corner', 'music', 'comedy', 'videos', 'downloads', 'rmrp'];
+        $firstSegment = strtok($requestPath, '/');
+        $moreActive = $requestPath === 'more' || in_array($firstSegment, $morePaths, true);
+        $pathHitsSection = false;
+        foreach (ui_nav_items() as $probe) {
+            $probePath = strtolower(trim(parse_url($probe['href'], PHP_URL_PATH) ?? '', '/'));
+            if ($probePath === '') {
+                if ($requestPath === 'home') { $pathHitsSection = true; break; }
+            } elseif ($requestPath === $probePath || str_starts_with($requestPath, $probePath . '/')) {
+                $pathHitsSection = true;
+                break;
+            }
+        }
         ?>
 <a class="ui-skip-link" href="#main-content">Skip to content</a>
 <header class="ui-navbar-wrap">
@@ -198,8 +186,13 @@ if (!function_exists('ui_render_navbar')) {
                     $itemLabel = strtolower($item['label']);
                     $itemPath = trim(parse_url($item['href'], PHP_URL_PATH) ?? '', '/');
                     $itemPath = strtolower($itemPath);
-                    $isActive = ($normalizedActive !== '' && $normalizedActive === $itemLabel)
-                        || ($itemPath !== '' && ($requestPath === $itemPath || str_starts_with($requestPath, $itemPath . '/')));
+                    if ($itemPath === '') {
+                        $isActive = ($requestPath === 'home');
+                    } elseif ($requestPath === $itemPath || str_starts_with($requestPath, $itemPath . '/')) {
+                        $isActive = true;
+                    } else {
+                        $isActive = !$pathHitsSection && $normalizedActive !== '' && $normalizedActive === $itemLabel;
+                    }
                     ?>
                 <li>
                     <a class="ui-nav-link<?= $isActive ? ' is-active' : '' ?>" href="<?= htmlspecialchars($item['href']) ?>"<?= $isActive ? ' aria-current="page"' : '' ?>>
@@ -208,18 +201,13 @@ if (!function_exists('ui_render_navbar')) {
                 </li>
                 <?php endforeach; ?>
                 <li>
-                    <a class="ui-nav-link ui-nav-link-more<?= $requestPath === 'more' ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>more" aria-label="More pages">More</a>
+                    <a class="ui-nav-link ui-nav-link-more<?= $moreActive ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>more" aria-label="More pages">More</a>
                 </li>
             </ul>
             <button class="ui-mobile-toggle" type="button" aria-label="Open menu" data-mobile-menu-open aria-expanded="false" aria-controls="uiMobileMenu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 </header>
-<!-- Page fx canvas: mounted behind content; vgpu-pages.min.js removes it
-     entirely when WebGPU is unavailable (plain paper bg is the fallback). -->
-<?php if ($pageFx !== null): ?>
-<canvas class="ui-page-fx" data-fx="<?= htmlspecialchars($pageFx) ?>" aria-hidden="true"></canvas>
-<?php endif; ?>
 <div class="ui-mobile-menu" id="uiMobileMenu" aria-hidden="true">
     <div class="ui-mobile-backdrop" data-mobile-menu-close></div>
     <div class="ui-mobile-panel" role="dialog" aria-modal="true" aria-label="Site navigation">
@@ -286,48 +274,67 @@ if (!function_exists('ui_render_footer')) {
     function ui_render_footer(?string $hampton = null): void
     {
         $socialsModel = new Socials();
-        ?>
-<footer class="ui-footer">
-    <div class="ui-footer-meta">
-        <p>© <?= date('Y') ?> Yunus Emre Vurgun. All rights reserved.</p>
-        <?php
         $footerSocials = $socialsModel->getActiveByLocation('footer');
         $hasPopup = false;
         foreach ($footerSocials as $s) {
             if ($s['kind'] === Socials::KIND_POPUP) { $hasPopup = true; break; }
         }
         ?>
-        <?php if (!empty($footerSocials)): ?>
-        <ul class="ui-footer-socials" role="list">
-            <?php foreach ($footerSocials as $s):
-                $sLabel = htmlspecialchars($s['name'] ?? '', ENT_QUOTES);
-                $sIcon = Socials::iconSvg($s['icon'] ?? 'link', 'ui-footer-social-icon');
-            ?>
-            <?php if ($s['kind'] === Socials::KIND_POPUP): ?>
-            <li><button type="button" class="ui-footer-social-btn" data-x-popup-trigger aria-haspopup="dialog" aria-label="<?= $sLabel ?> (not available)">
-                <?= $sIcon ?>
-                <span class="ui-footer-social-label"><?= $sLabel ?></span>
-            </button></li>
-            <?php else: ?>
-            <li><a href="<?= htmlspecialchars($s['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" aria-label="<?= $sLabel ?>">
-                <?= $sIcon ?>
-                <span class="ui-footer-social-label"><?= $sLabel ?></span>
-            </a></li>
+<footer class="ui-footer">
+    <div class="ui-footer-inner">
+        <div>
+            <p class="ui-footer-name">Yunus Emre Vurgun</p>
+            <p class="ui-footer-tag">Software developer &amp; IT specialist in Istanbul — AI/ML systems and operational technology.</p>
+            <p class="ui-footer-copy">© <?= date('Y') ?> Yunus Emre Vurgun. All rights reserved.</p>
+        </div>
+        <nav aria-label="Site sections">
+            <p class="ui-footer-heading">Sections</p>
+            <ul class="ui-footer-list" role="list">
+                <?php foreach (ui_nav_items() as $item): ?>
+                <li><a href="<?= htmlspecialchars($item['href']) ?>"><?= htmlspecialchars($item['label']) ?></a></li>
+                <?php endforeach; ?>
+                <li><a href="<?= FULL_BASE_PATH ?>more">More</a></li>
+            </ul>
+        </nav>
+        <nav aria-label="Site resources">
+            <p class="ui-footer-heading">Resources</p>
+            <ul class="ui-footer-list" role="list">
+                <li><a href="<?= FULL_BASE_PATH ?>search">Search</a></li>
+                <li><a href="<?= FULL_BASE_PATH ?>sitemap">Sitemap</a></li>
+                <li><a href="<?= FULL_BASE_PATH ?>blog.xml">Journal RSS</a></li>
+                <li><a href="<?= FULL_BASE_PATH ?>updates.xml">Updates RSS</a></li>
+                <li><a href="<?= FULL_BASE_PATH ?>privacy">Privacy</a></li>
+                <li><a href="<?= FULL_BASE_PATH ?>terms">Terms</a></li>
+                <li><a href="<?= FULL_BASE_PATH ?>cookies">Cookies</a></li>
+            </ul>
+        </nav>
+        <nav aria-label="Profiles and reading">
+            <p class="ui-footer-heading">Elsewhere</p>
+            <?php if (!empty($footerSocials)): ?>
+            <ul class="ui-footer-socials" role="list">
+                <?php foreach ($footerSocials as $s):
+                    $sLabel = htmlspecialchars($s['name'] ?? '', ENT_QUOTES);
+                    $sIcon = Socials::iconSvg($s['icon'] ?? 'link', 'ui-footer-social-icon');
+                ?>
+                <?php if ($s['kind'] === Socials::KIND_POPUP): ?>
+                <li><button type="button" class="ui-footer-social-btn" data-x-popup-trigger aria-haspopup="dialog" aria-label="<?= $sLabel ?> (not available)">
+                    <?= $sIcon ?>
+                    <span class="ui-footer-social-label"><?= $sLabel ?></span>
+                </button></li>
+                <?php else: ?>
+                <li><a href="<?= htmlspecialchars($s['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">
+                    <?= $sIcon ?>
+                    <span class="ui-footer-social-label"><?= $sLabel ?></span>
+                </a></li>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
             <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
-        <?php endif; ?>
-
+            <ul class="ui-footer-list" role="list">
+                <li><a href="https://theknowledgeproject.gumroad.com/" target="_blank" rel="noopener noreferrer">Books</a></li>
+            </ul>
+        </nav>
     </div>
-    <nav class="ui-footer-links" aria-label="Site resources">
-        <a href="<?= FULL_BASE_PATH ?>search">Search</a>
-        <a href="<?= FULL_BASE_PATH ?>more">Explore</a>
-        <a href="https://theknowledgeproject.gumroad.com/" target="_blank" rel="noopener noreferrer">Books</a>
-        <a href="<?= FULL_BASE_PATH ?>blog.xml">RSS</a>
-        <a href="<?= FULL_BASE_PATH ?>sitemap">Sitemap</a>
-        <a href="<?= FULL_BASE_PATH ?>privacy">Privacy</a>
-        <a href="<?= FULL_BASE_PATH ?>contact">Contact</a>
-    </nav>
     <?php if ($hampton !== null) ui_render_hampton($hampton); ?>
 </footer>
 <?php if ($hasPopup): ?>
@@ -344,9 +351,6 @@ if (!function_exists('ui_render_footer')) {
 <?php endif; ?>
 <script src="<?= FULL_BASE_PATH ?>assets/js/navigation.js?v=<?= filemtime(__DIR__ . '/../../assets/js/navigation.js') ?>"></script>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../../assets/js/ui-interactions.js') ?>"></script>
-<?php if (ui_page_fx() !== null): ?>
-<script src="<?= FULL_BASE_PATH ?>assets/js/decorative-effects.js?v=<?= filemtime(__DIR__ . '/../../assets/js/decorative-effects.js') ?>" data-effect-src="<?= FULL_BASE_PATH ?>assets/js/vgpu-pages.min.js?v=<?= filemtime(__DIR__ . '/../../assets/js/vgpu-pages.min.js') ?>" data-effect-kind="page"></script>
-<?php endif; ?>
 <?php
     }
 }

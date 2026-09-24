@@ -100,13 +100,23 @@
  }
 }
 
-/* One card DOM, two layouts: the classic avatar row in list mode,
-   a stacked card in grid mode. */
+/* One card DOM, two layouts: divider-separated rows in list mode,
+   flat bordered tiles in grid mode. */
+.ui-updates-grid.is-list {
+ border-bottom: 1px solid var(--color-border);
+}
+
 .ui-updates-grid.is-list .ui-update-row {
  display: grid;
  grid-template-columns: 44px minmax(0, 1fr);
  gap: var(--space-4);
  align-items: start;
+}
+
+.ui-updates-grid.is-list .ui-update-card {
+ background: transparent;
+ border-top: 1px solid var(--color-border);
+ padding: var(--space-6) 0;
 }
 
 .ui-updates-grid.is-grid .ui-update-row {
@@ -117,14 +127,14 @@
  display: none;
 }
 
-.ui-update-card {
+.ui-updates-grid.is-grid .ui-update-card {
  background-color: var(--color-surface);
+ border: 1px solid var(--color-border);
  padding: var(--space-6);
- transition: border-color var(--transition-base);
 }
 
-.ui-update-card:hover {
- border-color: var(--color-border-strong);
+.ui-update-card {
+ transition: border-color var(--transition-base);
 }
 
 .ui-update-card .ui-feed-title a {

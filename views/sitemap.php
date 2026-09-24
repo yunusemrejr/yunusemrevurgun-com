@@ -16,42 +16,42 @@ ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primar
         </section>
 
         <section class="ui-section">
-            <div class="ui-grid">
-                <article class="ui-card">
-                    <h2 class="ui-card-title">Main</h2>
-                    <ul class="ui-card-list" style="margin-top: 0.75rem;">
+            <div class="ui-sitemap-cols">
+                <div class="ui-sitemap-col">
+                    <h2>Main</h2>
+                    <ul class="ui-card-list">
                         <li><a href="<?= FULL_BASE_PATH ?>">Home</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>about">About</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>portfolio">Portfolio</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>blog">Blog</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>contact">Contact</a></li>
                     </ul>
-                </article>
-                <article class="ui-card">
-                    <h2 class="ui-card-title">Archive</h2>
-                    <ul class="ui-card-list" style="margin-top: 0.75rem;">
+                </div>
+                <div class="ui-sitemap-col">
+                    <h2>Archive</h2>
+                    <ul class="ui-card-list">
                         <li><a href="<?= FULL_BASE_PATH ?>gallery">Gallery</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>updates">Updates</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>rmrp">Random Memories</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>travel">Travel</a></li>
                     </ul>
-                </article>
-                <article class="ui-card">
-                    <h2 class="ui-card-title">Explore</h2>
-                    <ul class="ui-card-list" style="margin-top: .75rem;">
+                </div>
+                <div class="ui-sitemap-col">
+                    <h2>Explore</h2>
+                    <ul class="ui-card-list">
                         <?php foreach (['yunobot' => 'YunoBot', 'music' => 'Music', 'videos' => 'Videos', 'downloads' => 'Downloads', 'post-code' => 'Post-Code', 'science-corner' => 'Science Corner', 'comedy' => 'Comedy', 'more' => 'More'] as $path => $label): ?>
                         <li><a href="<?= FULL_BASE_PATH . $path ?>"><?= $label ?></a></li>
                         <?php endforeach; ?>
                     </ul>
-                </article>
-                <article class="ui-card">
-                    <h2 class="ui-card-title">Legal</h2>
-                    <ul class="ui-card-list" style="margin-top: 0.75rem;">
+                </div>
+                <div class="ui-sitemap-col">
+                    <h2>Legal</h2>
+                    <ul class="ui-card-list">
                         <li><a href="<?= FULL_BASE_PATH ?>privacy">Privacy Policy</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>terms">Terms of Use</a></li>
                         <li><a href="<?= FULL_BASE_PATH ?>cookies">Cookie Policy</a></li>
                     </ul>
-                </article>
+                </div>
             </div>
         </section>
     </main>

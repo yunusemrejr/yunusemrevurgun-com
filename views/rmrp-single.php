@@ -76,7 +76,7 @@ ui_render_head($title, $description, $pageMeta);
         </section>
 
         <section class="ui-section">
-            <article class="ui-glass-panel">
+            <article>
                 <?php if (!empty($memory['category']) || !empty($memory['importance'])): ?>
                     <div class="ui-tags" style="margin-bottom: 1rem;">
                         <?php if (!empty($memory['category'])): ?><span class="ui-tag"><?= htmlspecialchars($memory['category']) ?></span><?php endif; ?>
@@ -85,9 +85,9 @@ ui_render_head($title, $description, $pageMeta);
                 <?php endif; ?>
                 <div class="ui-rich-content"><?= RichText::markdown($memory['description'] ?? '') ?></div>
             </article>
-            <div class="ui-tags" style="margin-top: 1.5rem;">
-                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>rmrp">← Back to Memories</a>
-                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>rmrp.xml">RSS</a>
+            <div class="ui-doc-links">
+                <a href="<?= FULL_BASE_PATH ?>rmrp">← Back to Memories</a>
+                <a href="<?= FULL_BASE_PATH ?>rmrp.xml">RSS</a>
             </div>
         </section>
     </main>

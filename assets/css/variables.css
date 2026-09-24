@@ -40,11 +40,11 @@
   font-display: swap;
 }
 
-/* ===== CSS VARIABLES — YEV DESIGN SYSTEM v4.0 ===== */
+/* ===== CSS VARIABLES — YEV DESIGN SYSTEM v5.0 ===== */
 /* Single source of truth for all design tokens. */
-/* Public theme: a lamp-lit study at night — deep warm charcoal, amber lamplight,
-   parchment text, muted steel-blue for secondary marks. Anchored to the hero
-   photograph (hooded figure, CRT, book spines) in assets/images/. */
+/* Public theme: an editorial document after dark — deep warm charcoal,
+   parchment text, one restrained amber accent. No competing hues, no glow:
+   hierarchy comes from type, spacing, and hairline rules. */
 
 :root {
   /* Public layout and accessible ink. */
@@ -98,10 +98,13 @@
   --color-text-inverse: #15120f;
   --color-text-disabled: #6b6051;
 
-  /* Brand accents — lamp amber, with muted steel-blue as the second voice */
+  /* Brand accent — one amber, used sparingly (active states, key actions,
+     small markers). Everything else stays neutral. */
   --color-accent: #e0a33f;
   --color-accent-hover: #f2b855;
-  --color-accent-secondary: #8ea6c8;
+  /* Historic second-accent token, now neutral: several stylesheets consume it
+     as secondary text. It must never read as a competing hue. */
+  --color-accent-secondary: #a79b83;
   --color-accent-subtle: rgba(224, 163, 63, 0.13);
 
   /* Grid / Lines */
@@ -139,10 +142,12 @@
     ui-monospace, SFMono-Regular, "SF Mono", "Roboto Mono", Menlo, Monaco,
     "Courier New", monospace;
 
-  --text-xs: 0.75rem; /* 12px */
-  --text-sm: 0.875rem; /* 13px */
-  --text-base: 1rem; /* 15px */
-  --text-md: 1rem; /* 16px */
+  /* Disciplined type scale: page title → section → subsection → body →
+     metadata/captions → navigation. */
+  --text-xs: 0.75rem; /* 12px — captions, metadata */
+  --text-sm: 0.875rem; /* 14px — secondary body, navigation */
+  --text-base: 1rem; /* 16px — body */
+  --text-md: 1rem; /* 16px — body alias */
   --text-lg: 1.125rem; /* 18px */
   --text-xl: 1.25rem; /* 20px */
   --text-2xl: 1.5rem; /* 24px */
@@ -198,9 +203,12 @@
   --z-toast: 800;
 
   /* ===== LAYOUT ===== */
-  --content-max-width: 1200px;
+  --content-max-width: 1120px;
   --content-narrow: 720px;
-  --navbar-height: 72px;
+  /* Long-form measure: prose never runs wider than this. */
+  --measure-prose: 68ch;
+  --measure-lede: 58ch;
+  --navbar-height: 68px;
   --admin-max-width: 1400px;
   --admin-topbar-height: 60px;
   --admin-sidebar-width: 260px;
@@ -225,10 +233,9 @@
   --brand-grid-color: var(--color-grid);
   --brand-bg-charcoal: var(--color-bg-primary);
 
-  /* Hero photograph framing: amber lamplight edge, deep room shadow. */
-  --hero-frame-border: 1px solid rgba(224, 163, 63, 0.38);
-  --hero-frame-glow: 0 0 0 1px rgba(236, 226, 208, 0.06),
-    0 18px 60px rgba(0, 0, 0, 0.6), 0 0 70px rgba(224, 163, 63, 0.08);
+  /* Framed editorial figures: a hairline rule and a flat caption.
+     No glow, no vignette. */
+  --figure-border: 1px solid var(--color-border-strong);
 }
 
 /* ===== ADMIN PANEL — UNCHANGED LIGHT THEME =====
@@ -284,7 +291,7 @@ body.admin-login-body {
   --color-info-border: rgba(106, 138, 170, 0.3);
 
   --font-display: "Aileron", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Canva Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
   --font-heading: "Aileron", "Helvetica Neue", Arial, sans-serif;
 
   --shadow-sm: 0 1px 3px rgba(132, 144, 164, 0.15);

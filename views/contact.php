@@ -250,23 +250,25 @@ ui_render_head(
                     </form>
                 </div>
 
-                <div>
-                    <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Response Time</p>
-                        <p style="font-size: var(--text-sm); color: var(--color-ink-body);">I typically respond within 24-48 hours on weekdays.</p>
+                <aside class="ui-contact-aside" aria-label="Other ways to reach me">
+                    <div class="ui-glass-panel">
+                        <p class="ui-eyebrow">Response Time</p>
+                        <p class="ui-contact-aside-text">I typically respond within 24-48 hours on weekdays.</p>
                     </div>
                     <?php if (!empty($contactSocials)): ?>
-                    <?php foreach ($contactSocials as $cs):
-                        $csName = htmlspecialchars($cs['name'] ?? '', ENT_QUOTES);
-                        $csHandle = htmlspecialchars(($cs['handle'] ?? '') !== '' ? $cs['handle'] : ($cs['name'] ?? ''), ENT_QUOTES);
-                    ?>
-                    <div class="ui-glass-panel" style="margin-bottom: 1.5rem;">
-                        <p class="ui-eyebrow" style="margin-bottom: 0.25rem;"><?= $csName ?></p>
-                        <p style="font-size: var(--text-sm);"><a href="<?= htmlspecialchars($cs['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer" style="color: var(--color-ink-slate);"><?= $csHandle ?></a></p>
+                    <div class="ui-glass-panel">
+                        <p class="ui-eyebrow">Elsewhere</p>
+                        <ul class="ui-card-list">
+                            <?php foreach ($contactSocials as $cs):
+                                $csName = htmlspecialchars($cs['name'] ?? '', ENT_QUOTES);
+                                $csHandle = htmlspecialchars(($cs['handle'] ?? '') !== '' ? $cs['handle'] : ($cs['name'] ?? ''), ENT_QUOTES);
+                            ?>
+                            <li><strong><?= $csName ?></strong><br><a href="<?= htmlspecialchars($cs['url'] ?? '#', ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer"><?= $csHandle ?></a></li>
+                            <?php endforeach; ?>
+                        </ul>
                     </div>
-                    <?php endforeach; ?>
                     <?php endif; ?>
-                </div>
+                </aside>
             </div>
         </section>
     </main>

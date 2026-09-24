@@ -1,7 +1,6 @@
 /* Companion pages: editorial hierarchy, quiet motion, and useful archives. */
 .ui-collection .ui-main > .ui-section:first-child { position:relative; padding-bottom:2rem; border-bottom:1px solid var(--color-border); }
-.ui-collection .ui-main > .ui-section:first-child::after { content:''; display:block; width:4rem; height:2px; background:var(--color-ink-slate); margin-top:2rem; transform-origin:left; animation:collection-line .7s ease-out both; }
-@keyframes collection-line { from {transform:scaleX(0)} to {transform:scaleX(1)} }
+.ui-collection .ui-main > .ui-section:first-child::after { content:''; display:block; width:4rem; height:2px; background:var(--color-ink-slate); margin-top:2rem; }
 .ui-collection-tools { display:flex; flex-wrap:wrap; align-items:end; gap:1rem; margin:0 0 1.25rem; }
 .ui-collection-search { flex:1 1 240px; max-width:480px; }
 .ui-collection-search label { display:block; font-size:.8rem; font-weight:600; margin-bottom:.5rem; }
@@ -23,8 +22,7 @@
 .ui-collection .ui-stat-card { background:none; border:0; padding:0; text-align:left; }
 .ui-collection .ui-stat-value { font-size:1.5rem; }
 .ui-collection .ui-stat-label { font-size:.75rem; }
-.ui-collection .ui-more-card,.ui-collection .comedy-social-card,.ui-collection .ui-download-card { transition:background-color .2s,transform .2s; }
-@media(hover:hover){ .ui-collection .ui-more-card:hover,.ui-collection .comedy-social-card:hover { transform:translateY(-3px); } }
+.ui-collection .ui-more-card,.ui-collection .comedy-social-card,.ui-collection .ui-download-card { transition:background-color .2s; }
 .ui-collection-empty { padding:2rem 0; max-width:55ch; }
 .ui-collection-crosslinks { border-top:1px solid var(--color-border); display:flex; flex-wrap:wrap; gap:1rem 2rem; margin-top:2rem; padding-top:1.5rem; }
 .ui-collection-crosslinks a { display:inline-flex; align-items:center; min-height:44px; color:var(--color-ink-slate); text-underline-offset:4px; }

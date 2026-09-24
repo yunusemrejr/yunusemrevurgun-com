@@ -14,7 +14,7 @@ ui_render_head('Terms of Use', 'Terms for using yunusemrevurgun.com');
             <p class="ui-section-text">Last updated: <?= date('F d, Y') ?></p>
         </section>
         <section class="ui-section">
-            <article class="ui-glass-panel ui-rich-content">
+            <article class="ui-rich-content">
                 <h2>Agreement</h2>
                 <p>By using this website, you agree to these terms and applicable laws.</p>
                 <h2>Intellectual Property</h2>

@@ -85,7 +85,7 @@ ui_render_head($title, $description, $pageMeta);
         </section>
 
         <section class="ui-section">
-            <article class="ui-glass-panel">
+            <article>
                 <?php if (!empty($update['category']) || !empty($update['importance'])): ?>
                     <div class="ui-tags" style="margin-bottom: 1rem;">
                         <?php if (!empty($update['category'])): ?><span class="ui-tag"><?= htmlspecialchars($update['category']) ?></span><?php endif; ?>
@@ -94,9 +94,9 @@ ui_render_head($title, $description, $pageMeta);
                 <?php endif; ?>
                 <div class="ui-rich-content"><?= RichText::markdown($update['description'] ?? '') ?></div>
             </article>
-            <div class="ui-tags" style="margin-top: 1.5rem;">
-                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>updates">← Back to Updates</a>
-                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>updates.xml">RSS</a>
+            <div class="ui-doc-links">
+                <a href="<?= FULL_BASE_PATH ?>updates">← Back to Updates</a>
+                <a href="<?= FULL_BASE_PATH ?>updates.xml">RSS</a>
             </div>
         </section>
     </main>

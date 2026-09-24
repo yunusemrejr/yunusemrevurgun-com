@@ -102,16 +102,25 @@
  }
 }
 
-/* No author/pfp row on these cards — list cards get a left accent instead. */
-.ui-rmrp-card {
- background-color: var(--color-surface);
- padding: var(--space-6);
- border-left: 2px solid transparent;
- transition: border-color var(--transition-base);
+/* Divider-separated rows in list mode, flat bordered tiles in grid mode. */
+.ui-rmrp-grid.is-list {
+ border-bottom: 1px solid var(--color-border);
 }
 
-.ui-rmrp-card:hover {
- border-color: var(--color-accent);
+.ui-rmrp-grid.is-list .ui-rmrp-card {
+ background: transparent;
+ border-top: 1px solid var(--color-border);
+ padding: var(--space-6) 0;
+}
+
+.ui-rmrp-grid.is-grid .ui-rmrp-card {
+ background-color: var(--color-surface);
+ border: 1px solid var(--color-border);
+ padding: var(--space-6);
+}
+
+.ui-rmrp-card {
+ transition: border-color var(--transition-base);
 }
 
 .ui-rmrp-card .ui-feed-title a {
@@ -129,7 +138,7 @@
  font-family: var(--font-mono, ui-monospace, monospace);
  font-size: var(--text-xs);
  letter-spacing: 0.04em;
- color: var(--color-accent);
+ color: var(--color-ink-slate);
  margin: 0 0 var(--space-2);
 }
 

@@ -61,8 +61,15 @@ ui_render_head(
                                 <img class="ui-media" loading="lazy" decoding="async" src="<?= FULL_BASE_PATH . htmlspecialchars($project['image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>">
                             <?php endif; ?>
                             <h2 class="ui-project-title"><a href="#project-<?= (int)$project['id'] ?>"><?= htmlspecialchars($project['title']) ?></a></h2>
-                            <?php if (!empty($year)): ?>
-                                <p class="ui-card-meta" style="padding: 0 1.25rem;"><?= htmlspecialchars($year) ?></p>
+                            <?php
+                            $metaParts = array_filter([
+                                $isFeatured === '1' ? 'Featured' : null,
+                                $year !== '' ? $year : null,
+                                !empty($project['category']) ? $project['category'] : null,
+                            ]);
+                            ?>
+                            <?php if (!empty($metaParts)): ?>
+                                <p class="ui-project-meta"><?= htmlspecialchars(implode(' · ', $metaParts)) ?></p>
                             <?php endif; ?>
                             <?php if (!empty($project['description'])): ?>
                                 <p class="ui-project-desc"><?= nl2br(htmlspecialchars($project['description'])) ?></p>
@@ -79,7 +86,7 @@ ui_render_head(
                             <?php endif; ?>
 
                             <?php if (!empty($project['project_url']) || !empty($project['github_url'])): ?>
-                                <div style="padding: 0 1.25rem 1.25rem;">
+                                <div>
                                     <?php if (!empty($project['project_url'])): ?>
                                         <a class="ui-case-link" href="<?= htmlspecialchars($project['project_url']) ?>" target="_blank" rel="noopener noreferrer">View Project →</a>
                                     <?php else: ?>

@@ -9,14 +9,10 @@
 
     // UI Elements
     const mapEl = document.getElementById('travelMap');
-    const globeEl = document.getElementById('travelGlobe');
-    const toggleBtns = document.querySelectorAll('[data-view-toggle]');
     const countriesStat = document.getElementById('travelCountries');
     const milesStat = document.getElementById('travelMiles');
 
     let leafletMap = null;
-    let threeGlobe = null;
-    let activeView = '2d';
 
     // Helper: Haversine distance in miles
     function haversineMiles(lat1, lon1, lat2, lon2) {
@@ -229,186 +225,6 @@
         if (milesStat) milesStat.textContent = Math.round(totalMiles).toLocaleString();
     }
 
-    // ==================== 3D GLOBE ====================
-
-    function init3DGlobe() {
-        if (!window.THREE || threeGlobe) return;
-
-        const container = document.getElementById('travelGlobeCanvas');
-        if (!container) return;
-
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-        camera.position.z = 250;
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        container.appendChild(renderer.domElement);
-
-        const group = new THREE.Group();
-        scene.add(group);
-
-        const radius = 100;
-        const segments = 64;
-
-        const globeGeom = new THREE.SphereGeometry(radius, segments, segments);
-        const globeMat = new THREE.PointsMaterial({
-            color: 0x8490a4,
-            size: 1.5,
-            transparent: true,
-            opacity: 0.4
-        });
-        const globePoints = new THREE.Points(globeGeom, globeMat);
-        group.add(globePoints);
-
-        const glowGeom = new THREE.SphereGeometry(radius * 1.02, segments, segments);
-        const glowMat = new THREE.MeshBasicMaterial({
-            color: 0x8490a4,
-            transparent: true,
-            opacity: 0.05,
-            side: THREE.BackSide
-        });
-        const glow = new THREE.Mesh(glowGeom, glowMat);
-        group.add(glow);
-
-        const starGeom = new THREE.BufferGeometry();
-        const starPos = [];
-        for (var si = 0; si < 2000; si++) {
-            starPos.push((Math.random() - 0.5) * 2000);
-            starPos.push((Math.random() - 0.5) * 2000);
-            starPos.push((Math.random() - 0.5) * 2000);
-        }
-        starGeom.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 1.5, transparent: true, opacity: 0.5 });
-        const stars = new THREE.Points(starGeom, starMat);
-        scene.add(stars);
-
-        const markersGroup = new THREE.Group();
-        group.add(markersGroup);
-
-        function latLngToVector3(lat, lng, r) {
-            const phi = (90 - lat) * Math.PI / 180;
-            const theta = (lng + 180) * Math.PI / 180;
-            return new THREE.Vector3(
-                -(r * Math.sin(phi) * Math.cos(theta)),
-                r * Math.cos(phi),
-                r * Math.sin(phi) * Math.sin(theta)
-            );
-        }
-
-        const markerObjects = [];
-
-        locations.forEach((loc) => {
-            if (!loc.lat || !loc.lng) return;
-            const pos = latLngToVector3(loc.lat, loc.lng, radius);
-
-            const markerGeom = new THREE.SphereGeometry(2, 8, 8);
-            const markerMat = new THREE.MeshBasicMaterial({ color: 0x8490a4 });
-            const marker = new THREE.Mesh(markerGeom, markerMat);
-            marker.position.copy(pos);
-            marker.userData = { location: loc };
-            markersGroup.add(marker);
-            markerObjects.push(marker);
-
-            const auraGeom = new THREE.SphereGeometry(4, 8, 8);
-            const auraMat = new THREE.MeshBasicMaterial({ color: 0x8490a4, transparent: true, opacity: 0.2 });
-            const aura = new THREE.Mesh(auraGeom, auraMat);
-            aura.position.copy(pos);
-            markersGroup.add(aura);
-        });
-
-        let isDragging = false;
-        let hasDragged = false;
-        let previousMousePosition = { x: 0, y: 0 };
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        container.addEventListener('mousedown', () => {
-            isDragging = true;
-            hasDragged = false;
-        });
-
-        window.addEventListener('mouseup', (e) => {
-            if (isDragging && !hasDragged && e.target.closest('#travelGlobeCanvas')) {
-                const rect = renderer.domElement.getBoundingClientRect();
-                mouse.x = (e.clientX - rect.left) / rect.width * 2 - 1;
-                mouse.y = -(e.clientY - rect.top) / rect.height * 2 + 1;
-                raycaster.setFromCamera(mouse, camera);
-                const intersects = raycaster.intersectObjects(markerObjects);
-                if (intersects.length > 0) {
-                    openModal(intersects[0].object.userData.location);
-                }
-            }
-            isDragging = false;
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                hasDragged = true;
-                const deltaMove = {
-                    x: e.offsetX - previousMousePosition.x,
-                    y: e.offsetY - previousMousePosition.y
-                };
-                const q = new THREE.Quaternion()
-                    .setFromEuler(new THREE.Euler(
-                        deltaMove.y * Math.PI / 180 * 0.5,
-                        deltaMove.x * Math.PI / 180 * 0.5,
-                        0, 'XYZ'
-                    ));
-                group.quaternion.multiplyQuaternions(q, group.quaternion);
-            }
-            previousMousePosition = { x: e.offsetX, y: e.offsetY };
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            if (!isDragging) group.rotation.y += 0.002;
-            var time = Date.now() * 0.005;
-            markersGroup.children.forEach((child, i) => {
-                if (child.geometry && child.geometry.type === 'SphereGeometry') {
-                    var s = 1 + Math.sin(time + i) * 0.1;
-                    child.scale.set(s, s, s);
-                }
-            });
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            var w = container.clientWidth;
-            var h = container.clientHeight;
-            renderer.setSize(w, h);
-            camera.aspect = w / h;
-            camera.updateProjectionMatrix();
-        });
-
-        threeGlobe = { scene: scene, renderer: renderer, group: group };
-    }
-
-    // Toggle 2D / 3D
-    function setupToggle() {
-        toggleBtns.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const view = btn.dataset.viewToggle;
-                if (view === activeView) return;
-                activeView = view;
-                toggleBtns.forEach((b) => { b.classList.toggle('is-active', b === btn); });
-                if (view === '2d') {
-                    mapEl.classList.remove('is-hidden');
-                    globeEl.classList.add('is-hidden');
-                    if (leafletMap) leafletMap.invalidateSize();
-                } else {
-                    globeEl.classList.remove('is-hidden');
-                    mapEl.classList.add('is-hidden');
-                    if (!threeGlobe) init3DGlobe();
-                }
-            });
-        });
-    }
 
     // ==================== LIGHTBOX EVENT BINDINGS ====================
 
@@ -465,7 +281,6 @@
     function init() {
         initModalClose();
         init2DMap();
-        setupToggle();
         initLightbox();
         setupLightboxEvents();
     }
