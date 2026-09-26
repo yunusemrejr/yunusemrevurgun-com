@@ -206,20 +206,24 @@ $pageScripts = '
     var csrf = document.querySelector("meta[name=\'csrf-token\']");
     var csrfToken = csrf ? csrf.getAttribute("content") : "";
 
-    function postForm(url, formData, onOk) {
+    function postForm(url, formData, onOk, onFail) {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        function fail(message) {
+            alert(message);
+            if (typeof onFail === "function") onFail();
+        }
         xhr.addEventListener("load", function() {
             try {
                 var resp = JSON.parse(xhr.responseText);
                 if (resp.success) { onOk(resp); }
-                else { alert("Failed: " + (resp.message || "Unknown error")); }
+                else { fail("Failed: " + (resp.message || "Unknown error")); }
             } catch(e) {
-                alert("Request failed.");
+                fail("Request failed.");
             }
         });
-        xhr.addEventListener("error", function() { alert("Request failed due to network error."); });
+        xhr.addEventListener("error", function() { fail("Request failed due to network error."); });
         xhr.send(formData);
     }
 
@@ -260,10 +264,10 @@ $pageScripts = '
         if (e.target === uploadModal) closeUploadModal();
     });
 
-    function escapeHtml(s) {
-        return String(s).replace(/[&<>"\']/g, function(c) {
-            return {"&":"&amp;","<":"&lt;",">":"&gt;","\\\"":"&quot;","\\u0027":"&#39;"}[c];
-        });
+    function escapeHtml(text) {
+        var div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     slopInput.addEventListener("change", function() {
@@ -391,9 +395,10 @@ $pageScripts = '
         postForm("' . FULL_BASE_PATH . 'api/admin/slop/update.php", formData, function() {
             closeEditModal();
             location.reload();
+        }, function() {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Save Changes";
         });
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Save Changes";
     });
 
     // --- Row actions ---
@@ -431,8 +436,9 @@ $pageScripts = '
             formData.append("csrf_token", csrfToken);
             postForm("' . FULL_BASE_PATH . 'api/admin/slop/update.php", formData, function() {
                 location.reload();
+            }, function() {
+                seedBtn.disabled = false;
             });
-            seedBtn.disabled = false;
         });
     }
 })();
