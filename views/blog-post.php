@@ -105,15 +105,7 @@ ui_render_head(
                         <img src="<?= FULL_BASE_PATH . htmlspecialchars($post['featured_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
                     </figure>
                 <?php endif; ?>
-                <?php
-                // Long posts earn one quiet mid-article aside: the reader is
-                // already engaged with the topic the book develops.
-                $articleHtml = ui_sanitize_html($post['content'] ?? '');
-                if ($wordCount >= 500) {
-                    $articleHtml = ebook_inject_mid_article($articleHtml);
-                }
-                ?>
-                <div class="ui-rich-content"><?= $articleHtml ?></div>
+                <div class="ui-rich-content"><?= ui_sanitize_html($post['content'] ?? '') ?></div>
             </article>
             <div class="ui-doc-links">
                 <a href="<?= FULL_BASE_PATH ?>blog">← Back to Blog</a>

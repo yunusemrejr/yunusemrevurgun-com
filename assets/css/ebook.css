@@ -240,34 +240,6 @@ body:has(.ebook-notice:not([hidden])) .ui-landing-main {
   color: var(--color-accent-hover);
 }
 
-/* Compact mid-article variant: one short paragraph, top rule only. */
-.ebook-aside--compact {
-  border-bottom: 0;
-  padding: var(--space-5) 0;
-  font-size: var(--text-sm);
-  line-height: 1.7;
-  color: var(--color-ink-body);
-}
-
-.ebook-aside--compact .ebook-aside-marker {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  margin-right: var(--space-2);
-}
-
-.ebook-aside--compact a {
-  color: var(--color-ink-body);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.ebook-aside--compact a:hover {
-  color: var(--color-accent-hover);
-}
-
 /* ---- Quiet single-line placements (indexes, states, guides) ---- */
 .ebook-line {
   margin: var(--space-8) 0 0;

@@ -119,19 +119,12 @@ if (!function_exists('ui_render_ebook_feature')) {
 if (!function_exists('ui_render_ebook_aside')) {
     /**
      * Ruled editorial aside for article-adjacent contexts.
-     * $variant: 'article' (end of a journal post), 'mid' (compact paragraph
-     * injected into long posts), 'post-code', 'downloads'.
+     * $variant: 'article' (end of a journal post), 'post-code', 'downloads'.
+     * No mid-article injection: the journal's posts are one-minute reads,
+     * where an interruption would overpower the content it sits in.
      */
     function ui_render_ebook_aside(string $variant = 'article'): void
     {
-        if ($variant === 'mid') {
-            ?>
-<aside class="ebook-aside--compact" aria-label="Author's note">
-    <p><span class="ebook-aside-marker">On this topic</span> I wrote a 240-page ebook developing this larger question — <a <?= ebook_link_attrs() ?>><?= htmlspecialchars(EBOOK_TITLE) ?> (PDF + EPUB) →</a></p>
-</aside>
-<?php
-            return;
-        }
         $copy = [
             'article' => [
                 'eyebrow' => 'From the author',
@@ -181,23 +174,5 @@ if (!function_exists('ui_render_ebook_line')) {
         ?>
 <p class="ebook-line<?= $plain ? ' ebook-line--plain' : '' ?>"><?= $text ?> <a <?= ebook_link_attrs() ?>>Get it on Gumroad →</a></p>
 <?php
-    }
-}
-
-if (!function_exists('ebook_inject_mid_article')) {
-    /**
-     * Insert the compact aside after the third paragraph of a long post.
-     * Returns the HTML unchanged when there are too few paragraphs.
-     */
-    function ebook_inject_mid_article(string $html): string
-    {
-        $parts = explode('</p>', $html);
-        if (count($parts) < 6) {
-            return $html;
-        }
-        ob_start();
-        ui_render_ebook_aside('mid');
-        $parts[2] .= (string) ob_get_clean();
-        return implode('</p>', $parts);
     }
 }
