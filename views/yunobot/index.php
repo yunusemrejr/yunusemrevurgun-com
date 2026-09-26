@@ -79,6 +79,7 @@ ui_render_head(
                 <h2>Start with something specific.</h2>
                 <p>A project name, a question about my background, or a topic from the journal gives YunoBot a useful starting point.</p>
                 <ul><li>Ask in English, Turkish, or both.</li><li>Check the linked source for context.</li><li>Use Clear to start a new conversation.</li></ul>
+                <?php ui_render_ebook_line('yunobot', true); ?>
                 <details><summary>How it works &amp; privacy</summary><p>A C++ WebAssembly core classifies questions, searches public sources and keeps conversation context. Casual replies use reviewed sentence parts; factual answers quote or link their sources. It can still misunderstand a question.</p><p>The model and public source index load with the page. Chat messages stay in browser memory and are not sent to an AI service. Source links open the relevant page.</p></details>
             </aside>
         </section>

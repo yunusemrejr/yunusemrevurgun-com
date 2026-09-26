@@ -2,6 +2,7 @@
 // Socials model backs the site footer's social list (and /contact, /more,
 // home JSON-LD). Loaded once; the class definition itself is inert until used.
 require_once dirname(__DIR__) . '/../models/Socials.php';
+require_once __DIR__ . '/ebook.php';
 
 if (!function_exists('ui_render_head')) {
     function ui_render_head(string $title, string $description, array $extraMeta = []): void
@@ -111,6 +112,7 @@ if (!function_exists('ui_render_head')) {
     <?php endif; ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/variables.css?v=<?= filemtime(__DIR__ . '/../../assets/css/variables.css') ?>">
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ui-rebuild.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ui-rebuild.css') ?>">
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ebook.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ebook.css') ?>">
     <?php if (isset($extraMeta['yunobot']) && $extraMeta['yunobot']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/yunobot.css?v=<?= filemtime(__DIR__ . '/../../assets/css/yunobot.css') ?>">
     <?php endif; ?>
@@ -179,6 +181,7 @@ if (!function_exists('ui_render_navbar')) {
         ?>
 <a class="ui-skip-link" href="#main-content">Skip to content</a>
 <header class="ui-navbar-wrap">
+    <?php ui_render_ebook_notice(); ?>
     <nav class="ui-navbar" aria-label="Main">
         <div class="ui-nav-left">
             <a class="ui-wordmark" href="<?= FULL_BASE_PATH ?>">Yemre</a>
@@ -218,6 +221,7 @@ if (!function_exists('ui_render_navbar')) {
                 <li><a href="<?= htmlspecialchars($item['href']) ?>" data-mobile-menu-close><?= htmlspecialchars($item['label']) ?></a></li>
             <?php endforeach; ?>
             <li><a href="<?= FULL_BASE_PATH ?>more" data-mobile-menu-close aria-label="More pages">More</a></li>
+            <li><a href="<?= EBOOK_URL ?>" target="_blank" rel="noopener noreferrer">Book ↗</a></li>
         </ul>
     </div>
 </div>
@@ -346,6 +350,7 @@ if (!function_exists('ui_render_footer')) {
             </ul>
             <?php endif; ?>
             <ul class="ui-footer-list" role="list">
+                <li><a href="<?= EBOOK_URL ?>" target="_blank" rel="noopener noreferrer">How to Remain Valuable (ebook)</a></li>
                 <li><a href="https://theknowledgeproject.gumroad.com/" target="_blank" rel="noopener noreferrer">Books</a></li>
             </ul>
         </nav>

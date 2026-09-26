@@ -174,6 +174,7 @@ ui_render_head(
             </a>
         </div>
     </section>
+    <?php ui_render_ebook_feature(); ?>
     <?php if ($latestWriting): ?>
     <section class="ui-section">
         <h2 class="ui-section-title">Latest writing</h2>
@@ -201,6 +202,7 @@ ui_render_head(
                 <li><a href="<?= htmlspecialchars($item['href']) ?>"><?= htmlspecialchars($item['label']) ?></a></li>
                 <?php endforeach; ?>
                 <li><a href="<?= FULL_BASE_PATH ?>more">More</a></li>
+                <li><a href="<?= EBOOK_URL ?>" target="_blank" rel="noopener noreferrer">Book ↗</a></li>
             </ul>
         </nav>
         <p class="ui-landing-footer-copy">© <?= date('Y') ?> Yemre. All rights reserved.</p>

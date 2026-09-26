@@ -69,6 +69,8 @@ ui_render_head(
                     <?php endforeach; ?>
                 </div>
 
+                <?php ui_render_ebook_line('blog-index'); ?>
+
                 <?php if ($totalPages > 1): ?>
                     <nav class="ui-pagination" aria-label="Blog pagination">
                         <?php if ($currentPage > 1): ?>

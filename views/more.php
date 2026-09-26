@@ -58,6 +58,13 @@ $morePages = [
         'description' => 'Single-file HTML pages with 3D things in them.',
         'icon' => '◈',
     ],
+    [
+        'title' => 'The Book',
+        'href' => EBOOK_URL,
+        'description' => 'How to Remain Valuable When Intelligence Becomes Cheap — the 240-page ebook on staying valuable as AI advances. On Gumroad ↗',
+        'icon' => '§',
+        'external' => true,
+    ],
 ];
 
 
@@ -81,7 +88,7 @@ ui_render_head(
         <section class="ui-section">
             <div class="ui-more-grid">
                 <?php foreach ($morePages as $page): ?>
-                    <a class="ui-more-card" href="<?= htmlspecialchars($page['href']) ?>">
+                    <a class="ui-more-card" href="<?= htmlspecialchars($page['href']) ?>"<?= !empty($page['external']) ? ' target="_blank" rel="noopener noreferrer"' : '' ?>>
                         <span class="ui-more-icon" aria-hidden="true"><?= htmlspecialchars($page['icon']) ?></span>
                         <h2 class="ui-more-title"><?= htmlspecialchars($page['title']) ?></h2>
                         <p class="ui-more-desc"><?= htmlspecialchars($page['description']) ?></p>

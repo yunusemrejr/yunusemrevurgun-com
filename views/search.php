@@ -74,6 +74,7 @@ ui_render_head(
                 <div class="ui-empty">Invalid query. Use 2-60 letters, numbers, or spaces.</div>
             <?php elseif ($totalResults === 0): ?>
                 <div class="ui-empty">No results found for "<?= htmlspecialchars($sanitizedQuery) ?>".</div>
+                <?php ui_render_ebook_line('search'); ?>
             <?php else: ?>
                 <p class="ui-search-count">
                     Found <?= $totalResults ?> result<?= $totalResults === 1 ? '' : 's' ?> for "<?= htmlspecialchars($sanitizedQuery) ?>".

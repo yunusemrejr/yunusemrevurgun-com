@@ -88,6 +88,10 @@ ui_render_head(
                 </div>
             <?php endif; ?>
         </section>
+
+        <section class="ui-section">
+            <?php ui_render_ebook_aside('downloads'); ?>
+        </section>
     </main>
 
     <?php ui_render_footer(); ?>

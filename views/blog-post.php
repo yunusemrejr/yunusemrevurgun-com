@@ -105,7 +105,15 @@ ui_render_head(
                         <img src="<?= FULL_BASE_PATH . htmlspecialchars($post['featured_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
                     </figure>
                 <?php endif; ?>
-                <div class="ui-rich-content"><?= ui_sanitize_html($post['content'] ?? '') ?></div>
+                <?php
+                // Long posts earn one quiet mid-article aside: the reader is
+                // already engaged with the topic the book develops.
+                $articleHtml = ui_sanitize_html($post['content'] ?? '');
+                if ($wordCount >= 500) {
+                    $articleHtml = ebook_inject_mid_article($articleHtml);
+                }
+                ?>
+                <div class="ui-rich-content"><?= $articleHtml ?></div>
             </article>
             <div class="ui-doc-links">
                 <a href="<?= FULL_BASE_PATH ?>blog">← Back to Blog</a>
@@ -125,6 +133,10 @@ ui_render_head(
             static fn(array $p): bool => ($p['slug'] ?? '') !== $slug && ($p['slug'] ?? '') !== ''
         ));
         ?>
+        <section class="ui-section">
+            <?php ui_render_ebook_aside('article'); ?>
+        </section>
+
         <?php if ($morePosts !== []): ?>
         <section class="ui-section">
             <h2 class="ui-section-title">Keep reading</h2>

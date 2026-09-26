@@ -43,6 +43,7 @@ ui_render_head('404 | Page Not Found', 'The page you requested was not found.', 
                     <p class="ui-more-desc">YunoBot, travel, gallery, music, videos, downloads, comedy, science corner.</p>
                 </a>
             </div>
+            <?php ui_render_ebook_line('missing'); ?>
         </section>
     </main>
     <?php ui_render_footer(); ?>

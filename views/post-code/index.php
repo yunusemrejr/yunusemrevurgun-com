@@ -327,6 +327,10 @@ ui_render_head(
 
             <div class="ui-collection-empty" data-collection-empty hidden><p>No entries match. Try a shorter phrase or clear the filters.</p><button type="button" class="ui-btn ui-btn-secondary" data-collection-reset>Clear filters</button></div>
         </section>
+
+        <section class="ui-section">
+            <?php ui_render_ebook_aside('post-code'); ?>
+        </section>
     </main>
 
     <?php ui_render_footer(); ?>

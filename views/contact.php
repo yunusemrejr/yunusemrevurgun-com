@@ -187,6 +187,7 @@ ui_render_head(
                     <?php if ($success): ?>
                         <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, var(--color-success-bg) 0%, var(--color-surface) 100%); border: 1px solid var(--color-success-border); border-radius: var(--radius-lg);">
                             <p style="color: var(--color-ink-body);">Thank you. Your message has been sent.</p>
+                            <?php ui_render_ebook_line('contact', true); ?>
                         </div>
                     <?php endif; ?>
                     <?php if ($error): ?>
