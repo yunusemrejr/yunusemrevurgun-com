@@ -104,7 +104,7 @@ if (!function_exists('ui_render_head')) {
     <link rel="apple-touch-icon" href="<?= $touchIconUrl ?>">
     <meta name="msapplication-TileImage" content="<?= $touchIconUrl ?>">
     <link rel="mask-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg" color="#e0a33f">
-    <?php $collectionPage = in_array(trim($requestPath, '/'), ['post-code','science-corner','comedy','music','videos','downloads','more','rmrp'], true); ?>
+    <?php $collectionPage = in_array(trim($requestPath, '/'), ['post-code','science-corner','comedy','music','videos','downloads','slop','more','rmrp'], true); ?>
     <?php if ($collectionPage): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/collections.css?v=<?= filemtime(__DIR__ . '/../../assets/css/collections.css') ?>">
     <script src="<?= FULL_BASE_PATH ?>assets/js/collections.js?v=<?= filemtime(__DIR__ . '/../../assets/js/collections.js') ?>" defer></script>

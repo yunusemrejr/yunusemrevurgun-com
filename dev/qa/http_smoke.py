@@ -18,7 +18,7 @@ def get(path, data=None, headers=None):
  except urllib.error.HTTPError as error:r=error
  return r.status,r.headers,r.read().decode('utf-8')
 checks=0
-routes=['/','/about','/portfolio','/blog','/gallery','/travel','/updates','/rmrp','/contact','/more','/music','/videos','/downloads','/yunobot','/post-code','/science-corner','/comedy','/sitemap','/search','/privacy','/terms','/cookies']
+routes=['/','/about','/portfolio','/blog','/gallery','/travel','/updates','/rmrp','/contact','/more','/music','/videos','/downloads','/slop','/yunobot','/post-code','/science-corner','/comedy','/sitemap','/search','/privacy','/terms','/cookies']
 for path in routes:
  status,headers,html=get(path);p=Page();p.feed(html)
  assert status==200,(path,status)
@@ -27,7 +27,7 @@ for path in routes:
  assert len(p.canonical)==1,(path,'canonical')
  assert 'Fatal error' not in html and 'Uncaught Exception' not in html,path
  checks+=1
-for path in ['/404','/not-a-real-page','/blog/not-a-real-post','/blog?page=999999','/updates?page=999999']:
+for path in ['/404','/not-a-real-page','/blog/not-a-real-post','/slop/not-a-real-slop','/blog?page=999999','/updates?page=999999']:
  status,_,html=get(path);assert status==404,(path,status);assert 'noindex,follow' in html,path;checks+=1
 for path in ['/sitemap.xml','/blog.xml','/updates.xml','/rmrp.xml']:
  status,_,xml=get(path);assert status==200,(path,status);ET.fromstring(xml);checks+=1
@@ -53,7 +53,7 @@ assert 'Security token expired' in html,(status,'blocked submission did not repo
 assert 'Failed to send message' not in html and 'message has been sent' not in html,'blocked submission reached the mailer'
 checks+=1
 get('/dev/tests/login_as_admin.php?to=/admin/dashboard')
-admin=['dashboard','blog','blog/create','portfolio','portfolio/create','gallery','updates','updates/create','updates/edit?id=23','rmrp','rmrp/create','music','videos','downloads','socials','travel','settings','tracker-codes','tracker-codes/create','search']
+admin=['dashboard','blog','blog/create','portfolio','portfolio/create','gallery','updates','updates/create','updates/edit?id=23','rmrp','rmrp/create','music','videos','downloads','slop','socials','travel','settings','tracker-codes','tracker-codes/create','search']
 for path in admin:
  status,headers,html=get('/admin/'+path);p=Page();p.feed(html)
  assert status==200,(path,status)

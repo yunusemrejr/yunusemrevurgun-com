@@ -18,10 +18,10 @@ class Sitemap {
         $urlset = $xml->createElement('urlset');
         $urlset->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $xml->appendChild($urlset);
-        $staticPages = ['', 'about', 'portfolio', 'blog', 'gallery', 'travel', 'updates', 'rmrp', 'contact', 'music', 'videos', 'downloads', 'yunobot', 'post-code', 'science-corner', 'comedy', 'more', 'sitemap', 'privacy', 'terms', 'cookies'];
+        $staticPages = ['', 'about', 'portfolio', 'blog', 'gallery', 'travel', 'updates', 'rmrp', 'contact', 'music', 'videos', 'downloads', 'slop', 'yunobot', 'post-code', 'science-corner', 'comedy', 'more', 'sitemap', 'privacy', 'terms', 'cookies'];
         foreach ($staticPages as $page) {
             // Listing pages depend on database content, not the template timestamp.
-            $modified = in_array($page, ['', 'portfolio', 'blog', 'gallery', 'travel', 'updates', 'rmrp', 'music', 'videos', 'downloads', 'more'], true)
+            $modified = in_array($page, ['', 'portfolio', 'blog', 'gallery', 'travel', 'updates', 'rmrp', 'music', 'videos', 'downloads', 'slop', 'more'], true)
                 ? null : $this->staticPageModified($page);
             $this->addUrl($xml, $urlset, $page, $modified);
         }
@@ -29,6 +29,7 @@ class Sitemap {
             ['blog', "SELECT slug AS path, COALESCE(updated_at, created_at) AS lastmod FROM blog_posts WHERE status = 'published' ORDER BY created_at DESC"],
             ['updates', 'SELECT id AS path, COALESCE(updated_at, created_at) AS lastmod FROM updates ORDER BY created_at DESC'],
             ['rmrp', 'SELECT id AS path, COALESCE(updated_at, created_at) AS lastmod FROM rmrp_memories ORDER BY created_at DESC'],
+            ['slop', 'SELECT slug AS path, COALESCE(updated_at, created_at) AS lastmod FROM slop_pages ORDER BY created_at DESC'],
         ] as [$section, $query]) {
             try {
                 $statement = $this->db->query($query);

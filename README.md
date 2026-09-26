@@ -29,12 +29,12 @@ Personal website and publishing tools. Server-rendered PHP; no application frame
 | Work | `/portfolio`; database projects with filters, technology lists and stable `#project-ID` anchors |
 | Writing | `/blog`, `/blog/SLUG`; published posts, paginated list, author/reading details and related writing |
 | Personal archive | `/updates`, `/updates/ID`, `/rmrp`, `/rmrp/ID`; paginated entries and individual detail pages |
-| Media | `/gallery`, `/travel`, `/music`, `/videos`, `/downloads` |
+| Media | `/gallery`, `/travel`, `/music`, `/videos`, `/downloads`, `/slop`, `/slop/SLUG` |
 | Interests | `/post-code`, `/science-corner`, `/comedy`, `/yunobot` |
 | Discovery | `/more`, `/search`, `/sitemap`; search results are noindex |
 | Policies/errors | `/privacy`, `/terms`, `/cookies`, `/404`; unknown URLs return 404, maintenance returns 503 |
 | Machine-readable | `/sitemap.xml`, `/blog.xml`, `/updates.xml`, `/rmrp.xml`, `/llms.txt`, `/robots.txt` |
-| Admin | Login/logout, dashboard, blog, updates, memories, portfolio, gallery/albums, travel/photos, music/links, videos, downloads, socials, settings, tracker codes, search and export |
+| Admin | Login/logout, dashboard, blog, updates, memories, portfolio, gallery/albums, travel/photos, music/links, videos, downloads, slop, socials, settings, tracker codes, search and export |
 
 The homepage's latest-writing section is populated only from published database entries. No invented projects, testimonials, statistics or biography were added.
 

@@ -33,6 +33,7 @@ require_once dirname(__DIR__, 2) . '/models/Music.php';
 require_once dirname(__DIR__, 2) . '/models/Travel.php';
 require_once dirname(__DIR__, 2) . '/models/Videos.php';
 require_once dirname(__DIR__, 2) . '/models/Downloads.php';
+require_once dirname(__DIR__, 2) . '/models/Slop.php';
 require_once dirname(__DIR__, 2) . '/models/Settings.php';
 
 $blog = new Blog();
@@ -44,6 +45,7 @@ $music = new Music();
 $travel = new Travel();
 $videos = new Videos();
 $downloads = new Downloads();
+$slop = new Slop();
 $settings = new Settings();
 
 // Create a temp directory for the export
@@ -102,6 +104,10 @@ try {
     // Downloads (metadata only — binaries live on GitHub)
     $allDownloads = $downloads->getAllDownloads();
     file_put_contents($dataDir . '/downloads.json', json_encode($allDownloads, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+    // Quality 3D AI Slop entries (files copied below)
+    $allSlops = $slop->getAllSlops();
+    file_put_contents($dataDir . '/slop-pages.json', json_encode($allSlops, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
     // Travel
     $travelLocations = $travel->getAllLocations();
@@ -173,6 +179,11 @@ try {
     // Download thumbnails
     if (is_dir($rootDir . '/uploads/downloads')) {
         copyDir($rootDir . '/uploads/downloads', $exportDir . '/uploads/downloads');
+    }
+
+    // Slop HTML files
+    if (is_dir($rootDir . '/uploads/slop')) {
+        copyDir($rootDir . '/uploads/slop', $exportDir . '/uploads/slop');
     }
 
     // Static assets (only travel images that might be referenced)

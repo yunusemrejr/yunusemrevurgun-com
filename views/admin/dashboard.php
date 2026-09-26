@@ -21,6 +21,7 @@ require_once __DIR__ . '/../../models/Portfolio.php';
 require_once __DIR__ . '/../../models/Music.php';
 require_once __DIR__ . '/../../models/Videos.php';
 require_once __DIR__ . '/../../models/Downloads.php';
+require_once __DIR__ . '/../../models/Slop.php';
 require_once __DIR__ . '/../../models/Socials.php';
 Auth::checkLogin();
 
@@ -47,6 +48,7 @@ $totalProjects = $portfolio->getTotalProjects();
 $totalTracks = $music->getTotalActiveTracks();
 $totalVideos = $videos->getTotalActiveVideos();
 $totalDownloads = $downloads->getTotalDownloads();
+$totalSlops = (new Slop())->getTotalSlops();
 $totalSocials = $socials->getTotal();
 
 $page = "dashboard";
@@ -110,6 +112,13 @@ include __DIR__ . '/includes/header.php';
             <h3 class="admin-stat-number"><?= $totalDownloads ?></h3>
             <p class="admin-stat-label">Downloads</p>
             <a href="<?= FULL_BASE_PATH ?>admin/downloads" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
+        </div>
+
+        <div class="admin-stat-card">
+            <i class="bi bi-box admin-stat-icon"></i>
+            <h3 class="admin-stat-number"><?= $totalSlops ?></h3>
+            <p class="admin-stat-label">3D Slops</p>
+            <a href="<?= FULL_BASE_PATH ?>admin/slop" class="admin-btn admin-btn-primary admin-btn-sm">Manage</a>
         </div>
 
         <div class="admin-stat-card">

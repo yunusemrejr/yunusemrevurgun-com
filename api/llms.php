@@ -92,6 +92,7 @@ echo "- {$base}/more\n";
 echo "- {$base}/downloads\n";
 echo "- {$base}/music\n";
 echo "- {$base}/videos\n";
+echo "- {$base}/slop\n";
 echo "- {$base}/comedy\n";
 echo "- {$base}/post-code\n";
 echo "- {$base}/science-corner\n";

@@ -52,6 +52,12 @@ $morePages = [
         'description' => 'Desktop and offline apps from my personal projects, hosted on GitHub.',
         'icon' => '↓',
     ],
+    [
+        'title' => 'Quality 3D AI Slop',
+        'href' => FULL_BASE_PATH . 'slop',
+        'description' => 'Single-file HTML pages with 3D things in them.',
+        'icon' => '◈',
+    ],
 ];
 
 

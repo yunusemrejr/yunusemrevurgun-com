@@ -23,6 +23,7 @@ class Router {
         'yunobot' => 'views/yunobot/index.php',
         'videos' => 'views/videos/index.php',
         'downloads' => 'views/downloads/index.php',
+        'slop' => 'views/slop/index.php',
         'more' => 'views/more.php',
         'admin/login' => 'views/admin/login.php',
         'admin' => 'views/admin/login.php',
@@ -72,6 +73,7 @@ class Router {
         'admin/travel' => 'views/admin/travel/index.php',
         'admin/videos' => 'views/admin/videos/index.php',
         'admin/downloads' => 'views/admin/downloads/index.php',
+        'admin/slop' => 'views/admin/slop/index.php',
         'admin/socials' => 'views/admin/socials/index.php',
     ];
 
@@ -260,6 +262,32 @@ class Router {
             }
         }
 
+        // Check if this is an individual slop page URL
+        if (strpos($url, 'slop/') === 0) {
+            $slug = trim(substr($url, strlen('slop/')), '/');
+
+            if ($slug !== '' && preg_match('#^[a-z0-9-]+$#', $slug)) {
+                require_once dirname(__DIR__) . '/models/Slop.php';
+                $slopModel = new Slop();
+
+                if (getenv('MODE') === 'development') {
+                    error_log("Router: Processing slop page URL, slug: " . $slug);
+                }
+
+                $slop = $slopModel->getSlopBySlug($slug);
+
+                if ($slop) {
+                    $GLOBALS['current_slop'] = $slop;
+                    require_once dirname(__DIR__) . '/views/slop/single.php';
+                    return;
+                }
+            }
+
+            $notFoundPath = dirname(__DIR__) . '/' . $this->routes['404'];
+            require_once $notFoundPath;
+            return;
+        }
+
         // Route to appropriate page FIRST (before including header/footer)
         // Handle admin pages early to prevent header/footer inclusion
         if (array_key_exists($url, $this->routes)) {
@@ -290,7 +318,7 @@ class Router {
         }
 
         // Pages that manage their own layout via ui.php functions
-        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'rmrp', 'blog', 'post-code', 'science-corner', 'yunobot', 'videos', 'downloads', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
+        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'rmrp', 'blog', 'post-code', 'science-corner', 'yunobot', 'videos', 'downloads', 'slop', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
         $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
 
         // Layout is self-contained via ui.php functions; no separate header/footer files
