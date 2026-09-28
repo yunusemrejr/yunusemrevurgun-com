@@ -21,6 +21,7 @@ class Router {
         'post-code' => 'views/post-code/index.php',
         'science-corner' => 'views/science-corner/index.php',
         'yunobot' => 'views/yunobot/index.php',
+        'gemmaclaim' => 'views/gemmaclaim/index.php',
         'videos' => 'views/videos/index.php',
         'downloads' => 'views/downloads/index.php',
         'slop' => 'views/slop/index.php',
@@ -318,7 +319,7 @@ class Router {
         }
 
         // Pages that manage their own layout via ui.php functions
-        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'rmrp', 'blog', 'post-code', 'science-corner', 'yunobot', 'videos', 'downloads', 'slop', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
+        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'rmrp', 'blog', 'post-code', 'science-corner', 'yunobot', 'gemmaclaim', 'videos', 'downloads', 'slop', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
         $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
 
         // Layout is self-contained via ui.php functions; no separate header/footer files

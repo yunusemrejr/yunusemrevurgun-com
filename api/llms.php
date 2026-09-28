@@ -93,6 +93,7 @@ echo "- {$base}/rmrp\n";
 echo "- {$base}/travel\n";
 echo "- {$base}/gallery\n";
 echo "- {$base}/yunobot\n";
+echo "- {$base}/gemmaclaim\n";
 echo "- {$base}/contact\n";
 echo "- {$base}/more\n";
 echo "- {$base}/downloads\n";

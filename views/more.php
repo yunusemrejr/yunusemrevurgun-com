@@ -11,6 +11,12 @@ $morePages = [
         'icon' => '>',
     ],
     [
+        'title' => 'Claim Splitter',
+        'href' => FULL_BASE_PATH . 'gemmaclaim',
+        'description' => 'Paste a claim and a 270M model splits it into premises and assumptions, in your browser.',
+        'icon' => '▚',
+    ],
+    [
         'title' => 'Post-Code',
         'href' => FULL_BASE_PATH . 'post-code',
         'description' => 'Concepts and mathematics foundations for post-code era computing.',

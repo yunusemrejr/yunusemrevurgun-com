@@ -30,7 +30,7 @@ Personal website and publishing tools. Server-rendered PHP; no application frame
 | Writing | `/blog`, `/blog/SLUG`; published posts, paginated list, author/reading details and related writing |
 | Personal archive | `/updates`, `/updates/ID`, `/rmrp`, `/rmrp/ID`; paginated entries and individual detail pages |
 | Media | `/gallery`, `/travel`, `/music`, `/videos`, `/downloads`, `/slop`, `/slop/SLUG` |
-| Interests | `/post-code`, `/science-corner`, `/comedy`, `/yunobot` |
+| Interests | `/post-code`, `/science-corner`, `/comedy`, `/yunobot`, `/gemmaclaim` (Claim Splitter: in-browser GemmaClaim-270M via vendored wllama; model streams from Hugging Face, so CSP `connect-src` allows `*.hf.co`) |
 | Discovery | `/more`, `/search`, `/sitemap`; search results are noindex |
 | Policies/errors | `/privacy`, `/terms`, `/cookies`, `/404`; unknown URLs return 404, maintenance returns 503 |
 | Machine-readable | `/sitemap.xml`, `/blog.xml`, `/updates.xml`, `/rmrp.xml`, `/llms.txt`, `/robots.txt` |
