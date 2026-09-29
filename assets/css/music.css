@@ -398,3 +398,85 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   JELLY SYSTEM — rounded, cream tiles; Fredoka for titles.
+   ============================================================ */
+.ui-music-track {
+  background: var(--color-bg-card);
+  border: 0;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+}
+
+.ui-music-track:hover {
+  background: var(--color-bg-card);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.ui-music-track.is-active {
+  background: var(--color-bg-card);
+  box-shadow: 0 0 0 3px var(--color-jelly), var(--shadow-md);
+}
+
+.ui-music-track-cover {
+  border: 0;
+  border-radius: var(--radius-md);
+}
+
+.ui-music-play-btn,
+.ui-music-player-btn {
+  border: 2px solid var(--color-navy);
+  border-radius: var(--radius-full);
+  color: var(--color-navy);
+  background: var(--color-bg-card);
+}
+
+.ui-music-play-btn:hover,
+.ui-music-track.is-active .ui-music-play-btn:hover {
+  background: var(--color-jelly);
+  border-color: var(--color-jelly);
+  color: #fff;
+}
+
+.ui-music-track.is-active .ui-music-play-btn {
+  border-color: var(--color-jelly);
+  color: var(--color-jelly);
+}
+
+.ui-music-link-card {
+  border: 0;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+}
+
+.ui-music-link-card:hover {
+  background: var(--color-bg-card);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.ui-music-link-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-base);
+}
+
+.ui-music-link-desc {
+  font-size: var(--text-sm);
+}
+
+.ui-music-link-platform {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-music-track:hover,
+  .ui-music-link-card:hover { transform: none; }
+}
