@@ -6,12 +6,35 @@ feature extraction, both classifiers, source ranking, response selection/composi
 arithmetic and dialogue state run in C++.
 
 The core combines the existing 96-dimensional int8 embedding-bag neural classifier
-with a separately trained 33-class conversational logistic classifier (word and
-character trigram features, including an out-of-scope class). Offline training stays
-in the build script. Conversation data lives in `conversation.json`; polite wrappers
-augment its examples. Facts are reviewed source-linked text, not learned biography.
-Casual replies combine reviewed language-specific text and conversational slots.
-This is not a general-purpose generative LLM or an automatic translator.
+(reviewed site facts) with a conversational network: hashed word, bigram and
+character-trigram features (4,096 buckets, L2-normalised) into a 96-unit ReLU layer
+(int8 weights with a per-feature scale) and a softmax over 82 conversational classes
+plus one out-of-scope class, about 401k parameters. It is trained by `build.mjs`
+(seeded Adam, dropout, label smoothing, class weights, augmentation with typos,
+contractions, code-switching prefixes and suffixes) on `conversation.json`: about
+2,000 English, Turkish and mixed example sentences and 330 held-out paraphrases
+that the reported run never sees. A second run over everything ships. Out-of-scope
+examples are the site-fact questions plus general questions the bot should decline.
+
+`conversation.json` fields per class: `q_en` / `q_tr` (tagged training sentences),
+`samples` (older untagged ones), `heldout`, and reply lists `en` / `tr` / `mix`.
+Replies rotate through their variants, so a repeated intent does not repeat the
+sentence. A reply starting `?` is used only once the user has given a name and `!`
+only before that; `{name}` is replaced. `after` maps a previous class to a different
+reply for short follow-ups ("why?", "and you?"). The dialogue state keeps the last
+class, the last source, the user's name (from "my name is X", "adım X", "bana X de";
+only for this conversation) and a joke/riddle context. Language identification is the
+older marker words plus a learned naive-Bayes token table that decides when the
+markers see nothing. A confident site-fact match outranks a weak conversational
+guess. Facts remain reviewed source-linked text, not learned biography. This is not
+a general-purpose generative LLM or an automatic translator.
+
+`metrics.json` (written by every build) reports honest numbers from the run that
+never saw the held-out sentences: top-1 accuracy on unseen paraphrases about 78%,
+and at the confidence gate the bot accepts about 198 of 330 unseen paraphrases with
+about 92% precision, wrongly accepting 3 of 92 out-of-scope questions. Everything it
+does not accept falls through to the site-fact and retrieval paths or an honest
+"I'm not sure" reply. More example sentences per class is what raises these numbers.
 
 Source matching uses BM25-style term weights, title/body evidence, bilingual term
 aliases and definition preference. Follow-ups stay in the previous source and skip
@@ -27,6 +50,7 @@ Requires Node.js, clang++ and wasm-ld (no npm packages or Emscripten runtime):
 node dev/yunobot-wasm/build.mjs
 node dev/yunobot-wasm/test.mjs
 node dev/yunobot-wasm/differential.mjs
+node dev/yunobot-wasm/chat-parity.mjs
 ```
 
 `generated.hpp` is ignored and reproduced from tracked data and model weights.
@@ -45,6 +69,7 @@ No SIMD, threads, shared memory or cross-origin-isolation headers are required.
 - `test.mjs`: curated conversation, code switching, factual retrieval, abstention,
   dialogue reset, provenance and fixed-memory regressions. This is a regression
   suite, not an independent statistical accuracy estimate.
+- `chat-parity.mjs`: the C++ conversational network reproduces the JS reference forward pass written by the build (`chat-reference.json`, generated).
 - `differential.mjs`: compares C++ probabilities with the previous JS neural model.
 - `native-test.cpp`: 2,000 byte-input cases under AddressSanitizer/UBSan. Build using
   `clang++ -std=c++17 -O1 -g -fsanitize=address,undefined dev/yunobot-wasm/native-test.cpp -o /tmp/yunobot-native-test`.
