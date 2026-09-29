@@ -1063,6 +1063,7 @@ article:has(> .ui-rich-content) > .ui-figure img {
   height: var(--lobe);
   background: radial-gradient(circle at 50% 100%, var(--color-bg-dark) 0 calc(var(--lobe) - 0.5px), transparent var(--lobe)) 0 0 / calc(var(--lobe) * 2) var(--lobe) repeat-x;
   pointer-events: none;
+  z-index: 1; /* over the cameo, which stands behind the curves */
 }
 
 .ui-footer-name,

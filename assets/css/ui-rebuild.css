@@ -2756,17 +2756,27 @@ body.ui-landing {
   image-rendering: pixelated;
 }
 
-/* Footer corner: its own row, so it cannot land on the copyright line or on
-   footer links that wrap, and it never widens the page. */
+/* Footer variants: no row of their own. The cameo stands on the footer's top
+   edge and the lobes (.ui-footer::before) paint over its feet, so it peeks up
+   from behind the curves and adds no height to the page. Footer is
+   position:relative; the mascot owns the right corner, so the cameo lives
+   left of it. */
 .ui-hampton--footer-left,
-.ui-hampton--footer-right {
-  width: 100%;
-  max-width: var(--content-max-width);
-  margin: var(--space-2) auto 0;
+.ui-hampton--footer-right,
+.ui-hampton--landing-right {
+  position: absolute;
+  bottom: 100%;
+  z-index: 0;
 }
 
-.ui-hampton--footer-left {
-  justify-content: flex-start;
+.ui-hampton--footer-left { left: max(var(--space-8), calc((100% - var(--content-max-width)) / 2)); }
+.ui-hampton--footer-right,
+.ui-hampton--landing-right { left: 30%; }
+
+.ui-hampton--footer-left .ui-hampton-img,
+.ui-hampton--footer-right .ui-hampton-img,
+.ui-hampton--landing-right .ui-hampton-img {
+  width: 44px;
 }
 
 /* Mirrored on /travel so the same cameo reads as a different visitor. */
@@ -2774,14 +2784,8 @@ body.ui-landing {
   transform: scaleX(-1);
 }
 
-.ui-hampton--footer-right {
-  justify-content: flex-end;
-}
-
-/* Landing footer: the shared inner column already centres its children. */
-.ui-hampton--landing-right {
-  align-self: flex-end;
-  margin-top: calc(-1 * var(--space-2));
+@media print {
+  .ui-hampton { display: none; }
 }
 
 /* Science Corner: stands at the end of the category filter row. */
@@ -2805,6 +2809,12 @@ body.ui-landing {
   .ui-hampton-img {
     width: 40px;
   }
+  .ui-hampton--footer-left .ui-hampton-img,
+  .ui-hampton--footer-right .ui-hampton-img,
+  .ui-hampton--landing-right .ui-hampton-img {
+    width: 36px;
+  }
+  .ui-hampton--footer-left { left: var(--space-4); }
   .ui-hampton--status .ui-hampton-img {
     width: 26px;
   }
