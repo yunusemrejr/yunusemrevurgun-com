@@ -721,10 +721,32 @@
  padding: var(--space-2) var(--space-4);
 }
 
-.chat-status-dot {
- width: 10px;
- height: 10px;
- border-radius: var(--radius-full);
+/* The status marker is Jell-omo himself: he wobbles while the network loads,
+   stands still when it is ready, and tips over, greyed, if it fails. */
+.chat-status-dot,
+.chat-status-dot.loading,
+.chat-status-dot.ready,
+.chat-status-dot.error {
+ width: 26px;
+ height: 26px;
+ margin: -3px 0;
+ border-radius: 0;
+ background: url("../images/mascot-160.webp") center / contain no-repeat;
+ transform-origin: 50% 92%;
+}
+
+.chat-status-dot.loading {
+ animation: jelly-wobble 900ms var(--ease-jelly) infinite;
+}
+
+.chat-status-dot.error {
+ filter: grayscale(1);
+ opacity: 0.7;
+ transform: rotate(-24deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+ .chat-status-dot.loading { animation: none; }
 }
 
 .chat-status-text {

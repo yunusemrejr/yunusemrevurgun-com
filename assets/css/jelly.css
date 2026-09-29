@@ -1322,6 +1322,53 @@ body.ui-landing {
   text-align: center;
 }
 
+/* The caption and, beside it, the way into Jell-omo's coffee shop. */
+.ui-masthead-figure .ui-masthead-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.ui-cafe-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px 8px 14px;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ui-cafe-btn-mug {
+  flex: none;
+  transform-origin: 50% 100%;
+}
+
+/* The steam curls when the button is pressed on, and the mug tips a little. */
+.ui-cafe-btn:hover .ui-cafe-btn-mug {
+  animation: cafe-mug-tip 700ms var(--ease-jelly);
+}
+
+.ui-cafe-btn:hover .ui-cafe-btn-steam {
+  animation: cafe-steam 1.1s ease-in-out infinite;
+}
+
+@keyframes cafe-mug-tip {
+  0% { transform: rotate(0); }
+  30% { transform: rotate(-12deg); }
+  60% { transform: rotate(6deg); }
+  100% { transform: rotate(0); }
+}
+
+@keyframes cafe-steam {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(-1.5px); opacity: 0.55; }
+}
+
 .ui-brief-title {
   font-weight: 600;
 }
@@ -1382,6 +1429,8 @@ body.ui-landing {
 
 @media (prefers-reduced-motion: reduce) {
   .ui-masthead-figure img.ui-mascot,
+  .ui-cafe-btn:hover .ui-cafe-btn-mug,
+  .ui-cafe-btn:hover .ui-cafe-btn-steam,
   .ui-wordmark:hover .ui-wordmark-mark,
   .ui-footer-mascot:hover,
   .ui-main > .ui-section:first-of-type:hover::after {

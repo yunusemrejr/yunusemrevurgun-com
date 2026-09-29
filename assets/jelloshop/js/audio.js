@@ -66,6 +66,8 @@ export function createAudio() {
   };
 
   let master, musicBus, sfxBus, keysBus, reverbIn, noiseBuf;
+  let rainGain = null;
+  let rainBand = null;
 
   function makeNoise(ctx) {
     const len = ctx.sampleRate * 2;
@@ -169,14 +171,14 @@ export function createAudio() {
     };
     // Rain: band-passed noise, slowly breathing.
     const rain = loop(1);
-    const rainBand = ctx.createBiquadFilter();
+    rainBand = ctx.createBiquadFilter();
     rainBand.type = 'bandpass';
     rainBand.frequency.value = 2600;
     rainBand.Q.value = 0.35;
     const rainHi = ctx.createBiquadFilter();
     rainHi.type = 'highpass';
     rainHi.frequency.value = 900;
-    const rainGain = ctx.createGain();
+    rainGain = ctx.createGain();
     rainGain.gain.value = 0.05;
     const breathe = ctx.createOscillator();
     breathe.frequency.value = 0.09;
@@ -542,31 +544,90 @@ export function createAudio() {
     });
   };
 
-  // A small, sleepy meow: a sawtooth through a moving formant.
-  A.meow = function meow() {
+  // A small meow: a sawtooth through a moving formant. `pitch` and `length`
+  // vary it so the cat never says it the same way twice; `vol` is 0..1.
+  A.meow = function meow(pitch = 1, length = 1, vol = 1) {
     if (!live()) return;
     const ctx = A.ctx;
     const at = ctx.currentTime;
+    const L = length;
     const o = ctx.createOscillator();
     o.type = 'sawtooth';
-    o.frequency.setValueAtTime(420, at);
-    o.frequency.linearRampToValueAtTime(610, at + 0.14);
-    o.frequency.linearRampToValueAtTime(360, at + 0.5);
+    o.frequency.setValueAtTime(420 * pitch, at);
+    o.frequency.linearRampToValueAtTime(610 * pitch, at + 0.14 * L);
+    o.frequency.linearRampToValueAtTime(360 * pitch, at + 0.5 * L);
     const f = ctx.createBiquadFilter();
     f.type = 'bandpass';
     f.Q.value = 3.2;
     f.frequency.setValueAtTime(900, at);
-    f.frequency.linearRampToValueAtTime(1900, at + 0.16);
-    f.frequency.linearRampToValueAtTime(800, at + 0.5);
+    f.frequency.linearRampToValueAtTime(1900, at + 0.16 * L);
+    f.frequency.linearRampToValueAtTime(800, at + 0.5 * L);
     const g = ctx.createGain();
     g.gain.setValueAtTime(0.0001, at);
-    g.gain.linearRampToValueAtTime(0.13, at + 0.05);
-    g.gain.setTargetAtTime(0.0001, at + 0.3, 0.08);
+    g.gain.linearRampToValueAtTime(0.13 * vol, at + 0.05);
+    g.gain.setTargetAtTime(0.0001, at + 0.3 * L, 0.08);
     o.connect(f);
     f.connect(g);
     g.connect(sfxBus);
     o.start(at);
-    o.stop(at + 0.7);
+    o.stop(at + 0.7 * L + 0.1);
+  };
+
+  // How hard it is raining, 0..1. The rain fills out and brightens as it rises.
+  A.setRain = function setRain(level) {
+    if (!A.ctx || !rainGain) return;
+    const now = A.ctx.currentTime;
+    rainGain.gain.setTargetAtTime(0.05 + level * 0.115, now, 1.4);
+    rainBand.frequency.setTargetAtTime(2600 + level * 900, now, 1.4);
+  };
+
+  // Thunder. `far` is 0 for right overhead (a sharp crack, then a big roll) to
+  // 1 for a long way off (no crack, a low slow rumble).
+  A.thunder = function thunder(far = 0.5) {
+    if (!live()) return;
+    const ctx = A.ctx;
+    const at = ctx.currentTime + 0.02;
+    const near = 1 - far;
+    if (near > 0.3) {
+      noiseHit(at, 0.14, 'highpass', 1600, 0.6, 0.2 * near, sfxBus);
+      noiseHit(at + 0.03, 0.3, 'bandpass', 500, 0.8, 0.14 * near, sfxBus);
+    }
+    const dur = 2.6 + far * 2.4 + Math.random() * 0.8;
+    const src = ctx.createBufferSource();
+    src.buffer = noiseBuf;
+    src.loop = true;
+    src.playbackRate.value = 0.3 + Math.random() * 0.15;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(340 - far * 150, at);
+    lp.frequency.exponentialRampToValueAtTime(60, at + dur);
+    const g = ctx.createGain();
+    const peak = 0.34 * (0.35 + near * 0.65);
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.linearRampToValueAtTime(peak, at + 0.1 + far * 0.4);
+    // It rolls: a few swells as it dies away.
+    for (let k = 1; k <= 4; k++) {
+      const tt = at + (dur * k) / 5;
+      g.gain.linearRampToValueAtTime(peak * (0.85 - k * 0.17) * (0.7 + Math.random() * 0.5), tt);
+    }
+    g.gain.linearRampToValueAtTime(0.0001, at + dur);
+    const send = ctx.createGain();
+    send.gain.value = 0.35;
+    src.connect(lp);
+    lp.connect(g);
+    g.connect(sfxBus);
+    g.connect(send);
+    send.connect(reverbIn);
+    src.start(at, Math.random() * 1.5);
+    src.stop(at + dur + 0.1);
+  };
+
+  // The coffee machine letting off steam.
+  A.hiss = function hiss(len = 0.7) {
+    if (!live()) return;
+    const at = A.ctx.currentTime;
+    noiseHit(at, len, 'highpass', 4200, 0.6, 0.045, sfxBus);
+    noiseHit(at + 0.02, len * 0.8, 'bandpass', 7000, 1.2, 0.03, sfxBus);
   };
 
   return A;

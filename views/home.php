@@ -127,7 +127,13 @@ ui_render_head(
         <figure class="ui-masthead-figure">
             <img class="ui-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot.webp" width="800" height="800" decoding="async" fetchpriority="high"
                  alt="Jell-omo, the site's mascot: a glossy red jelly wearing a navy and cream baseball cap, eyes closed in a contented smile.">
-            <figcaption>Jell-omo, the mascot. Poke it.</figcaption>
+            <figcaption class="ui-masthead-caption">
+                <span>Jell-omo, the mascot. Poke it.</span>
+                <a class="ui-btn ui-btn-primary ui-cafe-btn" href="<?= FULL_BASE_PATH ?>jelloshop">
+                    <svg class="ui-cafe-btn-mug" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4.5 10h11v4.6a4.9 4.9 0 0 1-4.9 4.9h-1.2a4.9 4.9 0 0 1-4.9-4.9z"/><path d="M15.5 11.4h1.3a2.6 2.6 0 0 1 0 5.2h-1.3"/><path class="ui-cafe-btn-steam" d="M8.6 3.4c-1.2 1.1 1.2 2.1 0 3.5M12 3.4c-1.2 1.1 1.2 2.1 0 3.5"/><path d="M3.5 21.6h13"/></svg>
+                    <span>Come have a coffee</span>
+                </a>
+            </figcaption>
         </figure>
     </div>
 </header>

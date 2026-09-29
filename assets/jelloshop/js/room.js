@@ -654,21 +654,25 @@ const pseudo = (n) => {
   return s - Math.floor(s);
 };
 
-/** Rain on the glass, and drops that run down it. */
-export function drawWindowRain(ctx, t) {
+/**
+ * Rain on the glass, and drops that run down it. `heavy` (0..1) is how hard it
+ * is raining: more streaks, faster, brighter.
+ */
+export function drawWindowRain(ctx, t, heavy = 0.3) {
   const { x, y, w, h } = WINDOW;
   ctx.save();
   windowPath(ctx, 9);
   ctx.clip();
   ctx.lineCap = 'round';
   // Falling streaks.
-  for (let i = 0; i < 46; i++) {
+  const streaks = Math.round(34 + heavy * 70);
+  for (let i = 0; i < streaks; i++) {
     const sx = x + 6 + pseudo(i * 3.1) * (w - 12);
-    const speed = 150 + pseudo(i * 5.7) * 150;
+    const speed = (150 + pseudo(i * 5.7) * 150) * (0.85 + heavy * 0.7);
     const len = 7 + pseudo(i * 2.3) * 12;
     const phase = pseudo(i * 9.1) * 400;
     const yy = y - 20 + ((t * speed + phase) % (h + 40));
-    ctx.strokeStyle = `rgba(200,222,255,${0.22 + pseudo(i) * 0.22})`;
+    ctx.strokeStyle = `rgba(200,222,255,${0.18 + heavy * 0.14 + pseudo(i) * 0.22})`;
     ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.moveTo(sx, yy);
@@ -678,7 +682,7 @@ export function drawWindowRain(ctx, t) {
   // Slow drops sliding down the glass.
   for (let i = 0; i < 9; i++) {
     const sx = x + 14 + pseudo(i * 7.3) * (w - 28);
-    const cyc = 5 + pseudo(i * 4.1) * 5;
+    const cyc = (5 + pseudo(i * 4.1) * 5) * (1.2 - heavy * 0.5);
     const p = ((t + pseudo(i * 6.2) * cyc) % cyc) / cyc;
     const yy = y + 20 + p * (h - 30);
     ctx.fillStyle = 'rgba(220,235,255,0.55)';
@@ -835,13 +839,18 @@ export function drawBulbs(ctx, t) {
   ctx.restore();
 }
 
-/** Steam rising from a point. */
-export function drawSteam(ctx, x, y, t, size = 1, seed = 0) {
+/**
+ * Steam rising from a point. `puffs` is how many are in the air at once, so a
+ * busier machine gives a thicker plume.
+ */
+export function drawSteam(ctx, x, y, t, size = 1, seed = 0, puffs = 3, rise = 0.32) {
   ctx.save();
-  for (let i = 0; i < 3; i++) {
-    const p = (t * 0.32 + i * 0.34 + seed) % 1;
+  const gap = 1 / puffs;
+  const soft = 3 / puffs; // keep a thick plume from turning solid white
+  for (let i = 0; i < puffs; i++) {
+    const p = (t * rise + i * gap + seed) % 1;
     const yy = y - p * 46 * size;
-    const a = Math.sin(p * Math.PI) * 0.34;
+    const a = Math.sin(p * Math.PI) * 0.34 * Math.min(1, 0.55 + soft * 0.45);
     const xx = x + Math.sin(t * 1.4 + i * 2 + seed * 5) * 6 * p * size;
     ctx.fillStyle = `rgba(255,252,244,${a})`;
     ctx.beginPath();
@@ -851,3 +860,77 @@ export function drawSteam(ctx, x, y, t, size = 1, seed = 0) {
   ctx.restore();
 }
 
+// ------------------------------------------------------------------ lightning
+/** A jagged bolt from the top of the window down, with a couple of forks. */
+export function makeBolt(seed) {
+  const R = rng(seed);
+  const { x, y, w, h } = WINDOW;
+  const pts = [];
+  let bx = x + w * (0.25 + R() * 0.5);
+  let by = y - 4;
+  pts.push([bx, by]);
+  const forks = [];
+  while (by < y + h * (0.55 + R() * 0.3)) {
+    by += 12 + R() * 16;
+    bx += (R() - 0.5) * 34;
+    pts.push([bx, by]);
+    if (R() < 0.3) {
+      const f = [[bx, by]];
+      let fx = bx;
+      let fy = by;
+      const dir = R() < 0.5 ? -1 : 1;
+      for (let k = 0; k < 3; k++) {
+        fy += 8 + R() * 10;
+        fx += dir * (6 + R() * 14);
+        f.push([fx, fy]);
+      }
+      forks.push(f);
+    }
+  }
+  return { pts, forks };
+}
+
+/**
+ * Lightning seen through the window: the sky whitens and the bolt shows.
+ * `flash` is 0..1 brightness right now.
+ */
+export function drawLightning(ctx, flash, bolt) {
+  if (flash <= 0.01) return;
+  ctx.save();
+  windowPath(ctx, 7);
+  ctx.clip();
+  ctx.fillStyle = `rgba(128,158,236,${Math.min(0.85, flash * 0.85)})`; // stormy blue, so the white bolt shows in it
+  ctx.fillRect(WINDOW.x, WINDOW.y - 20, WINDOW.w, WINDOW.h + 40);
+  if (bolt) {
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    const trace = (pts) => {
+      ctx.beginPath();
+      pts.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
+      ctx.stroke();
+    };
+    ctx.strokeStyle = `rgba(200,220,255,${0.6 * flash})`;
+    ctx.lineWidth = 8;
+    trace(bolt.pts);
+    ctx.strokeStyle = `rgba(255,255,255,${Math.min(1, flash * 1.4)})`;
+    ctx.lineWidth = 2.8;
+    trace(bolt.pts);
+    ctx.lineWidth = 1.6;
+    for (const f of bolt.forks) trace(f);
+  }
+  ctx.restore();
+}
+
+/** The whole room going cold-bright for an instant. */
+export function drawFlash(ctx, flash) {
+  if (flash <= 0.01) return;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  // Strongest around the window, but it lights the whole room.
+  const g = ctx.createRadialGradient(322, 160, 10, 322, 220, 720);
+  g.addColorStop(0, `rgba(150,180,255,${0.34 * flash})`);
+  g.addColorStop(1, `rgba(110,140,235,${0.1 * flash})`);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, DW, DH);
+  ctx.restore();
+}

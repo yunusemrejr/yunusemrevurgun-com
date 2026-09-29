@@ -139,68 +139,166 @@ export function drawPlant(ctx, x, y, s, t, big = true) {
 }
 
 // ----------------------------------------------------------------------- cat
-/**
- * A cat asleep on a round cushion. `wake` is 0 (asleep) to 1 (up and looking).
- */
-export function drawCat(ctx, x, y, s, t, wake) {
+const ORANGE = '#e9a044';
+const ORANGE_DARK = '#c47420';
+const CUSHION_H = 22;
+
+/** The round cushion the cat sleeps on. It stays put when the cat gets up. */
+export function drawCushion(ctx, x, y, s) {
   withLocal(ctx, x, y, s, () => {
-    const R = rng(4242);
-    const breathe = Math.sin(t * 1.7) * (1 - wake * 0.6);
+    const R = rng(4243);
     groundShadow(ctx, 0, 2, 50, 10, 0.3);
-    // Cushion.
     ell(ctx, 0, -9, 42, 12, { fill: P.jellyDark, line: 3.2, R, n: 22 });
     ell(ctx, 0, -14, 42, 12, { fill: P.jelly, line: 3.2, R, n: 22 });
     ell(ctx, -12, -16, 20, 3.4, { fill: P.jellyLight, line: 0, R, alpha: 0.8 });
     for (const tx of [-40, 40]) {
       line(ctx, [[tx, -12], [tx * 1.1, -2]], { color: P.brass, w: 3.2, R, j: 0.3 });
     }
-    // Body.
-    const by = -30 - breathe * 0.9;
-    const orange = '#e9a044';
-    ell(ctx, 2, by, 30, 17 + breathe * 0.7, { fill: orange, line: 3, R, n: 20 });
-    clipped(ctx, ellipsePts(2, by, 30, 17, 20), () => {
-      for (const sx of [-12, -2, 8, 18]) line(ctx, [[sx, by - 18], [sx + 2, by - 6]], { color: '#c47420', w: 4, R, j: 0.5, alpha: 0.9 });
-      ell(ctx, 8, by + 10, 18, 7, { fill: P.cream, line: 0, R, alpha: 0.9 });
-    });
-    // Tail curled round the front.
-    line(ctx, [[26, by + 6], [38, by + 10], [30, by + 18], [8, by + 19]], { color: P.ink, w: 9, R, j: 0.3 });
-    line(ctx, [[26, by + 6], [38, by + 10], [30, by + 18], [8, by + 19]], { color: orange, w: 5, R, j: 0.3 });
-    // Head.
-    const hx = -22;
-    const hy = by - 2 - wake * 12;
-    ell(ctx, hx, hy, 14, 12.5, { fill: orange, line: 3, R, n: 16 });
-    for (const [ex, dir] of [[hx - 8, -1], [hx + 8, 1]]) {
-      shape(ctx, [[ex - 4, hy - 8], [ex + dir * 3, hy - 20 - wake * 2], [ex + 6, hy - 8]], { fill: orange, line: 2.6, R });
-      shape(ctx, [[ex - 1, hy - 9], [ex + dir * 2, hy - 15], [ex + 3, hy - 9]], { fill: '#f5a3b5', line: 0, R });
-    }
-    ell(ctx, hx + 1, hy + 4, 5, 3.4, { fill: P.cream, line: 0, R, alpha: 0.95 });
-    ell(ctx, hx + 1, hy + 2.4, 1.5, 1.1, { fill: '#e07a8c', line: 0, R });
-    if (wake > 0.3) {
-      // Eyes open, round.
-      for (const ex of [hx - 5, hx + 6]) {
-        ell(ctx, ex, hy - 1, 3, 3.6, { fill: '#9fe28a', line: 1.8, R, n: 10 });
-        ell(ctx, ex, hy - 1, 1.1, 2.6, { fill: P.ink, line: 0, R, n: 8 });
-      }
-    } else {
-      // Eyes shut: two little curves.
-      for (const ex of [hx - 5, hx + 6]) {
-        line(ctx, [[ex - 3, hy - 1], [ex, hy + 1.6], [ex + 3, hy - 1]], { w: 1.8, R, j: 0.2 });
-      }
-    }
-    // Whiskers.
-    for (const dir of [-1, 1]) {
-      line(ctx, [[hx + dir * 4, hy + 4], [hx + dir * 15, hy + 3]], { w: 1, alpha: 0.7, R, j: 0.2 });
-      line(ctx, [[hx + dir * 4, hy + 5.4], [hx + dir * 14, hy + 7]], { w: 1, alpha: 0.7, R, j: 0.2 });
-    }
-    // Paws tucked under the chin.
-    ell(ctx, hx + 2, by + 8, 8, 4.4, { fill: P.cream, line: 2.4, R, n: 10 });
   });
-  if (wake < 0.3) {
+}
+
+// The cat's face, as seen from the front, drawn at (hx, hy).
+function catHead(ctx, hx, hy, wake, eyesOpen, R) {
+  ell(ctx, hx, hy, 14, 12.5, { fill: ORANGE, line: 3, R, n: 16 });
+  for (const [ex, dir] of [[hx - 8, -1], [hx + 8, 1]]) {
+    shape(ctx, [[ex - 4, hy - 8], [ex + dir * 3, hy - 20 - wake * 2], [ex + 6, hy - 8]], { fill: ORANGE, line: 2.6, R });
+    shape(ctx, [[ex - 1, hy - 9], [ex + dir * 2, hy - 15], [ex + 3, hy - 9]], { fill: '#f5a3b5', line: 0, R });
+  }
+  ell(ctx, hx + 1, hy + 4, 5, 3.4, { fill: P.cream, line: 0, R, alpha: 0.95 });
+  ell(ctx, hx + 1, hy + 2.4, 1.5, 1.1, { fill: '#e07a8c', line: 0, R });
+  if (eyesOpen) {
+    for (const ex of [hx - 5, hx + 6]) {
+      ell(ctx, ex, hy - 1, 3, 3.6, { fill: '#9fe28a', line: 1.8, R, n: 10 });
+      ell(ctx, ex, hy - 1, 1.1, 2.6, { fill: P.ink, line: 0, R, n: 8 });
+    }
+  } else {
+    for (const ex of [hx - 5, hx + 6]) {
+      line(ctx, [[ex - 3, hy - 1], [ex, hy + 1.6], [ex + 3, hy - 1]], { w: 1.8, R, j: 0.2 });
+    }
+  }
+  for (const dir of [-1, 1]) {
+    line(ctx, [[hx + dir * 4, hy + 4], [hx + dir * 15, hy + 3]], { w: 1, alpha: 0.7, R, j: 0.2 });
+    line(ctx, [[hx + dir * 4, hy + 5.4], [hx + dir * 14, hy + 7]], { w: 1, alpha: 0.7, R, j: 0.2 });
+  }
+}
+
+// A leg drawn as an inked stroke with a paw on the end.
+function catLeg(ctx, x0, y0, x1, y1, col, R) {
+  line(ctx, [[x0, y0], [x1, y1]], { color: P.ink, w: 8, R, j: 0.2 });
+  line(ctx, [[x0, y0], [x1, y1]], { color: col, w: 4.4, R, j: 0.2 });
+  ell(ctx, x1, y1, 4.4, 2.6, { fill: P.cream, line: 2, R, n: 8 });
+}
+
+// Curled up, asleep or just woken. `low` is how far it has sunk from cushion height.
+function lyingCat(ctx, t, wake, low, R) {
+  ctx.translate(0, low);
+  const breathe = Math.sin(t * 1.7) * (1 - wake * 0.6);
+  const by = -30 - breathe * 0.9;
+  ell(ctx, 2, by, 30, 17 + breathe * 0.7, { fill: ORANGE, line: 3, R, n: 20 });
+  clipped(ctx, ellipsePts(2, by, 30, 17, 20), () => {
+    for (const sx of [-12, -2, 8, 18]) line(ctx, [[sx, by - 18], [sx + 2, by - 6]], { color: ORANGE_DARK, w: 4, R, j: 0.5, alpha: 0.9 });
+    ell(ctx, 8, by + 10, 18, 7, { fill: P.cream, line: 0, R, alpha: 0.9 });
+  });
+  // Tail curled round the front.
+  line(ctx, [[26, by + 6], [38, by + 10], [30, by + 18], [8, by + 19]], { color: P.ink, w: 9, R, j: 0.3 });
+  line(ctx, [[26, by + 6], [38, by + 10], [30, by + 18], [8, by + 19]], { color: ORANGE, w: 5, R, j: 0.3 });
+  const hx = -22;
+  const hy = by - 2 - wake * 12;
+  catHead(ctx, hx, hy, wake, wake > 0.3, R);
+  ell(ctx, hx + 2, by + 8, 8, 4.4, { fill: P.cream, line: 2.4, R, n: 10 });
+}
+
+// Sitting up. With `groom` the head dips and a front paw comes up to be licked.
+function sittingCat(ctx, t, groom, R) {
+  const sway = Math.sin(t * 1.3) * 1.2;
+  // Tail on the floor round the back.
+  line(ctx, [[20, -6], [36, -3], [26, 1], [4, 1]], { color: P.ink, w: 9, R, j: 0.3 });
+  line(ctx, [[20, -6], [36, -3], [26, 1], [4, 1]], { color: ORANGE, w: 5, R, j: 0.3 });
+  // Haunch and chest.
+  ell(ctx, 9, -15, 17, 14.5, { fill: ORANGE, line: 3, R, n: 16 });
+  ell(ctx, -5, -27, 11.5, 18, { fill: ORANGE, line: 3, R, n: 16, rot: 0.1 });
+  clipped(ctx, ellipsePts(-5, -27, 11.5, 18, 16), () => {
+    ell(ctx, -9, -20, 7.5, 12, { fill: P.cream, line: 0, R, alpha: 0.9 });
+    for (const sy of [-38, -32]) line(ctx, [[-2, sy], [8, sy + 4]], { color: ORANGE_DARK, w: 3.4, R, j: 0.4, alpha: 0.9 });
+  });
+  // Front legs.
+  catLeg(ctx, -9, -16, -10, -1.5, ORANGE, R);
+  if (groom) {
+    const lick = Math.sin(t * 7) * 2.2;
+    catLeg(ctx, -3, -22, -11 + lick, -37 + lick * 0.6, ORANGE, R);
+    catHead(ctx, -8, -40 + sway * 0.3, 0, false, R);
+  } else {
+    catLeg(ctx, -2, -16, -3, -1.5, ORANGE, R);
+    catHead(ctx, -9 + sway * 0.4, -49, 0.5, true, R);
+  }
+}
+
+// Standing or walking, side on, facing left. `phase` is the stride, `gait` how brisk.
+function standingCat(ctx, t, phase, gait, R) {
+  const bob = Math.abs(Math.sin(phase)) * 1.4 * gait;
+  const by = -25 - bob;
+  const swing = 7 * gait;
+  const leg = (off) => {
+    const a = Math.sin(phase + off);
+    const lift = Math.max(0, Math.cos(phase + off)) * 3.5 * gait;
+    return [a * swing, -lift];
+  };
+  // Far-side legs first, darker, so the near ones read in front.
+  const [ffx, ffy] = leg(Math.PI);
+  const [rfx, rfy] = leg(0);
+  catLeg(ctx, -12, by + 6, -13 + ffx, -2 + ffy, ORANGE_DARK, R);
+  catLeg(ctx, 15, by + 6, 16 + rfx, -2 + rfy, ORANGE_DARK, R);
+  // Tail up, with a curl at the tip.
+  const tw = Math.sin(t * 2.2) * 3 + Math.sin(phase) * 2 * gait;
+  const tail = [[23, by - 2], [34, by - 8], [37 + tw, by - 22], [32 + tw, by - 30]];
+  line(ctx, tail, { color: P.ink, w: 9, R, j: 0.3 });
+  line(ctx, tail, { color: ORANGE, w: 5, R, j: 0.3 });
+  ell(ctx, 3, by, 25, 11.5, { fill: ORANGE, line: 3, R, n: 18 });
+  clipped(ctx, ellipsePts(3, by, 25, 11.5, 18), () => {
+    for (const sx of [-6, 2, 10, 18]) line(ctx, [[sx, by - 12], [sx + 2, by - 3]], { color: ORANGE_DARK, w: 3.4, R, j: 0.5, alpha: 0.9 });
+    ell(ctx, -4, by + 8, 16, 5, { fill: P.cream, line: 0, R, alpha: 0.9 });
+  });
+  const [nfx, nfy] = leg(0);
+  const [nrx, nry] = leg(Math.PI);
+  catLeg(ctx, -12, by + 6, -12 + nfx, -2 + nfy, ORANGE, R);
+  catLeg(ctx, 15, by + 6, 15 + nrx, -2 + nry, ORANGE, R);
+  catHead(ctx, -26, by - 8 - bob * 0.4, 0.4, true, R);
+}
+
+/**
+ * The cat. `o`:
+ *   posture  'lie' | 'sit' | 'groom' | 'stand'
+ *   wake     0..1, head up and eyes open while lying
+ *   lift     0..1, how high it is: 1 on the cushion, 0 on the floor
+ *   face     -1 looks left, 1 looks right
+ *   phase    stride phase, radians
+ *   gait     0..1 how briskly it walks
+ *   squash   -1..1, a short spring when it changes posture
+ */
+export function drawCat(ctx, x, y, s, t, o) {
+  const { posture, wake = 0, lift = 1, face = -1, phase = 0, gait = 0, squash = 0 } = o;
+  const off = lift < 0.99;
+  withLocal(ctx, x, y, s, () => {
+    const R = rng(4242);
+    if (off) groundShadow(ctx, 2, 2, posture === 'lie' ? 36 : 30, 7, 0.28);
+    // The lying pose is drawn at cushion height already, so it sinks when there
+    // is no cushion; the others are drawn on the floor and rise onto it.
+    ctx.translate(0, posture === 'lie' ? (1 - lift) * CUSHION_H : -lift * CUSHION_H);
+    ctx.scale(1 - squash * 0.06, 1 + squash * 0.1);
+    if (face > 0 && posture !== 'lie') ctx.scale(-1, 1);
+    switch (posture) {
+      case 'lie': lyingCat(ctx, t, wake, 0, R); break;
+      case 'groom': sittingCat(ctx, t, true, R); break;
+      case 'sit': sittingCat(ctx, t, false, R); break;
+      default: standingCat(ctx, t, phase, gait, R); break;
+    }
+  });
+  if (posture === 'lie' && wake < 0.3) {
     // z z z
     for (let i = 0; i < 3; i++) {
       const p = ((t * 0.28 + i * 0.33) % 1);
       const zx = x - 8 * s + p * 20 * s + Math.sin(t + i) * 3;
-      const zy = y - 72 * s - p * 34 * s;
+      const zy = y - (72 - (1 - lift) * CUSHION_H) * s - p * 34 * s;
       ctx.save();
       ctx.globalAlpha = Math.sin(p * Math.PI) * 0.85;
       ctx.fillStyle = P.cream;
@@ -213,6 +311,22 @@ export function drawCat(ctx, x, y, s, t, wake) {
       ctx.restore();
     }
   }
+}
+
+/** A small "mew" that floats up from the cat. p goes 0..1. */
+export function drawMew(ctx, x, y, p, s = 1) {
+  ctx.save();
+  ctx.globalAlpha = Math.sin(Math.min(1, p) * Math.PI) * 0.95;
+  ctx.fillStyle = P.cream;
+  ctx.strokeStyle = P.ink;
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.font = `700 ${15 * s}px Fredoka, sans-serif`;
+  ctx.textAlign = 'center';
+  const yy = y - p * 22 * s;
+  ctx.strokeText('mew', x, yy);
+  ctx.fillText('mew', x, yy);
+  ctx.restore();
 }
 
 /** A drawn heart, for when the cat wakes. p goes 0..1. */

@@ -78,9 +78,12 @@ float sdBody(vec3 p) {
 
 // --- the cap ---------------------------------------------------------------
 // Cap space: origin at the middle of the rim, tilted a little forward and
-// turned a little to the side, like the picture.
+// turned a little to the side, like the picture. The rim rests where the dome
+// is as wide as the cap's opening (a little over 1.0 up), so the cap is pulled
+// down over the jelly and grips it, instead of hovering above its very tip.
+const float CAP_Y = 1.12;
 vec3 toCap(vec3 p) {
-  p -= vec3(0.0, 1.62, -0.03);
+  p -= vec3(0.0, CAP_Y, -0.03);
   p.xz = rot(-0.34) * p.xz;      // turned towards the viewer's right
   p.yz = rot(0.03 + uCapTilt) * p.yz;   // barely nodding
   p.xy = rot(-uCapTilt * 0.7 - 0.05) * p.xy;
@@ -182,7 +185,7 @@ float seg(vec2 p, vec2 a, vec2 b) {
 float faceMask(vec3 m) {
   if (m.z < 0.15) return 0.0;
   vec2 f = vec2(m.x, m.y);
-  float eyeY = 0.86;
+  float eyeY = 0.66;
   float ex = 0.34;
   float w = 0.056;
   float aa = 0.012;
@@ -205,8 +208,8 @@ float faceMask(vec3 m) {
   float eyes = mix(happy - w, open, uMood);
   eyes = mix(eyes, sleep - w * 0.9, uSleep);
   // mouth: a little dash, or a tiny o when surprised
-  float mouthDash = seg(f, vec2(-0.08, 0.7), vec2(0.08, 0.7)) - 0.04;
-  float mouthO = abs(length((f - vec2(0.0, 0.7)) * vec2(1.0, 1.1)) - 0.04) - 0.017;
+  float mouthDash = seg(f, vec2(-0.08, 0.47), vec2(0.08, 0.47)) - 0.04;
+  float mouthO = abs(length((f - vec2(0.0, 0.47)) * vec2(1.0, 1.1)) - 0.04) - 0.017;
   float mouth = mix(mouthDash, mouthO, uMood);
   float d = min(eyes, mouth);
   return 1.0 - smoothstep(-aa, aa, d);
@@ -225,8 +228,8 @@ vec3 envColor(vec3 r) {
 void main() {
   // Orthographic-ish camera, a touch above the jelly.
   vec2 uv = (vUv - 0.5) * 2.0;
-  float ext = 1.72;
-  vec3 target = vec3(0.0, 1.12, 0.0);
+  float ext = 1.5;
+  vec3 target = vec3(0.0, 1.0, 0.0);
   float elev = 0.20;
   vec3 fw = normalize(vec3(0.0, -sin(elev), -cos(elev)));
   vec3 rt = vec3(1.0, 0.0, 0.0);
@@ -235,8 +238,8 @@ void main() {
   vec3 rd = fw;
 
   // Bounding sphere.
-  vec3 oc = ro - vec3(0.0, 1.1, 0.0);
-  float bR = 2.55;
+  vec3 oc = ro - vec3(0.0, 1.0, 0.0);
+  float bR = 2.3;
   float bb = dot(oc, rd);
   float cc = dot(oc, oc) - bR * bR;
   float disc = bb * bb - cc;

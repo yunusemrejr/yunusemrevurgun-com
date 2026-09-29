@@ -335,7 +335,7 @@
         // Use callback for neural network readiness
         if (mlEngine) {
             mlEngine.onReady = function () {
-                updateStatus("ready", "Ready");
+                updateStatus("ready", "Ready · runs on your device");
             };
             mlEngine.onError = function () {
                 updateStatus("error", "Unavailable — reload to retry");
@@ -343,7 +343,7 @@
 
             // Check if already ready (unlikely but possible)
             if (mlEngine.workerReady) {
-                updateStatus("ready", "Ready");
+                updateStatus("ready", "Ready · runs on your device");
             }
         }
 

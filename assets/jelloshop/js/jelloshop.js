@@ -20,8 +20,11 @@ import {
   DW, DH, FLOOR_Y, LANES, CAT, MACHINE,
   scaleAt, leftX, rightX,
   paintShell, paintTop, drawWindowRain, drawFire, drawGlow, drawBulbs, drawSteam,
+  makeBolt, drawLightning, drawFlash,
 } from 'jelloshop/room';
-import { drawArmchair, drawTable, drawStool, drawPlant, drawCat, drawHeart, drawBean } from 'jelloshop/props';
+import { drawArmchair, drawTable, drawStool, drawPlant, drawCushion, drawCat, drawHeart, drawMew, drawBean } from 'jelloshop/props';
+import { CatMind, ACT, HOME, decodeWeights } from 'jelloshop/catbrain';
+import { CAT_WEIGHTS } from 'jelloshop/catweights';
 
 const canvas = document.getElementById('js-canvas');
 if (canvas) boot(canvas);
@@ -63,7 +66,25 @@ function boot(canvas) {
     beans: 0,
     beanList: [],
     motes: [],
-    cat: { wake: 0, until: 0 },
+    // The cat: a small neural net (catbrain.js) decides what it does; this holds
+    // how it is drawn. `wake` is the lifted head of a cat that is still lying down.
+    cat: {
+      mind: new CatMind(decodeWeights(CAT_WEIGHTS)),
+      posture: 'lie', lift: 1, wake: 0, until: 0,
+      phase: 0, squash: 0, squashV: 0,
+      nextMew: 20 + Math.random() * 20, wasNear: false,
+    },
+    mews: [],
+    steamKick: 0,
+    // Weather. `storm` is how hard it rains (0..1) and drifts on its own;
+    // lightning comes more often the harder it rains.
+    weather: {
+      storm: 0.3, target: 0.3, retarget: 10,
+      nextBolt: 7 + Math.random() * 8,
+      pulses: [], bolt: null, flash: 0,
+      thunderAt: 0, thunderFar: 0.5,
+      rainSetAt: -9,
+    },
     started: false,
     lastT: 0,
     time: 0,
@@ -78,7 +99,7 @@ function boot(canvas) {
     { y: 322, kind: 'stool', x: 542 },
     { y: 322, kind: 'stool', x: 612 },
     { y: 334, kind: 'plant', x: 190 },
-    { y: CAT.y, kind: 'cat', x: CAT.x },
+    { y: CAT.y - 0.5, kind: 'cushion', x: CAT.x },
     { y: 414, kind: 'armchair', x: 136, c: [P.navy, P.navyLight, '#171d3a'] },
     { y: 404, kind: 'armchair', x: 828, c: [P.jelly, P.jellyLight, P.jellyDark] },
     { y: 492, kind: 'table', x: 322 },
@@ -263,6 +284,8 @@ function boot(canvas) {
         g.beans++;
         audio.bean();
         g.puff = { x: b.x, y: b.y, t: 0 };
+        g.steamKick = 1;
+        if (g.beans % 3 === 0) audio.hiss(0.6 + Math.min(0.6, g.beans * 0.02));
         g.mood = 1;
         g.squashV += 3.2;
         g.wob = 1;
@@ -275,13 +298,12 @@ function boot(canvas) {
       if (g.puff.t > 0.7) g.puff = null;
     }
 
-    // The cat: wakes when clicked or when Jell-omo walks close, drifts back to sleep.
-    const nearCat = Math.hypot(g.x - CAT.x, (g.y - CAT.y) * 1.3) < 105;
-    if (nearCat && g.cat.until < g.time + 1) g.cat.until = g.time + 1.6;
-    const want = g.time < g.cat.until ? 1 : 0;
-    g.cat.wake += (want - g.cat.wake) * Math.min(1, dt * (want ? 6 : 1.4));
+    updateCat(dt, speed);
+    updateWeather(dt);
+    g.steamKick = Math.max(0, g.steamKick - dt * 0.55);
 
     g.hearts = g.hearts.filter((h) => g.time - h.t0 < 1.1);
+    g.mews = g.mews.filter((m) => g.time - m.t0 < 1.3);
 
     for (const m of g.motes) {
       m.x += m.vx * dt;
@@ -292,8 +314,110 @@ function boot(canvas) {
     }
   }
 
+  // ------------------------------------------------------------ the cat
+
+  function catMew(vol = 1) {
+    const g = game;
+    const m = g.cat.mind;
+    audio.meow(0.88 + Math.random() * 0.34, 0.7 + Math.random() * 0.6, vol);
+    g.mews.push({ x: m.x + m.face * -8, y: m.y - 50 * scaleAt(m.y), t0: g.time, s: scaleAt(m.y) });
+  }
+
+  function updateCat(dt, jSpeed) {
+    const g = game;
+    const cat = g.cat;
+    const m = cat.mind;
+    const decided = m.advance(dt, { jx: g.x, jy: g.y, jmoving: jSpeed > 10 });
+
+    // How it is drawn.
+    const want = m.act === ACT.SLEEP ? 'lie' : m.act === ACT.SIT ? 'sit' : m.act === ACT.GROOM ? 'groom' : 'stand';
+    if (want !== cat.posture) {
+      cat.posture = want;
+      cat.squashV -= 2.6;
+    }
+    const homeD = Math.hypot(m.x - HOME.x, (m.y - HOME.y) * 1.6);
+    const liftT = homeD < 12 && m.act !== ACT.WALK ? 1 : homeD < 5 ? 1 : 0;
+    cat.lift += (liftT - cat.lift) * Math.min(1, dt * 7);
+    cat.phase += dt * 8.5 * m.gait;
+    cat.squashV += (-cat.squash * 190 - cat.squashV * 12) * dt;
+    cat.squash = clamp(cat.squash + cat.squashV * dt, -1, 1);
+
+    // A lying cat lifts its head when Jell-omo walks by, or when it is poked.
+    const near = Math.hypot(g.x - m.x, (g.y - m.y) * 1.3) < 105;
+    if (near && cat.until < g.time + 1) cat.until = g.time + 1.6;
+    const wakeT = g.time < cat.until ? 1 : 0;
+    cat.wake += (wakeT - cat.wake) * Math.min(1, dt * (wakeT ? 6 : 1.4));
+
+    // It speaks now and then: on getting up, on noticing Jell-omo, and at random while up.
+    if (decided && m.switched && m.act !== ACT.SLEEP && Math.random() < 0.4) catMew(0.9);
+    if (near && !cat.wasNear && m.act !== ACT.SLEEP && Math.random() < 0.6) catMew(0.8);
+    cat.wasNear = near;
+    if (m.act !== ACT.SLEEP) {
+      cat.nextMew -= dt;
+      if (cat.nextMew <= 0) {
+        catMew(0.7);
+        cat.nextMew = 9 + Math.random() * 24;
+      }
+    }
+  }
+
+  // ------------------------------------------------------------- the weather
+  const FLASH_MAX = reduced ? 0.3 : 1; // gentler for anyone who asked for less motion
+
+  function strike() {
+    const w = game.weather;
+    const t = game.time;
+    w.bolt = Math.random() < 0.8 ? makeBolt(Math.floor(Math.random() * 1e6)) : null;
+    // Two flashes at most, well apart, so it never strobes.
+    w.pulses = [{ t0: t, k: 1 }];
+    if (!reduced && Math.random() < 0.6) w.pulses.push({ t0: t + 0.36 + Math.random() * 0.12, k: 0.6 });
+    // Light arrives at once; the thunder comes a moment later, and later if it is far.
+    const far = Math.random();
+    w.thunderFar = far;
+    w.thunderAt = t + 0.35 + far * 2.6;
+    w.nextBolt = 12 + Math.random() * 26;
+  }
+
+  function updateWeather(dt) {
+    const g = game;
+    const w = g.weather;
+    w.retarget -= dt;
+    if (w.retarget <= 0) {
+      w.target = Math.random() < 0.35 ? 0.7 + Math.random() * 0.3 : 0.1 + Math.random() * 0.4;
+      w.retarget = 16 + Math.random() * 30;
+    }
+    w.storm += (w.target - w.storm) * Math.min(1, dt * 0.28);
+    if (g.time - w.rainSetAt > 0.5) {
+      w.rainSetAt = g.time;
+      audio.setRain(w.storm);
+    }
+    w.nextBolt -= dt * (0.35 + w.storm * 1.5);
+    if (w.nextBolt <= 0) strike();
+
+    let f = 0;
+    for (const p of w.pulses) {
+      const a = g.time - p.t0;
+      if (a >= 0) f = Math.max(f, p.k * Math.exp(-a * 8));
+    }
+    w.flash = f * FLASH_MAX;
+    if (w.pulses.length && f < 0.005 && g.time - w.pulses[w.pulses.length - 1].t0 > 0.6) w.pulses = [];
+    if (w.thunderAt && g.time >= w.thunderAt) {
+      w.thunderAt = 0;
+      audio.thunder(w.thunderFar);
+      // A close clap can wake the cat and make it complain.
+      const m = g.cat.mind;
+      if (w.thunderFar < 0.45 && Math.random() < 0.6) {
+        m.poke();
+        g.cat.until = g.time + 2.5;
+        if (m.act !== ACT.SLEEP || Math.random() < 0.5) setTimeout(() => catMew(0.8), 250 + Math.random() * 500);
+      }
+    }
+  }
+
   // Jell-omo, drawn as a sprite at his feet.
-  const SPRITE = 226;
+  // The model is drawn at 56 design px per model unit (camera half-extent 1.5).
+  const SPRITE = 168;
+  const FEET = 0.8265; // how far down the frame his feet are, as a fraction
   function drawJello(c) {
     const g = game;
     const sc = scaleAt(g.y);
@@ -304,7 +428,7 @@ function boot(canvas) {
     const sx = 1 - (sy - 1) * 0.6;
 
     // Shadow and the red light he throws on the floor.
-    const shW = (66 - bounce * (moving ? 8 : 0)) * sc;
+    const shW = (54 - bounce * (moving ? 7 : 0)) * sc;
     const gl = c.createRadialGradient(g.x, g.y + 2, 4, g.x, g.y + 2, shW * 1.25);
     gl.addColorStop(0, 'rgba(255,60,50,0.28)');
     gl.addColorStop(1, 'rgba(255,60,50,0)');
@@ -337,11 +461,10 @@ function boot(canvas) {
         time: g.time, yaw: g.yaw, lean: g.lean, sx, sy,
         wob: g.wob, mood: g.mood, sleep: g.sleep, capTilt: g.capTilt,
       });
-      // The figure's feet sit 81.5% of the way down the frame.
-      c.drawImage(avatar.canvas, g.x - S / 2, g.y - hop - S * 0.815 + 4 * sc, S, S);
+      c.drawImage(avatar.canvas, g.x - S / 2, g.y - hop - S * FEET + 3 * sc, S, S);
     } else if (flat && flat.complete && flat.naturalWidth) {
-      const w = 132 * sc * sx;
-      const h = 132 * sc * sy;
+      const w = 108 * sc * sx;
+      const h = 108 * sc * sy;
       c.save();
       c.translate(g.x, g.y - hop + 2);
       c.rotate(g.lean * 0.6);
@@ -351,12 +474,21 @@ function boot(canvas) {
     }
   }
 
+  function drawTheCat(c) {
+    const cat = game.cat;
+    const m = cat.mind;
+    drawCat(c, m.x, m.y, scaleAt(m.y) * 1.05, game.time, {
+      posture: cat.posture, wake: cat.wake, lift: cat.lift, face: m.face,
+      phase: cat.phase, gait: m.gait, squash: cat.squash,
+    });
+  }
+
   function drawProp(c, p) {
     const s = scaleAt(p.y);
     switch (p.kind) {
       case 'stool': drawStool(c, p.x, p.y, s); break;
       case 'plant': drawPlant(c, p.x, p.y, s * (p.small ? 0.9 : 1.05), game.time, !p.small); break;
-      case 'cat': drawCat(c, p.x, p.y, s * 1.05, game.time, game.cat.wake); break;
+      case 'cushion': drawCushion(c, p.x, p.y, s * 1.05); break;
       case 'armchair': drawArmchair(c, p.x, p.y, s, ...p.c); break;
       case 'table': drawTable(c, p.x, p.y, s, game.time); break;
       default: break;
@@ -370,19 +502,26 @@ function boot(canvas) {
     if (shell) ctx.drawImage(shell, 0, 0);
     ctx.setTransform(bakeScale, 0, 0, bakeScale, 0, 0);
 
-    drawWindowRain(ctx, g.time);
+    drawWindowRain(ctx, g.time, g.weather.storm);
+    drawLightning(ctx, g.weather.flash, g.weather.bolt);
     drawFire(ctx, g.time);
     drawGlow(ctx, g.time);
     drawBulbs(ctx, g.time);
-    for (const [sx, sy] of MACHINE.spouts) drawSteam(ctx, sx, sy - 8, g.time, 0.55, sx * 0.01);
+    // The more beans, the busier the machine: a thicker, faster plume.
+    const busy = 1 - Math.exp(-g.beans / 9);
+    const plume = 0.55 + busy * 0.5 + g.steamKick * 0.25;
+    const puffs = 3 + Math.round(busy * 5 + g.steamKick * 3);
+    for (const [sx, sy] of MACHINE.spouts) drawSteam(ctx, sx, sy - 8, g.time, plume, sx * 0.01, puffs, 0.32 + busy * 0.16);
 
     // Everything on the floor, back to front.
     const list = PROPS.map((p) => ({ y: p.y, p }));
     for (const b of g.beanList) list.push({ y: b.y, b });
     list.push({ y: g.y, jello: true });
+    list.push({ y: g.cat.mind.y + 0.2, cat: true });
     list.sort((a, b) => a.y - b.y);
     for (const it of list) {
       if (it.jello) drawJello(ctx);
+      else if (it.cat) drawTheCat(ctx);
       else if (it.b) drawBean(ctx, it.b.x, it.b.y, scaleAt(it.b.y) * 1.05, g.time, it.b.seed);
       else drawProp(ctx, it.p);
     }
@@ -416,6 +555,8 @@ function boot(canvas) {
       }
     }
     for (const h of g.hearts) drawHeart(ctx, h.x, h.y, (g.time - h.t0) / 1.1);
+    for (const mw of g.mews) drawMew(ctx, mw.x, mw.y, (g.time - mw.t0) / 1.3, mw.s * 1.05);
+    drawFlash(ctx, g.weather.flash);
 
     if (top) {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -430,10 +571,13 @@ function boot(canvas) {
     if (!game.started) begin();
     audio.wake();
     // Poke the cat.
-    if (Math.abs(p.x - CAT.x) < 56 && p.y > CAT.y - 78 && p.y < CAT.y + 8) {
+    const cm = game.cat.mind;
+    const cs = scaleAt(cm.y);
+    if (Math.abs(p.x - cm.x) < 52 * cs && p.y > cm.y - 78 * cs && p.y < cm.y + 8) {
       game.cat.until = game.time + 3;
-      game.hearts.push({ x: CAT.x - 20, y: CAT.y - 60, t0: game.time });
-      audio.meow();
+      cm.poke();
+      game.hearts.push({ x: cm.x - 20 * cs, y: cm.y - 60 * cs, t0: game.time });
+      catMew(1);
     }
     if (p.y < FLOOR_Y - 30) p.y = FLOOR_Y - 30;
     const t = resolveTarget(p.x, p.y);
@@ -546,7 +690,9 @@ function boot(canvas) {
       avatar: avatar ? '3d' : 'flat',
       audio: audio.ctx ? audio.ctx.state : 'off',
       sound: audio.on,
-      catAwake: game.cat.wake > 0.5,
+      catAwake: game.cat.wake > 0.5 || game.cat.mind.act !== ACT.SLEEP,
+      cat: { act: game.cat.mind.act, x: Math.round(game.cat.mind.x), y: Math.round(game.cat.mind.y), energy: +game.cat.mind.energy.toFixed(2), restless: +game.cat.mind.restless.toFixed(2) },
+      storm: +game.weather.storm.toFixed(2),
     }),
   };
 

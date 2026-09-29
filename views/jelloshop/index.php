@@ -15,7 +15,7 @@ $basePath = rtrim((string)parse_url(FULL_BASE_PATH, PHP_URL_PATH), '/');
 $assetsUrl = $basePath . '/assets/jelloshop';
 $jsDir = dirname(__DIR__, 2) . '/assets/jelloshop/js';
 $appJs = $jsDir . '/jelloshop.js';
-$modules = ['jello3d', 'audio', 'draw', 'room', 'props'];
+$modules = ['jello3d', 'audio', 'draw', 'room', 'props', 'catbrain', 'catweights'];
 $importMap = ['imports' => []];
 $jsNewest = (int)@filemtime($appJs);
 foreach ($modules as $m) {
@@ -27,7 +27,7 @@ $appCss = dirname(__DIR__, 2) . '/assets/css/jelloshop.css';
 $modified = date('c', max(filemtime(__FILE__), $jsNewest, (int)@filemtime($appCss)));
 
 $title = 'Jello Shop: Walk Jell-omo Around a Cozy Coffee Shop in Your Browser';
-$description = 'A small, calm browser game: walk Jell-omo, a 3D jelly in a baseball cap, around a hand-drawn coffee shop, collect coffee beans, pet the cat, and listen to the lo-fi shop music. Runs entirely in your browser, on desktop and mobile.';
+$description = 'A small, calm browser game: walk Jell-omo, a 3D jelly in a baseball cap, around a hand-drawn coffee shop, collect coffee beans, pet the cat, watch the storm, and listen to the lo-fi shop music. Runs entirely in your browser, on desktop and mobile.';
 
 $faq = [
     ['What is Jello Shop?', 'It is a tiny cosy room: a hand-drawn coffee shop with a rainy window, a fireplace, a striped rug and a sleeping cat. Jell-omo, the jelly mascot of this site, lives in it, and you tell him where to go by clicking the floor.'],
@@ -35,6 +35,9 @@ $faq = [
     ['How do I move him?', 'Click or tap anywhere on the floor and Jell-omo waddles over. On a desktop, move the mouse and he turns to look at you. Arrow keys and WASD work too.'],
     ['What are the coffee beans for?', 'Walking over one picks it up and adds it to the counter in the corner, and each pickup chimes a note higher up a little scale. That is the whole game. There is nothing to win and nothing to spend them on, although the menu on the wall is priced in them.'],
     ['Can I pet the cat?', 'Click the cat and it wakes up, meows and sends up a heart. Walk Jell-omo close to it and it lifts its head to look at him.'],
+    ['Does the cat do anything by itself?', 'Yes. It sleeps on its cushion most of the time, but every so often it wakes, sits up, grooms, wanders round the room and comes back to sleep. Nothing is scripted: a tiny neural network (a 12-unit recurrent GRU with about 1,200 weights, about 5 KB) chooses what to do twice a second, from how rested and restless the cat is, where Jell-omo is, and a little noise. It was trained offline with evolution strategies and runs in your browser, so it never plays the same day twice.'],
+    ['Does the weather change?', 'The rain drifts between a drizzle and a downpour, and sometimes there is lightning at the window followed, after a delay that depends on how far off it was, by thunder. A close clap can wake the cat. If your device asks for reduced motion, the flashes are softened and never come in pairs.'],
+    ['What does the coffee machine do?', 'The more beans you collect, the busier it gets: the steam over the machine grows thicker and rises faster, and it lets off a little hiss every few beans.'],
     ['Is the shop open?', 'Not really. The door has a hand-drawn CLOSED sign, because Jell-omo only gets one room.'],
     ['Does it need to download anything?', 'Only the code. The room is drawn with canvas, Jell-omo is rendered live by a WebGL shader, and the music, the rain and the sound effects are synthesised in the browser. There are no images or audio files to fetch. If your browser has no WebGL, Jell-omo falls back to the flat mascot picture.'],
     ['Does it work on a phone?', 'Yes. The room keeps its proportions and scales down to fit the screen, so on a small screen you get the whole shop at once, just smaller.'],
@@ -60,7 +63,7 @@ $schemaGraph = [
             'featureList' => [
                 'Click or tap to walk Jell-omo, a live 3D jelly, around the room',
                 'Coffee beans to collect and a bean counter',
-                'Hand-drawn cosy coffee shop with a rainy window, fireplace and a sleeping cat',
+                'Hand-drawn cosy coffee shop with a rainy window, lightning, a fireplace and a cat with a tiny neural network for a brain',
                 'Lo-fi background music, rain and sound effects synthesised in the browser',
                 'Scales to fit a phone screen',
             ],
@@ -152,13 +155,13 @@ ui_render_head($title, $description, [
         <section class="js-section" aria-labelledby="js-how">
             <h2 id="js-how">How the shop works</h2>
             <p>Click or tap anywhere on the floor and Jell-omo waddles over to that spot. While he is standing still he turns to face your cursor, so moving the mouse across the room makes him look around. The arrow keys and WASD work as well, which is handy on a laptop with a trackpad.</p>
-            <p>Coffee beans appear on the floor from time to time. Walk Jell-omo over one and it is picked up, counted in the corner, and rings a note. There is no scoring system, no unlocks and nothing to spend the beans on — although the chalkboard menu behind the bar prices everything in them. Click the cat if you want it to wake up.</p>
+            <p>Coffee beans appear on the floor from time to time. Walk Jell-omo over one and it is picked up, counted in the corner, and rings a note. There is no scoring system, no unlocks and nothing to spend the beans on — although the chalkboard menu behind the bar prices everything in them. Click the cat if you want it to wake up; left alone, it gets up on its own now and then. The steam over the coffee machine thickens as your bean count climbs.</p>
             <p>The shop is deliberately a single room. The door on the far wall has a hand-drawn <em>CLOSED</em> sign on it, because Jell-omo only gets one room.</p>
         </section>
 
         <section class="js-section" aria-labelledby="js-build">
             <h2 id="js-build">How it is made</h2>
-            <p><strong>The room</strong> is painted the way Club Penguin painted its rooms: a wide back wall, narrow side walls, a floor that opens towards you, flat saturated colour with one shade and one highlight, and dark warm outlines that wobble like they were inked by hand. Jell-omo walks in a handful of depth lanes, and every piece of furniture is sorted back to front so he can pass behind a plant and in front of an armchair. The rain, the fire, the string lights and the steam are drawn live over the top.</p>
+            <p><strong>The room</strong> is painted the way Club Penguin painted its rooms: a wide back wall, narrow side walls, a floor that opens towards you, flat saturated colour with one shade and one highlight, and dark warm outlines that wobble like they were inked by hand. Jell-omo walks in a handful of depth lanes, and every piece of furniture is sorted back to front so he can pass behind a plant and in front of an armchair. The rain, the lightning, the fire, the string lights and the steam are drawn live over the top.</p>
             <p><strong>Jell-omo</strong> is a real 3D model, not a picture. A small WebGL shader ray-marches a fluted jelly and a felt baseball cap every frame, shades the jelly as translucent and glossy, and hands the result to the room as a sprite. That is what lets him turn to face the way he walks, lean into it, squash when he lands and wobble when he stops.</p>
             <p><strong>The music</strong> is a small band playing an eight-bar loop at 78 beats a minute: an electric piano, an upright bass, a vibraphone melody and brushed drums, with rain and a crackling fire under it. It changes a little every time round. All of it, and the sound effects, is synthesised with the Web Audio API — there are no audio files.</p>
         </section>
