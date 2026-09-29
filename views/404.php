@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/ui.php';
 http_response_code(404);
 ui_render_head('404 | Page Not Found', 'The page you requested was not found.', ['robots' => 'noindex,follow']);
 ?>
-<body>
+<body class="ui-404">
 <div class="ui-page">
     <?php ui_render_navbar(); ?>
     <main class="ui-main" id="main-content" tabindex="-1">

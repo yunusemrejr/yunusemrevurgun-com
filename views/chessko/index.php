@@ -78,7 +78,7 @@ $schemaGraph = [
 
 ui_render_head($title, $description, [
     'chessko' => 'game',
-    'og_image' => FULL_BASE_PATH . 'assets/chessko/images/og.png?v=' . (@filemtime(dirname(__DIR__, 2) . '/assets/chessko/images/og.png') ?: 1),
+    'og_image' => FULL_BASE_PATH . 'assets/images/og-chessko.png?v=' . (@filemtime(dirname(__DIR__, 2) . '/assets/images/og-chessko.png') ?: 1),
     '<meta property="og:type" content="website">',
     '<meta name="keywords" content="chess, play chess online, free chess game, chess vs computer, Stockfish, Stockfish WebAssembly, browser chess, jelly chess">',
     '<script type="application/ld+json">' . json_encode($schemaGraph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>',

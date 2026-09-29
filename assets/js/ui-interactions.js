@@ -620,3 +620,19 @@
     init();
   }
 })();
+
+/* Mascot: clicking the hero jelly makes it wobble once. Decorative only —
+   the image has no role for assistive tech and the CSS drops the animation
+   when the visitor prefers reduced motion. */
+(function () {
+  var mascot = document.querySelector('.ui-mascot');
+  if (!mascot) return;
+  mascot.addEventListener('click', function () {
+    mascot.classList.remove('is-poked');
+    void mascot.offsetWidth; // restart the animation
+    mascot.classList.add('is-poked');
+  });
+  mascot.addEventListener('animationend', function (e) {
+    if (e.animationName === 'jelly-wobble') mascot.classList.remove('is-poked');
+  });
+})();

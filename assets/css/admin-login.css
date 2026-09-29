@@ -1,6 +1,6 @@
 /*
 ================================================================================
-ADMIN LOGIN PAGE — POLISHED DARK THEME
+ADMIN LOGIN PAGE — JELLY SYSTEM (sky field, cream card, jelly-red action)
 ================================================================================
 */
 
@@ -299,8 +299,7 @@ body.admin-login-container h1.admin-login-title,
   .admin-login-form {
     padding: var(--space-6);
   }
-
-
+}
 
 @media (max-width: 480px) {
   body.admin-login-container h1.admin-login-title,
@@ -372,3 +371,155 @@ body.admin-login-container h1.admin-login-title,
 .admin-login-container { min-height: 100svh; }
 .admin-login-container input { font-size: 16px; min-height: 44px; }
 .admin-login-container button { min-height: 44px; }
+
+
+/* ===== JELLY SYSTEM ===== */
+body.admin-login-body {
+  background: var(--color-sky);
+  color-scheme: light;
+  --color-control-border: #6e79a0;
+}
+
+body.admin-login-body :focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.admin-login-form-container {
+  background: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.admin-login-identity {
+  margin-bottom: var(--space-3);
+}
+
+.admin-login-title {
+  margin-top: var(--space-1);
+}
+
+.admin-login-mascot {
+  display: block;
+  margin: 0 auto 0;
+  width: 120px;
+  height: 120px;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 14px 12px rgba(27, 33, 64, 0.28));
+  transform-origin: 50% 100%;
+  animation: jelly-breathe 5.5s ease-in-out infinite;
+}
+
+@keyframes jelly-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.025, 0.975); }
+}
+
+body.admin-login-container h1.admin-login-title,
+.admin-login-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+.admin-login-form {
+  background: var(--color-bg-card);
+  border: 0;
+  border-radius: var(--radius-2xl);
+  padding: var(--space-10) var(--space-8) var(--space-8);
+  box-shadow: var(--shadow-xl);
+}
+
+.admin-form-label {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--color-navy);
+}
+
+.admin-form-label i {
+  color: var(--color-accent);
+}
+
+.admin-form-control {
+  background: #fff;
+  border: 2px solid var(--color-control-border);
+  border-radius: var(--radius-lg);
+  padding: 0.7rem 1rem;
+  transition: border-color var(--transition-fast), box-shadow 200ms ease;
+}
+
+.admin-form-control:focus {
+  outline: 0;
+  background: #fff;
+  border-color: var(--color-navy);
+  box-shadow: 0 0 0 4px rgba(105, 176, 249, 0.55);
+}
+
+.admin-form-control::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.admin-password-toggle {
+  color: var(--color-navy);
+  border-radius: var(--radius-full);
+}
+
+.admin-password-toggle:hover {
+  color: var(--color-accent);
+}
+
+.admin-login-submit {
+  border: 2px solid var(--color-jelly);
+  border-radius: var(--radius-full);
+  background: var(--color-jelly);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-base);
+  min-height: 48px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(120, 8, 8, 0.28), 0 6px 14px -6px rgba(184, 15, 13, 0.55);
+  transition: background-color var(--transition-fast), transform 320ms var(--ease-jelly);
+}
+
+.admin-login-submit:hover {
+  background: var(--color-jelly-hover);
+  border-color: var(--color-jelly-hover);
+  color: #fff;
+  transform: scale(1.03, 0.97);
+}
+
+.admin-login-submit:active {
+  transform: scale(0.96, 1.05);
+}
+
+.admin-alert {
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-alert-danger { background: #fde7e6; }
+.admin-alert-warning { background: #fdf0d5; }
+
+.captcha-question {
+  background: var(--color-sky-soft);
+  border-radius: var(--radius-full);
+  color: var(--color-navy);
+}
+
+#refresh-captcha {
+  border-radius: var(--radius-full) !important;
+  color: var(--color-navy) !important;
+}
+
+#refresh-captcha:hover {
+  background: var(--color-sky-soft) !important;
+  color: var(--color-accent) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-login-mascot { animation: none; }
+  .admin-login-submit:hover,
+  .admin-login-submit:active { transform: none; }
+}

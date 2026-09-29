@@ -1,5 +1,5 @@
 /* YunoBot: cache only its public page/assets. Never cache API or admin traffic. */
-const CACHE = 'yunobot-wasm-v3-20260909';
+const CACHE = 'yunobot-wasm-v4-20260929';
 self.addEventListener('install', event => event.waitUntil(self.skipWaiting()));
 self.addEventListener('activate', event => event.waitUntil((async () => {
     const names = await caches.keys();

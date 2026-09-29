@@ -15,16 +15,18 @@
 }
 
 .ui-rmrp-count {
- font-size: var(--text-xs);
- color: var(--color-accent-secondary);
+ font-size: var(--text-sm);
+ color: var(--color-text-secondary);
  font-family: var(--font-display);
- letter-spacing: 0.5px;
- text-transform: uppercase;
+ font-weight: 500;
 }
 
 .ui-view-toggle {
  display: inline-flex;
- border: 1px solid var(--color-border-strong);
+ border: 2px solid var(--color-navy);
+ border-radius: var(--radius-full);
+ overflow: hidden;
+ background: var(--color-bg-card);
 }
 
 .ui-view-toggle a {
@@ -33,10 +35,9 @@
  gap: var(--space-2);
  padding: var(--space-2) var(--space-3);
  font-family: var(--font-display);
- font-size: var(--text-xs);
- letter-spacing: 0.5px;
- text-transform: uppercase;
- color: var(--color-ink-body);
+ font-size: var(--text-sm);
+ font-weight: 500;
+ color: var(--color-navy);
  text-decoration: none;
  transition:
   background-color var(--transition-fast),
@@ -44,13 +45,13 @@
 }
 
 .ui-view-toggle a:hover {
- background-color: var(--color-bg-subtle);
- color: var(--color-accent-secondary);
+ background-color: var(--color-sky-soft);
+ color: var(--color-navy);
 }
 
 .ui-view-toggle a.is-active {
- background-color: var(--color-accent-secondary);
- color: var(--color-bg-primary);
+ background-color: var(--color-navy);
+ color: var(--color-text-inverse);
 }
 
 .ui-rmrp-per {
@@ -59,28 +60,26 @@
  align-items: center;
  gap: var(--space-2);
  font-family: var(--font-display);
- font-size: var(--text-xs);
- letter-spacing: 0.5px;
- text-transform: uppercase;
- color: var(--color-accent-secondary);
+ font-size: var(--text-sm);
+ font-weight: 500;
+ color: var(--color-text-secondary);
 }
 
 .ui-rmrp-per select {
  background-color: var(--color-surface);
- border: 1px solid var(--color-border-strong);
+ border: 2px solid var(--color-control-border);
+ border-radius: var(--radius-md);
  color: var(--color-ink-body);
  padding: var(--space-2) var(--space-3);
  font-family: var(--font-display);
- font-size: var(--text-xs);
- letter-spacing: 0.5px;
- text-transform: uppercase;
+ font-size: var(--text-sm);
  cursor: pointer;
 }
 
 .ui-rmrp-per select:focus {
- outline: 2px solid var(--color-accent);
- outline-offset: 3px;
- background-color: var(--color-bg-card);
+ outline: 3px solid var(--color-focus-ring);
+ outline-offset: 2px;
+ background-color: #fff;
 }
 
 /* ===== GRID / LIST LAYOUT ===== */
@@ -102,25 +101,38 @@
  }
 }
 
-/* Divider-separated rows in list mode, flat bordered tiles in grid mode. */
+/* One card DOM, two layouts: divider-separated rows in list mode,
+   flat bordered tiles in grid mode. */
 .ui-rmrp-grid.is-list {
- border-bottom: 1px solid var(--color-border);
+ gap: var(--space-4);
 }
 
 .ui-rmrp-grid.is-list .ui-rmrp-card {
- background: transparent;
- border-top: 1px solid var(--color-border);
- padding: var(--space-6) 0;
+ background: var(--color-bg-card);
+ border-radius: var(--radius-xl);
+ box-shadow: var(--shadow-md);
+ padding: var(--space-6);
 }
 
 .ui-rmrp-grid.is-grid .ui-rmrp-card {
- background-color: var(--color-surface);
- border: 1px solid var(--color-border);
+ background-color: var(--color-bg-card);
+ border: 0;
+ border-radius: var(--radius-xl);
+ box-shadow: var(--shadow-md);
  padding: var(--space-6);
 }
 
 .ui-rmrp-card {
- transition: border-color var(--transition-base);
+ transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+}
+
+.ui-rmrp-card:hover {
+ transform: translateY(-3px);
+ box-shadow: var(--shadow-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+ .ui-rmrp-card:hover { transform: none; }
 }
 
 .ui-rmrp-card .ui-feed-title a {
@@ -130,16 +142,7 @@
 }
 
 .ui-rmrp-card .ui-feed-title a:hover {
- color: var(--color-accent-secondary);
-}
-
-/* ===== DATE CAPTION (above the title, unlike Updates) ===== */
-.ui-rmrp-meta {
- font-family: var(--font-mono, ui-monospace, monospace);
- font-size: var(--text-xs);
- letter-spacing: 0.04em;
- color: var(--color-ink-slate);
- margin: 0 0 var(--space-2);
+ color: var(--color-accent);
 }
 
 /* ===== BADGES ===== */
@@ -157,24 +160,26 @@
  padding: var(--space-1) var(--space-2);
  font-family: var(--font-display);
  font-size: var(--text-xs);
- letter-spacing: 0.5px;
+ font-weight: 600;
+ letter-spacing: 0.04em;
  text-transform: uppercase;
- border: 1px solid currentColor;
+ border-radius: var(--radius-full);
+ padding: 2px 10px 3px;
 }
 
 .ui-importance.is-high {
  color: var(--color-danger);
- background-color: rgba(166, 96, 96, 0.08);
+ background-color: var(--color-danger-bg);
 }
 
 .ui-importance.is-medium {
  color: var(--color-warning);
- background-color: rgba(184, 154, 62, 0.08);
+ background-color: var(--color-warning-bg);
 }
 
 .ui-importance.is-low {
- color: var(--color-accent);
- background-color: var(--color-bg-subtle);
+ color: var(--color-info);
+ background-color: var(--color-info-bg);
 }
 
 /* Grid cards: clamp long excerpts to three lines. */
@@ -192,6 +197,16 @@
 }
 
 /* Archive controls keep the public reading font and visible boundaries. */
-.ui-view-toggle a, .ui-rmrp-count, .ui-rmrp-per, .ui-rmrp-per select { font-family: var(--font-body); }
+.ui-view-toggle a, .ui-rmrp-count, .ui-rmrp-per, .ui-rmrp-per select { font-family: var(--font-display); }
 .ui-view-toggle a, .ui-rmrp-per select { min-height: 44px; }
-.ui-rmrp-per select { background-color: var(--color-bg-elevated); border-color: var(--color-control-border); }
+.ui-rmrp-per select { background-color: #fff; border-color: var(--color-control-border); }
+
+
+/* ===== DATE CAPTION (above the title, unlike Updates) ===== */
+.ui-rmrp-meta {
+ font-family: var(--font-display);
+ font-size: var(--text-sm);
+ font-weight: 500;
+ color: var(--color-text-tertiary);
+ margin: 0 0 var(--space-2);
+}

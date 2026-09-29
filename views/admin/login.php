@@ -354,14 +354,15 @@ if (strpos($currentPath, '/admin') !== false &&
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#15120f">
+    <meta name="theme-color" content="#69b0f9">
     <meta name="description" content="Admin Login - Yunus Emre Vurgun Personal Website Administration">
     <meta name="robots" content="noindex, nofollow">
     <title>Admin Login | Yunus Emre Vurgun</title>
     <?php $adminAssetV = static fn(string $rel): string => (@filemtime(dirname(__DIR__, 2) . '/' . $rel) ?: '1'); ?>
     <link rel="icon" type="image/svg+xml" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=<?= $adminAssetV('assets/images/favicon.svg') ?>">
-    <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg?v=<?= $adminAssetV('assets/images/favicon.svg') ?>">
-    <link rel="apple-touch-icon" href="<?= FULL_BASE_PATH ?>assets/images/pwa-icon-192.png?v=<?= $adminAssetV('assets/images/pwa-icon-192.png') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= FULL_BASE_PATH ?>assets/images/favicon-32.png?v=<?= $adminAssetV('assets/images/favicon-32.png') ?>">
+    <link rel="shortcut icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.ico?v=<?= $adminAssetV('assets/images/favicon.ico') ?>">
+    <link rel="apple-touch-icon" href="<?= FULL_BASE_PATH ?>assets/images/apple-touch-icon.png?v=<?= $adminAssetV('assets/images/apple-touch-icon.png') ?>">
     <meta name="msapplication-TileImage" content="<?= FULL_BASE_PATH ?>assets/images/pwa-icon-192.png?v=<?= $adminAssetV('assets/images/pwa-icon-192.png') ?>">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous">
@@ -380,10 +381,10 @@ if (strpos($currentPath, '/admin') !== false &&
     <noscript>
         <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg-primary); color: var(--color-text-primary); display: flex; align-items: center; justify-content: center; z-index: 9999;">
             <div style="text-align: center; padding: 2rem;">
-                <h1 style="font-family: 'Aileron', 'Helvetica Neue', Arial, sans-serif;">JavaScript Required</h1>
+                <h1 style="font-family: 'Fredoka', ui-rounded, system-ui, sans-serif;">JavaScript Required</h1>
                 <p>This page requires JavaScript to function properly.</p>
                 <p>Please enable JavaScript in your browser and refresh the page.</p>
-                <a href="<?php echo FULL_BASE_PATH; ?>403.php?error=javascript_required" style="color: rgba(234,234,234,0.7); text-decoration: underline;">Click here if you cannot enable JavaScript</a>
+                <a href="<?php echo FULL_BASE_PATH; ?>403.php?error=javascript_required" style="color: #1b2140; text-decoration: underline;">Click here if you cannot enable JavaScript</a>
             </div>
         </div>
     </noscript>
@@ -402,6 +403,7 @@ if (strpos($currentPath, '/admin') !== false &&
     <div class="admin-login-container">
         <!-- Site Title -->
         <div class="admin-login-identity">
+            <img class="admin-login-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot-160.webp" width="120" height="120" alt="">
             <h1 class="admin-login-title">Admin Login</h1>
         </div>
 

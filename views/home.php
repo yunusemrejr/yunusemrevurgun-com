@@ -125,9 +125,9 @@ ui_render_head(
             </nav>
         </div>
         <figure class="ui-masthead-figure">
-            <img src="<?= ui_portrait_url() ?>" width="1000" height="1250" decoding="async" fetchpriority="high"
-                 alt="Pencil portrait of Yunus Emre Vurgun.">
-            <figcaption>Yunus Emre Vurgun — Istanbul.</figcaption>
+            <img class="ui-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot.webp" width="800" height="800" decoding="async" fetchpriority="high"
+                 alt="Yemre's mascot: a glossy red jelly wearing a navy and cream baseball cap, eyes closed in a contented smile.">
+            <figcaption>Yemre, the mascot. Poke it.</figcaption>
         </figure>
     </div>
 </header>
@@ -141,11 +141,18 @@ ui_render_head(
                 <p class="ui-section-text">From CPU-optimized neural network experiments to industrial automation, the work is documented here as it happens.</p>
                 <a class="ui-more-link" href="<?= FULL_BASE_PATH ?>about">Full profile, education, and work history →</a>
             </div>
-            <figure>
-                <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" decoding="async" loading="lazy"
-                     alt="Yemre in a hoodie working at a vintage CRT computer, surrounded by machine-learning and C++ books under a desk lamp.">
-                <figcaption>The study: a vintage CRT, machine-learning and C++ books, and a desk lamp.</figcaption>
-            </figure>
+            <div class="ui-landing-study-figures">
+                <figure>
+                    <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" decoding="async" loading="lazy"
+                         alt="Yemre in a hoodie working at a vintage CRT computer, surrounded by machine-learning and C++ books under a desk lamp.">
+                    <figcaption>The study: a vintage CRT, machine-learning and C++ books, and a desk lamp.</figcaption>
+                </figure>
+                <figure>
+                    <img src="<?= ui_portrait_url() ?>" width="1000" height="1250" decoding="async" loading="lazy"
+                         alt="Pencil portrait of Yunus Emre Vurgun.">
+                    <figcaption>Yunus Emre Vurgun — Istanbul.</figcaption>
+                </figure>
+            </div>
         </div>
     </section>
 
@@ -195,6 +202,7 @@ ui_render_head(
 </div>
 
 <footer class="ui-landing-footer">
+    <img class="ui-footer-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot-160.webp" width="112" height="112" alt="" loading="lazy" decoding="async">
     <div class="ui-landing-footer-inner">
         <nav class="ui-landing-footer-nav" aria-label="Footer navigation">
             <ul role="list">

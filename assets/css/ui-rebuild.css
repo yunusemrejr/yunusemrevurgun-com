@@ -1,40 +1,21 @@
 /*
 ===============================================================================
-YUNUS EMRE VURGUN — DESIGN SYSTEM v5.0
+YUNUS EMRE VURGUN — DESIGN SYSTEM v6.0 ("JELLY") · STRUCTURE LAYER
 ===============================================================================
 
-An editorial document after dark: deep warm charcoal, parchment text, one
-restrained amber accent. Hierarchy comes from typography, spacing, and
-hairline rules — not from glow, decoration, or motion.
+This file owns structure: reset, layout grids, component anatomy and responsive
+behaviour. The brand's look lives in two places that load with it:
 
-COLOR SYSTEM  (values live in variables.css — this file only consumes them)
-- Page background:    var(--color-bg-primary)   (dominant warm near-black)
-- Headings/body text: var(--color-ink-body)      (parchment)
-- Secondary text:     var(--color-ink-slate)     (warm taupe labels, metadata)
-- Accent:             var(--color-accent)        (amber, sparing: key actions,
-                                                 active states, small markers)
-- Borders/surfaces:   var(--color-border), var(--color-surface)
+  variables.css   every token — the palette lifted from the mascot render
+                  (sky #69B0F9, navy #262E4D, cream #EEE2D7, jelly #DB1816),
+                  Fredoka + Atkinson Hyperlegible Next, radii, shadows.
+  jelly.css       the skin: navbar with mascot, lobed section edges, cream
+                  cards, squishy buttons, footer. Loaded after this file and
+                  after ebook.css, so it wins.
 
-TYPOGRAPHY
-- Display/Headings: Fraunces (variable serif, self-hosted) — editorial voice
-- Body/UI/Controls: Inter (variable grotesque, self-hosted) — reading and controls
-- Code:             system monospace stack
-
-LAYOUT
-- Document layout first: columns, lists, tables, timelines, dividers.
-- Card containers only where a boundary genuinely groups controls or media.
-- Prose measure capped at var(--measure-prose). Sections separated by
-  whitespace and hairlines.
-
-MEDIA
-- Photography and figures render naturally, framed by hairlines with captions.
-  No grayscale tricks, no hover reveals, no decorative canvases.
-
-MOTION
-- 100–250ms state transitions only (hover, focus, open/close). No entrances,
-  no parallax, no floating, no scroll effects. Everything must read perfectly
-  with animation disabled.
-
+Some colour and shape declarations below predate the redesign; where jelly.css
+restyles a component, jelly.css is authoritative. Never hard-code a colour:
+consume the tokens.
 ===============================================================================
 */
 
@@ -161,7 +142,7 @@ ol {
   gap: var(--space-10);
 }
 
-/* YEMRE Wordmark — Fraunces, title case */
+/* YEMRE Wordmark — Fredoka */
 .ui-wordmark {
   font-family: var(--font-display);
   font-size: var(--text-xl);

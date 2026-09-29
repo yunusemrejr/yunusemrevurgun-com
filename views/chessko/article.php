@@ -77,7 +77,7 @@ if (!empty($article['faq'])) {
 
 ui_render_head($article['title'], $article['description'], [
     'chessko' => true,
-    'og_image' => FULL_BASE_PATH . 'assets/chessko/images/og.png?v=' . (@filemtime(dirname(__DIR__, 2) . '/assets/chessko/images/og.png') ?: 1),
+    'og_image' => FULL_BASE_PATH . 'assets/images/og-chessko.png?v=' . (@filemtime(dirname(__DIR__, 2) . '/assets/images/og-chessko.png') ?: 1),
     'og_type' => 'article',
     '<meta property="og:type" content="article">',
     '<meta property="article:published_time" content="' . $article['published'] . '">',

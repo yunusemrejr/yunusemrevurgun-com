@@ -5,84 +5,80 @@
 <style>
   /* Fonts are the same self-hosted variable files the site serves. */
   @font-face {
-    font-family: 'Fraunces';
-    src: url('FONT_DIR_PLACEHOLDER/fraunces-latin.woff2') format('woff2');
-    font-weight: 400 800;
-    font-display: block;
-  }
-  @font-face {
-    font-family: 'Inter';
-    src: url('FONT_DIR_PLACEHOLDER/inter-latin.woff2') format('woff2');
+    font-family: 'Fredoka';
+    src: url('FONT_DIR_PLACEHOLDER/fredoka-latin.woff2') format('woff2');
     font-weight: 300 700;
     font-display: block;
   }
+  @font-face {
+    font-family: 'Atkinson Hyperlegible Next';
+    src: url('FONT_DIR_PLACEHOLDER/atkinson-next-latin.woff2') format('woff2');
+    font-weight: 200 800;
+    font-display: block;
+  }
 
-  html, body { margin: 0; padding: 0; background: #15120f; }
+  html, body { margin: 0; padding: 0; background: #69b0f9; }
 
   /* Open Graph / Twitter share card: 1200x630 (1.91:1).
-     Composes the landing photograph with the site wordmark on the v4 palette,
-     so a shared link looks like the site it points to. */
+     The brand blue field, the mascot on the navy lobed band, the name in
+     Fredoka. Title, subtitle and label are filled in by build-og-image.sh. */
   #card {
     position: relative;
     width: 1200px; height: 630px;
     box-sizing: border-box;
-    background-color: #15120f;
-    background-image: radial-gradient(80% 120% at 82% 26%, rgba(224, 163, 63, 0.16) 0%, rgba(224, 163, 63, 0.04) 45%, transparent 70%);
-    display: flex; align-items: center; gap: 68px;
-    padding: 0 76px;
+    background: #69b0f9;
     overflow: hidden;
-    font-family: 'Inter', sans-serif;
-    color: #ece2d0;
+    font-family: 'Atkinson Hyperlegible Next', sans-serif;
+    color: #1b2140;
   }
 
-  #photo {
-    position: relative;
-    flex: 0 0 auto;
-    width: 400px; height: 400px;
-    overflow: hidden;
-    border: 1px solid rgba(224, 163, 63, 0.38);
-    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6), 0 0 70px rgba(224, 163, 63, 0.08);
+  /* navy band with lobes rising into the blue, like the site footer */
+  #band {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 92px;
+    background: #1b2140;
   }
-  #photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  #photo::after {
-    content: '';
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(120% 100% at 50% 6%, rgba(224, 163, 63, 0.12) 0%, transparent 58%),
-      linear-gradient(180deg, transparent 62%, rgba(9, 7, 5, 0.42) 100%);
+  #lobes {
+    position: absolute; left: 0; right: 0; bottom: 92px; height: 30px;
+    background: radial-gradient(circle at 50% 100%, #1b2140 0 29.5px, transparent 30px) 0 0 / 60px 30px repeat-x;
+  }
+  #url {
+    position: absolute; left: 76px; bottom: 30px;
+    font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 30px; letter-spacing: 0.01em;
+    color: #fbf8f4;
   }
 
-  #meta { display: flex; flex-direction: column; gap: 18px; }
-  #name {
-    font-family: 'Fraunces', Georgia, serif;
-    font-weight: 600;
-    font-size: 92px;
-    line-height: 1;
-    letter-spacing: 0.12em;
-    text-indent: 0.12em;
-    margin: 0;
+  #text { position: absolute; left: 76px; top: 86px; width: 640px; }
+  #label {
+    display: inline-block;
+    font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 28px;
+    color: #fbf8f4; background: #262e4d;
+    padding: 6px 24px 8px; border-radius: 999px; margin-bottom: 28px;
   }
-  #tagline {
-    font-size: 21px;
-    font-weight: 500;
-    letter-spacing: 0.34em;
-    text-transform: uppercase;
-    color: #e0a33f;
-    margin: 0;
+  #title {
+    margin: 0 0 22px;
+    font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: TITLE_SIZE_PLACEHOLDERpx; line-height: 1.02; letter-spacing: -0.02em;
+    color: #1b2140;
   }
-  #rule { width: 120px; height: 1px; background: rgba(236, 226, 208, 0.26); }
-  #host { font-size: 20px; color: #bda98a; margin: 0; }
+  #sub { margin: 0; font-size: 34px; line-height: 1.32; color: #1b2140; max-width: 600px; }
+
+  #mascot {
+    position: absolute; right: 52px; bottom: 44px;
+    width: 470px; height: 470px;
+    filter: drop-shadow(0 26px 22px rgba(20, 26, 51, 0.38));
+  }
 </style>
 </head>
 <body>
   <div id="card">
-    <div id="photo"><img src="PHOTO_PATH_PLACEHOLDER" alt=""></div>
-    <div id="meta">
-      <h1 id="name">Yemre</h1>
-      <p id="tagline">The world of a developer</p>
-      <div id="rule"></div>
-      <p id="host">yunusemrevurgun.com</p>
+    <div id="text">
+      <span id="label">LABEL_PLACEHOLDER</span>
+      <h1 id="title">TITLE_PLACEHOLDER</h1>
+      <p id="sub">SUB_PLACEHOLDER</p>
     </div>
+    <div id="lobes"></div>
+    <div id="band"></div>
+    <div id="url">yunusemrevurgun.com</div>
+    <img id="mascot" src="MASCOT_PATH_PLACEHOLDER" alt="">
   </div>
 </body>
 </html>

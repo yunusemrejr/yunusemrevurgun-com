@@ -1,6 +1,6 @@
 /* ============================================
    YUNOBOT PAGE — YEV Design System
-   Warm dark palette, sharp corners, Fraunces + Inter
+   Jelly system: cream panels on the sky field, navy ink, jelly-red send
    ============================================ */
 
 /* ===== CUSTOM PROPERTIES ===== */
@@ -700,3 +700,212 @@
 
 .chat-input { border-color: var(--color-control-border); }
 .source-chip { white-space: normal; overflow-wrap: anywhere; text-decoration: underline; text-underline-offset: 3px; }
+
+
+/* ============================================================
+   JELLY SYSTEM — moulded shapes, mascot as the bot's face.
+   Later in the file so it wins over the structural rules above.
+   ============================================================ */
+
+.ui-yunobot-chat {
+ background: var(--color-bg-card);
+ border: 0;
+ border-radius: var(--radius-2xl);
+ box-shadow: var(--shadow-lg);
+}
+
+.chat-status-bar {
+ background: var(--color-sky-soft);
+ border: 0;
+ border-radius: var(--radius-full);
+ padding: var(--space-2) var(--space-4);
+}
+
+.chat-status-dot {
+ width: 10px;
+ height: 10px;
+ border-radius: var(--radius-full);
+}
+
+.chat-status-text {
+ font-family: var(--font-display);
+ font-size: var(--text-sm);
+ font-weight: 500;
+ color: var(--color-navy);
+ text-transform: none;
+ letter-spacing: 0;
+}
+
+.message-avatar {
+ width: 36px;
+ height: 36px;
+ border-radius: var(--radius-full);
+ border: 0;
+ background: var(--color-sky-soft);
+ color: var(--color-navy);
+ font-family: var(--font-display);
+ font-weight: 600;
+}
+
+/* The bot answers as the mascot; the letters stay in the DOM for
+   assistive tech but are visually replaced. */
+.bot-message .message-avatar {
+ background: var(--color-sky) url("../images/mascot-160.webp") center 60% / 128% no-repeat;
+ font-size: 0;
+ color: transparent;
+ overflow: hidden;
+}
+
+.message-content {
+ border-radius: var(--radius-xl);
+}
+
+.user-message .message-content {
+ background: var(--color-navy);
+ border: 0;
+ color: var(--color-text-inverse);
+ border-bottom-right-radius: 6px;
+}
+
+.user-message .message-content a {
+ color: var(--color-sky-soft);
+}
+
+.bot-message .message-content {
+ background: var(--color-bg-elevated);
+ border: 0;
+ border-bottom-left-radius: 6px;
+ box-shadow: var(--shadow-sm);
+}
+
+.message-content code {
+ background: var(--color-sky-soft);
+ color: var(--color-navy);
+ border-radius: 6px;
+}
+
+.message-content pre {
+ background: var(--navy-800);
+ color: var(--color-cream);
+ border-radius: var(--radius-md);
+}
+
+.message-content a {
+ color: var(--color-accent);
+}
+
+.source-chip {
+ background: var(--color-sky-soft);
+ border: 0;
+ border-radius: var(--radius-full);
+ color: var(--color-navy);
+}
+
+.source-chip:hover {
+ background: var(--color-sky);
+ color: var(--color-navy);
+}
+
+.example-questions {
+ background: var(--color-bg-elevated);
+ border: 0;
+ border-radius: var(--radius-lg);
+}
+
+.example-questions-label {
+ font-family: var(--font-display);
+ font-weight: 600;
+ font-size: var(--text-sm);
+ text-transform: none;
+ letter-spacing: 0.02em;
+ color: var(--color-text-secondary);
+}
+
+.example-question-chip,
+.chat-action-btn {
+ background: var(--color-bg-card);
+ border: 2px solid var(--color-navy);
+ border-radius: var(--radius-full);
+ color: var(--color-navy);
+ font-family: var(--font-display);
+ font-weight: 500;
+ font-size: var(--text-sm);
+ text-transform: none;
+ letter-spacing: 0;
+ transition: transform 300ms var(--ease-jelly), background-color var(--transition-fast);
+}
+
+.example-question-chip:hover,
+.chat-action-btn:hover {
+ background: var(--color-sky-soft);
+ border-color: var(--color-navy);
+ color: var(--color-navy);
+ transform: scale(1.04, 0.97);
+}
+
+.example-question-chip:active,
+.chat-action-btn:active {
+ transform: scale(0.95, 1.05);
+}
+
+.chat-input-container {
+ border-top: 2px dotted var(--color-border-strong);
+}
+
+.chat-input {
+ background: #fff;
+ border: 2px solid var(--color-control-border);
+ border-radius: var(--radius-lg);
+}
+
+.chat-input:focus {
+ outline: 0;
+ border-color: var(--color-navy);
+ box-shadow: 0 0 0 4px rgba(105, 176, 249, 0.55);
+}
+
+.chat-send-button {
+ width: 46px;
+ height: 46px;
+ background: var(--color-jelly);
+ border: 2px solid var(--color-jelly);
+ border-radius: var(--radius-full);
+ color: #fff;
+ box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(120, 8, 8, 0.28);
+ transition: transform 320ms var(--ease-jelly), background-color var(--transition-fast);
+}
+
+.chat-send-button:hover {
+ background: var(--color-jelly-hover);
+ border-color: var(--color-jelly-hover);
+ transform: scale(1.08, 0.94);
+}
+
+.chat-send-button:active {
+ transform: scale(0.92, 1.08);
+}
+
+.chat-send-button:disabled {
+ background: var(--color-sky-soft);
+ border-color: var(--color-sky-soft);
+ box-shadow: none;
+ color: var(--color-text-tertiary);
+}
+
+.chat-send-button:focus-visible {
+ outline: 3px solid var(--color-focus-ring);
+ outline-offset: 2px;
+}
+
+.ui-yunobot-guide details {
+ border-top: 2px dotted var(--color-border-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+ .example-question-chip:hover,
+ .chat-action-btn:hover,
+ .chat-send-button:hover,
+ .example-question-chip:active,
+ .chat-action-btn:active,
+ .chat-send-button:active { transform: none; }
+}

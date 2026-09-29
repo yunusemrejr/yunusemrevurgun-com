@@ -17,17 +17,17 @@ ui_render_head(
     <?php ui_render_navbar('more'); ?>
 
     <main class="ui-main gc" id="main-content" tabindex="-1">
-        <a class="gc-btn gc-btn-ghost gc-back" href="<?= FULL_BASE_PATH ?>">&lt; Home</a>
+        <a class="gc-btn gc-btn-ghost gc-back" href="<?= FULL_BASE_PATH ?>">← Home</a>
 
         <header class="gc-head">
-            <svg class="gc-sprite" viewBox="0 0 16 13" width="96" height="78" shape-rendering="crispEdges" aria-hidden="true" focusable="false">
-                <rect x="0" y="0" width="7" height="3" fill="#e0a33f"/>
-                <rect x="9" y="0" width="7" height="3" fill="#e0a33f"/>
-                <rect x="1" y="5" width="4" height="3" fill="#ece2d0"/>
-                <rect x="6" y="5" width="4" height="3" fill="#ece2d0"/>
-                <rect x="11" y="5" width="4" height="3" fill="#ece2d0"/>
-                <rect x="3" y="10" width="4" height="3" fill="#8d7f68"/>
-                <rect x="9" y="10" width="4" height="3" fill="#8d7f68"/>
+            <svg class="gc-sprite" viewBox="0 0 16 13" width="96" height="78" aria-hidden="true" focusable="false">
+                <rect x="0" y="0" width="7" height="3" rx="1.2" fill="#db1816"/>
+                <rect x="9" y="0" width="7" height="3" rx="1.2" fill="#db1816"/>
+                <rect x="1" y="5" width="4" height="3" rx="1.2" fill="#262e4d"/>
+                <rect x="6" y="5" width="4" height="3" rx="1.2" fill="#262e4d"/>
+                <rect x="11" y="5" width="4" height="3" rx="1.2" fill="#262e4d"/>
+                <rect x="3" y="10" width="4" height="3" rx="1.2" fill="#eee2d7"/>
+                <rect x="9" y="10" width="4" height="3" rx="1.2" fill="#eee2d7"/>
             </svg>
             <div>
                 <h1 class="gc-title">Claim Splitter</h1>

@@ -43,8 +43,9 @@ $adminNavItems = [
     ['id' => 'export', 'label' => 'Export', 'href' => FULL_BASE_PATH . 'api/admin/export.php', 'download' => true],
 ];
 
-$faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg?v=' . (@filemtime(dirname(__DIR__, 3) . '/assets/images/favicon.svg') ?: '1');
-$touchIconUrl = FULL_BASE_PATH . 'assets/images/pwa-icon-192.png?v=' . (@filemtime(dirname(__DIR__, 3) . '/assets/images/pwa-icon-192.png') ?: '1');
+$adminIcon = static fn(string $f): string => FULL_BASE_PATH . 'assets/images/' . $f . '?v=' . (@filemtime(dirname(__DIR__, 3) . '/assets/images/' . $f) ?: '1');
+$faviconUrl = $adminIcon('favicon.svg');
+$touchIconUrl = $adminIcon('apple-touch-icon.png');
 $faviconMime = 'image/svg+xml';
 ?>
 <!DOCTYPE html>
@@ -52,14 +53,15 @@ $faviconMime = 'image/svg+xml';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#15120f">
+    <meta name="theme-color" content="#69b0f9">
     <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
     <meta name="description" content="Admin Panel - <?php echo htmlspecialchars($pageTitle); ?>">
     <meta name="robots" content="noindex, nofollow">
     <title>Admin - <?php echo htmlspecialchars($pageTitle); ?> | Yunus Emre Vurgun</title>
 
     <link rel="icon" type="<?php echo htmlspecialchars($faviconMime); ?>" href="<?php echo $faviconUrl; ?>">
-    <link rel="shortcut icon" href="<?php echo $faviconUrl; ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo $adminIcon('favicon-32.png'); ?>">
+    <link rel="shortcut icon" href="<?php echo $adminIcon('favicon.ico'); ?>">
     <link rel="apple-touch-icon" href="<?php echo $touchIconUrl; ?>">
     <meta name="msapplication-TileImage" content="<?php echo $touchIconUrl; ?>">
 
@@ -107,7 +109,7 @@ $faviconMime = 'image/svg+xml';
     <header class="admin-ui-topbar">
         <div class="admin-ui-topbar-row">
             <div class="admin-ui-brand">
-                <a href="<?php echo FULL_BASE_PATH; ?>admin/dashboard">Yemre</a>
+                <a href="<?php echo FULL_BASE_PATH; ?>admin/dashboard"><img class="admin-ui-brand-mark" src="<?php echo FULL_BASE_PATH; ?>assets/images/mascot-160.webp" width="38" height="38" alt="">Yemre</a>
                 <span>ADMIN</span>
             </div>
 

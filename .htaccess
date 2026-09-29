@@ -81,7 +81,7 @@ RewriteRule ^ - [E=YEV_NOINDEX:1]
 
 # favicon.ico legacy — browsers always probe /favicon.ico regardless of link
 # tags; redirect to THE one favicon so they can never settle on a different file.
-RewriteRule ^favicon\.ico$ assets/images/favicon.svg [L,R=302]
+RewriteRule ^favicon\.ico$ assets/images/favicon.ico [L,R=302]
 
 # Route app requests
 RewriteCond %{REQUEST_FILENAME} !-f

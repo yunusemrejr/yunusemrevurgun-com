@@ -21,7 +21,7 @@ if (!function_exists('ui_render_head')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#15120f">
+    <meta name="theme-color" content="#69b0f9">
     <?php
     // Pages may override the index directive via extraMeta['robots'] (e.g. the
     // search results page, which is thin and has an unbounded ?q= URL space).
@@ -98,13 +98,16 @@ if (!function_exists('ui_render_head')) {
     <link rel="alternate" type="application/rss+xml" title="Updates (RSS)" href="<?= FULL_BASE_PATH ?>updates.xml">
     <link rel="alternate" type="application/rss+xml" title="Random Memories (RSS)" href="<?= FULL_BASE_PATH ?>rmrp.xml">
     <link rel="manifest" href="<?= FULL_BASE_PATH ?>manifest.json?v=<?= filemtime(__DIR__ . '/../../manifest.json') ?>">
-    <?php $faviconUrl = FULL_BASE_PATH . 'assets/images/favicon.svg?v=' . filemtime(__DIR__ . '/../../assets/images/favicon.svg'); ?>
-    <link rel="icon" type="image/svg+xml" href="<?= $faviconUrl ?>">
-    <link rel="shortcut icon" href="<?= $faviconUrl ?>">
-    <?php $touchIconUrl = FULL_BASE_PATH . 'assets/images/pwa-icon-192.png?v=' . filemtime(__DIR__ . '/../../assets/images/pwa-icon-192.png'); ?>
-    <link rel="apple-touch-icon" href="<?= $touchIconUrl ?>">
-    <meta name="msapplication-TileImage" content="<?= $touchIconUrl ?>">
-    <link rel="mask-icon" href="<?= FULL_BASE_PATH ?>assets/images/favicon.svg" color="#e0a33f">
+    <?php
+    // Brand icons: built from the mascot by dev/scripts/build-brand-assets.py.
+    $iconV = static fn(string $f): string => FULL_BASE_PATH . 'assets/images/' . $f . '?v=' . (@filemtime(__DIR__ . '/../../assets/images/' . $f) ?: '1');
+    ?>
+    <link rel="icon" type="image/svg+xml" href="<?= $iconV('favicon.svg') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= $iconV('favicon-32.png') ?>">
+    <link rel="shortcut icon" href="<?= $iconV('favicon.ico') ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= $iconV('apple-touch-icon.png') ?>">
+    <meta name="msapplication-TileImage" content="<?= $iconV('pwa-icon-192.png') ?>">
+    <meta name="msapplication-TileColor" content="#69b0f9">
     <?php $collectionPage = in_array(trim($requestPath, '/'), ['post-code','science-corner','comedy','music','videos','downloads','slop','more','rmrp'], true); ?>
     <?php if ($collectionPage): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/collections.css?v=<?= filemtime(__DIR__ . '/../../assets/css/collections.css') ?>">
@@ -113,6 +116,7 @@ if (!function_exists('ui_render_head')) {
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/variables.css?v=<?= filemtime(__DIR__ . '/../../assets/css/variables.css') ?>">
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ui-rebuild.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ui-rebuild.css') ?>">
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ebook.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ebook.css') ?>">
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/jelly.css?v=<?= filemtime(__DIR__ . '/../../assets/css/jelly.css') ?>">
     <?php if (isset($extraMeta['yunobot']) && $extraMeta['yunobot']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/yunobot.css?v=<?= filemtime(__DIR__ . '/../../assets/css/yunobot.css') ?>">
     <?php endif; ?>
@@ -193,7 +197,10 @@ if (!function_exists('ui_render_navbar')) {
     <?php ui_render_ebook_notice(); ?>
     <nav class="ui-navbar" aria-label="Main">
         <div class="ui-nav-left">
-            <a class="ui-wordmark" href="<?= FULL_BASE_PATH ?>">Yemre</a>
+            <a class="ui-wordmark" href="<?= FULL_BASE_PATH ?>" aria-label="Yemre — home">
+                <img class="ui-wordmark-mark" src="<?= FULL_BASE_PATH ?>assets/images/mascot-160.webp" width="40" height="40" alt="" decoding="async">
+                <span>Yemre</span>
+            </a>
             <ul class="ui-nav-links" role="list">
                 <?php foreach (ui_nav_items() as $item):
                     $itemLabel = strtolower($item['label']);
@@ -309,6 +316,7 @@ if (!function_exists('ui_render_footer')) {
         }
         ?>
 <footer class="ui-footer">
+    <img class="ui-footer-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot-160.webp" width="112" height="112" alt="" loading="lazy" decoding="async">
     <div class="ui-footer-inner">
         <div>
             <p class="ui-footer-name">Yunus Emre Vurgun</p>
