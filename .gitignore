@@ -44,3 +44,4 @@ output/playwright/
 
 # Reproducible C++ model header; shipping binary is versioned.
 dev/yunobot-wasm/generated.hpp
+dev/yunobot-wasm/chat-reference.json

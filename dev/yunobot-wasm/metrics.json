@@ -1,0 +1,20 @@
+{
+ "classes": 82,
+ "trainSentences": 1992,
+ "heldOutSentences": 330,
+ "oosTrain": 553,
+ "oosHeldOut": 92,
+ "hiddenUnits": 96,
+ "hashedFeatures": 4096,
+ "parameters": 401363,
+ "trainAccuracy": 0.9809,
+ "heldOutAccuracy": 0.7848,
+ "gate": {
+  "minProbability": 0.45,
+  "minMargin": 0.3,
+  "sureProbability": 0.5
+ },
+ "heldOutAcceptedCorrect": 198,
+ "heldOutAcceptedWrong": 17,
+ "oosHeldOutWronglyAccepted": 3
+}
