@@ -1,0 +1,261 @@
+/* Chessko (/chessko and /chessko/<article>): the page around the game.
+   Uses the site's warm charcoal, parchment and amber tokens for everything except the game itself,
+   which is a self-contained jelly-themed island (assets/chessko/css/chessko.css, scoped to .ck). */
+
+.ck-page {
+  max-width: 1120px;
+}
+
+.ck-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-tertiary);
+}
+.ck-crumbs li + li::before {
+  content: "/";
+  margin-right: var(--space-2);
+  color: var(--color-text-disabled);
+}
+.ck-crumbs a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+.ck-crumbs a:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.ck-head {
+  max-width: 68ch;
+  margin-bottom: var(--space-8);
+}
+.ck-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
+}
+.ck-lead {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+.ck-byline {
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-tertiary);
+}
+.ck-byline a {
+  color: var(--color-text-secondary);
+}
+
+/* ---- the game island ---- */
+.ck-stage {
+  margin: 0 0 var(--space-16);
+}
+.ck-stage .ck {
+  min-height: 0;
+  border-radius: 28px;
+  background-attachment: scroll;
+  overflow: hidden;
+}
+.ck-stage .ck .mold {
+  padding: var(--space-8) var(--space-4) var(--space-5);
+}
+.ck-noscript {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-secondary);
+}
+
+/* ---- sections below the game ---- */
+.ck-section {
+  max-width: 76ch;
+  margin: 0 0 var(--space-12);
+}
+.ck-section h2,
+.ck-body h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-4);
+}
+.ck-section p,
+.ck-section li {
+  line-height: 1.7;
+  color: var(--color-ink-body);
+}
+.ck-section a {
+  color: var(--color-accent);
+}
+
+.ck-articles {
+  display: grid;
+  gap: 0;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--color-border);
+}
+.ck-articles li {
+  border-bottom: 1px solid var(--color-border);
+}
+.ck-articles a {
+  display: block;
+  padding: var(--space-4) 0;
+  text-decoration: none;
+  color: inherit;
+}
+.ck-articles-title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-text-primary);
+}
+.ck-articles-desc {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+.ck-articles a:hover .ck-articles-title,
+.ck-articles a:focus-visible .ck-articles-title {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.ck-faq {
+  margin: 0;
+}
+.ck-faq > div {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.ck-faq dt {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--color-text-primary);
+}
+.ck-faq dd {
+  margin: var(--space-2) 0 0;
+  line-height: 1.65;
+  color: var(--color-ink-body);
+}
+
+.ck-credits {
+  padding-left: 1.2em;
+}
+
+/* ---- articles ---- */
+.ck-article {
+  max-width: 72ch;
+  margin-bottom: var(--space-12);
+}
+.ck-toc {
+  margin: 0 0 var(--space-8);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+}
+.ck-toc-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs, 0.75rem);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.ck-toc ol {
+  margin: 0;
+  padding-left: 1.3em;
+}
+.ck-toc li {
+  margin: 4px 0;
+}
+.ck-toc a {
+  color: var(--color-ink-body);
+}
+.ck-toc a:hover {
+  color: var(--color-accent-hover);
+}
+.ck-body section {
+  scroll-margin-top: calc(var(--navbar-height, 64px) + var(--space-4));
+}
+.ck-body table {
+  width: 100%;
+  margin: 0 0 var(--space-6);
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  display: block;
+  overflow-x: auto;
+}
+.ck-body th,
+.ck-body td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+.ck-body th {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+.ck-body pre {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4);
+  overflow-x: auto;
+  background: var(--color-bg-dark);
+  border: 1px solid var(--color-border);
+  line-height: 1.55;
+  font-size: 0.875rem;
+}
+.ck-body pre code {
+  background: none;
+  padding: 0;
+}
+.ck-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+.ck-cta p {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+.ck-button {
+  display: inline-block;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+}
+.ck-button:hover,
+.ck-button:focus-visible {
+  background: var(--color-accent-hover);
+}
+
+@media (max-width: 640px) {
+  .ck-stage .ck {
+    border-radius: 18px;
+  }
+  .ck-body table {
+    font-size: 0.875rem;
+  }
+}

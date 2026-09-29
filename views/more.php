@@ -17,6 +17,12 @@ $morePages = [
         'icon' => '▚',
     ],
     [
+        'title' => 'Chessko',
+        'href' => FULL_BASE_PATH . 'chessko',
+        'description' => 'Jelly chess in your browser: a home-grown engine, or Stockfish running as WebAssembly. Plus how it all works.',
+        'icon' => '♞',
+    ],
+    [
         'title' => 'Post-Code',
         'href' => FULL_BASE_PATH . 'post-code',
         'description' => 'Concepts and mathematics foundations for post-code era computing.',

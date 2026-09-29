@@ -22,6 +22,12 @@ class Router {
         'science-corner' => 'views/science-corner/index.php',
         'yunobot' => 'views/yunobot/index.php',
         'gemmaclaim' => 'views/gemmaclaim/index.php',
+        'chessko' => 'views/chessko/index.php',
+        'chessko/how-it-works' => 'views/chessko/article.php',
+        'chessko/search-and-evaluation' => 'views/chessko/article.php',
+        'chessko/machine-learning' => 'views/chessko/article.php',
+        'chessko/stockfish-webassembly' => 'views/chessko/article.php',
+        'chessko/difficulty-levels' => 'views/chessko/article.php',
         'videos' => 'views/videos/index.php',
         'downloads' => 'views/downloads/index.php',
         'slop' => 'views/slop/index.php',
@@ -66,6 +72,14 @@ class Router {
         'api/search' => 'api/search.php',
         'api/llms' => 'api/llms.php',
         'api/contact' => 'api/contact.php',
+        'api/chessko/health' => 'api/chessko.php',
+        'api/chessko/config' => 'api/chessko.php',
+        'api/chessko/model' => 'api/chessko.php',
+        'api/chessko/book' => 'api/chessko.php',
+        'api/chessko/games' => 'api/chessko.php',
+        'api/chessko/games/stats' => 'api/chessko.php',
+        'api/chessko/games/recent' => 'api/chessko.php',
+        'api/chessko/train' => 'api/chessko.php',
         'admin/search' => 'views/admin/search.php',
         'admin/api/search' => 'views/admin/api/search.php',
         'music' => 'views/music.php',
@@ -319,8 +333,8 @@ class Router {
         }
 
         // Pages that manage their own layout via ui.php functions
-        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'rmrp', 'blog', 'post-code', 'science-corner', 'yunobot', 'gemmaclaim', 'videos', 'downloads', 'slop', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
-        $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || in_array($url, $selfLayoutPages, true);
+        $selfLayoutPages = ['', 'home', 'about', 'portfolio', 'gallery', 'contact', 'travel', 'updates', 'rmrp', 'blog', 'post-code', 'science-corner', 'yunobot', 'gemmaclaim', 'chessko', 'videos', 'downloads', 'slop', 'search', 'privacy', 'terms', 'cookies', 'more', 'sitemap', 'llms', 'music'];
+        $skipLayout = str_starts_with($url, 'admin/') || str_starts_with($url, 'api/') || str_starts_with($url, 'chessko/') || in_array($url, $selfLayoutPages, true);
 
         // Layout is self-contained via ui.php functions; no separate header/footer files
 

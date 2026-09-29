@@ -61,6 +61,42 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://yunusemrevurgun.com/chessko</loc>
+    <lastmod>2026-09-29T00:00:00+00:00</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://yunusemrevurgun.com/chessko/how-it-works</loc>
+    <lastmod>2026-09-29T00:00:00+00:00</lastmod>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://yunusemrevurgun.com/chessko/search-and-evaluation</loc>
+    <lastmod>2026-09-29T00:00:00+00:00</lastmod>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://yunusemrevurgun.com/chessko/machine-learning</loc>
+    <lastmod>2026-09-29T00:00:00+00:00</lastmod>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://yunusemrevurgun.com/chessko/stockfish-webassembly</loc>
+    <lastmod>2026-09-29T00:00:00+00:00</lastmod>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://yunusemrevurgun.com/chessko/difficulty-levels</loc>
+    <lastmod>2026-09-29T00:00:00+00:00</lastmod>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://yunusemrevurgun.com/science-corner</loc>
     <lastmod>2026-06-15T00:00:00+00:00</lastmod>
     <priority>0.6</priority>

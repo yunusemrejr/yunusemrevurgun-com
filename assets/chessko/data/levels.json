@@ -1,0 +1,141 @@
+{
+  "engine": {
+    "ttEntries": 65536,
+    "mateScore": 100000,
+    "quiescenceMaxDepth": 6
+  },
+  "algorithms": [
+    {
+      "id": "alphabeta",
+      "name": "Alpha-beta search",
+      "kind": "search",
+      "detail": "Iterative deepening with quiescence, transposition table, killer moves and a history heuristic."
+    },
+    {
+      "id": "logreg",
+      "name": "Logistic-regression evaluation",
+      "kind": "offline ML",
+      "detail": "Trained in the Python backend (engine/train.py) by stochastic gradient descent on positions distilled from a deeper teacher search; served to the browser as 16 weights."
+    },
+    {
+      "id": "knn-book",
+      "name": "k-NN opening book",
+      "kind": "offline ML",
+      "detail": "Positions from the same corpus, scored by distance-weighted k-nearest-neighbour vote over material/space/phase features."
+    },
+    {
+      "id": "bandit",
+      "name": "UCB1 difficulty bandit",
+      "kind": "online ML",
+      "detail": "Online: watches how close your moves are to the engine's best line and nudges the effective level up or down."
+    },
+    {
+      "id": "history",
+      "name": "History heuristic",
+      "kind": "online learning",
+      "detail": "Reinforcement over move ordering inside the search: cutoffs reorder future move lists."
+    },
+    {
+      "id": "stockfish-wasm",
+      "name": "Stockfish 19 in WebAssembly",
+      "kind": "WASM engine",
+      "detail": "The two top levels hand the move to Stockfish 19 (lite, single-threaded, 1.8 MB) running as a WebAssembly worker in your browser: NNUE evaluation, a deep alpha-beta search and a proper transposition table. Level 6 is capped with Stockfish's own UCI_Elo limiter; level 7 plays at full strength. It also powers the hint button."
+    }
+  ],
+  "levels": [
+    {
+      "id": 1,
+      "name": "Jiggly",
+      "tagline": "wobbles a lot",
+      "depth": 4,
+      "timeMs": 800,
+      "temperature": 340,
+      "blunder": 0.45,
+      "learnedWeight": 0.25,
+      "bookPlies": 4,
+      "quiescence": 3
+    },
+    {
+      "id": 2,
+      "name": "Wobbly",
+      "tagline": "wobbles often",
+      "depth": 4,
+      "timeMs": 800,
+      "temperature": 210,
+      "blunder": 0.28,
+      "learnedWeight": 0.25,
+      "bookPlies": 4,
+      "quiescence": 3
+    },
+    {
+      "id": 3,
+      "name": "Bouncy",
+      "tagline": "wobbles sometimes",
+      "depth": 4,
+      "timeMs": 800,
+      "temperature": 120,
+      "blunder": 0.14,
+      "learnedWeight": 0.25,
+      "bookPlies": 4,
+      "quiescence": 3
+    },
+    {
+      "id": 4,
+      "name": "Springy",
+      "tagline": "hardly wobbles",
+      "depth": 4,
+      "timeMs": 800,
+      "temperature": 55,
+      "blunder": 0.05,
+      "learnedWeight": 0.25,
+      "bookPlies": 4,
+      "quiescence": 3
+    },
+    {
+      "id": 5,
+      "name": "Blobmaster",
+      "tagline": "never wobbles",
+      "depth": 4,
+      "timeMs": 800,
+      "temperature": 0,
+      "blunder": 0.0,
+      "learnedWeight": 0.25,
+      "bookPlies": 4,
+      "quiescence": 3
+    },
+    {
+      "id": 6,
+      "name": "Gelatitan",
+      "tagline": "stockfish, on a leash",
+      "engine": "stockfish",
+      "wasm": {
+        "elo": 2000,
+        "movetimeMs": 700
+      },
+      "depth": 0,
+      "timeMs": 700,
+      "temperature": 0,
+      "blunder": 0.0,
+      "learnedWeight": 0.25,
+      "bookPlies": 0,
+      "quiescence": 0
+    },
+    {
+      "id": 7,
+      "name": "Set in Stone",
+      "tagline": "stockfish, full strength",
+      "engine": "stockfish",
+      "wasm": {
+        "elo": null,
+        "movetimeMs": 1500
+      },
+      "depth": 0,
+      "timeMs": 1500,
+      "temperature": 0,
+      "blunder": 0.0,
+      "learnedWeight": 0.25,
+      "bookPlies": 0,
+      "quiescence": 0
+    }
+  ]
+}
