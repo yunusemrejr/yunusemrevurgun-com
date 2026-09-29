@@ -92,30 +92,18 @@ static int neural(const Tokens &t, float &margin, float &known) {
   margin = probabilities[best] - second;
   return best;
 }
-static float chatProbs[CHATS + 1];
-// Conversation classifier: hashed word, bigram and character-trigram features
-// into a 96-unit ReLU layer (int8 weights, per-feature scale), then softmax.
 static int chatClass(const Tokens &t, float &prob, float &margin) {
-  static float features[MLP_F];
-  for (float &v : features)
-    v = 0;
+  float features[2048] = {};
   for (int i = 0; i < t.n; i++) {
     char w[70] = "W";
     append(w, t.word[i], 70);
-    features[hash(w) % MLP_F] += 2;
-    if (i) {
-      char pair[136] = "B";
-      append(pair, t.word[i - 1], 136);
-      append(pair, " ", 136);
-      append(pair, t.word[i], 136);
-      features[hash(pair) % MLP_F] += 2;
-    }
+    features[hash(w) % 2048] += 2;
     char p[68] = "<";
     append(p, t.word[i], 68);
     append(p, ">", 68);
     for (int k = 0; k < length(p) - 2; k++) {
       char g[5] = {'C', p[k], p[k + 1], p[k + 2], 0};
-      features[hash(g) % MLP_F]++;
+      features[hash(g) % 2048]++;
     }
   }
   float norm = 0;
@@ -126,43 +114,29 @@ static int chatClass(const Tokens &t, float &prob, float &margin) {
     prob = margin = 0;
     return CHATS;
   }
-  float h[MLP_H];
-  for (int j = 0; j < MLP_H; j++)
-    h[j] = mlpB1[j];
-  for (int k = 0; k < MLP_F; k++)
-    if (features[k]) {
-      float v = features[k] / norm * mlpScale[k];
-      for (int j = 0; j < MLP_H; j++)
-        h[j] += v * mlpW1[k * MLP_H + j];
-    }
-  for (int j = 0; j < MLP_H; j++)
-    if (h[j] < 0)
-      h[j] = 0;
-  float max = -1e30f;
+  float scores[64], max = -1e30f;
   int best = 0;
   for (int c = 0; c <= CHATS; c++) {
-    float v = mlpB2[c];
-    for (int j = 0; j < MLP_H; j++)
-      v += mlpW2[c * MLP_H + j] * h[j];
-    chatProbs[c] = v;
+    float v = chatBias[c];
+    for (int d = 0; d < 2048; d++)
+      if (features[d])
+        v += features[d] * chatWeights[c * 2048 + d] / norm;
+    scores[c] = v;
     if (v > max) {
       max = v;
       best = c;
     }
   }
-  float sum = 0;
+  float sum = 0, second = 0;
   for (int c = 0; c <= CHATS; c++) {
-    chatProbs[c] = expApprox(chatProbs[c] - max);
-    sum += chatProbs[c];
+    scores[c] = expApprox(scores[c] - max);
+    sum += scores[c];
   }
-  float second = 0;
-  for (int c = 0; c <= CHATS; c++) {
-    chatProbs[c] /= sum;
-    if (c != best && chatProbs[c] > second)
-      second = chatProbs[c];
-  }
-  prob = chatProbs[best];
-  margin = prob - second;
+  for (int c = 0; c <= CHATS; c++)
+    if (c != best && scores[c] > second)
+      second = scores[c];
+  prob = scores[best] / sum;
+  margin = (scores[best] - second) / sum;
   return best;
 }
 static int detectLanguage(const Tokens &t) {
@@ -186,29 +160,6 @@ static int detectLanguage(const Tokens &t) {
         "bana bir benim bugun yorgunum sikildim turkce nerede hangi projeleri "
         "yazilari anlat seyahat galeri guncellemeler hakkinda");
   }
-  // Learned evidence: a naive-Bayes log-odds table over hashed tokens.
-  int nbEn = 0, nbTr = 0;
-  for (int i = 0; i < t.n; i++) {
-    char w[70] = "L";
-    append(w, t.word[i], 70);
-    int score = langScore[hash(w) & 4095];
-    if (score <= -24)
-      nbEn++;
-    else if (score >= 24)
-      nbTr++;
-  }
-  // The marker words above decide first; the learned table only speaks when
-  // they saw nothing, which is where unfamiliar Turkish used to fall back to
-  // English.
-  if (!en && !tr) {
-    if (nbEn >= 2 && nbTr >= 2)
-      return 2;
-    if (nbTr > nbEn)
-      return 1;
-    if (nbEn > nbTr)
-      return 0;
-    return language;
-  }
   if (en && tr)
     return 2;
   if (tr)
@@ -225,121 +176,7 @@ static void answer(int kind, const char *text) {
   resultKind = kind;
   copy(output, text, sizeof(output));
 }
-static int unknownTurn = 0, lastJokeTurn = -9, replyCounter[CHATS];
-static char userName[40];
-// One reply from a class's rotating pool. '?' variants need the user's name,
-// '!' variants need it to be unknown; {name} is replaced.
-static void chatReply(int chat, char *dst, int cap) {
-  const char *const *pool = language == 1   ? replyPool_tr
-                            : language == 2 ? replyPool_mix
-                                            : replyPool_en;
-  const int *start = language == 1   ? replyStart_tr
-                     : language == 2 ? replyStart_mix
-                                     : replyStart_en;
-  const int *count = language == 1   ? replyCount_tr
-                     : language == 2 ? replyCount_mix
-                                     : replyCount_en;
-  int n = count[chat], st = start[chat], chosen = -1;
-  if (userName[0])
-    for (int k = 0; k < n && chosen < 0; k++) {
-      int v = (replyCounter[chat] + k) % n;
-      if (pool[st + v][0] == '?')
-        chosen = v;
-    }
-  for (int k = 0; k < n && chosen < 0; k++) {
-    int v = (replyCounter[chat] + k) % n;
-    char c = pool[st + v][0];
-    if ((c == '?' && !userName[0]) || (c == '!' && userName[0]))
-      continue;
-    chosen = v;
-  }
-  if (chosen < 0)
-    chosen = 0;
-  replyCounter[chat] = (chosen + 1) % n;
-  const char *text = pool[st + chosen];
-  if (text[0] == '?' || text[0] == '!')
-    text++;
-  int o = 0;
-  for (; *text && o < cap - 1; text++) {
-    if (text[0] == '{' && text[1] == 'n' && text[2] == 'a' && text[3] == 'm' &&
-        text[4] == 'e' && text[5] == '}') {
-      for (const char *u = userName; *u && o < cap - 1; u++)
-        dst[o++] = *u;
-      text += 5;
-    } else
-      dst[o++] = *text;
-  }
-  dst[o] = 0;
-}
-// "my name is X", "call me X", "adim X", "bana X de": X is copied from the
-// original text so diacritics survive.
-static bool extractName(char *out, int cap) {
-  char words[24][48];
-  char folded[24][48];
-  int n = 0;
-  for (const char *p = input; *p && n < 24;) {
-    while (*p && !((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') ||
-                   (unsigned char)*p >= 128))
-      p++;
-    int k = 0;
-    while (*p && ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') ||
-                  (unsigned char)*p >= 128) &&
-           k < 47)
-      words[n][k++] = *p++;
-    words[n][k] = 0;
-    if (k) {
-      normalize(words[n], folded[n], 48);
-      n++;
-    }
-  }
-  const char *stopWords = " a an the not so very just here fine good ok okay "
-                          "tired sad happy sorry ";
-  int at = -1;
-  for (int i = 0; i < n && at < 0; i++) {
-    const char *w = folded[i];
-    if (equal(w, "name") && i + 2 < n &&
-        (equal(folded[i + 1], "is") || equal(folded[i + 1], "s")))
-      at = i + 2;
-    else if (equal(w, "call") && i + 2 < n && equal(folded[i + 1], "me"))
-      at = i + 2;
-    else if (equal(w, "called") && i + 1 < n)
-      at = i + 1;
-    else if (equal(w, "by") && i && equal(folded[i - 1], "go") && i + 1 < n)
-      at = i + 1;
-    else if ((equal(w, "adim") || equal(w, "ismim")) && i + 1 < n)
-      at = i + 1;
-    else if (equal(w, "bana") && i + 2 < n && folded[i + 2][0] == 'd' &&
-             folded[i + 2][1] == 'e')
-      at = i + 1;
-  }
-  if (at < 0 && n >= 1 && n <= 2 && !equal(folded[0], "i"))
-    at = -1;
-  if (at < 0)
-    return false;
-  char probe[52] = " ";
-  append(probe, folded[at], 52);
-  append(probe, " ", 52);
-  if (contains(stopWords, probe) || length(words[at]) < 2)
-    return false;
-  copy(out, words[at], cap);
-  if (out[0] >= 'a' && out[0] <= 'z')
-    out[0] -= 32;
-  return true;
-}
 static void unknown() {
-  if (unknownTurn++ % 3 == 1)
-    return answer(
-        0, pick("Hmm, I’m not sure I caught that. Could you say it another "
-                "way? I’m best with this site’s projects and posts, and with "
-                "small talk.",
-                "Hmm, bunu tam anlayamadım. Başka türlü söyler misin? En iyi "
-                "olduğum konular sitedeki projeler, yazılar ve sohbet."));
-  if (unknownTurn % 3 == 0)
-    return answer(
-        0, pick("That one’s outside what I can answer reliably. Try asking "
-                "about a project, a post, or just chat with me.",
-                "Bu, güvenilir cevap verebileceğim konuların dışında. Bir "
-                "proje ya da yazıyı sorabilir ya da sohbet edebilirsin."));
   answer(
       0,
       pick("I don’t have a reliable answer for that. We can chat, or you can "
@@ -674,11 +511,6 @@ API void reset() {
   lastChat = -1;
   language = 0;
   turn = 0;
-  unknownTurn = 0;
-  lastJokeTurn = -9;
-  userName[0] = 0;
-  for (int &c : replyCounter)
-    c = 0;
 }
 API void clear_documents() {
   docCount = 0;
@@ -823,19 +655,7 @@ API void process(int bytes) {
   bool subject = any(t, "yunus yemre graphy finetuneyuno blog portfolio "
                         "gallery travel updates project projects article post "
                         "galeri seyahat proje projeleri guncellemeler");
-  // A confident site-fact match outranks a weak conversational guess.
-  float factMargin, factKnown;
-  int factIntent = neural(t, factMargin, factKnown);
-  bool factual = intentTypes[factIntent] != 2 &&
-                 probabilities[factIntent] >= .6f && factMargin >= .3f &&
-                 factKnown >= .5f;
-  bool gated = chat < CHATS && cp > chatMinProb &&
-               (cm > chatMinMargin || cp > chatSureProb) && !subject &&
-               !(factual && cp < .6f);
-  if (gated && equal(chatNames[chat], "riddle_giveup") &&
-      !(lastChat >= 0 && equal(chatNames[lastChat], "play_game")))
-    gated = false;
-  if (gated) {
+  if (chat < CHATS && cp > .56f && cm > .2f && !subject) {
     if (equal(chatNames[chat], "correction"))
       lastDoc = -1;
     if (equal(chatNames[chat], "language")) {
@@ -845,28 +665,9 @@ API void process(int bytes) {
       else if (has(t, "english") && !has(t, "turkce"))
         language = 0;
     }
-    if (equal(chatNames[chat], "name_set"))
-      extractName(userName, sizeof(userName));
-    int use = chat;
-    // "another one?" -> "yes" hands out the next joke.
-    if (equal(chatNames[chat], "joke"))
-      lastJokeTurn = turn;
-    if (equal(chatNames[chat], "yes") && lastChat >= 0 &&
-        (equal(chatNames[lastChat], "laugh") ||
-         (equal(chatNames[lastChat], "lol") && turn - lastJokeTurn <= 4)) &&
-        any(t, "yes evet yeah olur tamam sure please lutfen yep")) {
-      for (int i = 0; i < CHATS; i++)
-        if (equal(chatNames[i], "joke"))
-          use = i;
-    }
-    char reply[2048];
-    chatReply(use, reply, sizeof(reply));
-    // Short follow-ups ("why?", "and you?") answer differently after some
-    // topics.
-    if (lastChat >= 0)
-      for (int k = 0; k < AFTERS; k++)
-        if (afterChat[k] == chat && afterPrev[k] == lastChat)
-          copy(reply, language == 1 ? afterTr[k] : afterEn[k], sizeof(reply));
+    const char *reply = language == 1   ? chat_tr[chat]
+                        : language == 2 ? chat_mix[chat]
+                                        : chat_en[chat];
     answer(1, reply);
     if (equal(chatNames[chat], "name") &&
         any(t, "hey hi selam merhaba kanka")) {
@@ -879,6 +680,12 @@ API void process(int bytes) {
       append(full, reply, sizeof(full));
       copy(output, full, sizeof(output));
     }
+    if (((equal(chatNames[chat], "yes") && lastChat >= 0 &&
+          equal(chatNames[lastChat], "laugh")) ||
+         (equal(chatNames[chat], "joke") && lastChat == chat)))
+      answer(1, pick("Why was the function calm? It had no side effects.",
+                     "Fonksiyon neden sakindi? Yan etkisi yoktu.",
+                     "Why was the function calm? Yan etkisi yoktu."));
     if (equal(chatNames[chat], "yes") && lastChat >= 0 &&
         any(t, "yes evet yeah olur tamam")) {
       if (equal(chatNames[lastChat], "sad"))
@@ -1015,16 +822,4 @@ API int classify_input(int bytes) {
 }
 API float class_probability(int index) {
   return index >= 0 && index < INTENTS ? probabilities[index] : 0;
-}
-
-// Diagnostic ABI for chat-parity.mjs: the conversation classifier's top class and probability.
-API int chat_classify(int bytes) {
-  if (bytes < 0 || bytes >= 8001)
-    return -1;
-  input[bytes] = 0;
-  float p, m;
-  return chatClass(tokenize(input), p, m);
-}
-API float chat_probability(int index) {
-  return index >= 0 && index <= CHATS ? chatProbs[index] : 0;
 }

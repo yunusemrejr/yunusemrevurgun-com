@@ -1,6 +1,6 @@
 # Yunus Emre Vurgun / Yemre
 
-Current YunoBot implementation: see [C++ / WebAssembly](dev/yunobot-wasm/README.md): a hidden-layer conversational network, rotating reply variants, name and follow-up context, and learned English/Turkish language identification, all in the C++ core with no language model. The Wasm worker supersedes the JavaScript inference pipeline described in the earlier release notes below.
+Current YunoBot implementation: see [C++ / WebAssembly](dev/yunobot-wasm/README.md). The Wasm worker supersedes the JavaScript inference pipeline described in the earlier release notes below.
 
 Personal website and publishing tools. Server-rendered PHP; no application framework or frontend runtime build is required for deployment.
 

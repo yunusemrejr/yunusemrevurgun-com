@@ -245,9 +245,8 @@
     function getInitialExamples() {
         return [
             "hey kanka whats your name?",
-            "bana bir bilmece sor",
-            "tell me something interesting",
             "What is Mr. Graphy?",
+            "Find writing about edge AI",
             "Yunus nerede okudu?",
         ];
     }

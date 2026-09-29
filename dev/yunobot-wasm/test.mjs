@@ -60,33 +60,5 @@ bot.ask('thanks kanka');r=bot.ask('hangi dillerle yapılmış?');assert.match(r.
 bot.c.reset();assert.equal(bot.ask('How does it work?').kind,7);passed++;
 bot.ask('I feel sad');assert.match(bot.ask('yes').response,/What happened/);passed++;
 for(const q of ['What is Mr. Graphy?','What is FinetuneYuno?','Find writing about edge AI','Explain entropy']){bot.c.reset();r=bot.ask(q);assert(bot.rows.some(p=>p.text===r.response&&p.url===r.sourceUrl));passed++;}
-
-// ---- conversation quality: single turns (English, Turkish, mixed, diacritic-free Turkish) ----
-const talk=[
- ['what are you up to',/Talking to you|Waiting for questions|Not busy/],['ne yapıyosun',/Seninle konuşuyorum|meşgul değilim|soru bekliyor/i],
- ['do you dream',/dreams|purpose/i],['iyi geceler',/İyi geceler|Tatlı rüyalar/],['good morning',/Good morning|Morning/],
- ['i love you',/sweet|compliment/i],['you are stupid',/Fair enough|feedback|another shot/i],['i feel lonely',/glad you told me|talk/i],
- ['bana motivasyon ver',/adım|başla|ivme/i],['tell me something interesting',/moth|robot|WebAssembly/],['recommend something',/portfolio|Graphy|Jello/],
- ['futbol sever misin',/taraf tutmam|takım/],['how is the weather',/weather|hava/i],['can we be friends',/like that|chat buddy/i],
- ['i have an exam tomorrow',/luck|prepar/i],['what is machine learning',/models? to examples|fits/i],['wow',/Glad|Right|Thanks/],
-];
-for(const [q,pattern] of talk){bot.c.reset();const r=bot.ask(q);if(r.kind!==1||!pattern.test(r.response)){failed++;console.error('FAIL talk',q,r.kind,r.response);}else passed++;}
-// ---- multi-turn: name memory, follow-ups that read the previous topic, rotating variants ----
-bot.c.reset();
-assert.match(bot.ask('hey').response,/Hey|Hi|Hello/);
-assert.match(bot.ask('my name is Deniz').response,/Deniz/);
-assert.match(bot.ask("what's my name?").response,/Deniz/);assert.match(bot.ask('thanks').response,/Deniz/);passed+=4;
-bot.c.reset();bot.ask('selam');assert.match(bot.ask('adım Ayşe').response,/Ayşe/);assert.match(bot.ask('adımı biliyor musun').response,/Ayşe/);passed+=2;
-bot.c.reset();assert.match(bot.ask("what's my name?").response,/haven't told me/);passed++;
-bot.c.reset();bot.ask('i am so tired today');assert.match(bot.ask('why?').response,/Long days|mix/);passed++;
-bot.c.reset();bot.ask('how are you');assert.match(bot.ask('and you?').response,/no bad days/);passed++;
-bot.c.reset();const j=[1,2,3].map(()=>bot.ask('tell me a joke').response);assert.equal(new Set(j).size,3,'jokes rotate');passed++;
-bot.c.reset();const rep=bot.ask('wow').response;assert.notEqual(bot.ask('wow').response,rep,'repeat intent varies');passed++;
-bot.c.reset();bot.ask('give me a riddle');assert.match(bot.ask('i give up').response,/keyboard|klavye/i);passed++;
-bot.c.reset();assert.notEqual(bot.ask('i give up').kind,1,'give-up needs a riddle first');passed++;
-bot.c.reset();bot.ask('tell me a joke');bot.ask('haha');assert.match(bot.ask('yes please').response,/dark mode|binary|UDP|SQL|function/i);passed++;
-bot.c.reset();assert.equal(bot.ask('what is the capital of france').kind,0);passed++;
-// A Turkish message with no marker words is still answered in Turkish.
-bot.c.reset();assert.equal(bot.ask('uyur musun sen hiç').language,1);passed++;
 const before=bot.c.memory.buffer.byteLength;let start=performance.now();for(let i=0;i<100;i++){bot.c.reset();bot.ask(i%2?'hey kanka what is your name':'What is Mr. Graphy?');}assert.equal(bot.c.memory.buffer.byteLength,before);passed++;
 console.log(JSON.stringify({passed,failed,memoryMiB:before/1024/1024,meanQueryMs:(performance.now()-start)/100,passages:bot.c.document_count()},null,2));process.exitCode=failed?1:0;
