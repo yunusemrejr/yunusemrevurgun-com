@@ -1493,3 +1493,117 @@ body.ui-landing {
 body.ui-404 .ui-main > .ui-section:first-of-type::after {
   transform: rotate(-11deg) scale(1.1, 0.86);
 }
+
+/* ===== HOME: PHOTO DECK ===== */
+/* Two cream cards overlapped like a hand of cards. The one behind is tilted,
+   smaller and a touch faded; clicking it flips it to the front. */
+.ui-landing-study-figures.is-deck {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1.14;
+  max-width: 480px;
+  width: 100%;
+  justify-self: center;
+}
+
+.is-deck > figure {
+  position: absolute;
+  width: 78%;
+  margin: 0;
+  transition: transform 520ms var(--ease-jelly), opacity 320ms ease, filter 320ms ease, box-shadow 320ms ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.is-deck > figure img {
+  aspect-ratio: 1 / 1.1;
+  object-fit: cover;
+}
+
+.is-deck > figure:nth-child(2) img { object-position: 50% 25%; }
+
+.is-deck > figure.is-front {
+  z-index: 2;
+  top: 0;
+  left: 0;
+  transform: rotate(-2deg);
+}
+
+.is-deck > figure:not(.is-front) {
+  z-index: 1;
+  top: 8%;
+  right: 0;
+  transform: translate(0, 0) rotate(5deg) scale(0.94);
+  opacity: 0.88;
+  filter: saturate(0.85) brightness(0.97);
+  cursor: pointer;
+}
+
+.is-deck > figure:not(.is-front):hover,
+.is-deck > figure:not(.is-front):focus-visible {
+  transform: translate(2%, -1%) rotate(3deg) scale(0.96);
+  opacity: 1;
+  filter: none;
+}
+
+.is-deck > figure.is-flipping {
+  animation: deck-flip 640ms var(--ease-jelly);
+}
+
+@keyframes deck-flip {
+  0% { transform: perspective(900px) rotateY(-90deg) rotate(5deg) scale(0.94); }
+  100% { transform: perspective(900px) rotateY(0) rotate(-2deg) scale(1); }
+}
+
+/* Soft glare: a diagonal sheen that tracks the pointer on the front card. */
+.is-deck > figure::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle at var(--gx, 30%) var(--gy, 20%), rgb(255 255 255 / 0.5), transparent 45%),
+    linear-gradient(115deg, transparent 38%, rgb(255 255 255 / 0.28) 48%, transparent 58%);
+  mix-blend-mode: soft-light;
+  transition: opacity 300ms ease;
+}
+
+.is-deck > figure.is-front:hover::after,
+.is-deck > figure.is-flipping::after {
+  opacity: 1;
+}
+
+.is-deck > figure.is-front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.35) 45%, transparent 60%) -120% 0 / 250% 100% no-repeat;
+}
+
+.is-deck > figure.is-flipping::before {
+  animation: deck-glint 900ms ease-out 150ms both;
+}
+
+@keyframes deck-glint {
+  to { background-position: 120% 0; }
+}
+
+.is-deck figcaption {
+  position: relative;
+}
+
+@media (max-width: 800px) {
+  .ui-landing-study-figures.is-deck { max-width: 400px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-deck > figure { transition: none; }
+  .is-deck > figure.is-flipping,
+  .is-deck > figure.is-flipping::before { animation: none; }
+}

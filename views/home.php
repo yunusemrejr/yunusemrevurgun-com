@@ -147,13 +147,13 @@ ui_render_head(
                 <p class="ui-section-text">From CPU-optimized neural network experiments to industrial automation, the work is documented here as it happens.</p>
                 <a class="ui-more-link" href="<?= FULL_BASE_PATH ?>about">Full profile, education, and work history →</a>
             </div>
-            <div class="ui-landing-study-figures">
-                <figure>
+            <div class="ui-landing-study-figures" data-deck>
+                <figure data-deck-card>
                     <img src="<?= FULL_BASE_PATH ?>assets/images/landing-hero-desk.webp" width="1100" height="1100" decoding="async" loading="lazy"
                          alt="Yemre in a hoodie working at a vintage CRT computer, surrounded by machine-learning and C++ books under a desk lamp.">
                     <figcaption>The study: a vintage CRT, machine-learning and C++ books, and a desk lamp.</figcaption>
                 </figure>
-                <figure>
+                <figure data-deck-card>
                     <img src="<?= ui_portrait_url() ?>" width="1000" height="1250" decoding="async" loading="lazy"
                          alt="Pencil portrait of Yunus Emre Vurgun.">
                     <figcaption>Yunus Emre Vurgun — Istanbul.</figcaption>
@@ -207,22 +207,7 @@ ui_render_head(
 </main>
 </div>
 
-<footer class="ui-landing-footer">
-    <img class="ui-footer-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot-160.webp" width="112" height="112" alt="" loading="lazy" decoding="async">
-    <div class="ui-landing-footer-inner">
-        <nav class="ui-landing-footer-nav" aria-label="Footer navigation">
-            <ul role="list">
-                <?php foreach (ui_nav_items() as $item): ?>
-                <li><a href="<?= htmlspecialchars($item['href']) ?>"><?= htmlspecialchars($item['label']) ?></a></li>
-                <?php endforeach; ?>
-                <li><a href="<?= FULL_BASE_PATH ?>more">More</a></li>
-                <li><a href="<?= EBOOK_URL ?>" target="_blank" rel="noopener noreferrer">Book ↗</a></li>
-            </ul>
-        </nav>
-        <p class="ui-landing-footer-copy">© <?= date('Y') ?> Yemre. All rights reserved.</p>
-        <?php ui_render_hampton('landing-right'); ?>
-    </div>
-</footer>
+<?php ui_render_footer('landing-right'); ?>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 <script src="<?= FULL_BASE_PATH ?>assets/js/navigation.js?v=<?= filemtime(__DIR__ . '/../assets/js/navigation.js') ?>"></script>
 <script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../assets/js/ui-interactions.js') ?>"></script>

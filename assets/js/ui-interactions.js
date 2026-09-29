@@ -636,3 +636,47 @@
     if (e.animationName === 'jelly-wobble') mascot.classList.remove('is-poked');
   });
 })();
+
+/* Home: the desk photo and the pencil portrait sit as a two-card deck. Click
+   (or Enter/Space) the card behind to flip it to the front; a glare follows
+   the pointer across the front card. Without JS the two cards just stack. */
+(() => {
+  const deck = document.querySelector('[data-deck]');
+  if (!deck) return;
+  const cards = Array.from(deck.querySelectorAll('[data-deck-card]'));
+  if (cards.length !== 2) return;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  deck.classList.add('is-deck');
+
+  function setFront(front) {
+    cards.forEach((card) => {
+      const isFront = card === front;
+      const wasFront = card.classList.contains('is-front');
+      card.classList.toggle('is-front', isFront);
+      card.setAttribute('aria-label', isFront ? '' : 'Bring this photo to the front');
+      if (!isFront) card.setAttribute('tabindex', '0'); else card.removeAttribute('tabindex');
+      card.setAttribute('role', isFront ? '' : 'button');
+      if (isFront && !wasFront && !still.matches) {
+        card.classList.remove('is-flipping');
+        void card.offsetWidth;
+        card.classList.add('is-flipping');
+      }
+    });
+  }
+  cards.forEach((card) => {
+    card.addEventListener('animationend', () => card.classList.remove('is-flipping'));
+    card.addEventListener('click', () => { if (!card.classList.contains('is-front')) setFront(card); });
+    card.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && !card.classList.contains('is-front')) {
+        e.preventDefault();
+        setFront(card);
+      }
+    });
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--gx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+      card.style.setProperty('--gy', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    });
+  });
+  setFront(cards[0]);
+})();
