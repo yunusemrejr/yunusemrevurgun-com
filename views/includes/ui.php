@@ -129,6 +129,9 @@ if (!function_exists('ui_render_head')) {
     <?php if (isset($extraMeta['chessko']) && $extraMeta['chessko'] === 'game'): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/chessko/css/chessko.css?v=<?= filemtime(__DIR__ . '/../../assets/chessko/css/chessko.css') ?>">
     <?php endif; ?>
+    <?php if (isset($extraMeta['jelloshop']) && $extraMeta['jelloshop']): ?>
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/jelloshop.css?v=<?= filemtime(__DIR__ . '/../../assets/css/jelloshop.css') ?>">
+    <?php endif; ?>
     <?php if (isset($extraMeta['music']) && $extraMeta['music']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/music.css?v=<?= filemtime(__DIR__ . '/../../assets/css/music.css') ?>">
     <?php endif; ?>
@@ -137,7 +140,7 @@ if (!function_exists('ui_render_head')) {
     <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot', 'gemmaclaim', 'chessko', 'music', 'downloads', 'og_image', 'og_type', 'robots', 'canonical'], true)) continue;
+        if (is_string($key) && in_array($key, ['yunobot', 'gemmaclaim', 'chessko', 'jelloshop', 'music', 'downloads', 'og_image', 'og_type', 'robots', 'canonical'], true)) continue;
         if (!empty($value) && is_string($value)) {
             // Defaults above already own these tags; page-specific article data remains.
             if (preg_match('/<meta (?:name|property)="(?:author|description|keywords|og:(?:type|url|title|description|image)|twitter:(?:card|url|title|description|image))"/', $value)) continue;
@@ -178,7 +181,7 @@ if (!function_exists('ui_render_navbar')) {
         if ($requestPath === '') {
             $requestPath = 'home';
         }
-        $morePaths = ['yunobot', 'gemmaclaim', 'chessko', 'post-code', 'science-corner', 'music', 'comedy', 'videos', 'downloads', 'rmrp'];
+        $morePaths = ['yunobot', 'gemmaclaim', 'chessko', 'jelloshop', 'post-code', 'science-corner', 'music', 'comedy', 'videos', 'downloads', 'rmrp'];
         $firstSegment = strtok($requestPath, '/');
         $moreActive = $requestPath === 'more' || in_array($firstSegment, $morePaths, true);
         $pathHitsSection = false;

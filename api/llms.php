@@ -100,6 +100,7 @@ echo "- {$base}/chessko/search-and-evaluation\n";
 echo "- {$base}/chessko/machine-learning\n";
 echo "- {$base}/chessko/stockfish-webassembly\n";
 echo "- {$base}/chessko/difficulty-levels\n";
+echo "- {$base}/jelloshop\n";
 echo "- {$base}/contact\n";
 echo "- {$base}/more\n";
 echo "- {$base}/downloads\n";

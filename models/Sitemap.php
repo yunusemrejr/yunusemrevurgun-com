@@ -18,7 +18,7 @@ class Sitemap {
         $urlset = $xml->createElement('urlset');
         $urlset->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $xml->appendChild($urlset);
-        $staticPages = ['', 'about', 'portfolio', 'blog', 'gallery', 'travel', 'updates', 'rmrp', 'contact', 'music', 'videos', 'downloads', 'slop', 'yunobot', 'gemmaclaim', 'chessko', 'chessko/how-it-works', 'chessko/search-and-evaluation', 'chessko/machine-learning', 'chessko/stockfish-webassembly', 'chessko/difficulty-levels', 'post-code', 'science-corner', 'comedy', 'more', 'sitemap', 'privacy', 'terms', 'cookies'];
+        $staticPages = ['', 'about', 'portfolio', 'blog', 'gallery', 'travel', 'updates', 'rmrp', 'contact', 'music', 'videos', 'downloads', 'slop', 'yunobot', 'gemmaclaim', 'chessko', 'chessko/how-it-works', 'chessko/search-and-evaluation', 'chessko/machine-learning', 'chessko/stockfish-webassembly', 'chessko/difficulty-levels', 'jelloshop', 'post-code', 'science-corner', 'comedy', 'more', 'sitemap', 'privacy', 'terms', 'cookies'];
         foreach ($staticPages as $page) {
             // Listing pages depend on database content, not the template timestamp.
             $modified = in_array($page, ['', 'portfolio', 'blog', 'gallery', 'travel', 'updates', 'rmrp', 'music', 'videos', 'downloads', 'slop', 'more'], true)

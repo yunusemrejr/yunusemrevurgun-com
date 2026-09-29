@@ -23,6 +23,12 @@ $morePages = [
         'icon' => '♞',
     ],
     [
+        'title' => 'Jello Shop',
+        'href' => FULL_BASE_PATH . 'jelloshop',
+        'description' => 'A small hand-drawn coffee shop. Walk the jelly mascot around the room, pick up coffee beans.',
+        'icon' => '☕',
+    ],
+    [
         'title' => 'Post-Code',
         'href' => FULL_BASE_PATH . 'post-code',
         'description' => 'Concepts and mathematics foundations for post-code era computing.',
