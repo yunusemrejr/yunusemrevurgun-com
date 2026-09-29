@@ -25,8 +25,10 @@ $morePages = [
     [
         'title' => 'Jello Shop',
         'href' => FULL_BASE_PATH . 'jelloshop',
-        'description' => 'A small hand-drawn coffee shop. Walk the jelly mascot around the room, pick up coffee beans.',
-        'icon' => '☕',
+        'description' => 'A cosy hand-drawn coffee shop. Walk Jell-omo, a 3D jelly in a cap, around the room, pick up coffee beans, pet the cat.',
+        // A drawn mug, not an emoji: it takes the colour of the icon badge.
+        'icon_svg' => '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 10h11v4.6a4.9 4.9 0 0 1-4.9 4.9h-1.2a4.9 4.9 0 0 1-4.9-4.9z"/><path d="M15.5 11.4h1.3a2.6 2.6 0 0 1 0 5.2h-1.3"/><path d="M8.6 3.4c-1.2 1.1 1.2 2.1 0 3.5M12 3.4c-1.2 1.1 1.2 2.1 0 3.5"/><path d="M3.5 21.6h13"/></svg>',
+        'icon' => 'JS',
     ],
     [
         'title' => 'Post-Code',
@@ -107,7 +109,7 @@ ui_render_head(
             <div class="ui-more-grid">
                 <?php foreach ($morePages as $page): ?>
                     <a class="ui-more-card" href="<?= htmlspecialchars($page['href']) ?>"<?= !empty($page['external']) ? ' target="_blank" rel="noopener noreferrer"' : '' ?>>
-                        <span class="ui-more-icon" aria-hidden="true"><?= htmlspecialchars($page['icon']) ?></span>
+                        <span class="ui-more-icon" aria-hidden="true"><?= $page['icon_svg'] ?? htmlspecialchars($page['icon']) ?></span>
                         <h2 class="ui-more-title"><?= htmlspecialchars($page['title']) ?></h2>
                         <p class="ui-more-desc"><?= htmlspecialchars($page['description']) ?></p>
                     </a>

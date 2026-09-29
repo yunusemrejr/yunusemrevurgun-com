@@ -39,7 +39,7 @@ ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primar
                 <div class="ui-sitemap-col">
                     <h2>Explore</h2>
                     <ul class="ui-card-list">
-                        <?php foreach (['yunobot' => 'YunoBot', 'gemmaclaim' => 'Claim Splitter', 'chessko' => 'Chessko (jelly chess)', 'jelloshop' => 'Jello Shop (coffee shop game)', 'music' => 'Music', 'videos' => 'Videos', 'downloads' => 'Downloads', 'slop' => 'Quality 3D AI Slop', 'post-code' => 'Post-Code', 'science-corner' => 'Science Corner', 'comedy' => 'Comedy', 'more' => 'More'] as $path => $label): ?>
+                        <?php foreach (['yunobot' => 'YunoBot', 'gemmaclaim' => 'Claim Splitter', 'chessko' => 'Chessko (jelly chess)', 'jelloshop' => 'Jello Shop (Jell-omo\'s coffee shop game)', 'music' => 'Music', 'videos' => 'Videos', 'downloads' => 'Downloads', 'slop' => 'Quality 3D AI Slop', 'post-code' => 'Post-Code', 'science-corner' => 'Science Corner', 'comedy' => 'Comedy', 'more' => 'More'] as $path => $label): ?>
                         <li><a href="<?= FULL_BASE_PATH . $path ?>"><?= $label ?></a></li>
                         <?php endforeach; ?>
                     </ul>

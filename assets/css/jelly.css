@@ -550,6 +550,12 @@ button.ui-btn {
   font-size: var(--text-sm);
 }
 
+.ui-more-icon svg {
+  display: block;
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
 .ui-more-title {
   font-weight: 600;
 }

@@ -1,4 +1,4 @@
-/* Jello Shop (/jelloshop): the page around the shop, and the shop's own frame.
+/* Jello Shop (/jelloshop): the page around Jell-omo's café, and the café's own frame.
    Consumes the site's jelly tokens so it reads as part of the same site; the
    game itself is a single canvas that scales to fit whatever screen it gets. */
 
@@ -57,7 +57,7 @@
   margin: 0 0 var(--space-10);
   border-radius: 28px;
   overflow: hidden;
-  background: #1b2140;
+  background: #3a1d10;
   box-shadow:
     0 0 0 4px var(--color-bg-card),
     0 18px 40px -18px rgba(27, 33, 64, 0.55);
@@ -70,7 +70,7 @@
   /* The room is 960x600. Height is pinned to that ratio so the canvas is
      never cropped: on a narrow phone the whole shop simply gets smaller. */
   aspect-ratio: 960 / 600;
-  background: #2a1c10;
+  background: #3a1d10;
 }
 
 .js-canvas-wrap canvas {

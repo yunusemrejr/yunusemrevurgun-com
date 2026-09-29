@@ -126,8 +126,8 @@ ui_render_head(
         </div>
         <figure class="ui-masthead-figure">
             <img class="ui-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot.webp" width="800" height="800" decoding="async" fetchpriority="high"
-                 alt="Yemre's mascot: a glossy red jelly wearing a navy and cream baseball cap, eyes closed in a contented smile.">
-            <figcaption>Yemre, the mascot. Poke it.</figcaption>
+                 alt="Jell-omo, the site's mascot: a glossy red jelly wearing a navy and cream baseball cap, eyes closed in a contented smile.">
+            <figcaption>Jell-omo, the mascot. Poke it.</figcaption>
         </figure>
     </div>
 </header>

@@ -1,6 +1,6 @@
 <?php
 /**
- * /jelloshop: the mascot's coffee shop. A small browser game — walk the jell-o
+ * /jelloshop: Jell-omo's coffee shop. A small browser game — walk the jelly
  * around the room, pick up coffee beans — with the page text that explains it,
  * so crawlers get a real page here and not just a canvas.
  */
@@ -13,19 +13,30 @@ $origin = rtrim(FULL_BASE_PATH, '/');
 $pageUrl = $origin . '/jelloshop';
 $basePath = rtrim((string)parse_url(FULL_BASE_PATH, PHP_URL_PATH), '/');
 $assetsUrl = $basePath . '/assets/jelloshop';
-$appJs = dirname(__DIR__, 2) . '/assets/jelloshop/js/jelloshop.js';
+$jsDir = dirname(__DIR__, 2) . '/assets/jelloshop/js';
+$appJs = $jsDir . '/jelloshop.js';
+$modules = ['jello3d', 'audio', 'draw', 'room', 'props'];
+$importMap = ['imports' => []];
+$jsNewest = (int)@filemtime($appJs);
+foreach ($modules as $m) {
+    $mt = (int)@filemtime($jsDir . '/' . $m . '.js');
+    $jsNewest = max($jsNewest, $mt);
+    $importMap['imports']['jelloshop/' . $m] = $assetsUrl . '/js/' . $m . '.js?v=' . ($mt ?: 1);
+}
 $appCss = dirname(__DIR__, 2) . '/assets/css/jelloshop.css';
-$modified = date('c', max(filemtime(__FILE__), (int)@filemtime($appJs), (int)@filemtime($appCss)));
+$modified = date('c', max(filemtime(__FILE__), $jsNewest, (int)@filemtime($appCss)));
 
-$title = 'Jello Shop: Walk Your Jelly Mascot Around a Coffee Shop in Your Browser';
-$description = 'A small, calm browser game: walk the jelly mascot around a hand-drawn coffee shop, collect coffee beans, and listen to the shop music. Runs entirely in your browser, on desktop and mobile.';
+$title = 'Jello Shop: Walk Jell-omo Around a Cozy Coffee Shop in Your Browser';
+$description = 'A small, calm browser game: walk Jell-omo, a 3D jelly in a baseball cap, around a hand-drawn coffee shop, collect coffee beans, pet the cat, and listen to the lo-fi shop music. Runs entirely in your browser, on desktop and mobile.';
 
 $faq = [
-    ['What is Jello Shop?', 'It is a tiny room. A hand-drawn coffee shop, drawn in the site\'s colours, with the jelly mascot walking around inside it. You tell it where to go by clicking the floor.'],
-    ['How do I move the jell-o?', 'Click or tap anywhere on the floor and the jell-o waddles over. On a desktop, move the mouse and it turns to look at you. Arrow keys work too.'],
-    ['What are the coffee beans for?', 'Walking over one picks it up and adds a bean to the counter in the corner. That is the whole game. There is nothing to win and nothing to spend them on.'],
-    ['Is the shop open?', 'Not really. The door has a hand-drawn CLOSED sign on it and there is a rope across it, because the jell-o only gets one room.'],
-    ['Does it need to download anything?', 'No. The room, the jell-o and the beans are drawn with canvas, and the music and the walking sound are synthesised in the browser. There are no images or audio files to fetch.'],
+    ['What is Jello Shop?', 'It is a tiny cosy room: a hand-drawn coffee shop with a rainy window, a fireplace, a striped rug and a sleeping cat. Jell-omo, the jelly mascot of this site, lives in it, and you tell him where to go by clicking the floor.'],
+    ['Who is Jell-omo?', 'The red jelly in the navy and cream baseball cap, the same mascot that sits in the corner of every page on this site. In the shop he is a real 3D model, so he turns to face the way he walks, squashes when he lands, wobbles when he stops, and shows you the back of his cap when he walks away.'],
+    ['How do I move him?', 'Click or tap anywhere on the floor and Jell-omo waddles over. On a desktop, move the mouse and he turns to look at you. Arrow keys and WASD work too.'],
+    ['What are the coffee beans for?', 'Walking over one picks it up and adds it to the counter in the corner, and each pickup chimes a note higher up a little scale. That is the whole game. There is nothing to win and nothing to spend them on, although the menu on the wall is priced in them.'],
+    ['Can I pet the cat?', 'Click the cat and it wakes up, meows and sends up a heart. Walk Jell-omo close to it and it lifts its head to look at him.'],
+    ['Is the shop open?', 'Not really. The door has a hand-drawn CLOSED sign, because Jell-omo only gets one room.'],
+    ['Does it need to download anything?', 'Only the code. The room is drawn with canvas, Jell-omo is rendered live by a WebGL shader, and the music, the rain and the sound effects are synthesised in the browser. There are no images or audio files to fetch. If your browser has no WebGL, Jell-omo falls back to the flat mascot picture.'],
     ['Does it work on a phone?', 'Yes. The room keeps its proportions and scales down to fit the screen, so on a small screen you get the whole shop at once, just smaller.'],
     ['Is my score stored anywhere?', 'No. The bean count lives in the page while it is open and is gone when you leave. Nothing is sent to a server.'],
 ];
@@ -42,15 +53,15 @@ $schemaGraph = [
             'applicationCategory' => 'GameApplication',
             'genre' => 'Casual walking game',
             'operatingSystem' => 'Any (modern web browser)',
-            'browserRequirements' => 'Requires JavaScript and the Canvas 2D API',
+            'browserRequirements' => 'Requires JavaScript and the Canvas 2D API; WebGL for the 3D avatar (falls back to a flat picture)',
             'isAccessibleForFree' => true,
             'inLanguage' => 'en',
             'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'USD'],
             'featureList' => [
-                'Click or tap to walk the jell-o around the room',
+                'Click or tap to walk Jell-omo, a live 3D jelly, around the room',
                 'Coffee beans to collect and a bean counter',
-                'Hand-drawn coffee shop in a 2.5D room',
-                'Background music and walking sounds synthesised in the browser',
+                'Hand-drawn cosy coffee shop with a rainy window, fireplace and a sleeping cat',
+                'Lo-fi background music, rain and sound effects synthesised in the browser',
                 'Scales to fit a phone screen',
             ],
             'author' => ['@type' => 'Person', 'name' => 'Yunus Emre Vurgun', 'url' => $origin . '/about'],
@@ -79,7 +90,8 @@ ui_render_head($title, $description, [
     'jelloshop' => 'game',
     'og_image' => FULL_BASE_PATH . 'assets/images/og-chessko.png?v=' . (@filemtime(dirname(__DIR__, 2) . '/assets/images/og-chessko.png') ?: 1),
     '<meta property="og:type" content="website">',
-    '<meta name="keywords" content="jelly game, browser game, coffee shop game, walk around game, club penguin style, casual browser game, mascot game">',
+    '<meta name="keywords" content="jelly game, browser game, coffee shop game, cozy game, walk around game, club penguin style, casual browser game, mascot game, Jell-omo">',
+    '<script type="importmap">' . json_encode($importMap, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>',
     '<script type="application/ld+json">' . json_encode($schemaGraph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . '</script>',
 ]);
 ?>
@@ -97,14 +109,14 @@ ui_render_head($title, $description, [
         </nav>
 
         <header class="js-head">
-            <h1 class="js-title">Jello Shop: a small coffee shop for the mascot</h1>
-            <p class="js-lead">One room, one jell-o, and coffee beans scattered on the floor. Click the floor and it waddles over; move the mouse and it turns to look at you. It runs entirely in your browser — no account, no download, nothing to win.</p>
+            <h1 class="js-title">Jello Shop: a cosy coffee shop for Jell-omo</h1>
+            <p class="js-lead">One rainy evening, one fireplace, one sleepy cat, and coffee beans scattered on the rug. Click the floor and Jell-omo waddles over; move the mouse and he turns to look at you. It runs entirely in your browser — no account, nothing to win.</p>
         </header>
 
         <section class="js-stage" aria-label="Jello Shop">
             <div class="js-canvas-wrap">
-                <canvas id="js-canvas" width="960" height="600" role="img"
-                        aria-label="A hand-drawn coffee shop. The jelly mascot walks around the room and picks up coffee beans."></canvas>
+                <canvas id="js-canvas" width="960" height="600" role="img" data-mascot="<?= $base ?>assets/images/mascot.webp"
+                        aria-label="A hand-drawn cosy coffee shop on a rainy night, with a fireplace and a sleeping cat. Jell-omo, a 3D red jelly in a baseball cap, walks around the room and picks up coffee beans."></canvas>
 
                 <p class="js-hud" aria-hidden="true">
                     <svg class="js-bean-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -128,26 +140,27 @@ ui_render_head($title, $description, [
 
                 <div class="js-start">
                     <button type="button" class="js-start-card" id="js-start">
-                        <p class="js-start-title">Welcome to Jello Shop</p>
-                        <p class="js-start-text">The door is closed and the jell-o has the whole room to itself.</p>
+                        <p class="js-start-title">Jell-omo's café</p>
+                        <p class="js-start-text">It is raining, the door is closed, and the fire is on.</p>
                         <p class="js-start-hint">Click the floor to start walking</p>
                     </button>
                 </div>
             </div>
-            <noscript><p class="js-noscript">Jello Shop is a game that runs in your browser, so it needs JavaScript. The room, the jell-o and the coffee beans are all drawn in the page.</p></noscript>
+            <noscript><p class="js-noscript">Jello Shop is a game that runs in your browser, so it needs JavaScript. The room and the coffee beans are drawn in the page and Jell-omo is rendered live.</p></noscript>
         </section>
 
         <section class="js-section" aria-labelledby="js-how">
             <h2 id="js-how">How the shop works</h2>
-            <p>Click or tap anywhere on the floor and the jell-o waddles over to that spot. While it is standing still it turns to face your cursor, so moving the mouse across the room makes it turn around. The arrow keys work as well, which is handy on a laptop with a trackpad.</p>
-            <p>Coffee beans appear on the floor from time to time. Walk the jell-o over one and it is picked up and counted in the corner. There is no scoring system, no unlocks and nothing to spend the beans on — it is a small quiet thing to click around in.</p>
-            <p>The shop is deliberately a single room. The door on the far wall has a hand-drawn <em>CLOSED</em> sign, a note about the floor being swept, and a rope across it.</p>
+            <p>Click or tap anywhere on the floor and Jell-omo waddles over to that spot. While he is standing still he turns to face your cursor, so moving the mouse across the room makes him look around. The arrow keys and WASD work as well, which is handy on a laptop with a trackpad.</p>
+            <p>Coffee beans appear on the floor from time to time. Walk Jell-omo over one and it is picked up, counted in the corner, and rings a note. There is no scoring system, no unlocks and nothing to spend the beans on — although the chalkboard menu behind the bar prices everything in them. Click the cat if you want it to wake up.</p>
+            <p>The shop is deliberately a single room. The door on the far wall has a hand-drawn <em>CLOSED</em> sign on it, because Jell-omo only gets one room.</p>
         </section>
 
         <section class="js-section" aria-labelledby="js-build">
-            <h2 id="js-build">How it is drawn</h2>
-            <p>The room is a one-point-perspective box drawn with canvas paths: a back wall, a floor that widens towards you, and a dado rail around the walls. The jell-o walks in a handful of depth lanes, exactly the way a Club Penguin penguin walked across a room in 2006, and furniture is sorted back to front so it can pass behind the counter and in front of the couches.</p>
-            <p>Nothing is an image. The jell-o, the beans and every piece of furniture are canvas paths in the site's own palette, the sketchy ink lines are a fixed random wobble so the room does not shimmer, and the music and the little walking sound are synthesised with the Web Audio API. That is why the whole shop is one script and no downloads.</p>
+            <h2 id="js-build">How it is made</h2>
+            <p><strong>The room</strong> is painted the way Club Penguin painted its rooms: a wide back wall, narrow side walls, a floor that opens towards you, flat saturated colour with one shade and one highlight, and dark warm outlines that wobble like they were inked by hand. Jell-omo walks in a handful of depth lanes, and every piece of furniture is sorted back to front so he can pass behind a plant and in front of an armchair. The rain, the fire, the string lights and the steam are drawn live over the top.</p>
+            <p><strong>Jell-omo</strong> is a real 3D model, not a picture. A small WebGL shader ray-marches a fluted jelly and a felt baseball cap every frame, shades the jelly as translucent and glossy, and hands the result to the room as a sprite. That is what lets him turn to face the way he walks, lean into it, squash when he lands and wobble when he stops.</p>
+            <p><strong>The music</strong> is a small band playing an eight-bar loop at 78 beats a minute: an electric piano, an upright bass, a vibraphone melody and brushed drums, with rain and a crackling fire under it. It changes a little every time round. All of it, and the sound effects, is synthesised with the Web Audio API — there are no audio files.</p>
         </section>
 
         <section class="js-section" aria-labelledby="js-faq">
@@ -165,8 +178,8 @@ ui_render_head($title, $description, [
         <section class="js-section" aria-labelledby="js-credits">
             <h2 id="js-credits">Credits</h2>
             <ul class="js-credits">
-                <li>The room, the jell-o, the beans and the audio are written for this page. No images, no audio files, no libraries, no tracking.</li>
-                <li>The mascot is the same red jelly in the navy and cream cap that appears elsewhere on this site.</li>
+                <li>The room, Jell-omo, the beans and the music are written for this page. No images, no audio files, no libraries, no tracking.</li>
+                <li>Jell-omo is the same red jelly in the navy and cream cap that appears elsewhere on this site, rebuilt as a 3D model.</li>
                 <li>Type is Fredoka and Atkinson Hyperlegible Next, served from this site.</li>
             </ul>
         </section>
