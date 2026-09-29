@@ -6,7 +6,7 @@
 .kn-progress span { display: block; height: 100%; background: var(--color-jelly); transform-origin: 0 50%; transform: scaleX(0); }
 
 /* ----- Hero + stats ----- */
-.kn-hero { max-width: 760px; }
+.kn-hero > * { max-width: 760px; }
 .kn-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); margin: var(--space-6) 0 0; }
 .kn-stats > div { background: var(--color-bg-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); padding: var(--space-3) var(--space-4); transition: transform 320ms var(--ease-jelly); }
 .kn-stats > div:hover { transform: translateY(-3px) rotate(-1deg); }
@@ -115,5 +115,6 @@
 }
 @media print { .kn-prose.is-clamped { max-height: none; } .kn-prose::after, .kn-toggle, .kn-progress { display: none; } }
 
-.kn-stats, .ui-rmrp-stats { max-width: 600px; }
+.kn-stats { max-width: 520px; }
+.kn-stats dd { font-size: clamp(1.1rem, 2vw, 1.6rem); }
 .kn-page .ui-archive-filters { align-items: center; }

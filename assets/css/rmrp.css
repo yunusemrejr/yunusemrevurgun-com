@@ -217,16 +217,14 @@
 .ui-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ----- Hero ----- */
-.ui-rmrp-hero {
- display: block;
- max-width: 700px;
-}
+.ui-rmrp-hero > * { max-width: 700px; }
 .ui-rmrp-hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
 .ui-rmrp-stats {
  display: grid;
  grid-template-columns: repeat(4, minmax(0, 1fr));
  gap: var(--space-3);
  margin: var(--space-6) 0 0;
+ max-width: 520px;
 }
 .ui-rmrp-stats > div {
  background: var(--color-bg-card);
@@ -341,7 +339,6 @@
 .ui-rmrp-takeaway {
  margin: var(--space-6) 0; padding: var(--space-5) var(--space-6);
  background: var(--color-bg-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-md);
- border-left: 6px solid var(--color-jelly);
  font: 500 var(--text-xl)/1.45 var(--font-display); color: var(--color-navy);
 }
 .ui-rmrp-takeaway span { display: block; margin-bottom: var(--space-2); font: 600 var(--text-xs)/1 var(--font-display); letter-spacing: .1em; text-transform: uppercase; color: var(--color-accent); }
@@ -361,3 +358,4 @@
 .ui-rmrp-neighbour strong { font: 500 var(--text-sm)/1.35 var(--font-display); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .ui-rmrp-related .ui-rmrp-cover { aspect-ratio: 5 / 2; }
 @media (max-width: 640px) { .ui-rmrp-neighbours { grid-template-columns: minmax(0, 1fr); } }
+.ui-rmrp-related { max-width: 760px; margin: var(--space-8) auto var(--space-4); }

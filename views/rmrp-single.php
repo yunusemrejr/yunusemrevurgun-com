@@ -148,7 +148,7 @@ ui_render_head($title, $description, $pageMeta);
         <?php endif; ?>
 
         <?php if ($related): ?>
-            <section class="ui-section ui-rmrp-related">
+            <div class="ui-rmrp-related">
                 <h2 class="ui-brief-title">More on <?= htmlspecialchars(strtolower(vis_topic_label($mTopic))) ?></h2>
                 <div class="ui-rmrp-grid is-grid">
                     <?php foreach ($related as $r): ?>
@@ -161,7 +161,7 @@ ui_render_head($title, $description, $pageMeta);
                         </article>
                     <?php endforeach; ?>
                 </div>
-            </section>
+            </div>
         <?php endif; ?>
     </main>
 
