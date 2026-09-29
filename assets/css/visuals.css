@@ -1,0 +1,31 @@
+/* ==========================================================================
+   Generated cover art (views/includes/visuals.php). Each motif picks four
+   jelly-palette tokens: --vb background, --vf soft foreground, --vh highlight,
+   --vl line. The drawing itself is decorative and lives in aria-hidden SVG.
+   ========================================================================== */
+.vis { display: block; width: 100%; height: 100%; }
+.vis .v-bg { fill: var(--vb); }
+.vis .v-fg { fill: var(--vf); }
+.vis .v-hi { fill: var(--vh); }
+.vis .v-line { stroke: var(--vl); stroke-width: 2; stroke-linecap: round; }
+.vis .v-line.thick { stroke-width: 5; }
+.vis .v-hi-line { stroke: var(--vh); stroke-width: 2; stroke-linecap: round; }
+.vis .v-hi-line.thick { stroke-width: 5; }
+.vis .v-code { fill: var(--vf); font: 600 15px/1 ui-monospace, "SFMono-Regular", Menlo, monospace; letter-spacing: 3px; }
+.vis .v-big { fill: var(--vf); opacity: 0.22; font: 700 150px/1 var(--font-display); }
+.vis .v-band0 { fill: var(--vf); opacity: 0.55; }
+.vis .v-band1 { fill: var(--vl); opacity: 0.45; }
+.vis .v-band2 { fill: var(--vh); opacity: 0.55; }
+
+.vis--space    { --vb: #262e4d; --vf: #c9e0fc; --vh: #69b0f9; --vl: #69b0f9; }
+.vis--security { --vb: #db1816; --vf: #fbf8f4; --vh: #262e4d; --vl: #fbf8f4; }
+.vis--ai       { --vb: #69b0f9; --vf: #fbf8f4; --vh: #262e4d; --vl: #262e4d; }
+.vis--hardware { --vb: #eee2d7; --vf: #262e4d; --vh: #db1816; --vl: #262e4d; }
+.vis--earth    { --vb: #c9e0fc; --vf: #eee2d7; --vh: #db1816; --vl: #262e4d; }
+.vis--software { --vb: #fbf8f4; --vf: #c9e0fc; --vh: #db1816; --vl: #262e4d; }
+.vis--physics  { --vb: #c9e0fc; --vf: #262e4d; --vh: #db1816; --vl: #3d4770; }
+.vis--life     { --vb: #eee2d7; --vf: #262e4d; --vh: #db1816; --vl: #262e4d; }
+.vis--math     { --vb: #262e4d; --vf: #fbf8f4; --vh: #ff8a86; --vl: #c9e0fc; }
+.vis--notes    { --vb: #69b0f9; --vf: #fbf8f4; --vh: #db1816; --vl: #262e4d; }
+.vis--software .v-fg { fill: #69b0f9; }
+.vis--software .v-code { fill: #262e4d; }

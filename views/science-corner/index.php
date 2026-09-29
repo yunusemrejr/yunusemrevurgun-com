@@ -2,6 +2,7 @@
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 require_once dirname(__DIR__, 2) . '/views/includes/collection.php';
+require_once dirname(__DIR__, 2) . '/views/includes/knowledge.php';
 
 $modules = [
     [
@@ -234,6 +235,22 @@ $categories = [
     'computer-science'=> 'Computer Science',
 ];
 
+// Life spans (birth, death) by surname-key, used for the timeline and card eyebrows.
+$lives = [
+    'Alan Turing' => [1912, 1954], 'Albert Einstein' => [1879, 1955], 'Richard Feynman' => [1918, 1988],
+    'J. Robert Oppenheimer' => [1904, 1967], 'Ada Lovelace' => [1815, 1852], 'Claude Shannon' => [1916, 2001],
+    'John von Neumann' => [1903, 1957], 'Kurt Gödel' => [1906, 1978], 'Max Planck' => [1858, 1947],
+    'Erwin Schrödinger' => [1887, 1961], 'Werner Heisenberg' => [1901, 1976], 'Paul Dirac' => [1902, 1984],
+    'Stephen Hawking' => [1942, 2018], 'Niels Bohr' => [1885, 1962], 'Grace Hopper' => [1906, 1992],
+    'Carl Friedrich Gauss' => [1777, 1855], 'Évariste Galois' => [1811, 1832], 'Ludwig Boltzmann' => [1844, 1906],
+    'Leonhard Euler' => [1707, 1783],
+];
+foreach ($modules as &$mod) {
+    $mod['name'] = preg_replace('/\s+[—–-]\s+.*/u', '', $mod['title']);
+    $mod['life'] = $lives[$mod['name']] ?? null;
+}
+unset($mod);
+
 $totalModules = count($modules);
 $totalTopics  = count(array_unique(array_merge(...array_column($modules, 'tags'))));
 
@@ -243,37 +260,52 @@ ui_render_head(
     [ui_collection_schema('Science Corner', 'science-corner', array_column($modules, 'title'))]
 );
 ?>
-<link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/post-code.css?v=<?= filemtime(__DIR__ . '/../../assets/css/post-code.css') ?>">
-<body class="ui-collection">
+<?php kn_assets(); ?>
+<body class="ui-collection kn-page kn-science">
+<?php kn_progress(); ?>
 <div class="ui-page">
     <?php ui_render_navbar('Experiments'); ?>
 
     <main class="ui-main" id="main-content" tabindex="-1">
-        <section class="ui-section">
+        <section class="ui-section kn-hero">
             <p class="ui-eyebrow">Archive</p>
             <h1 class="ui-section-title">Science Corner</h1>
-            <p class="ui-section-text">Figures and ideas I return to in physics, mathematics, and computer science. Browse by field, search a topic, or open the index.</p>
-        </section>
-
-        <section class="ui-section">
-            <div class="ui-postcode-stat-bar">
-                <div class="ui-stat-card">
-                    <span class="ui-stat-value"><?= $totalModules ?></span>
-                    <span class="ui-stat-label">Figures</span>
-                </div>
-                <div class="ui-stat-card">
-                    <span class="ui-stat-value"><?= $totalTopics ?></span>
-                    <span class="ui-stat-label">Topics</span>
-                </div>
-                <div class="ui-stat-card">
-                    <span class="ui-stat-value"><?= count($categories) - 1 ?></span>
-                    <span class="ui-stat-label">Fields</span>
-                </div>
-            </div>
+            <p class="ui-section-text">The people whose ideas I keep coming back to, from Euler to Hawking: what they saw, the equation that says it, and who they were in time. Browse by field, search a topic, or start with the timeline.</p>
+            <dl class="kn-stats">
+                <div><dt>Figures</dt><dd data-count="<?= $totalModules ?>"><?= $totalModules ?></dd></div>
+                <div><dt>Topics</dt><dd data-count="<?= $totalTopics ?>"><?= $totalTopics ?></dd></div>
+                <div><dt>Fields</dt><dd data-count="<?= count($categories) - 1 ?>"><?= count($categories) - 1 ?></dd></div>
+                <div><dt>Span</dt><dd>1707–2018</dd></div>
+            </dl>
         </section>
 
         <section class="ui-section" data-collection>
+            <?php
+            $byBirth = array_filter($modules, fn($m) => $m['life']);
+            usort($byBirth, fn($a, $b) => $a['life'][0] <=> $b['life'][0]);
+            $t0 = 1700; $t1 = 2025;
+            $pct = fn(int $y) => round(($y - $t0) / ($t1 - $t0) * 100, 2);
+            ?>
+            <div class="kn-atlas" data-kn-atlas>
+                <p class="kn-stack-title">Who lived when <small>tap a name to jump to them; bars follow the field filter</small></p>
+                <div class="kn-axis" aria-hidden="true">
+                    <?php foreach ([1700, 1800, 1900, 2000] as $y): ?><span style="left: <?= $pct($y) ?>%"><?= $y ?></span><?php endforeach; ?>
+                </div>
+                <ol class="kn-lives">
+                    <?php foreach ($byBirth as $m): [$b, $d] = $m['life']; ?>
+                        <li data-category="<?= htmlspecialchars($m['category']) ?>">
+                            <a class="kn-life kn-life--<?= htmlspecialchars($m['category']) ?>" href="#<?= ui_entry_id($m['title']) ?>" title="<?= htmlspecialchars($m['name']) ?>, <?= $b ?>–<?= $d ?>">
+                                <span class="kn-life-name"><?= htmlspecialchars($m['name']) ?></span>
+                                <span class="kn-life-track"><i style="left: <?= $pct($b) ?>%; width: <?= max(1.2, $pct($d) - $pct($b)) ?>%"></i></span>
+                                <span class="kn-life-years"><?= $b ?>–<?= $d ?></span>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ol>
+            </div>
+
             <?php ui_collection_tools($modules); ?>
+            <?php kn_extra_tools(); ?>
             <div class="ui-archive-filters" role="group" aria-label="Science Corner category filters">
                 <?php foreach ($categories as $key => $label): ?>
                     <button class="ui-filter-pill<?= $key === 'all' ? ' is-active' : '' ?>" type="button" data-filter="<?= htmlspecialchars($key) ?>" aria-pressed="<?= $key === 'all' ? 'true' : 'false' ?>"><?= htmlspecialchars($label) ?></button>
@@ -281,35 +313,15 @@ ui_render_head(
                 <?php ui_render_hampton('filters'); ?>
             </div>
 
-            <div class="ui-feed-list" id="scienceFeed">
-                <?php foreach ($modules as $module): ?>
-                    <article class="ui-feed-card" id="<?= ui_entry_id($module['title']) ?>" data-collection-item data-category="<?= htmlspecialchars($module['category']) ?>">
-                        <div class="ui-feed-card-header">
-                            <div>
-                                <h2 class="ui-feed-title"><a href="#<?= ui_entry_id($module['title']) ?>"><?= htmlspecialchars($module['title']) ?></a></h2>
-                                <p class="ui-feed-meta"><?= htmlspecialchars($module['meta']) ?></p>
-                            </div>
-                        </div>
-
-                        <?php if (!empty($module['tags'])): ?>
-                            <div class="ui-postcode-tags">
-                                <?php foreach ($module['tags'] as $tag): ?>
-                                    <span class="ui-postcode-tag"><?= htmlspecialchars($tag) ?></span>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <p class="ui-feed-text"><?= htmlspecialchars($module['text']) ?></p>
-
-                        <?php if (!empty($module['hasMath']) && !empty($module['math'])): ?>
-                            <div class="ui-code-block">
-                                <?php foreach ($module['math'] as $formula): ?>
-                                    \[<?= $formula ?>\]
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-                    </article>
-                <?php endforeach; ?>
+            <div class="ui-feed-list kn-list" id="scienceFeed">
+                <?php
+                $motifs = ['physics' => 'physics', 'mathematics' => 'math', 'computer-science' => 'software'];
+                foreach ($modules as $i => $module) {
+                    $motif = in_array($module['name'], ['Albert Einstein', 'Stephen Hawking', 'J. Robert Oppenheimer'], true) ? 'space' : ($motifs[$module['category']] ?? 'notes');
+                    $eyebrow = $module['meta'] . ($module['life'] ? ' · ' . $module['life'][0] . '–' . $module['life'][1] : '');
+                    kn_card($modules, $i, $motif, $eyebrow, $categories[$module['category']] ?? '');
+                }
+                ?>
             </div>
 
             <div class="ui-collection-empty" data-collection-empty hidden><p>No entries match. Try a shorter phrase or clear the filters.</p><button type="button" class="ui-btn ui-btn-secondary" data-collection-reset>Clear filters</button></div>

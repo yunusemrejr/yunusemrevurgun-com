@@ -2,6 +2,8 @@
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
 require_once dirname(__DIR__) . '/models/RichText.php';
+require_once dirname(__DIR__) . '/models/Rmrp.php';
+require_once __DIR__ . '/includes/visuals.php';
 
 if (!isset($GLOBALS['current_rmrp'])) {
     header('Location: ' . FULL_BASE_PATH . 'rmrp');
@@ -18,6 +20,27 @@ $published = date('c', strtotime($memory['memory_date'] ?? $memory['created_at']
 $modified = date('c', strtotime($memory['updated_at'] ?? $memory['created_at'] ?? 'now'));
 // Stable social-share image (social platforms don't render the site's SVGs).
 $ogImage = FULL_BASE_PATH . 'assets/images/og-image.png';
+// Auto-added extras: topic, cover art, figures, neighbours and related reads.
+$mTopic = vis_classify(($memory['title'] ?? '') . ' ' . $plainText);
+$figures = vis_key_numbers($plainText, 4);
+$minutes = vis_reading_minutes($plainText);
+$words = str_word_count($plainText);
+$takeaway = vis_first_sentence($plainText);
+$showTakeaway = mb_strlen($plainText) > mb_strlen($takeaway) + 40
+    && mb_stripos($takeaway, (string) ($memory['title'] ?? '')) !== 0;
+$all = [];
+foreach ((new Rmrp())->getAllMemories() as $row) {
+    $row['_plain'] = RichText::plainText($row['description'] ?? '');
+    $row['_topic'] = vis_classify(($row['title'] ?? '') . ' ' . $row['_plain']);
+    $all[] = $row;
+}
+$pos = null;
+foreach ($all as $i => $row) { if ((int) $row['id'] === (int) $memory['id']) { $pos = $i; break; } }
+$newer = ($pos !== null && $pos > 0) ? $all[$pos - 1] : null;
+$older = ($pos !== null && $pos < count($all) - 1) ? $all[$pos + 1] : null;
+$related = array_slice(array_values(array_filter($all, fn($r) => (int) $r['id'] !== (int) $memory['id'] && $r['_topic'] === $mTopic)), 0, 3);
+$randomIds = implode(',', array_map(static fn($r) => (int) $r['id'], $all));
+$dateRaw = $memory['memory_date'] ?? $memory['created_at'] ?? 'now';
 $category = (string) ($memory['category'] ?? '');
 $importance = (string) ($memory['importance'] ?? '');
 
@@ -43,6 +66,8 @@ if ($category !== '') {
 }
 
 $pageMeta = [
+    '<link rel="stylesheet" href="' . FULL_BASE_PATH . 'assets/css/visuals.css?v=' . filemtime(dirname(__DIR__) . '/assets/css/visuals.css') . '">',
+    '<script src="' . FULL_BASE_PATH . 'assets/js/rmrp-extras.js?v=' . filemtime(dirname(__DIR__) . '/assets/js/rmrp-extras.js') . '" defer></script>',
     // Badge styles shared with the /rmrp listing page.
     '<link rel="stylesheet" href="' . FULL_BASE_PATH . 'assets/css/rmrp.css?v=' . filemtime(dirname(__DIR__) . '/assets/css/rmrp.css') . '">',
     // Article metadata for social platforms. Default og/twitter tags (title,
@@ -62,34 +87,82 @@ $pageMeta = [
 
 ui_render_head($title, $description, $pageMeta);
 ?>
-<body>
+<body class="ui-rmrp-page ui-rmrp-single">
+<div class="ui-rmrp-progress" aria-hidden="true"><span></span></div>
 <div class="ui-page">
     <?php ui_render_navbar('Journal'); ?>
 
     <main class="ui-main" id="main-content" tabindex="-1">
-        <section class="ui-section">
-            <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Random Memories</p>
-            <h1 class="ui-section-title" style="margin-bottom: 0.25rem;"><?= htmlspecialchars($memory['title']) ?></h1>
-            <p class="ui-section-text">
-                <time datetime="<?= date('c', strtotime($memory['memory_date'] ?? $memory['created_at'] ?? 'now')) ?>"><?= date('F j, Y H:i', strtotime($memory['memory_date'] ?? $memory['created_at'] ?? 'now')) ?></time>
-            </p>
-        </section>
+        <article class="ui-rmrp-article">
+            <nav class="ui-rmrp-crumbs" aria-label="Breadcrumb">
+                <a href="<?= FULL_BASE_PATH ?>rmrp">← All memories</a>
+                <a href="<?= FULL_BASE_PATH ?>rmrp?topic=<?= htmlspecialchars($mTopic) ?>"><?= htmlspecialchars(vis_topic_label($mTopic)) ?></a>
+            </nav>
 
-        <section class="ui-section">
-            <article>
-                <?php if (!empty($memory['category']) || !empty($memory['importance'])): ?>
-                    <div class="ui-tags" style="margin-bottom: 1rem;">
-                        <?php if (!empty($memory['category'])): ?><span class="ui-tag"><?= htmlspecialchars($memory['category']) ?></span><?php endif; ?>
-                        <?php if (!empty($memory['importance'])): ?><span class="ui-importance is-<?= htmlspecialchars($memory['importance']) ?>"><?= htmlspecialchars(ucfirst($memory['importance'])) ?></span><?php endif; ?>
-                    </div>
+            <header class="ui-rmrp-article-head">
+                <div class="ui-rmrp-article-cover"><?= vis_cover($mTopic, (int) $memory['id']) ?></div>
+                <p class="ui-rmrp-meta">
+                    <span class="ui-rmrp-topic-pill is-inline"><?= htmlspecialchars(vis_topic_label($mTopic)) ?></span>
+                    <time datetime="<?= $published ?>"><?= date('F j, Y', strtotime($dateRaw)) ?></time>
+                    <span aria-hidden="true">·</span>
+                    <span><?= $minutes ?> min read</span>
+                    <span aria-hidden="true">·</span>
+                    <span><?= $words ?> words</span>
+                </p>
+                <h1 class="ui-section-title"><?= htmlspecialchars($memory['title']) ?></h1>
+                <?php if (!empty($memory['importance'])): ?>
+                    <div class="ui-tags"><span class="ui-importance is-<?= htmlspecialchars($memory['importance']) ?>"><?= htmlspecialchars(ucfirst($memory['importance'])) ?> importance</span></div>
                 <?php endif; ?>
-                <div class="ui-rich-content"><?= RichText::markdown($memory['description'] ?? '') ?></div>
-            </article>
-            <div class="ui-doc-links">
-                <a href="<?= FULL_BASE_PATH ?>rmrp">← Back to Memories</a>
-                <a href="<?= FULL_BASE_PATH ?>rmrp.xml">RSS</a>
+            </header>
+
+            <?php if ($showTakeaway): ?>
+                <p class="ui-rmrp-takeaway"><span>The short version</span><?= htmlspecialchars($takeaway) ?></p>
+            <?php endif; ?>
+
+            <?php if ($figures): ?>
+                <ul class="ui-rmrp-bignums" aria-label="Figures mentioned">
+                    <?php foreach ($figures as $f): ?>
+                        <li><strong><?= htmlspecialchars($f['value']) ?></strong><span><?= htmlspecialchars($f['unit']) ?></span></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+
+            <div class="ui-rich-content ui-rmrp-prose"><?= RichText::markdown($memory['description'] ?? '') ?></div>
+
+            <div class="ui-rmrp-actions">
+                <button type="button" class="ui-btn ui-btn-secondary" data-copy-link>Copy link</button>
+                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>rmrp/<?= (int) $memory['id'] ?>" data-random-memory data-ids="<?= htmlspecialchars($randomIds) ?>" data-exclude="<?= (int) $memory['id'] ?>">Another memory</a>
+                <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>rmrp.xml">RSS</a>
             </div>
-        </section>
+        </article>
+
+        <?php if ($newer || $older): ?>
+            <nav class="ui-rmrp-neighbours" aria-label="Neighbouring memories">
+                <?php foreach ([['Older', $older], ['Newer', $newer]] as [$label, $n]): if (!$n) { echo '<span></span>'; continue; } ?>
+                    <a class="ui-rmrp-neighbour" href="<?= FULL_BASE_PATH ?>rmrp/<?= (int) $n['id'] ?>">
+                        <span class="ui-rmrp-neighbour-art"><?= vis_cover($n['_topic'], (int) $n['id']) ?></span>
+                        <span class="ui-rmrp-neighbour-text"><small><?= $label ?></small><strong><?= htmlspecialchars($n['title']) ?></strong></span>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+        <?php endif; ?>
+
+        <?php if ($related): ?>
+            <section class="ui-section ui-rmrp-related">
+                <h2 class="ui-brief-title">More on <?= htmlspecialchars(strtolower(vis_topic_label($mTopic))) ?></h2>
+                <div class="ui-rmrp-grid is-grid">
+                    <?php foreach ($related as $r): ?>
+                        <article class="ui-rmrp-card">
+                            <a class="ui-rmrp-cover" href="<?= FULL_BASE_PATH ?>rmrp/<?= (int) $r['id'] ?>" tabindex="-1" aria-hidden="true"><?= vis_cover($r['_topic'], (int) $r['id']) ?></a>
+                            <div class="ui-rmrp-body">
+                                <p class="ui-rmrp-meta"><time datetime="<?= date('c', strtotime($r['memory_date'] ?? 'now')) ?>"><?= date('M j, Y', strtotime($r['memory_date'] ?? 'now')) ?></time></p>
+                                <h3 class="ui-feed-title"><a href="<?= FULL_BASE_PATH ?>rmrp/<?= (int) $r['id'] ?>"><?= htmlspecialchars($r['title']) ?></a></h3>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+        <?php endif; ?>
     </main>
 
     <?php ui_render_footer(); ?>

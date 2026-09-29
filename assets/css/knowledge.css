@@ -1,0 +1,119 @@
+/* ==========================================================================
+   Knowledge archives (/post-code, /science-corner): hero stats, the stack and
+   life-span atlas, cover-art cards that fold open. Jelly tokens only.
+   ========================================================================== */
+.kn-progress { position: fixed; inset: 0 0 auto 0; height: 4px; z-index: 1100; pointer-events: none; }
+.kn-progress span { display: block; height: 100%; background: var(--color-jelly); transform-origin: 0 50%; transform: scaleX(0); }
+
+/* ----- Hero + stats ----- */
+.kn-hero { max-width: 760px; }
+.kn-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); margin: var(--space-6) 0 0; }
+.kn-stats > div { background: var(--color-bg-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); padding: var(--space-3) var(--space-4); transition: transform 320ms var(--ease-jelly); }
+.kn-stats > div:hover { transform: translateY(-3px) rotate(-1deg); }
+.kn-stats dt { font: 500 var(--text-xs)/1.2 var(--font-display); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); }
+.kn-stats dd { margin: var(--space-1) 0 0; font: 700 clamp(1.3rem, 2.4vw, 1.9rem)/1 var(--font-display); color: var(--color-accent); white-space: nowrap; }
+@media (max-width: 640px) { .kn-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.kn-stack-title { margin: 0 0 var(--space-3); font: 600 var(--text-lg)/1.2 var(--font-display); color: var(--color-navy); }
+.kn-stack-title small { margin-left: var(--space-2); font: 400 var(--text-sm)/1.2 var(--font-body); color: var(--color-text-tertiary); }
+
+/* ----- The stack (post-code): layers double as filters ----- */
+.kn-stack { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--space-8); }
+.kn-layer {
+ --w: calc(64% + var(--i) * 7%);
+ position: relative; display: grid; grid-template-columns: 9.5rem minmax(0, 1fr) auto; align-items: center; gap: var(--space-4);
+ width: var(--w); min-width: min(100%, 520px); max-width: 100%;
+ padding: var(--space-3) var(--space-5); border: 0; border-radius: var(--radius-xl);
+ color: var(--color-text-inverse); text-align: left; cursor: pointer; font: inherit;
+ box-shadow: 0 4px 0 rgba(27, 33, 64, .18);
+ transition: transform 300ms var(--ease-jelly), box-shadow 200ms, filter 200ms;
+}
+.kn-layer:hover { transform: translateY(-3px) scale(1.01); }
+.kn-layer:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(27,33,64,.18); }
+.kn-layer[aria-pressed="true"] { outline: 3px solid var(--color-navy); outline-offset: 3px; }
+.kn-layer-name { font: 600 var(--text-lg)/1.1 var(--font-display); }
+.kn-layer-lead { font: 400 var(--text-sm)/1.4 var(--font-body); opacity: .92; }
+.kn-layer-count { font: 700 var(--text-xl)/1 var(--font-display); background: rgba(255,255,255,.22); border-radius: var(--radius-full); padding: 3px 12px 5px; }
+.kn-layer--philosophy { background: var(--color-navy); margin-inline: auto 0; }
+.kn-layer--mathematics { background: #3d4770; }
+.kn-layer--systems { background: #4a6aa8; }
+.kn-layer--architecture { background: #4a90d9; color: var(--color-navy); }
+.kn-layer--fundamentals { background: var(--color-sky); color: var(--color-navy); }
+.kn-layer { margin-inline: 0 auto; }
+@media (max-width: 720px) {
+ .kn-layer { width: 100%; grid-template-columns: minmax(0, 1fr) auto; row-gap: 2px; }
+ .kn-layer-lead { grid-column: 1; grid-row: 2; }
+ .kn-layer-count { grid-column: 2; grid-row: 1 / 3; }
+}
+
+/* ----- Life-span atlas (science) ----- */
+.kn-atlas { margin-bottom: var(--space-8); background: var(--color-bg-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); padding: var(--space-5) var(--space-6) var(--space-4); }
+.kn-axis { position: relative; height: 1.2rem; margin: 0 calc(6.2rem) 4px calc(9.5rem); font: 500 var(--text-xs)/1 var(--font-display); color: var(--color-text-tertiary); }
+.kn-axis span { position: absolute; transform: translateX(-50%); }
+.kn-lives { list-style: none; margin: 0; padding: 0; }
+.kn-lives li { transition: opacity 240ms; }
+.kn-lives li.is-dim { opacity: .18; }
+.kn-life { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr) 6.2rem; align-items: center; gap: 0; padding: 3px 0; text-decoration: none; color: var(--color-navy); border-radius: var(--radius-sm); font: 500 var(--text-sm)/1.2 var(--font-display); }
+.kn-life:hover { background: var(--color-sky-soft); color: var(--color-navy); }
+.kn-life-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: var(--space-2); }
+.kn-life-track { position: relative; height: 12px; background: repeating-linear-gradient(90deg, rgba(38,46,77,.08) 0 1px, transparent 1px 30.7%); border-radius: 6px; }
+.kn-life-track i { position: absolute; top: 0; bottom: 0; border-radius: 6px; background: var(--color-navy); transition: transform 260ms var(--ease-jelly); transform-origin: 50% 50%; }
+.kn-life:hover .kn-life-track i { transform: scaleY(1.5); }
+.kn-life--physics .kn-life-track i { background: var(--color-jelly); }
+.kn-life--mathematics .kn-life-track i { background: var(--color-navy); }
+.kn-life--computer-science .kn-life-track i { background: var(--color-sky); }
+.kn-life-years { padding-left: var(--space-3); font-size: var(--text-xs); color: var(--color-text-tertiary); white-space: nowrap; }
+@media (max-width: 640px) {
+ .kn-atlas { padding: var(--space-4); }
+ .kn-life { grid-template-columns: 6.4rem minmax(0, 1fr); }
+ .kn-life-years { display: none; }
+ .kn-axis { margin: 0 0 4px 6.4rem; }
+}
+
+/* ----- Tools ----- */
+.kn-quick { display: flex; align-items: center; gap: var(--space-4); margin: 0 0 var(--space-4); }
+.kn-hint { font: 400 var(--text-sm)/1 var(--font-body); color: var(--color-text-tertiary); }
+.kn-hint kbd { font: 600 var(--text-xs)/1 var(--font-display); padding: 2px 7px; border-radius: 6px; background: var(--color-bg-card); box-shadow: 0 2px 0 rgba(27,33,64,.18); }
+@media (max-width: 640px) { .kn-hint { display: none; } }
+
+/* ----- Cards ----- */
+.kn-card { padding: 0 !important; overflow: hidden; scroll-margin-top: 96px; }
+.kn-cover { position: relative; height: clamp(104px, 17vw, 150px); overflow: hidden; }
+.kn-cover .vis { transition: transform 800ms var(--ease-jelly); }
+.kn-card:hover .kn-cover .vis { transform: scale(1.08) rotate(-.8deg); }
+.kn-cover-pill { position: absolute; left: var(--space-4); bottom: var(--space-2); padding: 2px 11px 3px; border-radius: var(--radius-full); background: var(--color-bg-card); color: var(--color-navy); font: 600 var(--text-xs)/1.3 var(--font-display); letter-spacing: .05em; text-transform: uppercase; box-shadow: 0 2px 0 rgba(27,33,64,.12); }
+.kn-card-body { padding: var(--space-5) var(--space-6) var(--space-5); }
+.kn-eyebrow { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0 0 var(--space-2); font: 500 var(--text-xs)/1.4 var(--font-display); letter-spacing: .04em; color: var(--color-text-tertiary); }
+.kn-card .ui-feed-title { margin-bottom: var(--space-1); }
+.kn-tag { cursor: pointer; }
+.kn-tag:hover, .kn-tag:focus-visible { background: var(--color-sky-soft); color: var(--color-navy); border-color: var(--color-sky); }
+.kn-prose { margin-top: var(--space-3); }
+.kn-prose.is-clamped { position: relative; max-height: 7.6em; overflow: hidden; transition: max-height 520ms var(--ease-jelly); }
+.kn-prose.is-clamped::after { content: ""; position: absolute; inset: auto 0 0 0; height: 3.2em; background: linear-gradient(transparent, var(--color-bg-card)); pointer-events: none; transition: opacity 200ms; }
+.kn-card.is-open .kn-prose.is-clamped { max-height: 120em; }
+.kn-card.is-open .kn-prose.is-clamped::after { opacity: 0; }
+.kn-math { overflow-x: auto; }
+.kn-toggle { margin-top: var(--space-2); padding: 4px 14px 5px; border: 2px solid var(--color-navy); border-radius: var(--radius-full); background: transparent; color: var(--color-navy); font: 600 var(--text-sm)/1.3 var(--font-display); cursor: pointer; transition: background 160ms, color 160ms, transform 240ms var(--ease-jelly); }
+.kn-toggle:hover { background: var(--color-navy); color: var(--color-text-inverse); transform: scale(1.04); }
+.kn-toggle [data-close], .kn-toggle[aria-expanded="true"] [data-open] { display: none; }
+.kn-toggle[aria-expanded="true"] [data-close] { display: inline; }
+.kn-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px dashed var(--color-border); }
+.kn-related { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin: 0; font: 400 var(--text-sm)/1.3 var(--font-body); }
+.kn-related span { font: 600 var(--text-xs)/1 var(--font-display); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); }
+.kn-related a { padding: 2px 10px 3px; border-radius: var(--radius-full); background: var(--color-accent-subtle); color: var(--color-accent-hover); text-decoration: none; font-weight: 600; }
+.kn-related a:hover { background: var(--color-jelly); color: #fff; }
+.kn-copy { margin-left: auto; padding: 0; border: 0; background: none; color: var(--color-text-tertiary); font: 500 var(--text-sm)/1 var(--font-display); cursor: pointer; text-decoration: underline; }
+.kn-copy:hover { color: var(--color-accent); }
+.kn-card.is-flash { animation: kn-flash 1.4s ease-out; }
+@keyframes kn-flash { 0% { box-shadow: 0 0 0 0 rgba(219, 24, 22, .55); } 100% { box-shadow: 0 0 0 22px rgba(219, 24, 22, 0); } }
+.kn-card:target { box-shadow: 0 0 0 3px var(--color-jelly), var(--shadow-md); }
+
+@media (prefers-reduced-motion: reduce) {
+ .kn-prose.is-clamped { transition: none; }
+ .kn-card.is-flash { animation: none; }
+ .kn-cover .vis, .kn-layer, .kn-stats > div { transition: none; }
+}
+@media print { .kn-prose.is-clamped { max-height: none; } .kn-prose::after, .kn-toggle, .kn-progress { display: none; } }
+
+.kn-stats, .ui-rmrp-stats { max-width: 600px; }
+.kn-page .ui-archive-filters { align-items: center; }

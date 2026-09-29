@@ -2,6 +2,7 @@
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 require_once dirname(__DIR__, 2) . '/views/includes/collection.php';
+require_once dirname(__DIR__, 2) . '/views/includes/knowledge.php';
 
 $modules = [
     // ── Original 12 modules (preserved) ──
@@ -257,72 +258,62 @@ ui_render_head(
     [ui_collection_schema('Post-Code', 'post-code', array_column($modules, 'title'))]
 );
 ?>
-<link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/post-code.css?v=<?= filemtime(__DIR__ . '/../../assets/css/post-code.css') ?>">
-<body class="ui-collection">
+<?php kn_assets(); ?>
+<body class="ui-collection kn-page kn-post-code">
+<?php kn_progress(); ?>
 <div class="ui-page">
     <?php ui_render_navbar('Experiments'); ?>
 
     <main class="ui-main" id="main-content" tabindex="-1">
-        <section class="ui-section">
+        <section class="ui-section kn-hero">
             <p class="ui-eyebrow">Feed</p>
             <h1 class="ui-section-title">Post-Code</h1>
-            <p class="ui-section-text">Notes on the foundations behind the tools: algorithms, architecture, mathematics, and the philosophy of computation. Browse a category or search for a concept.</p>
-        </section>
-
-        <section class="ui-section">
-            <div class="ui-postcode-stat-bar">
-                <div class="ui-stat-card">
-                    <span class="ui-stat-value"><?= $totalModules ?></span>
-                    <span class="ui-stat-label">Modules</span>
-                </div>
-                <div class="ui-stat-card">
-                    <span class="ui-stat-value"><?= $totalTopics ?></span>
-                    <span class="ui-stat-label">Topics</span>
-                </div>
-                <div class="ui-stat-card">
-                    <span class="ui-stat-value"><?= count($categories) - 1 ?></span>
-                    <span class="ui-stat-label">Categories</span>
-                </div>
-            </div>
+            <p class="ui-section-text">Code is getting cheap. What stays valuable is the layer underneath it: fundamentals, architecture, systems, mathematics, and the questions about why any of it matters. Read it as a stack, from the ground up.</p>
+            <dl class="kn-stats">
+                <div><dt>Modules</dt><dd data-count="<?= $totalModules ?>"><?= $totalModules ?></dd></div>
+                <div><dt>Topics</dt><dd data-count="<?= $totalTopics ?>"><?= $totalTopics ?></dd></div>
+                <div><dt>Layers</dt><dd data-count="<?= count($categories) - 1 ?>"><?= count($categories) - 1 ?></dd></div>
+                <div><dt>Reading</dt><dd><?= array_sum(array_map('kn_minutes', $modules)) ?> min</dd></div>
+            </dl>
         </section>
 
         <section class="ui-section" data-collection>
+            <div class="kn-stack" role="group" aria-label="The stack: choose a layer">
+                <p class="kn-stack-title">The stack <small>tap a layer to read it</small></p>
+                <?php
+                $layers = [
+                    'philosophy'   => ['Why it matters', 'Computation, ethics, and the economics of software.'],
+                    'mathematics'  => ['The language underneath', 'Algebra, probability, and information.'],
+                    'systems'      => ['What keeps it running', 'Security, databases, and infrastructure.'],
+                    'architecture' => ['How the parts fit', 'Patterns, boundaries, and system design.'],
+                    'fundamentals' => ['The craft', 'Algorithms, testing, and habits that outlast tools.'],
+                ];
+                $counts = array_count_values(array_column($modules, 'category'));
+                $li = 0;
+                foreach ($layers as $key => [$lead, $blurb]): $li++; ?>
+                    <button type="button" class="kn-layer kn-layer--<?= $key ?>" data-filter="<?= $key ?>" aria-pressed="false" style="--i: <?= $li ?>">
+                        <span class="kn-layer-name"><?= htmlspecialchars($categories[$key]) ?></span>
+                        <span class="kn-layer-lead"><?= htmlspecialchars($lead) ?> — <?= htmlspecialchars($blurb) ?></span>
+                        <span class="kn-layer-count"><?= (int) ($counts[$key] ?? 0) ?></span>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+
             <?php ui_collection_tools($modules); ?>
-            <div class="ui-archive-filters" role="group" aria-label="Post-code category filters">
+            <?php kn_extra_tools(); ?>
+            <div class="ui-archive-filters" role="group" aria-label="Post-Code category filters">
                 <?php foreach ($categories as $key => $label): ?>
                     <button class="ui-filter-pill<?= $key === 'all' ? ' is-active' : '' ?>" type="button" data-filter="<?= htmlspecialchars($key) ?>" aria-pressed="<?= $key === 'all' ? 'true' : 'false' ?>"><?= htmlspecialchars($label) ?></button>
                 <?php endforeach; ?>
             </div>
 
-            <div class="ui-feed-list" id="postCodeFeed">
-                <?php foreach ($modules as $module): ?>
-                    <article class="ui-feed-card" id="<?= ui_entry_id($module['title']) ?>" data-collection-item data-category="<?= htmlspecialchars($module['category']) ?>">
-                        <div class="ui-feed-card-header">
-                            <div>
-                                <h2 class="ui-feed-title"><a href="#<?= ui_entry_id($module['title']) ?>"><?= htmlspecialchars($module['title']) ?></a></h2>
-                                <p class="ui-feed-meta"><?= htmlspecialchars($module['meta']) ?></p>
-                            </div>
-                        </div>
-
-                        <?php if (!empty($module['tags'])): ?>
-                            <div class="ui-postcode-tags">
-                                <?php foreach ($module['tags'] as $tag): ?>
-                                    <span class="ui-postcode-tag"><?= htmlspecialchars($tag) ?></span>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <p class="ui-feed-text"><?= htmlspecialchars($module['text']) ?></p>
-
-                        <?php if (!empty($module['hasMath']) && !empty($module['math'])): ?>
-                            <div class="ui-code-block">
-                                <?php foreach ($module['math'] as $formula): ?>
-                                    \[<?= $formula ?>\]
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-                    </article>
-                <?php endforeach; ?>
+            <div class="ui-feed-list kn-list" id="postCodeFeed">
+                <?php
+                $motifs = ['fundamentals' => 'software', 'architecture' => 'hardware', 'mathematics' => 'math', 'systems' => 'earth', 'philosophy' => 'space'];
+                foreach ($modules as $i => $module) {
+                    kn_card($modules, $i, $motifs[$module['category']] ?? 'notes', $module['meta'], $categories[$module['category']] ?? '');
+                }
+                ?>
             </div>
 
             <div class="ui-collection-empty" data-collection-empty hidden><p>No entries match. Try a shorter phrase or clear the filters.</p><button type="button" class="ui-btn ui-btn-secondary" data-collection-reset>Clear filters</button></div>
