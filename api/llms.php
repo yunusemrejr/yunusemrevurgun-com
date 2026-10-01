@@ -79,7 +79,7 @@ echo "- Three.js, React, Node.js, Docker, CI/CD\n\n";
 
 echo "book:\n";
 echo "  title: How to Remain Valuable When Intelligence Becomes Cheap\n";
-echo "  format: 240-page ebook, PDF + EPUB\n";
+echo "  format: 224-page ebook, PDF + EPUB\n";
 echo "  description: A practical book about the scarce human, economic, and strategic advantages that remain valuable even when AI/AGI can perform most cognitive work.\n";
 echo "  url: https://theknowledgeproject.gumroad.com/l/remainvaluable\n\n";
 

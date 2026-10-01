@@ -101,7 +101,7 @@ ui_render_head(
                         <h2 class="ui-record-heading" id="about-book">Book</h2>
                         <div class="ui-record-body">
                             <ul class="ui-card-list">
-                                <li><a href="<?= EBOOK_URL ?>" target="_blank" rel="noopener noreferrer"><strong><?= htmlspecialchars(EBOOK_TITLE) ?></strong></a><br>A 240-page practical ebook on the scarce human, economic, and strategic advantages that stay valuable when AI can do most cognitive work. Available as PDF + EPUB on Gumroad.</li>
+                                <li><a href="<?= EBOOK_URL ?>" target="_blank" rel="noopener noreferrer"><strong><?= htmlspecialchars(EBOOK_TITLE) ?></strong></a><br>A 224-page practical ebook on the scarce human, economic, and strategic advantages that stay valuable when AI can do most cognitive work. Available as PDF + EPUB on Gumroad.</li>
                             </ul>
                         </div>
                     </section>

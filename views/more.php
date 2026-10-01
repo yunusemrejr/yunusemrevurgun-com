@@ -81,7 +81,7 @@ $morePages = [
     [
         'title' => 'The Book',
         'href' => EBOOK_URL,
-        'description' => 'How to Remain Valuable When Intelligence Becomes Cheap — the 240-page ebook on staying valuable as AI advances. On Gumroad ↗',
+        'description' => 'How to Remain Valuable When Intelligence Becomes Cheap — the 224-page ebook on staying valuable as AI advances. On Gumroad ↗',
         'icon' => '§',
         'external' => true,
     ],
