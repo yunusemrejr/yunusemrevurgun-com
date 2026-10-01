@@ -19,11 +19,11 @@
   border: 1px solid var(--color-border);
 }
 
-/* 16:9 media area — landscape screenshots look best; icons are cropped to fit. */
+/* 16:10 cover area: real in-app screenshots or repository artwork. */
 .ui-download-media {
   position: relative;
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 62.5%;
   background-color: var(--color-bg-dark);
   overflow: hidden;
 }
@@ -79,8 +79,53 @@
   padding-top: var(--space-6);
 }
 
+.ui-download-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
 .ui-download-footer .ui-btn {
   width: 100%;
+}
+
+/* GitHub is the primary action: navy ink with the mark, so it reads as the source link. */
+.ui-btn-github {
+  background: var(--color-ink, #262E4D);
+  color: #fff;
+  border-color: var(--color-ink, #262E4D);
+}
+
+.ui-btn-github:hover,
+.ui-btn-github:focus-visible {
+  background: #1a2038;
+  color: #fff;
+}
+
+.ui-download-kind {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-1);
+}
+
+.ui-download-facts {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0 0;
+}
+
+.ui-download-how {
+  font-size: var(--text-sm);
+  color: var(--color-ink-body);
+  margin: 0;
+}
+
+.ui-download-how code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
 }
 
 .ui-download-icon {

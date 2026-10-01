@@ -1,22 +1,21 @@
 <?php
 /**
  * Public — Downloads
- * Lists desktop/offline apps. Binaries are hosted externally (GitHub); this
- * page only renders metadata + thumbnails managed in the admin panel.
+ * Open-source projects, described from includes/downloads_catalog.php
+ * (facts checked against each GitHub repository). Code is hosted on GitHub.
  */
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 require_once dirname(__DIR__, 2) . '/views/includes/collection.php';
-require_once dirname(__DIR__, 2) . '/models/Downloads.php';
 
-$downloads = new Downloads();
-$list = $downloads->getAllDownloads();
-$thumbBase = FULL_BASE_PATH . Downloads::UPLOAD_DIR . '/';
+$catalog = require dirname(__DIR__, 2) . '/includes/downloads_catalog.php';
+$coverDir = dirname(__DIR__, 2) . '/assets/images/downloads/';
+$list = $catalog; // schema entries; catalog replaces the old admin-managed rows
 
 ui_render_head(
     'Downloads | Yunus Emre Vurgun',
-    'Desktop and offline apps I have built — free downloads, hosted on GitHub.',
-    ['downloads' => true, ui_collection_schema('Downloads', 'downloads', array_column($list, 'title'), array_map(fn($item) => 'download-' . $item['id'], $list))]
+    'Open-source games, tools and experiments by Yunus Emre Vurgun: One Hour, Mini Space Shooter, Self Improving Rat, PocketHarness, YunusPi and Finny, all on GitHub.',
+    ['downloads' => true, ui_collection_schema('Downloads', 'downloads', array_column($list, 'title'), array_column($list, 'slug'))]
 );
 ?>
 <body class="ui-collection">
@@ -27,66 +26,53 @@ ui_render_head(
         <section class="ui-section">
             <p class="ui-eyebrow">Software</p>
             <h1 class="ui-section-title">Downloads</h1>
-            <p class="ui-section-text">Desktop and offline apps from my personal projects. Everything is free and hosted on GitHub — grab a release and run it locally.</p>
+            <p class="ui-section-text">Open-source games, tools and experiments I have built, mostly small Linux-native C++. Everything is free and lives on GitHub: clone it, read the code, run it locally.</p>
         </section>
 
         <section class="ui-section">
-            <?php if (count($list) > 0): ?>
-                <div class="ui-downloads-grid">
-                    <?php foreach ($list as $item):
-                        $platforms = Downloads::decodeList($item['platforms'] ?? null);
-                        $dependencies = Downloads::decodeList($item['dependencies'] ?? null);
-                        $title = htmlspecialchars($item['title'] ?? 'Untitled');
-                    ?>
-                        <article class="ui-card ui-download-card" id="download-<?= (int)$item['id'] ?>">
-                            <div class="ui-download-media">
-                                <?php if (!empty($item['thumbnail'])): ?>
-                                    <img class="ui-download-thumb" src="<?= htmlspecialchars($thumbBase . $item['thumbnail']) ?>" alt="<?= $title ?> thumbnail" loading="lazy" decoding="async">
-                                <?php else: ?>
-                                    <div class="ui-download-placeholder" aria-hidden="true">
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                    </div>
+            <div class="ui-downloads-grid">
+                <?php foreach ($catalog as $app):
+                    $repoUrl = 'https://github.com/' . $app['repo'];
+                    $title = htmlspecialchars($app['title']);
+                ?>
+                    <article class="ui-card ui-download-card" id="<?= htmlspecialchars($app['slug']) ?>">
+                        <div class="ui-download-media">
+                            <img class="ui-download-thumb" src="<?= FULL_BASE_PATH ?>assets/images/downloads/<?= htmlspecialchars($app['cover']) ?>?v=<?= filemtime($coverDir . $app['cover']) ?>" alt="<?= htmlspecialchars($app['cover_alt']) ?>" width="1200" height="750" loading="lazy" decoding="async">
+                        </div>
+                        <div class="ui-download-body">
+                            <p class="ui-download-kind"><?= htmlspecialchars($app['kind']) ?></p>
+                            <h2 class="ui-card-title"><?= $title ?></h2>
+                            <p class="ui-card-text"><?= htmlspecialchars($app['description']) ?></p>
+
+                            <ul class="ui-tags ui-download-facts">
+                                <li class="ui-tag"><?= htmlspecialchars($app['language']) ?></li>
+                                <?php if ($app['license']): ?><li class="ui-tag"><?= htmlspecialchars($app['license']) ?> licence</li><?php endif; ?>
+                                <?php foreach ($app['platforms'] as $p): ?><li class="ui-tag"><?= htmlspecialchars($p) ?></li><?php endforeach; ?>
+                            </ul>
+
+                            <p class="ui-download-section-label">Requires</p>
+                            <ul class="ui-download-deps">
+                                <?php foreach ($app['requires'] as $dep): ?><li><?= htmlspecialchars($dep) ?></li><?php endforeach; ?>
+                            </ul>
+
+                            <p class="ui-download-section-label">Get it</p>
+                            <p class="ui-download-how">
+                                <?php if ($app['run']): ?>Clone the repository, then run <code><?= htmlspecialchars($app['run']) ?></code>.<?php elseif ($app['release']): ?>Source and a tagged release are on GitHub; the README has the install steps.<?php endif; ?>
+                            </p>
+
+                            <div class="ui-download-footer">
+                                <a class="ui-btn ui-btn-primary ui-btn-github" href="<?= htmlspecialchars($repoUrl) ?>" target="_blank" rel="noopener noreferrer" aria-label="<?= $title ?> on GitHub (opens in a new tab)">
+                                    <svg class="ui-download-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+                                    View on GitHub ↗
+                                </a>
+                                <?php if ($app['release']): ?>
+                                    <a class="ui-btn ui-btn-secondary" href="<?= htmlspecialchars($app['release']['url']) ?>" target="_blank" rel="noopener noreferrer"><?= htmlspecialchars($app['release']['label']) ?> <?= htmlspecialchars($app['release']['tag']) ?> ↗</a>
                                 <?php endif; ?>
                             </div>
-                            <div class="ui-download-body">
-                                <h2 class="ui-card-title"><?= $title ?></h2>
-                                <?php if (!empty($item['description'])): ?>
-                                    <p class="ui-card-text"><?= htmlspecialchars($item['description']) ?></p>
-                                <?php endif; ?>
-
-                                <?php if (!empty($platforms)): ?>
-                                    <p class="ui-download-section-label">Platforms</p>
-                                    <div class="ui-tags" style="margin-bottom:0;">
-                                        <?php foreach ($platforms as $p): ?>
-                                            <span class="ui-tag"><?= htmlspecialchars($p) ?></span>
-                                        <?php endforeach; ?>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php if (!empty($dependencies)): ?>
-                                    <p class="ui-download-section-label">Requires</p>
-                                    <ul class="ui-download-deps">
-                                        <?php foreach ($dependencies as $dep): ?>
-                                            <li><?= htmlspecialchars($dep) ?></li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                <?php endif; ?>
-
-                                <div class="ui-download-footer">
-                                    <a class="ui-btn ui-btn-primary" href="<?= htmlspecialchars($item['download_url'] ?? '#') ?>" target="_blank" rel="noopener noreferrer">
-                                        <svg class="ui-download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                        Download <?= $title ?> ↗
-                                    </a>
-                                </div>
-                            </div>
-                        </article>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <div class="ui-downloads-empty">
-                    <p>No releases are listed here yet.</p><a class="ui-more-link" href="<?= FULL_BASE_PATH ?>portfolio">Browse projects →</a>
-                </div>
-            <?php endif; ?>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
         </section>
 
         <section class="ui-section">
