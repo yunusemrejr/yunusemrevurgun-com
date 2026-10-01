@@ -1,4 +1,6 @@
 (() => {
+  if (window.__uiInteractionsReady) return;
+  window.__uiInteractionsReady = true;
   const BASE_PATH = window.FULL_BASE_PATH || "/";
 
   function q(selector, root) {

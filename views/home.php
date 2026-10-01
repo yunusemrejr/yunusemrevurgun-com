@@ -209,7 +209,5 @@ ui_render_head(
 
 <?php ui_render_footer('landing-right'); ?>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
-<script src="<?= FULL_BASE_PATH ?>assets/js/navigation.js?v=<?= filemtime(__DIR__ . '/../assets/js/navigation.js') ?>"></script>
-<script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../assets/js/ui-interactions.js') ?>"></script>
 </body>
 </html>

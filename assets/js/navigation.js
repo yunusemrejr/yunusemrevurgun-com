@@ -2,6 +2,12 @@
 (() => {
   const menu = document.querySelector('#uiMobileMenu, #adminUiMobileMenu');
   if (!menu) return;
+  // A second copy of this script (a page that includes it on top of the
+  // shared footer) would bind a second click handler: the first opens the
+  // drawer and inerts the page, the second closes it again without knowing
+  // what the first inerted, leaving every control on the page dead.
+  if (menu.dataset.navReady === '1') return;
+  menu.dataset.navReady = '1';
   const admin = menu.id === 'adminUiMobileMenu';
   const openButton = document.querySelector(admin ? '[data-admin-menu-open]' : '[data-mobile-menu-open]');
   const closeSelector = admin ? '[data-admin-menu-close]' : '[data-mobile-menu-close]';
@@ -44,6 +50,14 @@
     const first = focusable[0], last = focusable[focusable.length - 1];
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+  });
+  // Back/forward cache can restore the page mid-open; never come back inert.
+  addEventListener('pageshow', event => {
+    if (!event.persisted) return;
+    close();
+    if (menu.classList.contains('is-open')) return;
+    document.querySelectorAll('main, header, footer').forEach(element => { if (!element.contains(menu) && !menu.contains(element)) element.inert = false; });
+    document.body.style.overflow = '';
   });
   matchMedia('(min-width: 981px)').addEventListener('change', event => { if (event.matches) close(); });
 })();
