@@ -13,6 +13,8 @@ const log = $('gcLog'), form = $('gcForm'), input = $('gcInput'), sendBtn = $('g
 const clearBtn = $('gcClear'), examples = $('gcExamples');
 
 let wllama = null;
+let modelReady = false;
+let loading = false;
 let busy = false;
 
 const el = (tag, cls, text) => {
@@ -95,7 +97,8 @@ function ready(ok) {
 }
 
 async function loadModel() {
-  if (wllama) return;
+  if (loading || modelReady) return;
+  loading = true;
   loadBtn.disabled = true;
   bar.hidden = false;
   setProgress(0);
@@ -111,6 +114,7 @@ async function loadModel() {
         setState(`Downloading ${(loaded / 1e6).toFixed(0)} of ${(total / 1e6).toFixed(0)} MB`);
       },
     });
+    modelReady = true;
     setProgress(100);
     bar.hidden = true;
     remember(true);
@@ -124,17 +128,20 @@ async function loadModel() {
   } catch (e) {
     console.error(e);
     wllama = null;
+    modelReady = false;
     remember(false);
     bar.hidden = true;
     loadBtn.disabled = false;
     loadBtn.textContent = 'Retry loading';
     setState('Could not load the model. Check your connection and try again.');
     addSystem('Model load failed: ' + (e && e.message ? e.message : e));
+  } finally {
+    loading = false;
   }
 }
 
 async function analyze(text) {
-  if (!wllama || busy) return;
+  if (!modelReady || busy) return;
   text = text.trim();
   if (!text) return;
   busy = true;
@@ -197,7 +204,7 @@ clearBtn.addEventListener('click', () => { if (!busy) { log.textContent = ''; in
 examples.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-claim]');
   if (!b) return;
-  if (!wllama) { input.value = b.dataset.claim; setState('Load the model, then press Split.'); return; }
+  if (!modelReady) { input.value = b.dataset.claim; setState('Load the model, then press Split.'); return; }
   analyze(b.dataset.claim);
 });
 

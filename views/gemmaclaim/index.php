@@ -9,7 +9,10 @@ $appJs = dirname(__DIR__, 2) . '/assets/js/gemmaclaim/app.js';
 ui_render_head(
     'Claim Splitter | Yunus Emre Vurgun',
     'Paste a claim and a 270M-parameter model splits it into premises, hidden assumptions and weak spots. It runs in your browser; nothing is sent to a server.',
-    ['gemmaclaim' => true]
+    [
+        'gemmaclaim' => true,
+        '<link rel="modulepreload" href="' . $jsBase . 'app.js?v=' . (@filemtime($appJs) ?: 1) . '">',
+    ]
 );
 ?>
 <body class="ui-gemmaclaim-page">
@@ -80,8 +83,8 @@ ui_render_head(
 
     <?php ui_render_footer(); ?>
 </div>
-<script>window.GC_BASE = <?= json_encode($jsBase) ?>;</script>
-<script type="module" src="<?= $jsBase ?>app.js?v=<?= @filemtime($appJs) ?: 1 ?>"></script>
+<script data-cfasync="false">window.GC_BASE = <?= json_encode($jsBase) ?>;</script>
+<script data-cfasync="false" type="module" src="<?= $jsBase ?>app.js?v=<?= @filemtime($appJs) ?: 1 ?>"></script>
 <?php ui_render_tracker_codes(dirname(__DIR__, 2)); ?>
 </body>
 </html>
