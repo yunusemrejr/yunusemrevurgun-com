@@ -14,7 +14,7 @@ $list = $catalog; // schema entries; catalog replaces the old admin-managed rows
 
 ui_render_head(
     'Downloads | Yunus Emre Vurgun',
-    'Open-source games, tools and experiments by Yunus Emre Vurgun: One Hour, Mini Space Shooter, Self Improving Rat, PocketHarness, YunusPi and Finny, all on GitHub.',
+    'Open-source games, tools and experiments by Yunus Emre Vurgun: One Hour, Mini Space Shooter, Self Improving Rat, PocketHarness, YunusPi, Finny and Dataclean, all on GitHub.',
     ['downloads' => true, ui_collection_schema('Downloads', 'downloads', array_column($list, 'title'), array_column($list, 'slug'))]
 );
 ?>
