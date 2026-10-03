@@ -78,21 +78,18 @@ $homeSchema = [
     ],
 ];
 
-// The masthead mascot is the largest element on first paint. It is offered in four
-// widths (it renders 246 px wide on phones, 409 px on desktop) and preloaded with
-// the same srcset, so the browser fetches the right file as early as possible.
-$mascotDir = dirname(__DIR__) . '/assets/images/';
-$mascotSrcset = implode(', ', array_map(
-    static fn(string $file, int $w): string => FULL_BASE_PATH . 'assets/images/' . $file . '?v=' . (@filemtime(dirname(__DIR__) . '/assets/images/' . $file) ?: 1) . ' ' . $w . 'w',
-    ['mascot-320.webp', 'mascot-480.webp', 'mascot-640.webp', 'mascot.webp'], [320, 480, 640, 800]
-));
-$mascotSizes = '(max-width: 900px) 246px, 409px';
+// The masthead mascot is the largest element on first paint. It renders 246 px wide
+// on phones and 409 px on desktop, so one 640 px file covers up to about 2.6x pixel
+// density on a phone and 1.5x on desktop (72 KB, down from 115 KB). It is a single
+// file, not a srcset, so the Early Hints preload (which cannot carry a srcset) always
+// names the file the <img> will use.
+$mascotUrl = FULL_BASE_PATH . 'assets/images/mascot-640.webp?v=' . (@filemtime(dirname(__DIR__) . '/assets/images/mascot-640.webp') ?: 1);
 
 ui_render_head(
     'Yunus Emre Vurgun (Yemre) — Software Developer & IT Specialist',
     'Yunus Emre Vurgun (Yemre), software developer and IT specialist in Istanbul. Explore projects, writing, and work in AI/ML and operational technology.',
     [
-        'lcp_image' => ['src' => FULL_BASE_PATH . 'assets/images/mascot.webp', 'srcset' => $mascotSrcset, 'sizes' => $mascotSizes],
+        'lcp_image' => ['src' => $mascotUrl],
         '<meta name="author" content="Yunus Emre Vurgun">',
         '<meta name="keywords" content="Yunus Emre Vurgun, Yemre, YEV, yunusemrejr, Yemrevu, software developer, developer, IT specialist, computational intelligence, operational technology">',
         '<meta property="og:description" content="A new form of intelligence is emerging. They say you\'re the average of the five people you spend the most time with. I\'m carefully curating mine.">',
@@ -136,7 +133,7 @@ ui_render_head(
             </nav>
         </div>
         <figure class="ui-masthead-figure">
-            <img class="ui-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot.webp" srcset="<?= htmlspecialchars($mascotSrcset) ?>" sizes="<?= $mascotSizes ?>" width="800" height="800" decoding="async" fetchpriority="high"
+            <img class="ui-mascot" src="<?= htmlspecialchars($mascotUrl) ?>" width="640" height="640" decoding="async" fetchpriority="high"
                  alt="Jell-omo, the site's mascot: a glossy red jelly wearing a navy and cream baseball cap, eyes closed in a contented smile.">
             <figcaption class="ui-masthead-caption">
                 <span>Jell-omo, the mascot. Poke it.</span>

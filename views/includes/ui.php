@@ -30,12 +30,15 @@ if (!function_exists('ui_render_head')) {
         $coreFonts = array_map($fontHref, ['fredoka-latin.woff2', 'atkinson-next-latin.woff2']);
         $lcpImage = is_array($extraMeta['lcp_image'] ?? null) ? $extraMeta['lcp_image'] : null;
         if (!headers_sent()) {
+            // Time the application spent before the first byte of HTML (queries are done
+            // by the time a view renders its head); visible in DevTools and Lighthouse.
+            header('Server-Timing: app;dur=' . number_format((microtime(true) - (float)($_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(true))) * 1000, 1, '.', ''));
             foreach ($coreCss as $href) header('Link: <' . $href . '>; rel=preload; as=style', false);
             foreach ($coreFonts as $href) header('Link: <' . $href . '>; rel=preload; as=font; type="font/woff2"; crossorigin', false);
-            if ($lcpImage) {
-                header('Link: <' . $lcpImage['src'] . '>; rel=preload; as=image; fetchpriority=high'
-                    . (!empty($lcpImage['srcset']) ? '; imagesrcset="' . $lcpImage['srcset'] . '"; imagesizes="' . ($lcpImage['sizes'] ?? '100vw') . '"' : ''), false);
-            }
+            // One concrete file, never a srcset: Cloudflare re-serialises Link headers into
+            // 103 Early Hints without their quotes, and a srcset's commas then split the
+            // header into invalid pieces that browsers ignore (measured on production).
+            if ($lcpImage) header('Link: <' . $lcpImage['src'] . '>; rel=preload; as=image; fetchpriority=high', false);
         }
         ?>
 <!DOCTYPE html>
@@ -158,7 +161,7 @@ if (!function_exists('ui_render_head')) {
     <link rel="preload" href="<?= $href ?>" as="font" type="font/woff2" crossorigin>
     <?php endforeach; ?>
     <?php if ($lcpImage): ?>
-    <link rel="preload" as="image" href="<?= htmlspecialchars($lcpImage['src']) ?>" fetchpriority="high"<?= !empty($lcpImage['srcset']) ? ' imagesrcset="' . htmlspecialchars($lcpImage['srcset']) . '" imagesizes="' . htmlspecialchars($lcpImage['sizes'] ?? '100vw') . '"' : '' ?>>
+    <link rel="preload" as="image" href="<?= htmlspecialchars($lcpImage['src']) ?>" fetchpriority="high">
     <?php endif; ?>
     <?php if ($collectionPage): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/collections.css?v=<?= filemtime(__DIR__ . '/../../assets/css/collections.css') ?>">
