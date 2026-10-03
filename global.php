@@ -7,7 +7,8 @@ if (preg_match('#^/(?:admin|api/admin)(?:/|$)#', (string)parse_url($_SERVER['REQ
 
 require_once $projectRoot . '/config/setPath.php';
 require_once $projectRoot . '/includes/csrf.php';
-if (session_status() == PHP_SESSION_NONE) {
+// index.php marks cookie-less content-page views as stateless (see there).
+if (empty($GLOBALS['yev_stateless']) && session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
@@ -37,7 +38,9 @@ function restrictDirectAccess() {
     }
 }
 
-CSRFProtection::generateToken();
+if (session_status() === PHP_SESSION_ACTIVE) {
+    CSRFProtection::generateToken();
+}
 
 function isAdminRequestUri(string $uri): bool {
     $basePath = parse_url(FULL_BASE_PATH, PHP_URL_PATH) ?: '/';
