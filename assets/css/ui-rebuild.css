@@ -3102,3 +3102,19 @@ input::placeholder, textarea::placeholder { color: var(--color-text-secondary); 
 .ui-filter-pill, .ui-page-link, .ui-eyebrow,
 .ui-feed-meta, .ui-card-meta, .ui-landing-footer-nav a { font-family: var(--font-body); }
 .ui-captcha-refresh { width: 44px; height: 44px; }
+
+/* ===== SCREEN-READER TEXT (global) ===== */
+/* Visually hidden, still read aloud and still counted as the link's text, so a
+   short visible label ("More") can carry a descriptive accessible name. */
+.ui-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

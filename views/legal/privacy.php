@@ -2,7 +2,7 @@
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 
-ui_render_head('Privacy Policy', 'Privacy policy for yunusemrevurgun.com');
+ui_render_head('Privacy Policy | Yunus Emre Vurgun', 'Privacy policy for yunusemrevurgun.com: the usage data and contact-form messages collected, how they are used, and how to request access or deletion.');
 ?>
 <body>
 <div class="ui-page">
@@ -11,7 +11,7 @@ ui_render_head('Privacy Policy', 'Privacy policy for yunusemrevurgun.com');
         <section class="ui-section">
             <p class="ui-eyebrow">Legal</p>
             <h1 class="ui-section-title">Privacy Policy</h1>
-            <p class="ui-section-text">Last updated: <?= date('F d, Y') ?></p>
+            <p class="ui-section-text">Last updated: <?= date('F j, Y', (int)filemtime(__FILE__)) ?></p>
         </section>
         <section class="ui-section">
             <article class="ui-rich-content">

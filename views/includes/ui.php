@@ -15,6 +15,28 @@ if (!function_exists('ui_render_head')) {
             }
         }
         if (http_response_code() >= 400) $extraMeta['robots'] = 'noindex,follow';
+
+        // Critical path. The two faces below paint the navbar and the first heading
+        // on every page, yet the browser only learns of them after variables.css
+        // has downloaded and parsed, so they are preloaded in parallel. The same
+        // resources go out as Link headers (this must run before any output):
+        // Cloudflare caches those and replays them as 103 Early Hints, so the
+        // browser can fetch CSS and fonts during the origin round trip instead of
+        // after it. Attributes match the <link> tags below exactly, so each file
+        // is requested once.
+        $cssHref = static fn(string $file): string => FULL_BASE_PATH . 'assets/css/' . $file . '?v=' . filemtime(__DIR__ . '/../../assets/css/' . $file);
+        $fontHref = static fn(string $file): string => FULL_BASE_PATH . 'assets/fonts/' . $file;
+        $coreCss = array_map($cssHref, ['variables.css', 'ui-rebuild.css', 'ebook.css', 'jelly.css']);
+        $coreFonts = array_map($fontHref, ['fredoka-latin.woff2', 'atkinson-next-latin.woff2']);
+        $lcpImage = is_array($extraMeta['lcp_image'] ?? null) ? $extraMeta['lcp_image'] : null;
+        if (!headers_sent()) {
+            foreach ($coreCss as $href) header('Link: <' . $href . '>; rel=preload; as=style', false);
+            foreach ($coreFonts as $href) header('Link: <' . $href . '>; rel=preload; as=font; type="font/woff2"; crossorigin', false);
+            if ($lcpImage) {
+                header('Link: <' . $lcpImage['src'] . '>; rel=preload; as=image; fetchpriority=high'
+                    . (!empty($lcpImage['srcset']) ? '; imagesrcset="' . $lcpImage['srcset'] . '"; imagesizes="' . ($lcpImage['sizes'] ?? '100vw') . '"' : ''), false);
+            }
+        }
         ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +52,22 @@ if (!function_exists('ui_render_head')) {
     $robots = is_string($extraMeta['robots'] ?? null) && $extraMeta['robots'] !== ''
         ? $extraMeta['robots']
         : 'index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1';
+
+    // Faceted variants (view toggle, page size, topic filter, in-page search)
+    // re-list content that already has a home URL, and their parameter space is
+    // unbounded. Keep them followable but out of the index, and give them a
+    // self-referencing canonical below so no signal contradicts the noindex.
+    // A page that sets its own robots directive (search, 4xx) keeps it. Tracking
+    // parameters are deliberately NOT facets: those URLs keep canonicalising to
+    // the clean page, which is the right consolidation for them.
+    $activeFacets = [];
+    foreach (['per', 'view', 'topic', 'q', 'type', 'sort', 'filter', 'category', 'tag', 'album', 'year'] as $facetKey) {
+        if (isset($_GET[$facetKey]) && is_string($_GET[$facetKey])) {
+            $activeFacets[$facetKey] = mb_substr($_GET[$facetKey], 0, 80);
+        }
+    }
+    $isFacetRequest = $activeFacets !== [] && !(is_string($extraMeta['robots'] ?? null) && $extraMeta['robots'] !== '');
+    if ($isFacetRequest) $robots = 'noindex,follow';
     ?>
     <meta name="robots" content="<?= htmlspecialchars($robots) ?>">
     <title><?= htmlspecialchars($title) ?></title>
@@ -43,6 +81,13 @@ if (!function_exists('ui_render_head')) {
     $normalizedPath = '/' . trim($requestPath, '/');
     if (in_array($normalizedPath, ['/home', '/index', '/index.php'], true)) $normalizedPath = '/';
     $canonical = $extraMeta['canonical'] ?? (rtrim(FULL_BASE_PATH, '/') . $normalizedPath);
+    if ($isFacetRequest) {
+        ksort($activeFacets);
+        if (isset($_GET['page']) && is_string($_GET['page']) && ctype_digit($_GET['page']) && (int)$_GET['page'] > 1) {
+            $activeFacets['page'] = (string)(int)$_GET['page'];
+        }
+        $canonical = rtrim(FULL_BASE_PATH, '/') . $normalizedPath . '?' . http_build_query($activeFacets);
+    }
     ?>
     <link rel="canonical" href="<?= htmlspecialchars($canonical) ?>">
     <?php
@@ -109,14 +154,19 @@ if (!function_exists('ui_render_head')) {
     <meta name="msapplication-TileImage" content="<?= $iconV('pwa-icon-192.png') ?>">
     <meta name="msapplication-TileColor" content="#69b0f9">
     <?php $collectionPage = in_array(trim($requestPath, '/'), ['post-code','science-corner','comedy','music','videos','downloads','slop','more','rmrp'], true); ?>
+    <?php foreach ($coreFonts as $href): ?>
+    <link rel="preload" href="<?= $href ?>" as="font" type="font/woff2" crossorigin>
+    <?php endforeach; ?>
+    <?php if ($lcpImage): ?>
+    <link rel="preload" as="image" href="<?= htmlspecialchars($lcpImage['src']) ?>" fetchpriority="high"<?= !empty($lcpImage['srcset']) ? ' imagesrcset="' . htmlspecialchars($lcpImage['srcset']) . '" imagesizes="' . htmlspecialchars($lcpImage['sizes'] ?? '100vw') . '"' : '' ?>>
+    <?php endif; ?>
     <?php if ($collectionPage): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/collections.css?v=<?= filemtime(__DIR__ . '/../../assets/css/collections.css') ?>">
-    <script src="<?= FULL_BASE_PATH ?>assets/js/collections.js?v=<?= filemtime(__DIR__ . '/../../assets/js/collections.js') ?>" defer></script>
+    <script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/collections.js?v=<?= filemtime(__DIR__ . '/../../assets/js/collections.js') ?>" defer></script>
     <?php endif; ?>
-    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/variables.css?v=<?= filemtime(__DIR__ . '/../../assets/css/variables.css') ?>">
-    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ui-rebuild.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ui-rebuild.css') ?>">
-    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/ebook.css?v=<?= filemtime(__DIR__ . '/../../assets/css/ebook.css') ?>">
-    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/jelly.css?v=<?= filemtime(__DIR__ . '/../../assets/css/jelly.css') ?>">
+    <?php foreach ($coreCss as $href): ?>
+    <link rel="stylesheet" href="<?= $href ?>">
+    <?php endforeach; ?>
     <?php if (isset($extraMeta['yunobot']) && $extraMeta['yunobot']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/yunobot.css?v=<?= filemtime(__DIR__ . '/../../assets/css/yunobot.css') ?>">
     <?php endif; ?>
@@ -138,9 +188,12 @@ if (!function_exists('ui_render_head')) {
     <?php if (isset($extraMeta['downloads']) && $extraMeta['downloads']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/downloads.css?v=<?= filemtime(__DIR__ . '/../../assets/css/downloads.css') ?>">
     <?php endif; ?>
+    <?php if (isset($extraMeta['docs']) && $extraMeta['docs']): ?>
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/docs.css?v=<?= filemtime(__DIR__ . '/../../assets/css/docs.css') ?>">
+    <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot', 'gemmaclaim', 'chessko', 'jelloshop', 'music', 'downloads', 'og_image', 'og_type', 'robots', 'canonical'], true)) continue;
+        if (is_string($key) && in_array($key, ['yunobot', 'gemmaclaim', 'chessko', 'jelloshop', 'music', 'downloads', 'docs', 'og_image', 'og_type', 'robots', 'canonical', 'lcp_image'], true)) continue;
         if (!empty($value) && is_string($value)) {
             // Defaults above already own these tags; page-specific article data remains.
             if (preg_match('/<meta (?:name|property)="(?:author|description|keywords|og:(?:type|url|title|description|image)|twitter:(?:card|url|title|description|image))"/', $value)) continue;
@@ -224,7 +277,7 @@ if (!function_exists('ui_render_navbar')) {
                 </li>
                 <?php endforeach; ?>
                 <li>
-                    <a class="ui-nav-link ui-nav-link-more<?= $moreActive ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>more" aria-label="More pages">More</a>
+                    <a class="ui-nav-link ui-nav-link-more<?= $moreActive ? ' is-active' : '' ?>" href="<?= FULL_BASE_PATH ?>more"<?= $moreActive ? ' aria-current="page"' : '' ?>>More<span class="ui-sr-only"> projects and pages</span></a>
                 </li>
             </ul>
             <button class="ui-mobile-toggle" type="button" aria-label="Open menu" data-mobile-menu-open aria-expanded="false" aria-controls="uiMobileMenu"><span></span><span></span><span></span></button>
@@ -239,7 +292,7 @@ if (!function_exists('ui_render_navbar')) {
             <?php foreach (ui_nav_items() as $item): ?>
                 <li><a href="<?= htmlspecialchars($item['href']) ?>" data-mobile-menu-close><?= htmlspecialchars($item['label']) ?></a></li>
             <?php endforeach; ?>
-            <li><a href="<?= FULL_BASE_PATH ?>more" data-mobile-menu-close aria-label="More pages">More</a></li>
+            <li><a href="<?= FULL_BASE_PATH ?>more" data-mobile-menu-close>More<span class="ui-sr-only"> projects and pages</span></a></li>
             <li><a href="<?= EBOOK_URL ?>" target="_blank" rel="noopener noreferrer">Book ↗</a></li>
         </ul>
     </div>
@@ -274,6 +327,23 @@ if (!function_exists('ui_portrait_url')) {
         $version = @filemtime($path);
         return FULL_BASE_PATH . 'assets/images/yunus-emre-vurgun-portrait.jpg'
             . ($version ? '?v=' . $version : '');
+    }
+}
+
+if (!function_exists('ui_image_size_attrs')) {
+    /**
+     * width/height attributes for an image stored under the site root (for example
+     * 'uploads/gallery/x.jpg'), read from the file itself. With both attributes the
+     * browser reserves the box before the file arrives, so nothing shifts. Returns
+     * an empty string for remote, missing or unreadable files rather than guessing.
+     */
+    function ui_image_size_attrs(?string $relativePath): string
+    {
+        $relativePath = ltrim((string)$relativePath, '/');
+        if ($relativePath === '' || str_contains($relativePath, '..') || preg_match('#^[a-z][a-z0-9+.-]*:#i', $relativePath)) return '';
+        $file = dirname(__DIR__, 2) . '/' . $relativePath;
+        $size = is_file($file) ? @getimagesize($file) : false;
+        return is_array($size) && $size[0] > 0 && $size[1] > 0 ? ' width="' . (int)$size[0] . '" height="' . (int)$size[1] . '"' : '';
     }
 }
 
@@ -332,7 +402,7 @@ if (!function_exists('ui_render_footer')) {
                 <?php foreach (ui_nav_items() as $item): ?>
                 <li><a href="<?= htmlspecialchars($item['href']) ?>"><?= htmlspecialchars($item['label']) ?></a></li>
                 <?php endforeach; ?>
-                <li><a href="<?= FULL_BASE_PATH ?>more">More</a></li>
+                <li><a href="<?= FULL_BASE_PATH ?>more">More projects &amp; pages</a></li>
             </ul>
         </nav>
         <nav aria-label="Site resources">
@@ -389,8 +459,11 @@ if (!function_exists('ui_render_footer')) {
     </div>
 </div>
 <?php endif; ?>
-<script src="<?= FULL_BASE_PATH ?>assets/js/navigation.js?v=<?= filemtime(__DIR__ . '/../../assets/js/navigation.js') ?>"></script>
-<script src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../../assets/js/ui-interactions.js') ?>"></script>
+<?php /* Menu and interaction handlers must not wait for Cloudflare Rocket Loader, which
+   otherwise holds every plain script until after window load (behind the analytics
+   tags), leaving the mobile menu dead for the first seconds. */ ?>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/navigation.js?v=<?= filemtime(__DIR__ . '/../../assets/js/navigation.js') ?>"></script>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/ui-interactions.js?v=<?= filemtime(__DIR__ . '/../../assets/js/ui-interactions.js') ?>"></script>
 <?php
     }
 }

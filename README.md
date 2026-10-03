@@ -35,6 +35,7 @@ Personal website and publishing tools. Server-rendered PHP; no application frame
 | Personal archive | `/updates`, `/updates/ID`, `/rmrp`, `/rmrp/ID`; paginated entries and individual detail pages |
 | Media | `/gallery`, `/travel`, `/music`, `/videos`, `/downloads`, `/slop`, `/slop/SLUG` |
 | Interests | `/post-code`, `/science-corner`, `/comedy`, `/yunobot`, `/gemmaclaim` (Claim Splitter: in-browser GemmaClaim-270M via vendored wllama; model streams from Hugging Face, so CSP `connect-src` allows `*.hf.co`) |
+| Project clusters | Each project hub has documentation pages beneath it: `/downloads/<app>` (seven open-source apps), `/yunobot/how-it-works`, `/yunobot/does-it-send-my-messages`, `/gemmaclaim/how-it-works`, `/gemmaclaim/example-output`, `/jelloshop/cat-brain`, and the five Chessko articles under `/chessko/<slug>` |
 | Discovery | `/more`, `/search`, `/sitemap`; search results are noindex |
 | Policies/errors | `/privacy`, `/terms`, `/cookies`, `/404`; unknown URLs return 404, maintenance returns 503 |
 | Machine-readable | `/sitemap.xml`, `/blog.xml`, `/updates.xml`, `/rmrp.xml`, `/llms.txt`, `/robots.txt` |
@@ -98,6 +99,21 @@ Each paginated archive has its own canonical URL. Page size is retained when it 
 These changes improve crawlability, usability and content discovery. They do not guarantee traffic or rankings from age alone. Useful original writing, accurate project descriptions and external references still determine whether there is demand for the pages. Search Console can track actual impressions, queries and indexing; no account was connected or property changed in this pass.
 
 Implementation guidance: [Google's sitemap documentation](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap), [pagination and canonicals](https://developers.google.com/search/docs/specialty/ecommerce/pagination-and-incremental-page-loading), and [ranking systems](https://developers.google.com/search/docs/appearance/ranking-systems-guide).
+
+## Topic clusters, structured data and page speed
+
+**Clusters.** Search and AI crawlers get one hub per project and a handful of documentation pages beneath it, linked upward to the hub and sideways to siblings in the same cluster only (no cross-cluster links inside `<main>`; the navbar and footer are the only bridges). Every hub is one click from the homepage and every page in a cluster is two, so nothing in the sitemap is deeper than two clicks.
+
+- `views/docs/pages.php` is the registry for the new documentation pages (`downloads/<app>`, `yunobot/<topic>`, `gemmaclaim/<topic>`, `jelloshop/<topic>`); `views/docs/page.php` renders any of them and `router/Router.php` sends those four prefixes to it (unknown slugs return 404). The sitemap, `/sitemap`, and `llms.txt` read the same registry, so adding an entry updates all three. Bump an entry's `modified` date when you change it; it feeds `dateModified` and the sitemap `lastmod`.
+- These are documentation, not journal entries: factual write-ups of how a project works, how to run it and what it returns. They are deliberately kept out of the blog, updates and RSS feeds. Every figure is either read from a shipped file, a project README or the model card, or is a dated measurement labelled as one run on one machine. App facts (language, licence, requirements, release) are not repeated: they come from `includes/downloads_catalog.php`.
+- Structured data lives in `views/includes/seo.php`. `about` and `mentions` point at Wikidata items (`seo_wikidata()`); each Q-id was matched on its description against the live Wikidata API, not on its label ("Stockfish" alone resolves to a surname). Add an entity only after checking it the same way. App pages emit `SoftwareApplication` plus `SoftwareSourceCode`, articles emit `TechArticle`, hubs emit `WebApplication`, and every FAQ in the markup is also on the page.
+- Titles put the primary keyword first (about 60 characters), descriptions stay under 160, and each page has one `h1` and question-form `h2`s.
+
+**Crawl hygiene.** Parameter variants that only re-list content (`per`, `view`, `topic`, `q`, `type` and similar) are `noindex,follow` with a self-referencing canonical (`ui_render_head()`). Tracking parameters are not facets and keep canonicalising to the clean URL. Paginated archives stay indexable with their own canonical. Anonymous GET and HEAD requests for content routes start no PHP session (`index.php`), so they carry no cookie and no `Cache-Control: no-store`; `/contact`, the APIs, the admin and any visitor who already holds a session cookie take the old path.
+
+**Page speed.** The origin answers in about 15 ms; most of the time to first byte is the Cloudflare-to-origin hop, so the work is about not wasting that wait. `ui_render_head()` sends the stylesheets, the two above-the-fold fonts and (on the homepage) the masthead image as `Link: rel=preload` headers, which Cloudflare can replay as 103 Early Hints, and repeats them as `<link rel="preload">` tags. The homepage masthead image is a `srcset` (`mascot-320|480|640|800.webp`, built by `dev/scripts/build-brand-assets.py`) instead of one 115 KB file. The footer scripts carry `data-cfasync="false"` so Cloudflare Rocket Loader does not hold the mobile menu until after window load. Versioned assets (`?v=<mtime>`) are cached for a year by `.htaccess`. Images read their own dimensions (`ui_image_size_attrs()`) so nothing shifts.
+
+**Known test failures that predate this work.** `dev/tests/unit_tests.php` has six stale expectations (`border-radius` in two admin stylesheets, an `og_image` string match, and `robots.txt` bot names); they fail identically on the previous commit. `dev/qa/http_smoke.py` covers the new pages and the facet policy.
 
 ## YunoBot training, sources and limitations
 

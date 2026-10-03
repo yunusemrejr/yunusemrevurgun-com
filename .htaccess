@@ -83,6 +83,15 @@ RewriteRule ^ - [E=YEV_NOINDEX:1]
 # tags; redirect to THE one favicon so they can never settle on a different file.
 RewriteRule ^favicon\.ico$ assets/images/favicon.ico [L,R=302]
 
+# Versioned static assets: every first-party reference carries ?v=<file mtime>
+# (ui.php, the views), so an edited file is served from a new URL and the old URL
+# can be cached for a year. Only existing files that carry the version qualify
+# (a 404 must never be cached that long); fonts are referenced from variables.css
+# without one and keep the host default.
+RewriteCond %{QUERY_STRING} (^|&)v=[0-9]+(&|$)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^assets/.+\.(?:css|js|mjs|wasm|webp|png|jpe?g|gif|svg|ico|json)$ - [E=YEV_VERSIONED_ASSET:1]
+
 # Route app requests
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -94,6 +103,7 @@ RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set X-Robots-Tag "noindex,follow" env=YEV_NOINDEX
+    Header always set Cache-Control "public, max-age=31536000, immutable" env=YEV_VERSIONED_ASSET
     Header always set X-Robots-Tag "noindex,nofollow" env=YEV_ADMIN_NO_CACHE
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
     Header always set Cache-Control "no-cache, no-store, must-revalidate" env=YEV_ADMIN_NO_CACHE

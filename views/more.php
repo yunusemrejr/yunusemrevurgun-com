@@ -91,7 +91,7 @@ $morePages = [
 
 ui_render_head(
     'Explore | Yunus Emre Vurgun’s Projects, Media & Interests',
-    'Additional projects and pages by Yunus Emre Vurgun (Yemre) — socials, tools, and experiments.',
+    'Projects you can run in your browser, open-source downloads, media, socials and interests by Yunus Emre Vurgun (Yemre), from YunoBot to Chessko.',
 );
 ?>
 <body class="ui-collection">

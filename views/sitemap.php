@@ -2,7 +2,7 @@
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
 
-ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primary routes on yunusemrevurgun.com.');
+ui_render_head('Sitemap — Yunus Emre Vurgun', 'Every page on yunusemrevurgun.com: main pages, archives, projects you can run, project documentation and legal pages.');
 ?>
 <body>
 <div class="ui-page">
@@ -41,6 +41,14 @@ ui_render_head('Sitemap — Yunus Emre Vurgun', 'Structured links for all primar
                     <ul class="ui-card-list">
                         <?php foreach (['yunobot' => 'YunoBot', 'gemmaclaim' => 'Claim Splitter', 'chessko' => 'Chessko (jelly chess)', 'jelloshop' => 'Jello Shop (Jell-omo\'s coffee shop game)', 'music' => 'Music', 'videos' => 'Videos', 'downloads' => 'Downloads', 'slop' => 'Quality 3D AI Slop', 'post-code' => 'Post-Code', 'science-corner' => 'Science Corner', 'comedy' => 'Comedy', 'more' => 'More'] as $path => $label): ?>
                         <li><a href="<?= FULL_BASE_PATH . $path ?>"><?= $label ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <div class="ui-sitemap-col">
+                    <h2>Project documentation</h2>
+                    <ul class="ui-card-list">
+                        <?php foreach ((require __DIR__ . '/docs/pages.php')['pages'] as $docPath => $doc): ?>
+                        <li><a href="<?= FULL_BASE_PATH . $docPath ?>"><?= htmlspecialchars($doc['crumb'] === $doc['h1'] ? $doc['h1'] : (($doc['kind'] === 'software' ? '' : ucfirst(explode('/', $docPath)[0]) . ': ') . $doc['crumb'])) ?></a></li>
                         <?php endforeach; ?>
                     </ul>
                 </div>

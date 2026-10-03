@@ -6,6 +6,7 @@
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/models/Socials.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
+require_once dirname(__DIR__, 2) . '/views/includes/seo.php';
 
 $articles = require __DIR__ . '/articles.php';
 $base = FULL_BASE_PATH;
@@ -24,6 +25,16 @@ if (!isset($articles[$slug])) {
 }
 
 $article = $articles[$slug];
+
+// What each article is about and what it mentions, as Wikidata-linked entities
+// (see seo_wikidata() in views/includes/seo.php for how the ids were checked).
+$entities = [
+    'how-it-works'           => ['about' => ['chess_engine'],        'mentions' => ['stockfish', 'webassembly', 'web_worker', 'javascript', 'php']],
+    'search-and-evaluation'  => ['about' => ['alpha_beta'],          'mentions' => ['chess_engine', 'negamax', 'transposition_table']],
+    'machine-learning'       => ['about' => ['chess_engine'],        'mentions' => ['logistic_regression', 'knn', 'bandit']],
+    'stockfish-webassembly'  => ['about' => ['stockfish'],           'mentions' => ['webassembly', 'web_worker', 'uci']],
+    'difficulty-levels'      => ['about' => ['chess_engine'],        'mentions' => ['stockfish', 'uci']],
+][$slug] ?? ['about' => ['chess_engine'], 'mentions' => []];
 $render = static fn(string $html): string => str_replace('{{base}}', $base, $html);
 $url = $origin . '/chessko/' . $slug;
 
@@ -49,8 +60,9 @@ $graph = [
         'timeRequired' => 'PT' . $minutes . 'M',
         'inLanguage' => 'en',
         'articleSection' => 'Chess engines',
-        'about' => ['@type' => 'Thing', 'name' => 'Chess engine'],
-        'isPartOf' => ['@type' => 'WebApplication', 'name' => 'Chessko', 'url' => $origin . '/chessko'],
+        'about' => seo_things($entities['about']),
+        'mentions' => seo_things($entities['mentions']),
+        'isPartOf' => ['@type' => 'WebApplication', '@id' => $origin . '/chessko#app', 'name' => 'Chessko', 'url' => $origin . '/chessko'],
         'author' => ['@type' => 'Person', 'name' => 'Yunus Emre Vurgun', 'url' => $origin . '/about'],
         'publisher' => ['@type' => 'Person', 'name' => 'Yunus Emre Vurgun', 'url' => $origin . '/about'],
     ],
@@ -58,9 +70,8 @@ $graph = [
         '@type' => 'BreadcrumbList',
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => $origin . '/'],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'More', 'item' => $origin . '/more'],
-            ['@type' => 'ListItem', 'position' => 3, 'name' => 'Chessko', 'item' => $origin . '/chessko'],
-            ['@type' => 'ListItem', 'position' => 4, 'name' => $article['title'], 'item' => $url],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Chessko', 'item' => $origin . '/chessko'],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $article['title'], 'item' => $url],
         ],
     ],
 ];
@@ -98,7 +109,6 @@ $others = array_diff_key($articles, [$slug => true]);
         <nav class="ck-crumbs" aria-label="Breadcrumb">
             <ol>
                 <li><a href="<?= $base ?>">Home</a></li>
-                <li><a href="<?= $base ?>more">More</a></li>
                 <li><a href="<?= $base ?>chessko">Chessko</a></li>
                 <li aria-current="page"><?= htmlspecialchars($article['title']) ?></li>
             </ol>

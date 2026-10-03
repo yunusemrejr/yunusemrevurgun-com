@@ -31,10 +31,23 @@ for path in ['/404','/not-a-real-page','/blog/not-a-real-post','/slop/not-a-real
  status,_,html=get(path);assert status==404,(path,status);assert 'noindex,follow' in html,path;checks+=1
 for path in ['/sitemap.xml','/blog.xml','/updates.xml','/rmrp.xml']:
  status,_,xml=get(path);assert status==200,(path,status);ET.fromstring(xml);checks+=1
+# Faceted variants (layout toggle, page size) are noindex,follow with a self-referencing
+# canonical; tracking parameters are not facets and keep consolidating to the clean URL.
 _,_,html=get('/updates?page=2&view=list&utm_source=test');p=Page();p.feed(html)
-assert p.canonical==[base+'/updates?page=2'],p.canonical;checks+=1
+assert p.canonical==[base+'/updates?view=list&page=2'],p.canonical;checks+=1
+assert p.robots==['noindex,follow'],p.robots;checks+=1
 _,_,html=get('/updates?per=20&page=2');p=Page();p.feed(html)
 assert p.canonical==[base+'/updates?per=20&page=2'],p.canonical;checks+=1
+assert p.robots==['noindex,follow'],p.robots;checks+=1
+_,_,html=get('/updates?page=2&utm_source=test');p=Page();p.feed(html)
+assert p.canonical==[base+'/updates?page=2'],p.canonical;checks+=1
+assert p.robots and p.robots[0].startswith('index,follow'),p.robots;checks+=1
+# New documentation pages: 200, one canonical, indexable, valid JSON-LD with Wikidata entities.
+for path in ['/downloads/dataclean','/downloads/finny','/downloads/pocketharness','/downloads/yunuspi','/downloads/onehour','/downloads/minispaceshooter','/downloads/self-improving-rat','/yunobot/how-it-works','/yunobot/does-it-send-my-messages','/gemmaclaim/how-it-works','/gemmaclaim/example-output','/jelloshop/cat-brain']:
+ status,_,html=get(path);assert status==200,(path,status)
+ p=Page();p.feed(html);assert p.canonical==[base+path],(path,p.canonical);assert p.robots and p.robots[0].startswith('index,follow'),(path,p.robots);assert p.tags.get('h1')==1,(path,p.tags.get('h1'))
+ assert 'wikidata.org/wiki/Q' in html,path;checks+=3
+status,_,_=get('/downloads/not-an-app');assert status==404,status;checks+=1
 status,_,_=get('/api/admin/regenerate-sitemap.php',b'csrf_token=invalid');assert status in (401,403),status;checks+=1
 # Contact form gates: a POST that fails CSRF must not reach the mailer. The
 # rendered page proves it -- a send attempt overwrites the CSRF error with the

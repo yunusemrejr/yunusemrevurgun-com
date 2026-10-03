@@ -304,6 +304,15 @@ class Router {
             return;
         }
 
+        // Documentation pages inside a project's topic cluster: downloads/<app>,
+        // yunobot/<topic>, gemmaclaim/<topic>, jelloshop/<topic>. The registry in
+        // views/docs/pages.php decides which slugs exist; the view answers 404 for
+        // any other.
+        if (preg_match('#^(?:downloads|yunobot|gemmaclaim|jelloshop)/[a-z0-9-]+$#', $url)) {
+            require_once dirname(__DIR__) . '/views/docs/page.php';
+            return;
+        }
+
         // Route to appropriate page FIRST (before including header/footer)
         // Handle admin pages early to prevent header/footer inclusion
         if (array_key_exists($url, $this->routes)) {

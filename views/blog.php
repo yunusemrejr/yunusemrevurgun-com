@@ -28,8 +28,8 @@ if ($totalPages > 1) {
 }
 
 ui_render_head(
-    'Blog' . ($currentPage > 1 ? ' — Page ' . $currentPage : '') . ' | Yunus Emre Vurgun',
-    'Long-form notes, architecture logs, and technical writing by Yunus Emre Vurgun (Yemre, YEV).',
+    'Blog' . ($currentPage > 1 ? ' (Page ' . $currentPage . ')' : '') . ': Long-Form Notes on AI and Software Architecture',
+    'Long-form notes by Yunus Emre Vurgun (Yemre, YEV) on AI capability trends, model releases, free internet access, software architecture and post-code engineering.',
     $pageMeta
 );
 ?>

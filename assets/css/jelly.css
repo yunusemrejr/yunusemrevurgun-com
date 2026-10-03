@@ -1607,3 +1607,9 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   .is-deck > figure.is-flipping,
   .is-deck > figure.is-flipping::before { animation: none; }
 }
+
+/* A site-index card without the numbered badge: one column, title over description.
+   Higher specificity than the two-column rules above, so source order does not matter. */
+.ui-more-card.ui-more-card--plain {
+  grid-template-columns: minmax(0, 1fr);
+}

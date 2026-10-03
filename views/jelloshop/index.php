@@ -7,6 +7,7 @@
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/models/Socials.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
+require_once dirname(__DIR__, 2) . '/views/includes/seo.php';
 
 $base = FULL_BASE_PATH;
 $origin = rtrim(FULL_BASE_PATH, '/');
@@ -26,8 +27,8 @@ foreach ($modules as $m) {
 $appCss = dirname(__DIR__, 2) . '/assets/css/jelloshop.css';
 $modified = date('c', max(filemtime(__FILE__), $jsNewest, (int)@filemtime($appCss)));
 
-$title = 'Jello Shop: Walk Jell-omo Around a Cozy Coffee Shop in Your Browser';
-$description = 'A small, calm browser game: walk Jell-omo, a 3D jelly in a baseball cap, around a hand-drawn coffee shop, collect coffee beans, pet the cat, watch the storm, and listen to the lo-fi shop music. Runs entirely in your browser, on desktop and mobile.';
+$title = 'Cozy Coffee Shop Browser Game – Jello Shop, Nothing to Install';
+$description = 'A calm browser game: walk Jell-omo, a 3D jelly in a baseball cap, around a hand-drawn coffee shop, collect beans and pet a cat run by a tiny neural network.';
 
 $faq = [
     ['What is Jello Shop?', 'It is a tiny cosy room: a hand-drawn coffee shop with a rainy window, a fireplace, a striped rug and a sleeping cat. Jell-omo, the jelly mascot of this site, lives in it, and you tell him where to go by clicking the floor.'],
@@ -69,6 +70,8 @@ $schemaGraph = [
             ],
             'author' => ['@type' => 'Person', 'name' => 'Yunus Emre Vurgun', 'url' => $origin . '/about'],
             'dateModified' => $modified,
+            'mentions' => seo_things(['gru', 'evolution_strategy']),
+            'subjectOf' => ['@type' => 'TechArticle', 'name' => 'How Jello Shop\'s cat decides what to do', 'url' => $origin . '/jelloshop/cat-brain'],
         ],
         [
             '@type' => 'FAQPage',
@@ -164,6 +167,11 @@ ui_render_head($title, $description, [
             <p><strong>The room</strong> is painted the way Club Penguin painted its rooms: a wide back wall, narrow side walls, a floor that opens towards you, flat saturated colour with one shade and one highlight, and dark warm outlines that wobble like they were inked by hand. Jell-omo walks in a handful of depth lanes, and every piece of furniture is sorted back to front so he can pass behind a plant and in front of an armchair. The rain, the lightning, the fire, the string lights and the steam are drawn live over the top.</p>
             <p><strong>Jell-omo</strong> is a real 3D model, not a picture. A small WebGL shader ray-marches a fluted jelly and a felt baseball cap every frame, shades the jelly as translucent and glossy, and hands the result to the room as a sprite. That is what lets him turn to face the way he walks, lean into it, squash when he lands and wobble when he stops.</p>
             <p><strong>The music</strong> is a small band playing an eight-bar loop at 78 beats a minute: an electric piano, an upright bass, a vibraphone melody and brushed drums, with rain and a crackling fire under it. It changes a little every time round. All of it, and the sound effects, is synthesised with the Web Audio API — there are no audio files.</p>
+        </section>
+
+        <section class="js-section" aria-labelledby="js-cat">
+            <h2 id="js-cat">How the cat decides what to do</h2>
+            <p>Nobody scripted the cat. A gated recurrent unit with 12 hidden units and 1,194 weights, 4,776 bytes in all, reads 18 numbers twice a second and chooses between sleeping, sitting, walking and grooming. It was trained offline with evolution strategies and only runs forward in your browser. <a href="<?= $base ?>jelloshop/cat-brain">The inputs, the outputs and the training are laid out here</a>.</p>
         </section>
 
         <section class="js-section" aria-labelledby="js-faq">

@@ -8,8 +8,8 @@ $videos = new Videos();
 $videoList = $videos->getAllVideos(false);
 
 ui_render_head(
-    'Videos | Yunus Emre Vurgun',
-    'Video collection — uploads, YouTube embeds, and Odysee clips.',
+    'Videos – Uploads, YouTube and Odysee Clips | Yunus Emre Vurgun',
+    'Videos by Yunus Emre Vurgun: direct uploads plus YouTube and Odysee clips. External embeds load only when you press play.',
     [ui_collection_schema('Videos', 'videos', array_column($videoList, 'title'), array_map(fn($item) => 'video-' . $item['id'], $videoList))]
 );
 ?>
@@ -46,7 +46,7 @@ ui_render_head(
                                 <div class="ui-video-embed-container">
                                     <div class="ui-video-embed" data-embed-url="<?= htmlspecialchars($embedUrl) ?>">
                                         <?php if (!empty($video['thumbnail_url'])): ?>
-                                            <img src="<?= htmlspecialchars($video['thumbnail_url']) ?>" alt="" class="ui-video-thumb" loading="lazy">
+                                            <img src="<?= htmlspecialchars($video['thumbnail_url']) ?>" alt="" class="ui-video-thumb"<?= str_starts_with((string)$video['thumbnail_url'], 'https://img.youtube.com/') ? ' width="480" height="360"' : ui_image_size_attrs(preg_replace('#^' . preg_quote(FULL_BASE_PATH, '#') . '#', '', (string)$video['thumbnail_url'])) ?> loading="lazy" decoding="async">
                                         <?php else: ?>
                                             <div class="ui-video-placeholder">
                                                 <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" opacity="0.4"><path d="M8 5v14l11-7z"/></svg>

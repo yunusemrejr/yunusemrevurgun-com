@@ -78,10 +78,21 @@ $homeSchema = [
     ],
 ];
 
+// The masthead mascot is the largest element on first paint. It is offered in four
+// widths (it renders 246 px wide on phones, 409 px on desktop) and preloaded with
+// the same srcset, so the browser fetches the right file as early as possible.
+$mascotDir = dirname(__DIR__) . '/assets/images/';
+$mascotSrcset = implode(', ', array_map(
+    static fn(string $file, int $w): string => FULL_BASE_PATH . 'assets/images/' . $file . '?v=' . (@filemtime(dirname(__DIR__) . '/assets/images/' . $file) ?: 1) . ' ' . $w . 'w',
+    ['mascot-320.webp', 'mascot-480.webp', 'mascot-640.webp', 'mascot.webp'], [320, 480, 640, 800]
+));
+$mascotSizes = '(max-width: 900px) 246px, 409px';
+
 ui_render_head(
     'Yunus Emre Vurgun (Yemre) — Software Developer & IT Specialist',
     'Yunus Emre Vurgun (Yemre), software developer and IT specialist in Istanbul. Explore projects, writing, and work in AI/ML and operational technology.',
     [
+        'lcp_image' => ['src' => FULL_BASE_PATH . 'assets/images/mascot.webp', 'srcset' => $mascotSrcset, 'sizes' => $mascotSizes],
         '<meta name="author" content="Yunus Emre Vurgun">',
         '<meta name="keywords" content="Yunus Emre Vurgun, Yemre, YEV, yunusemrejr, Yemrevu, software developer, developer, IT specialist, computational intelligence, operational technology">',
         '<meta property="og:description" content="A new form of intelligence is emerging. They say you\'re the average of the five people you spend the most time with. I\'m carefully curating mine.">',
@@ -125,7 +136,7 @@ ui_render_head(
             </nav>
         </div>
         <figure class="ui-masthead-figure">
-            <img class="ui-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot.webp" width="800" height="800" decoding="async" fetchpriority="high"
+            <img class="ui-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot.webp" srcset="<?= htmlspecialchars($mascotSrcset) ?>" sizes="<?= $mascotSizes ?>" width="800" height="800" decoding="async" fetchpriority="high"
                  alt="Jell-omo, the site's mascot: a glossy red jelly wearing a navy and cream baseball cap, eyes closed in a contented smile.">
             <figcaption class="ui-masthead-caption">
                 <span>Jell-omo, the mascot. Poke it.</span>
@@ -184,6 +195,27 @@ ui_render_head(
                 <span class="ui-more-icon" aria-hidden="true">04</span>
                 <h3 class="ui-more-title">About &amp; CV</h3>
                 <p class="ui-more-desc">Education, work history at ASP Otomasyon A.Ş., certifications, and where to reach me.</p>
+            </a>
+        </div>
+    </section>
+    <section class="ui-section">
+        <h2 class="ui-brief-title">Projects you can run</h2>
+        <div class="ui-more-grid">
+            <a class="ui-more-card ui-more-card--plain" href="<?= FULL_BASE_PATH ?>chessko">
+                <h3 class="ui-more-title">Chessko</h3>
+                <p class="ui-more-desc">Chess against Stockfish 19 compiled to WebAssembly, or a home-grown engine that wobbles on purpose. Seven levels, no sign-up.</p>
+            </a>
+            <a class="ui-more-card ui-more-card--plain" href="<?= FULL_BASE_PATH ?>gemmaclaim">
+                <h3 class="ui-more-title">Claim Splitter</h3>
+                <p class="ui-more-desc">Paste a claim and a 270M-parameter model, running in your browser, lists its premises and hidden assumptions.</p>
+            </a>
+            <a class="ui-more-card ui-more-card--plain" href="<?= FULL_BASE_PATH ?>jelloshop">
+                <h3 class="ui-more-title">Jello Shop</h3>
+                <p class="ui-more-desc">A calm coffee-shop game with a cat whose behaviour comes from a 1,194-weight neural network.</p>
+            </a>
+            <a class="ui-more-card ui-more-card--plain" href="<?= FULL_BASE_PATH ?>downloads">
+                <h3 class="ui-more-title">Open-source downloads</h3>
+                <p class="ui-more-desc">Seven Linux games, tools and coding agents, each with its requirements, how to run it and a GitHub link.</p>
             </a>
         </div>
     </section>

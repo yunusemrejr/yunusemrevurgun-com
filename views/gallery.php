@@ -69,7 +69,7 @@ ui_render_head(
                                         $title = (string) ($image['title'] ?? 'Untitled');
                                         ?>
                                         <figure class="ui-slideshow-slide" data-title="<?= htmlspecialchars($title) ?>">
-                                            <img class="ui-slideshow-image" src="<?= htmlspecialchars($imageSrc) ?>" alt="<?= htmlspecialchars($title) ?>" loading="<?= $i === 0 ? 'eager' : 'lazy' ?>">
+                                            <img class="ui-slideshow-image" src="<?= htmlspecialchars($imageSrc) ?>"<?= ui_image_size_attrs('uploads/gallery/' . ltrim((string)($image['filename'] ?? ''), '/')) ?> alt="<?= htmlspecialchars($title) ?>" loading="<?= $i === 0 ? 'eager' : 'lazy' ?>" decoding="async">
                                         </figure>
                                     <?php endforeach; ?>
                                 </div>
@@ -111,7 +111,7 @@ ui_render_head(
                                         $title = (string) ($image['title'] ?? 'Untitled');
                                         ?>
                                         <figure class="ui-slideshow-slide" data-title="<?= htmlspecialchars($title) ?>">
-                                            <img class="ui-slideshow-image" src="<?= htmlspecialchars($imageSrc) ?>" alt="<?= htmlspecialchars($title) ?>" loading="<?= $i === 0 ? 'eager' : 'lazy' ?>">
+                                            <img class="ui-slideshow-image" src="<?= htmlspecialchars($imageSrc) ?>"<?= ui_image_size_attrs('uploads/gallery/' . ltrim((string)($image['filename'] ?? ''), '/')) ?> alt="<?= htmlspecialchars($title) ?>" loading="<?= $i === 0 ? 'eager' : 'lazy' ?>" decoding="async">
                                         </figure>
                                     <?php endforeach; ?>
                                 </div>

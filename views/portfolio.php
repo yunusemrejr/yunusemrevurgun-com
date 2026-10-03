@@ -14,9 +14,11 @@ foreach ($projects as $project) {
 $years = array_unique($years); rsort($years);
 $categories = array_unique($categories); sort($categories);
 
+require_once __DIR__ . '/includes/collection.php';
 ui_render_head(
-    'Portfolio — Work | Yunus Emre Vurgun, Developer',
-    'Project archive by Yunus Emre Vurgun (Yemre, yunusemrejr) — development work across AI/ML, operational technology, and systems architecture.'
+    'Software Developer Portfolio – AI/ML, OT and Web Projects',
+    'Project archive by Yunus Emre Vurgun (Yemre): AI/ML, operational technology, industrial automation and web projects, each with the technologies it uses.',
+    $projects ? [ui_collection_schema('Portfolio', 'portfolio', array_column($projects, 'title'), array_map(static fn($p) => 'project-' . (int)$p['id'], $projects))] : []
 );
 ?>
 <body>
@@ -26,7 +28,7 @@ ui_render_head(
     <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Archive</p>
-            <h1 class="ui-section-title">Project Archive</h1>
+            <h1 class="ui-section-title">Software developer portfolio: project archive</h1>
             <p class="ui-section-text">Chronological showcase of work spanning AI/ML systems, operational technology, and architecture projects.</p>
         </section>
 
@@ -58,7 +60,7 @@ ui_render_head(
                         ?>
                         <article id="project-<?= (int)$project['id'] ?>" class="ui-project-card" data-year="<?= htmlspecialchars($year) ?>" data-featured="<?= $isFeatured ?>" data-tags="<?= htmlspecialchars($tagsRaw) ?>" data-category="<?= htmlspecialchars($project['category'] ?? '') ?>">
                             <?php if (!empty($project['image'])): ?>
-                                <img class="ui-media" loading="lazy" decoding="async" src="<?= FULL_BASE_PATH . htmlspecialchars($project['image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>">
+                                <img class="ui-media" loading="lazy" decoding="async" src="<?= FULL_BASE_PATH . htmlspecialchars($project['image']) ?>"<?= ui_image_size_attrs($project['image']) ?> alt="<?= htmlspecialchars($project['title']) ?>">
                             <?php endif; ?>
                             <h2 class="ui-project-title"><a href="#project-<?= (int)$project['id'] ?>"><?= htmlspecialchars($project['title']) ?></a></h2>
                             <?php

@@ -1,0 +1,307 @@
+/* Documentation pages: /downloads/<app>, /yunobot/<topic>, /gemmaclaim/<topic>,
+   /jelloshop/<topic>. One reading column with the direct answer and the key facts
+   first, then the detail. Built on the site's jelly tokens and the existing
+   .ui-btn / .ui-rich-content components; nothing here restyles them. */
+
+.dx-page {
+  max-width: 1040px;
+}
+
+.dx-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-tertiary);
+}
+.dx-crumbs li + li::before {
+  content: "/";
+  margin-right: var(--space-2);
+  color: var(--color-text-disabled);
+}
+.dx-crumbs a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+.dx-crumbs a:hover,
+.dx-crumbs a:focus-visible {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.dx-head {
+  max-width: 70ch;
+  margin-bottom: var(--space-6);
+}
+.dx-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.8vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+.dx-meta {
+  margin: 0;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-tertiary);
+}
+
+/* The answer panel: the first thing under the title, so the page answers its own
+   question before any scrolling. */
+.dx-answer {
+  display: grid;
+  gap: var(--space-5);
+  max-width: 76ch;
+  margin: 0 0 var(--space-8);
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-bg-card);
+  border: var(--figure-border, 1px solid var(--color-border));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+.dx-answer > p {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-text-primary);
+}
+.dx-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr));
+  gap: var(--space-3) var(--space-6);
+  margin: 0;
+}
+.dx-facts > div {
+  min-width: 0;
+}
+.dx-facts dt {
+  font-size: var(--text-xs, 0.75rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+.dx-facts dd {
+  margin: 2px 0 0;
+  line-height: 1.5;
+  color: var(--color-ink-body);
+  overflow-wrap: break-word;
+}
+.dx-facts ul {
+  margin: 0;
+  padding-left: 1.1em;
+  list-style: disc;
+}
+.dx-facts li + li {
+  margin-top: 2px;
+}
+.dx-facts code {
+  font-size: 0.9em;
+}
+.dx-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Cover image: dimensions are attributes on the <img>, so the box is reserved
+   before the file arrives and nothing shifts. */
+.dx-figure {
+  margin: 0 0 var(--space-8);
+  max-width: 760px;
+}
+.dx-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: var(--figure-border, 1px solid var(--color-border));
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-card);
+}
+.dx-figure figcaption {
+  margin-top: var(--space-2);
+  font-size: var(--text-xs, 0.75rem);
+  line-height: 1.5;
+  color: var(--color-text-tertiary);
+}
+
+.dx-toc {
+  max-width: 72ch;
+  margin: 0 0 var(--space-8);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+}
+.dx-toc-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs, 0.75rem);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.dx-toc ol {
+  margin: 0;
+  padding-left: 1.3em;
+}
+.dx-toc li {
+  margin: 4px 0;
+}
+.dx-toc a {
+  color: var(--color-ink-body);
+}
+.dx-toc a:hover,
+.dx-toc a:focus-visible {
+  color: var(--color-accent-hover);
+}
+
+.dx-body {
+  max-width: 72ch;
+}
+.dx-body section {
+  scroll-margin-top: calc(var(--navbar-height, 64px) + var(--space-4));
+}
+.dx-body h2,
+.dx-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-4);
+}
+.dx-body table {
+  width: 100%;
+  margin: 0 0 var(--space-6);
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  display: block;
+  overflow-x: auto;
+}
+.dx-body th,
+.dx-body td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+.dx-body th {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.dx-body pre {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4);
+  overflow-x: auto;
+  background: var(--color-bg-dark);
+  border: 1px solid var(--color-border);
+  line-height: 1.55;
+  font-size: 0.875rem;
+}
+.dx-body pre code {
+  background: none;
+  padding: 0;
+}
+.dx-body blockquote {
+  margin: 0 0 var(--space-6);
+  padding: 0 0 0 var(--space-4);
+  border-left: 2px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.dx-section {
+  max-width: 76ch;
+  margin: var(--space-12) 0 0;
+}
+.dx-faq {
+  margin: 0;
+}
+.dx-faq > div {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.dx-faq dt {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.dx-faq dd {
+  margin: var(--space-2) 0 0;
+  line-height: 1.65;
+  color: var(--color-ink-body);
+}
+
+.dx-links {
+  display: grid;
+  gap: 0;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--color-border);
+}
+.dx-links li {
+  border-bottom: 1px solid var(--color-border);
+}
+.dx-links a {
+  display: block;
+  padding: var(--space-4) 0;
+  text-decoration: none;
+  color: inherit;
+}
+.dx-links-title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--color-text-primary);
+}
+.dx-links-desc {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+.dx-links a:hover .dx-links-title,
+.dx-links a:focus-visible .dx-links-title {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+/* The same blocks sit under the tool on the hub pages (/yunobot, /gemmaclaim,
+   /jelloshop), which have their own page width. */
+.dx-hub-section {
+  max-width: 76ch;
+  margin: var(--space-12) auto 0;
+  padding: 0 var(--space-4);
+}
+.dx-hub-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-4);
+}
+.dx-hub-section p {
+  line-height: 1.7;
+  color: var(--color-ink-body);
+}
+/* Links inside running text are underlined: colour alone does not mark them. */
+.dx-hub-section p a,
+.dx-body p a,
+.dx-body li a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+@media (max-width: 640px) {
+  .dx-answer {
+    padding: var(--space-4);
+  }
+  .dx-body table {
+    font-size: 0.875rem;
+  }
+}

@@ -2,7 +2,7 @@
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 
-ui_render_head('Terms of Use', 'Terms for using yunusemrevurgun.com');
+ui_render_head('Terms of Use | Yunus Emre Vurgun', 'Terms of use for yunusemrevurgun.com: agreement by use, protection of site content, media and code, and the as-is limitation of liability.');
 ?>
 <body>
 <div class="ui-page">
@@ -11,7 +11,7 @@ ui_render_head('Terms of Use', 'Terms for using yunusemrevurgun.com');
         <section class="ui-section">
             <p class="ui-eyebrow">Legal</p>
             <h1 class="ui-section-title">Terms of Use</h1>
-            <p class="ui-section-text">Last updated: <?= date('F d, Y') ?></p>
+            <p class="ui-section-text">Last updated: <?= date('F j, Y', (int)filemtime(__FILE__)) ?></p>
         </section>
         <section class="ui-section">
             <article class="ui-rich-content">

@@ -4,6 +4,7 @@
 Source:  assets/images/brand/mascot-source.png   (jelly + cap on flat #69B0F9)
 Outputs: assets/images/mascot.png|.webp          transparent cutout, 800px
          assets/images/mascot-160.png|.webp      navbar / avatar size
+         assets/images/mascot-320|480|640.webp   responsive steps for the homepage srcset
          assets/images/favicon.svg               transparent, embeds a 96px cutout
          assets/images/favicon-32.png, /favicon.ico (16/32/48, transparent)
          assets/images/apple-touch-icon.png      180px on the brand blue (iOS fills alpha black)
@@ -77,6 +78,12 @@ def main():
         m = sized(roomy, n)
         m.save(IMG / f"{name}.png", optimize=True)
         m.save(IMG / f"{name}.webp", quality=90, method=6)
+
+    # Responsive steps for the homepage's masthead image (srcset): it is shown at
+    # most ~320 CSS px wide on phones, so the 800px file is only needed on dense
+    # or wide screens. WebP only; the page falls back to mascot.webp.
+    for n in (320, 480, 640):
+        sized(roomy, n).save(IMG / f"mascot-{n}.webp", quality=90, method=6)
 
     f96 = sized(tight, 96)
     buf = io.BytesIO(); f96.save(buf, "PNG", optimize=True)

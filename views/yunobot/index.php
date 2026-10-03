@@ -1,12 +1,57 @@
 <?php
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
+require_once dirname(__DIR__, 2) . '/views/includes/seo.php';
 
-ui_render_head(
-    'YunoBot | Yunus Emre Vurgun',
-    'Ask YunoBot about Yunus Emre Vurgun, his projects and writing. Local WebAssembly inference, source-linked answers, and English, Turkish or mixed-language conversation.',
-    ['yunobot' => true]
-);
+$origin = seo_origin();
+$pageUrl = $origin . '/yunobot';
+$title = 'On-Device Chatbot Without an LLM – YunoBot Runs in Your Browser';
+$description = 'YunoBot is an on-device chatbot without an LLM: a C++/WebAssembly core answers in English or Turkish in your browser and links its sources.';
+
+// Every answer here is visible on the page (the first two as the paragraphs under
+// their headings), and the figures are the ones documented in /yunobot/how-it-works.
+$faq = [
+    ['How does YunoBot work without a language model?', 'A C++ core compiled to a 913,776-byte WebAssembly module turns your message into hashed word and character features, scores 82 conversational intents with a 96-unit neural layer (401,363 parameters) and, for factual questions, ranks passages from this site with BM25-style term weights. It selects, composes or quotes replies; it does not generate free text.'],
+    ['Does YunoBot send my messages to a server?', 'In a network test on 3 October 2026, no request made while loading the page or chatting contained any word of the test message. The reply is computed by a WebAssembly module inside the page. The site\'s analytics tags still load on every page.'],
+    ['Which languages does YunoBot understand?', 'English, Turkish and mixed-language messages.'],
+    ['What can I ask it?', 'Questions about this site\'s projects, writing, background and places, plus light small talk. When nothing matches well, it says it is not sure instead of guessing.'],
+    ['How big is the download?', 'The WebAssembly core is 913,776 bytes and the bundled source pack is 405,655 bytes. Both are fetched when the page loads, and the service worker can keep them for offline use.'],
+];
+
+ui_render_head($title, $description, [
+    'yunobot' => true,
+    'docs' => true,
+    seo_script([
+        [
+            '@type' => 'WebApplication',
+            '@id' => $pageUrl . '#app',
+            'name' => 'YunoBot',
+            'url' => $pageUrl,
+            'description' => $description,
+            'applicationCategory' => 'UtilitiesApplication',
+            'operatingSystem' => 'Any (modern web browser)',
+            'browserRequirements' => 'Requires JavaScript and WebAssembly',
+            'isAccessibleForFree' => true,
+            'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'USD'],
+            'inLanguage' => ['en', 'tr'],
+            'featureList' => [
+                'C++ core compiled to WebAssembly, running in a Web Worker',
+                'Intent classifier with 401,363 parameters and a confidence gate',
+                'BM25-style retrieval over this site\'s public pages, with source links',
+                'English, Turkish and mixed-language conversation',
+            ],
+            'author' => seo_person(),
+            'about' => seo_things(['chatbot', 'nlp']),
+            'mentions' => seo_things(['webassembly', 'cpp', 'ann', 'bm25', 'web_worker']),
+            'subjectOf' => [
+                ['@type' => 'TechArticle', 'name' => 'How a chatbot without an LLM works', 'url' => $pageUrl . '/how-it-works'],
+                ['@type' => 'TechArticle', 'name' => 'Does YunoBot send your messages anywhere?', 'url' => $pageUrl . '/does-it-send-my-messages'],
+            ],
+        ],
+        seo_breadcrumbs([['Home', $origin . '/'], ['YunoBot', $pageUrl]]),
+        seo_faq($faq),
+    ]),
+]);
 ?>
 <body class="ui-yunobot-page">
 <div class="ui-page">
@@ -15,8 +60,8 @@ ui_render_head(
     <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">AI Assistant</p>
-            <h1 class="ui-section-title">YunoBot</h1>
-            <p class="ui-section-text">Say hello, ask about my work, or explore a project or journal topic. English, Türkçe, or a bit of both — YunoBot runs locally and links the sources behind its site answers.</p>
+            <h1 class="ui-section-title">YunoBot: an on-device chatbot without an LLM</h1>
+            <p class="ui-section-text">YunoBot runs in your browser with no language model: a C++ core compiled to WebAssembly classifies your question and answers by quoting the matching passage from this site, in English, Turkish or both. In a network test, none of a message's text left the page. Say hello, ask about my work, or explore a project or journal topic, and follow the source links.</p>
         </section>
 
         <section class="ui-section ui-yunobot-workspace" aria-label="Ask YunoBot">
@@ -82,6 +127,25 @@ ui_render_head(
                 <?php ui_render_ebook_line('yunobot', true); ?>
                 <details><summary>How it works &amp; privacy</summary><p>A C++ WebAssembly core classifies questions, searches public sources and keeps conversation context. Casual replies use reviewed sentence parts; factual answers quote or link their sources. It can still misunderstand a question.</p><p>The model and public source index load with the page. Chat messages stay in browser memory and are not sent to an AI service. Source links open the relevant page.</p></details>
             </aside>
+        </section>
+
+        <section class="ui-section dx-hub-section" aria-labelledby="yb-how">
+            <h2 id="yb-how"><?= htmlspecialchars($faq[0][0]) ?></h2>
+            <p><?= htmlspecialchars($faq[0][1]) ?> <a href="<?= FULL_BASE_PATH ?>yunobot/how-it-works">How it works, with its measured accuracy</a>.</p>
+        </section>
+
+        <section class="ui-section dx-hub-section" aria-labelledby="yb-privacy">
+            <h2 id="yb-privacy"><?= htmlspecialchars($faq[1][0]) ?></h2>
+            <p><?= htmlspecialchars($faq[1][1]) ?> <a href="<?= FULL_BASE_PATH ?>yunobot/does-it-send-my-messages">The test, and how to repeat it yourself</a>.</p>
+        </section>
+
+        <section class="ui-section dx-hub-section" aria-labelledby="yb-faq">
+            <h2 id="yb-faq">More quick answers</h2>
+            <dl class="dx-faq">
+                <?php foreach (array_slice($faq, 2) as [$q, $a]): ?>
+                <div><dt><?= htmlspecialchars($q) ?></dt><dd><?= htmlspecialchars($a) ?></dd></div>
+                <?php endforeach; ?>
+            </dl>
         </section>
     </main>
 

@@ -2,7 +2,7 @@
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
 
-ui_render_head('Cookie Policy', 'Cookie policy for yunusemrevurgun.com');
+ui_render_head('Cookie Policy | Yunus Emre Vurgun', 'Cookie policy for yunusemrevurgun.com: essential session and CSRF cookies, optional third-party resources that may set their own, and how to control cookies.');
 ?>
 <body>
 <div class="ui-page">
@@ -11,7 +11,7 @@ ui_render_head('Cookie Policy', 'Cookie policy for yunusemrevurgun.com');
         <section class="ui-section">
             <p class="ui-eyebrow">Legal</p>
             <h1 class="ui-section-title">Cookie Policy</h1>
-            <p class="ui-section-text">Last updated: <?= date('F d, Y') ?></p>
+            <p class="ui-section-text">Last updated: <?= date('F j, Y', (int)filemtime(__FILE__)) ?></p>
         </section>
         <section class="ui-section">
             <article class="ui-rich-content">

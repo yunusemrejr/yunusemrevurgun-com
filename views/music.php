@@ -8,7 +8,7 @@ $music = new Music();
 $tracks = $music->getAllTracks(false);
 
 ui_render_head(
-    'Music | Yunus Emre Vurgun',
+    'Music – Audio Recordings by Yunus Emre Vurgun',
     'Listen to audio recordings shared by Yunus Emre Vurgun, with track details and links to music platforms.',
     ['music' => true, ui_collection_schema('Music', 'music', array_column($tracks, 'title'), array_map(fn($item) => 'track-' . $item['id'], $tracks))]
 );

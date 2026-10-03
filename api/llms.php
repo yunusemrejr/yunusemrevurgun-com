@@ -66,8 +66,11 @@ echo "  Personal website of Yunus Emre Vurgun, a software developer and IT speci
 echo "  at ASP Otomasyon A.Ş. in Istanbul, Turkey. Focus areas include computational\n";
 echo "  intelligence, operational technology (OT/ICS security), AI/ML systems,\n";
 echo "  industrial automation, and full-stack web development. The site features\n";
-echo "  a project portfolio, technical blog, photo gallery, travel map, and YunoBot\n";
-echo "  — a browser-based AI assistant running entirely client-side via Transformers.js.\n\n";
+echo "  a project portfolio, technical blog, photo gallery, travel map, and several\n";
+echo "  projects that run entirely in the browser: YunoBot (a chatbot without an LLM,\n";
+echo "  a C++ core compiled to WebAssembly), Claim Splitter (a 270M-parameter model run\n";
+echo "  by wllama), Chessko (chess against Stockfish compiled to WebAssembly) and\n";
+echo "  Jello Shop (a small game with a neural-network cat).\n\n";
 
 echo "expertise:\n";
 echo "- Software Development (PHP, JavaScript, TypeScript, Python)\n";
@@ -110,7 +113,33 @@ echo "- {$base}/slop\n";
 echo "- {$base}/comedy\n";
 echo "- {$base}/post-code\n";
 echo "- {$base}/science-corner\n";
-echo "- {$base}/search\n\n";
+echo "- {$base}/search\n";
+// Documentation pages under the project hubs, straight from the registry.
+$docRegistry = require $projectRoot . '/views/docs/pages.php';
+foreach (array_keys($docRegistry['pages']) as $docPath) {
+    echo "- {$base}/{$docPath}\n";
+}
+echo "\n";
+
+echo "topic_clusters:\n";
+echo "  note: Each cluster is a hub page plus documentation pages about that one project. Documentation pages are factual write-ups from the project's README, source code or a dated measurement; they are not journal entries.\n";
+foreach ($docRegistry['hubs'] as $hubKey => $hub) {
+    $spokes = array_filter($docRegistry['pages'], static fn(array $d): bool => $d['silo'] === $hubKey);
+    if (!$spokes) continue;
+    echo "  - hub: {$base}/{$hub['path']}\n";
+    echo "    name: {$hub['name']}\n";
+    echo "    pages:\n";
+    foreach ($spokes as $docPath => $doc) {
+        echo "    - {$base}/{$docPath}\n";
+    }
+}
+echo "  - hub: {$base}/chessko\n";
+echo "    name: Chessko\n";
+echo "    pages:\n";
+foreach (['how-it-works', 'search-and-evaluation', 'machine-learning', 'stockfish-webassembly', 'difficulty-levels'] as $ckSlug) {
+    echo "    - {$base}/chessko/{$ckSlug}\n";
+}
+echo "\n";
 
 echo "ai_crawler_guidance:\n";
 echo "  attribution:\n";
@@ -131,11 +160,11 @@ echo "    - Respect noindex directives in admin/api/config paths\n";
 echo "    - Blog posts include reading time and article schema\n\n";
 
 echo "technical_stack:\n";
-echo "  frontend: Vanilla JS, Three.js, Leaflet.js, Transformers.js\n";
+echo "  frontend: Vanilla JS, Leaflet.js, WebAssembly (a C++ core, Stockfish, llama.cpp through wllama), WebGL, Web Audio\n";
 echo "  backend: PHP (no framework), PDO/MySQL\n";
-echo "  ml: Browser-based semantic search (all-MiniLM-L6-v2), hybrid regex + embeddings\n";
-echo "  deployment: FTP sync to Namecheap shared hosting\n";
-echo "  pwa: Service workers, Web App Manifest\n\n";
+echo "  ml: on-device only; a C++/WebAssembly intent classifier with BM25-style retrieval (YunoBot), GemmaClaim-270M as a GGUF run by wllama (Claim Splitter), a 12-unit GRU (Jello Shop)\n";
+echo "  deployment: git push to Namecheap shared hosting (LiteSpeed) behind Cloudflare\n";
+echo "  pwa: Service worker for YunoBot, Web App Manifest\n\n";
 
 echo "social_profiles:\n";
 try {
@@ -162,6 +191,10 @@ echo "  - Person (author)\n";
 echo "  - WebSite (with SearchAction)\n";
 echo "  - WebPage\n";
 echo "  - BlogPosting\n";
+echo "  - WebApplication (YunoBot, Claim Splitter, Chessko, Jello Shop)\n";
+echo "  - SoftwareApplication and SoftwareSourceCode (each project under /downloads)\n";
+echo "  - TechArticle (project documentation, with about/mentions linked to Wikidata entities)\n";
+echo "  - FAQPage (questions that are also visible on the page)\n";
 echo "  - Organization\n";
 echo "  - BreadcrumbList\n";
 echo "  json_ld_endpoint: Inline in <head> of each page\n\n";

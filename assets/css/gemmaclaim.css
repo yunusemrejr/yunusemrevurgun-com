@@ -93,10 +93,11 @@
 .gc-title {
   margin: 0 0 12px;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 6vw, 3.25rem);
+  font-size: clamp(1.75rem, 4.6vw, 2.75rem);
   font-weight: 600;
-  line-height: 1.05;
+  line-height: 1.12;
   max-width: none;
+  text-wrap: balance;
 }
 .gc-lead {
   margin: 0 0 12px;
@@ -363,6 +364,25 @@
   margin: 0;
   color: var(--gc-text);
   line-height: 1.55;
+}
+/* Question-and-answer rows: the term is a full question, so stack it over the answer. */
+.gc-faq > div {
+  display: block;
+}
+.gc-faq dt {
+  margin-bottom: 4px;
+}
+.gc-more {
+  margin: 0;
+  padding-left: 1.2em;
+  line-height: 1.6;
+}
+.gc-more li + li {
+  margin-top: 8px;
+}
+.gc-more a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 .gc-note {
   margin: 20px 0 0;

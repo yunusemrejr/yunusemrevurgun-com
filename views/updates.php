@@ -132,6 +132,7 @@ ui_render_head($title, $description, $pageMeta);
                                 <img
                                     class="ui-update-avatar"
                                     src="<?= FULL_BASE_PATH ?>assets/images/pfp-avatar.webp"
+                                    width="192" height="192"
                                     alt="Yunus Emre Vurgun"
                                     loading="lazy"
                                 >

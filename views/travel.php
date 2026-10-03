@@ -73,8 +73,8 @@ $galleryImageBase = FULL_BASE_PATH . 'uploads/gallery/';
 // Travel presentation lives in the shared design system
 // (assets/css/ui-rebuild.css, TRAVEL PAGE section) — no page-level styles.
 ui_render_head(
-    'Travel | Yunus Emre Vurgun',
-    'Travel map and statistics from Istanbul headquarters.',
+    'Travel Map – Locations and Photos | Yunus Emre Vurgun',
+    'An interactive map of places Yunus Emre Vurgun has been, with location photos and travel statistics, starting from Istanbul.',
     [
         '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">',
     ]

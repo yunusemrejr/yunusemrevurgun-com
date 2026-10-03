@@ -3,7 +3,7 @@ require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
 
 ui_render_head(
-    'Comedy | Yunus Emre Vurgun',
+    'Shower Thoughts & Memes (@showerthoughtsamp) | Yunus Emre Vurgun',
     'Shower Thoughts & Memes by @showerthoughtsamp: find the Instagram and TikTok profiles and a small collection of animated memes.',
 );
 ?>

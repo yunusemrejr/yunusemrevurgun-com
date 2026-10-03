@@ -6,6 +6,7 @@
 require_once dirname(__DIR__, 2) . '/config/setPath.php';
 require_once dirname(__DIR__, 2) . '/models/Socials.php';
 require_once dirname(__DIR__, 2) . '/views/includes/ui.php';
+require_once dirname(__DIR__, 2) . '/views/includes/seo.php';
 
 $articles = require __DIR__ . '/articles.php';
 $base = FULL_BASE_PATH;
@@ -17,7 +18,7 @@ $apiUrl = $basePath . '/api/chessko';
 $appJs = dirname(__DIR__, 2) . '/assets/chessko/js/app.js';
 $modified = date('c', max(filemtime(__FILE__), filemtime(__DIR__ . '/articles.php'), (int)@filemtime($appJs)));
 
-$title = 'Chessko: Play Free Jelly Chess vs Stockfish in Your Browser';
+$title = 'Play Chess vs Stockfish in Your Browser – Chessko, No Sign-Up';
 $description = 'Play Chessko, a free browser chess game with wobbling jelly pieces. Seven levels, from a wobbly beginner bot to Stockfish 19 running as WebAssembly. No sign-up.';
 
 $faq = [
@@ -56,6 +57,8 @@ $schemaGraph = [
             ],
             'author' => ['@type' => 'Person', 'name' => 'Yunus Emre Vurgun', 'url' => $origin . '/about'],
             'dateModified' => $modified,
+            'about' => seo_things(['chess_engine', 'stockfish']),
+            'mentions' => seo_things(['webassembly', 'web_worker', 'alpha_beta', 'uci']),
         ],
         [
             '@type' => 'FAQPage',
