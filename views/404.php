@@ -23,26 +23,38 @@ ui_render_head('404 | Page Not Found', 'The page you requested was not found.', 
             </form>
             <div class="ui-more-grid">
                 <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>">
-                    <span class="ui-more-icon" aria-hidden="true">←</span>
+                    <span class="ui-more-icon" aria-hidden="true"><?= ui_icon('home') ?></span>
                     <h2 class="ui-more-title">Home</h2>
                     <p class="ui-more-desc">Who this is and what the site holds.</p>
                 </a>
                 <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>portfolio">
-                    <span class="ui-more-icon" aria-hidden="true">[]</span>
+                    <span class="ui-more-icon" aria-hidden="true"><?= ui_icon('archive') ?></span>
                     <h2 class="ui-more-title">Project archive</h2>
                     <p class="ui-more-desc">AI/ML, operational technology, industrial automation, web infrastructure.</p>
                 </a>
                 <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>blog">
-                    <span class="ui-more-icon" aria-hidden="true">¶</span>
+                    <span class="ui-more-icon" aria-hidden="true"><?= ui_icon('journal') ?></span>
                     <h2 class="ui-more-title">Journal</h2>
                     <p class="ui-more-desc">Long-form notes on AI, systems, and post-code engineering.</p>
                 </a>
                 <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>more">
-                    <span class="ui-more-icon" aria-hidden="true">+</span>
+                    <span class="ui-more-icon" aria-hidden="true"><?= ui_icon('grid') ?></span>
                     <h2 class="ui-more-title">Everything else</h2>
                     <p class="ui-more-desc">YunoBot, travel, gallery, music, videos, downloads, comedy, science corner.</p>
                 </a>
             </div>
+            <?php ui_render_figure([
+                'file' => 'rack-missing.svg',
+                'width' => 640,
+                'height' => 310,
+                'alt' => 'Illustration of the same control rack with its CPU module lifted out of its slot, hovering above on dashed alignment lines with its lamps dark; the signal tower shows a red lamp.',
+                'fig' => 'Fig. 404',
+                'title' => 'Part not found',
+                'hint' => 'Exploded view',
+                'note' => 'Red lamp: stopped',
+                'caption' => 'The page you asked for is not in its slot. The search box and the links above are the way back onto the rail.',
+                'class' => 'fig--split',
+            ]); ?>
             <?php ui_render_ebook_line('missing'); ?>
         </section>
     </main>

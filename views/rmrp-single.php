@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
+require_once __DIR__ . '/includes/seo.php';
 require_once dirname(__DIR__) . '/models/RichText.php';
 require_once dirname(__DIR__) . '/models/Rmrp.php';
 require_once __DIR__ . '/includes/visuals.php';
@@ -14,7 +15,7 @@ $memory = $GLOBALS['current_rmrp'];
 
 $title = ($memory['title'] ?? 'Memory') . ' — Yunus Emre Vurgun';
 $plainText = RichText::plainText($memory['description'] ?? '');
-$description = mb_substr($plainText, 0, 160);
+$description = seo_description($plainText, 155);
 $memoryUrl = rtrim(FULL_BASE_PATH, '/') . '/rmrp/' . (int) ($memory['id'] ?? 0);
 $published = date('c', strtotime($memory['memory_date'] ?? $memory['created_at'] ?? 'now'));
 $modified = date('c', strtotime($memory['updated_at'] ?? $memory['created_at'] ?? 'now'));

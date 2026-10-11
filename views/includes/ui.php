@@ -3,6 +3,9 @@
 // home JSON-LD). Loaded once; the class definition itself is inert until used.
 require_once dirname(__DIR__) . '/../models/Socials.php';
 require_once __DIR__ . '/ebook.php';
+require_once __DIR__ . '/icons.php';
+require_once __DIR__ . '/figure.php';
+require_once __DIR__ . '/seo.php';
 
 if (!function_exists('ui_render_head')) {
     function ui_render_head(string $title, string $description, array $extraMeta = []): void
@@ -26,9 +29,14 @@ if (!function_exists('ui_render_head')) {
         // is requested once.
         $cssHref = static fn(string $file): string => FULL_BASE_PATH . 'assets/css/' . $file . '?v=' . filemtime(__DIR__ . '/../../assets/css/' . $file);
         $fontHref = static fn(string $file): string => FULL_BASE_PATH . 'assets/fonts/' . $file;
-        $coreCss = array_map($cssHref, ['variables.css', 'ui-rebuild.css', 'ebook.css', 'jelly.css']);
+        $coreCss = array_map($cssHref, ['variables.css', 'ui-rebuild.css', 'ebook.css', 'jelly.css', 'blueprint.css']);
         $coreFonts = array_map($fontHref, ['fredoka-latin.woff2', 'atkinson-next-latin.woff2']);
         $lcpImage = is_array($extraMeta['lcp_image'] ?? null) ? $extraMeta['lcp_image'] : null;
+        // The first path segment names the "sheet" (about, portfolio, yunobot ...). It rides on <html>
+        // so the drafting layer can key a rule to one page without every view adding a body class.
+        $sheetPath = trim((string)parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+        $sheetKey = $sheetPath === '' ? 'home' : strtolower((string)preg_replace('/[^a-z0-9-]/i', '', strtok($sheetPath, '/')));
+        if (http_response_code() >= 400) $sheetKey = 'error';
         if (!headers_sent()) {
             // Time the application spent before the first byte of HTML (queries are done
             // by the time a view renders its head); visible in DevTools and Lighthouse.
@@ -42,7 +50,7 @@ if (!function_exists('ui_render_head')) {
         }
         ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-sheet="<?= htmlspecialchars($sheetKey) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -92,7 +100,9 @@ if (!function_exists('ui_render_head')) {
         $canonical = rtrim(FULL_BASE_PATH, '/') . $normalizedPath . '?' . http_build_query($activeFacets);
     }
     ?>
+    <?php if (http_response_code() < 400): ?>
     <link rel="canonical" href="<?= htmlspecialchars($canonical) ?>">
+    <?php endif; ?>
     <?php
     // Default Open Graph / social-share image: the landing photograph composed
     // into a 1200x630 card. Regenerate with dev/scripts/build-og-image.sh after
@@ -132,7 +142,7 @@ if (!function_exists('ui_render_head')) {
     <meta property="og:description" content="<?= $defaultOgDesc ?>">
     <meta property="og:image" content="<?= htmlspecialchars($defaultOgImage) ?>">
     <?= $ogImageSize . "\n" ?>
-    <meta property="og:image:alt" content="<?= $defaultOgTitle ?>">
+    <meta property="og:image:alt" content="<?= is_string($extraMeta['og_image'] ?? null) && $extraMeta['og_image'] !== '' ? $defaultOgTitle : 'Yunus Emre Vurgun, software developer and IT specialist, beside Jell-omo, the red jelly mascot in a baseball cap' ?>">
     <meta property="og:site_name" content="Yunus Emre Vurgun">
     <meta name="author" content="Yunus Emre Vurgun">
     <meta name="twitter:card" content="summary_large_image">
@@ -194,15 +204,31 @@ if (!function_exists('ui_render_head')) {
     <?php if (isset($extraMeta['docs']) && $extraMeta['docs']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/docs.css?v=<?= filemtime(__DIR__ . '/../../assets/css/docs.css') ?>">
     <?php endif; ?>
+    <?php if (isset($extraMeta['hero']) && $extraMeta['hero']): ?>
+    <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/hero.css?v=<?= filemtime(__DIR__ . '/../../assets/css/hero.css') ?>">
+    <?php /* Low-end and data-saver devices get the finished hero with no intro and no looping motion; the choice
+       must be made before first paint, so it is a tiny inline script rather than part of hero.js. */ ?>
+    <script data-cfasync="false">(function(){var n=navigator,c=n.connection||{};if(c.saveData||(n.deviceMemory&&n.deviceMemory<=2)||(n.hardwareConcurrency&&n.hardwareConcurrency<=2))document.documentElement.setAttribute('data-motion','lite')})()</script>
+    <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot', 'gemmaclaim', 'chessko', 'jelloshop', 'music', 'downloads', 'docs', 'og_image', 'og_type', 'robots', 'canonical', 'lcp_image'], true)) continue;
+        if (is_string($key) && in_array($key, ['yunobot', 'gemmaclaim', 'chessko', 'jelloshop', 'music', 'downloads', 'docs', 'hero', 'og_image', 'og_type', 'robots', 'canonical', 'lcp_image'], true)) continue;
         if (!empty($value) && is_string($value)) {
             // Defaults above already own these tags; page-specific article data remains.
             if (preg_match('/<meta (?:name|property)="(?:author|description|keywords|og:(?:type|url|title|description|image)|twitter:(?:card|url|title|description|image))"/', $value)) continue;
             echo $value . "\n";
         }
-    endforeach; ?>
+    endforeach;
+    // Inner pages that did not build their own BreadcrumbList get one from their path.
+    $ownCrumbs = false;
+    foreach ($extraMeta as $value) {
+        if (is_string($value) && str_contains($value, 'BreadcrumbList')) { $ownCrumbs = true; break; }
+    }
+    if (!$ownCrumbs && !$isFacetRequest && http_response_code() < 400 && $normalizedPath !== '/' && !str_starts_with($normalizedPath, '/search')) {
+        $autoCrumbs = seo_auto_breadcrumbs($normalizedPath, $title);
+        if ($autoCrumbs) echo seo_script([$autoCrumbs]) . "\n";
+    }
+    ?>
 </head>
 <?php
     }
@@ -456,7 +482,7 @@ if (!function_exists('ui_render_footer')) {
     <div class="ui-x-popup-panel" role="dialog" aria-modal="true" aria-labelledby="uiXPopupTitle">
         <button type="button" class="ui-x-popup-close" data-x-popup-close aria-label="Close">×</button>
         <svg class="ui-x-popup-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        <h2 class="ui-x-popup-title" id="uiXPopupTitle">oops! no twitter/x!</h2>
+        <p class="ui-x-popup-title" id="uiXPopupTitle">oops! no twitter/x!</p>
         <p class="ui-x-popup-text">why? elon's boys randomly banned me without any reason.</p>
         <p class="ui-x-popup-gg">gg....</p>
     </div>

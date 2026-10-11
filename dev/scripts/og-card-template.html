@@ -20,27 +20,46 @@
   html, body { margin: 0; padding: 0; background: #69b0f9; }
 
   /* Open Graph / Twitter share card: 1200x630 (1.91:1).
-     The brand blue field, the mascot on the navy lobed band, the name in
-     Fredoka. Title, subtitle and label are filled in by build-og-image.sh. */
+     The brand blue field as a drafting sheet (faint grid, a degree ring behind the mascot), the mascot on
+     the baseline, a navy band whose top edge is a steel-rule scale, the name in Fredoka. Title, subtitle and
+     label are filled in by build-og-image.sh. Same language as assets/css/blueprint.css. */
   #card {
     position: relative;
     width: 1200px; height: 630px;
     box-sizing: border-box;
-    background: #69b0f9;
+    background-color: #69b0f9;
+    background-image:
+      linear-gradient(to right, rgba(38, 46, 77, 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(38, 46, 77, 0.12) 1px, transparent 1px),
+      linear-gradient(to right, rgba(38, 46, 77, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(38, 46, 77, 0.06) 1px, transparent 1px);
+    background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+    background-position: 0 0, 0 0, 0 0, 0 0;
     overflow: hidden;
     font-family: 'Atkinson Hyperlegible Next', sans-serif;
     color: #1b2140;
   }
 
-  /* navy band with lobes rising into the blue, like the site footer */
+  /* navy band; its top edge carries the scale: a tick every 8 px, a taller one every 40 px */
   #band {
     position: absolute; left: 0; right: 0; bottom: 0; height: 92px;
     background: #1b2140;
   }
-  #lobes {
-    position: absolute; left: 0; right: 0; bottom: 92px; height: 30px;
-    background: radial-gradient(circle at 50% 100%, #1b2140 0 29.5px, transparent 30px) 0 0 / 60px 30px repeat-x;
+  #ticks, #ticks2 {
+    position: absolute; left: 0; right: 0;
   }
+  #ticks {
+    bottom: 92px; height: 6px;
+    background: repeating-linear-gradient(90deg, #1b2140 0 1px, transparent 1px 8px);
+  }
+  #ticks2 {
+    bottom: 92px; height: 12px;
+    background: repeating-linear-gradient(90deg, #1b2140 0 2px, transparent 2px 40px);
+  }
+  #ring {
+    position: absolute; left: 603px; top: 51px; width: 620px; height: 620px;
+  }
+  #ring circle { fill: none; stroke: #262e4d; }
   #url {
     position: absolute; left: 76px; bottom: 30px;
     font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 30px; letter-spacing: 0.01em;
@@ -48,12 +67,22 @@
   }
 
   #text { position: absolute; left: 76px; top: 86px; width: 640px; }
+  /* the label plate: navy, a rivet at each end, engraved capitals (as the eyebrow on the site) */
   #label {
-    display: inline-block;
-    font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 28px;
-    color: #fbf8f4; background: #262e4d;
-    padding: 6px 24px 8px; border-radius: 999px; margin-bottom: 28px;
+    position: relative; display: inline-block;
+    font-family: ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace; font-weight: 700; font-size: 22px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: #e9f1ff; background: #262e4d;
+    padding: 12px 40px 11px; border-radius: 10px; margin-bottom: 30px;
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.18), 0 3px 0 rgba(20, 26, 51, 0.38);
   }
+  #label::before, #label::after {
+    content: ""; position: absolute; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff 0 16%, #b6c1e0 46%, #66719c 100%);
+    box-shadow: 0 0 0 1.5px rgba(10, 14, 32, 0.55);
+  }
+  #label::before { left: 15px; }
+  #label::after { right: 15px; }
   #title {
     margin: 0 0 22px;
     font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: TITLE_SIZE_PLACEHOLDERpx; line-height: 1.02; letter-spacing: -0.02em;
@@ -75,7 +104,15 @@
       <h1 id="title">TITLE_PLACEHOLDER</h1>
       <p id="sub">SUB_PLACEHOLDER</p>
     </div>
-    <div id="lobes"></div>
+    <svg id="ring" viewBox="-250 -250 500 500" aria-hidden="true">
+      <circle r="238" stroke-width="1.2" opacity=".35"/>
+      <circle r="230" pathLength="360" stroke-width="9" stroke-dasharray=".55 4.45" opacity=".34"/>
+      <circle r="226" pathLength="360" stroke-width="17" stroke-dasharray=".9 29.1" opacity=".5"/>
+      <circle r="210" stroke-width="1.1" stroke-dasharray="3 7" opacity=".28"/>
+      <path d="M-7.5-248h15L0-231z" fill="#db1816" stroke="#262e4d" stroke-width="1.2" stroke-linejoin="round"/>
+    </svg>
+    <div id="ticks"></div>
+    <div id="ticks2"></div>
     <div id="band"></div>
     <div id="url">yunusemrevurgun.com</div>
     <img id="mascot" src="MASCOT_PATH_PLACEHOLDER" alt="">

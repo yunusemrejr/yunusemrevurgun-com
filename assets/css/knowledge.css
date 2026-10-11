@@ -65,9 +65,11 @@
 .kn-life-years { padding-left: var(--space-3); font-size: var(--text-xs); color: var(--color-text-tertiary); white-space: nowrap; }
 @media (max-width: 640px) {
  .kn-atlas { padding: var(--space-4); }
- .kn-life { grid-template-columns: 6.4rem minmax(0, 1fr); }
+ /* The name column wraps to two lines instead of clipping ("Carl Friedrich Gauss" was cut at 360 px). */
+ .kn-life { grid-template-columns: 8.2rem minmax(0, 1fr); }
+ .kn-life-name { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.2; }
  .kn-life-years { display: none; }
- .kn-axis { margin: 0 0 4px 6.4rem; }
+ .kn-axis { margin: 0 0 4px 8.2rem; }
 }
 
 /* ----- Tools ----- */
@@ -92,7 +94,8 @@
 .kn-prose.is-clamped::after { content: ""; position: absolute; inset: auto 0 0 0; height: 3.2em; background: linear-gradient(transparent, var(--color-bg-card)); pointer-events: none; transition: opacity 200ms; }
 .kn-card.is-open .kn-prose.is-clamped { max-height: 120em; }
 .kn-card.is-open .kn-prose.is-clamped::after { opacity: 0; }
-.kn-math { overflow-x: auto; }
+.kn-math { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.kn-math math { max-width: 100%; }
 .kn-toggle { margin-top: var(--space-2); padding: 4px 14px 5px; border: 2px solid var(--color-navy); border-radius: var(--radius-full); background: transparent; color: var(--color-navy); font: 600 var(--text-sm)/1.3 var(--font-display); cursor: pointer; transition: background 160ms, color 160ms, transform 240ms var(--ease-jelly); }
 .kn-toggle:hover { background: var(--color-navy); color: var(--color-text-inverse); transform: scale(1.04); }
 .kn-toggle [data-close], .kn-toggle[aria-expanded="true"] [data-open] { display: none; }

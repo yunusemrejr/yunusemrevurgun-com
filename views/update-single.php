@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once __DIR__ . '/includes/ui.php';
+require_once __DIR__ . '/includes/seo.php';
 require_once dirname(__DIR__) . '/models/RichText.php';
 
 if (!isset($GLOBALS['current_update'])) {
@@ -12,7 +13,7 @@ $update = $GLOBALS['current_update'];
 
 $title = ($update['title'] ?? 'Update') . ' — Yunus Emre Vurgun';
 $plainText = RichText::plainText($update['description'] ?? '');
-$description = mb_substr($plainText, 0, 160);
+$description = seo_description($plainText, 155);
 $updateUrl = rtrim(FULL_BASE_PATH, '/') . '/updates/' . (int) ($update['id'] ?? 0);
 $published = date('c', strtotime($update['update_date'] ?? $update['created_at'] ?? 'now'));
 $modified = date('c', strtotime($update['updated_at'] ?? $update['created_at'] ?? 'now'));

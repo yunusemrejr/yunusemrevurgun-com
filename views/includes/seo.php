@@ -155,3 +155,72 @@ if (!function_exists('seo_plain')) {
         return trim((string)preg_replace('/\s+/', ' ', $text));
     }
 }
+
+if (!function_exists('seo_description')) {
+    /**
+     * A meta description from free text: tags and entities resolved, whitespace collapsed, then cut at the
+     * last sentence end that leaves at least half the budget, else at a word boundary with an ellipsis.
+     * Replaces blind mb_substr() cuts that ended mid-word and ran paragraphs together.
+     */
+    function seo_description(string $text, int $max = 155): string
+    {
+        $text = html_entity_decode(strip_tags(str_replace(['</p>', '</li>', '<br>', '<br/>', '<br />'], ' ', $text)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = trim((string)preg_replace('/\s+/u', ' ', $text));
+        if (mb_strlen($text) <= $max) {
+            return $text;
+        }
+        $cut = mb_substr($text, 0, $max);
+        $floor = (int)floor($max * 0.5);
+        if (preg_match('/^(.{' . $floor . ',}[.!?])(?=\s|$)/us', $cut, $m)) {
+            return $m[1];
+        }
+        $cut = (string)preg_replace('/\s+\S*$/u', '', $cut);
+        return rtrim($cut, " \t,;:—-") . '…';
+    }
+}
+
+if (!function_exists('seo_asset_url')) {
+    /** A stored media path as an absolute URL: kept as is when it already is one, else made site-relative. */
+    function seo_asset_url(string $path): string
+    {
+        return preg_match('#^https?://#i', $path) ? $path : FULL_BASE_PATH . ltrim($path, '/');
+    }
+}
+
+if (!function_exists('seo_auto_breadcrumbs')) {
+    /**
+     * A BreadcrumbList for a plain inner page, from its path: Home > Section [> this page]. Pages that
+     * build their own trail (hubs, docs) never reach this. $title is the page <title>; its brand suffix is
+     * dropped for the last crumb.
+     */
+    function seo_auto_breadcrumbs(string $path, string $title): ?array
+    {
+        $path = trim($path, '/');
+        if ($path === '') {
+            return null;
+        }
+        $names = [
+            'about' => 'About', 'portfolio' => 'Portfolio', 'gallery' => 'Gallery', 'blog' => 'Blog', 'travel' => 'Travel',
+            'updates' => 'Updates', 'contact' => 'Contact', 'more' => 'Explore', 'rmrp' => 'Random Memories', 'sitemap' => 'Sitemap',
+            'privacy' => 'Privacy policy', 'terms' => 'Terms of service', 'cookies' => 'Cookie policy', 'music' => 'Music',
+            'videos' => 'Videos', 'comedy' => 'Comedy', 'slop' => 'Quality 3D AI Slop', 'downloads' => 'Downloads',
+            'post-code' => 'Post-Code', 'science-corner' => 'Science Corner',
+        ];
+        $segments = explode('/', $path);
+        $origin = seo_origin();
+        $trail = [['Home', $origin . '/']];
+        $url = $origin;
+        foreach ($segments as $i => $segment) {
+            $url .= '/' . $segment;
+            $last = $i === count($segments) - 1;
+            if ($i === 0) {
+                $label = $names[$segment] ?? ucwords(str_replace('-', ' ', $segment));
+            } else {
+                $label = $last ? trim((string)preg_split('/\s+[—|–]\s+/u', $title)[0]) : ucwords(str_replace('-', ' ', $segment));
+            }
+            $trail[] = [$label !== '' ? $label : ucwords(str_replace('-', ' ', $segment)), $url];
+        }
+        return seo_breadcrumbs($trail);
+    }
+}
+

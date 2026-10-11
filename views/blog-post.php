@@ -2,6 +2,7 @@
 require_once dirname(__DIR__) . '/config/setPath.php';
 require_once dirname(__DIR__) . '/models/Blog.php';
 require_once __DIR__ . '/includes/ui.php';
+require_once __DIR__ . '/includes/seo.php';
 
 if (!isset($GLOBALS['current_post'])) {
     header('Location: ' . FULL_BASE_PATH . 'blog');
@@ -12,15 +13,15 @@ $post = $GLOBALS['current_post'];
 
 $title = $post['title'] ?? 'Post';
 $slug = $post['slug'] ?? '';
-$plainText = strip_tags((string)($post['content'] ?? ''));
+$plainText = seo_plain((string)($post['content'] ?? ''));
 $wordCount = str_word_count($plainText);
 $readingTime = max(1, (int)ceil($wordCount / 200));
-$description = !empty($post['meta_description']) ? $post['meta_description'] : mb_substr($plainText, 0, 220);
+$description = !empty($post['meta_description']) ? $post['meta_description'] : seo_description($plainText, 155);
 $publishedDate = date('c', strtotime($post['created_at'] ?? 'now'));
 $modifiedDate = date('c', strtotime($post['updated_at'] ?? $post['created_at'] ?? 'now'));
 $postUrl = rtrim(FULL_BASE_PATH, '/') . '/blog/' . rawurlencode($slug);
 $ogImage = !empty($post['featured_image'])
-    ? FULL_BASE_PATH . ltrim($post['featured_image'], '/')
+    ? seo_asset_url((string)$post['featured_image'])
     : FULL_BASE_PATH . 'assets/images/og-image.png';
 
 $extraMeta = [
@@ -102,7 +103,7 @@ ui_render_head(
             <article>
                 <?php if (!empty($post['featured_image'])): ?>
                     <figure class="ui-figure" style="margin-bottom: var(--space-6);">
-                        <img src="<?= FULL_BASE_PATH . htmlspecialchars($post['featured_image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
+                        <img src="<?= htmlspecialchars(seo_asset_url((string)$post['featured_image'])) ?>" alt="<?= htmlspecialchars($post['title']) ?>">
                     </figure>
                 <?php endif; ?>
                 <div class="ui-rich-content"><?= ui_sanitize_html($post['content'] ?? '') ?></div>

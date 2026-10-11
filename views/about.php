@@ -46,7 +46,7 @@ ui_render_head(
     <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
             <p class="ui-eyebrow">Profile</p>
-            <h1 class="ui-section-title">Yunus Emre Vurgun — Developer &amp; IT Specialist</h1>
+            <h1 class="ui-section-title">Yunus Emre Vurgun&nbsp;— Developer &amp; IT Specialist</h1>
             <p class="ui-section-text">Based in Istanbul, working at the intersection of computational intelligence and operational technology.</p>
         </section>
 

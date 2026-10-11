@@ -90,6 +90,7 @@ ui_render_head(
     'Yunus Emre Vurgun (Yemre), software developer and IT specialist in Istanbul. Explore projects, writing, and work in AI/ML and operational technology.',
     [
         'lcp_image' => ['src' => $mascotUrl],
+        'hero' => true,
         '<meta name="author" content="Yunus Emre Vurgun">',
         '<meta name="keywords" content="Yunus Emre Vurgun, Yemre, YEV, yunusemrejr, Yemrevu, software developer, developer, IT specialist, computational intelligence, operational technology">',
         '<meta property="og:description" content="A new form of intelligence is emerging. They say you\'re the average of the five people you spend the most time with. I\'m carefully curating mine.">',
@@ -106,6 +107,15 @@ ui_render_head(
 <!-- Front page of the record: name, current identity, facts, and actions.
      The most-linked URL answers "who is this" without scrolling or clicking. -->
 <header class="ui-masthead">
+    <!-- Ambient field: a few signal packets travelling along the drafting grid's major rows (transform
+         only, five tiny layers, paused off screen, absent under reduced motion). Decoration. -->
+    <div class="ui-masthead-field" aria-hidden="true">
+        <i style="--row:1;--dur:23s;--delay:-6s"></i>
+        <i style="--row:2;--dur:31s;--delay:-19s"></i>
+        <i style="--row:3;--dur:19s;--delay:-2s"></i>
+        <i style="--row:4;--dur:27s;--delay:-11s"></i>
+        <i style="--row:5;--dur:35s;--delay:-24s"></i>
+    </div>
     <div class="ui-masthead-grid">
         <div>
             <p class="ui-masthead-eyebrow">Istanbul · Operational technology &amp; AI</p>
@@ -132,17 +142,7 @@ ui_render_head(
                 <a href="<?= FULL_BASE_PATH ?>contact">Contact →</a>
             </nav>
         </div>
-        <figure class="ui-masthead-figure">
-            <img class="ui-mascot" src="<?= htmlspecialchars($mascotUrl) ?>" width="640" height="640" decoding="async" fetchpriority="high"
-                 alt="Jell-omo, the site's mascot: a glossy red jelly wearing a navy and cream baseball cap, eyes closed in a contented smile.">
-            <figcaption class="ui-masthead-caption">
-                <span>Jell-omo, the mascot. Poke it.</span>
-                <a class="ui-btn ui-btn-primary ui-cafe-btn" href="<?= FULL_BASE_PATH ?>jelloshop">
-                    <svg class="ui-cafe-btn-mug" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4.5 10h11v4.6a4.9 4.9 0 0 1-4.9 4.9h-1.2a4.9 4.9 0 0 1-4.9-4.9z"/><path d="M15.5 11.4h1.3a2.6 2.6 0 0 1 0 5.2h-1.3"/><path class="ui-cafe-btn-steam" d="M8.6 3.4c-1.2 1.1 1.2 2.1 0 3.5M12 3.4c-1.2 1.1 1.2 2.1 0 3.5"/><path d="M3.5 21.6h13"/></svg>
-                    <span>Come have a coffee</span>
-                </a>
-            </figcaption>
-        </figure>
+        <?php require __DIR__ . '/includes/hero-stage.php'; ?>
     </div>
 </header>
 
@@ -168,28 +168,40 @@ ui_render_head(
                 </figure>
             </div>
         </div>
+        <?php ui_render_figure([
+            'file' => 'rack.svg',
+            'width' => 640,
+            'height' => 310,
+            'alt' => 'Illustration of a DIN-rail control rack on a bench plate: power supply, CPU with a blinking RUN lamp, digital and analogue I/O cards, a network card and spare terminal blocks, beside a signal tower with its green lamp lit.',
+            'fig' => 'Fig. 1',
+            'title' => 'Control rack',
+            'hint' => 'Illustration',
+            'note' => 'Green lamp: running',
+            'caption' => 'The kind of equipment this work talks to: a PLC rack on a DIN rail with its power supply, CPU, I/O and network cards. The one lamp that has to stay lit is the green one.',
+            'class' => 'fig--split',
+        ]); ?>
     </section>
 
     <section class="ui-section">
         <h2 class="ui-brief-title">Inside this site</h2>
         <div class="ui-more-grid">
             <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>portfolio">
-                <span class="ui-more-icon" aria-hidden="true">01</span>
+                <span class="ui-more-icon" aria-hidden="true"><?= ui_icon('archive') ?></span>
                 <h3 class="ui-more-title">Project archive</h3>
                 <p class="ui-more-desc">Systems across AI/ML, operational technology, industrial automation and web infrastructure — with the stack each one runs on.</p>
             </a>
             <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>blog">
-                <span class="ui-more-icon" aria-hidden="true">02</span>
+                <span class="ui-more-icon" aria-hidden="true"><?= ui_icon('journal') ?></span>
                 <h3 class="ui-more-title">Journal</h3>
                 <p class="ui-more-desc">Long-form notes on AI capability trends, model releases, free internet access, and post-code engineering.</p>
             </a>
             <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>yunobot">
-                <span class="ui-more-icon" aria-hidden="true">03</span>
+                <span class="ui-more-icon" aria-hidden="true"><?= ui_icon('bot') ?></span>
                 <h3 class="ui-more-title">YunoBot</h3>
                 <p class="ui-more-desc">An assistant that answers questions about this site entirely in your browser — no server call, no API key.</p>
             </a>
             <a class="ui-more-card" href="<?= FULL_BASE_PATH ?>about">
-                <span class="ui-more-icon" aria-hidden="true">04</span>
+                <span class="ui-more-icon" aria-hidden="true"><?= ui_icon('profile') ?></span>
                 <h3 class="ui-more-title">About &amp; CV</h3>
                 <p class="ui-more-desc">Education, work history at ASP Otomasyon A.Ş., certifications, and where to reach me.</p>
             </a>
@@ -237,6 +249,7 @@ ui_render_head(
 </div>
 
 <?php ui_render_footer('landing-right'); ?>
+<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/hero.js?v=<?= filemtime(dirname(__DIR__) . '/assets/js/hero.js') ?>" defer></script>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 </body>
 </html>

@@ -27,6 +27,34 @@ if ($totalPages > 1) {
     }
 }
 
+// Structured data for the archive: a CollectionPage whose ItemList is this page's slice of the journal
+// (positions continue across pages), plus the breadcrumb trail.
+if ($posts) {
+    $origin = seo_origin();
+    $listUrl = $origin . '/blog' . ($currentPage > 1 ? '?page=' . $currentPage : '');
+    $listItems = [];
+    foreach ($posts as $i => $listed) {
+        $listItems[] = [
+            '@type' => 'ListItem',
+            'position' => $offset + $i + 1,
+            'url' => $origin . '/blog/' . rawurlencode((string)($listed['slug'] ?? '')),
+            'name' => (string)($listed['title'] ?? ''),
+        ];
+    }
+    $pageMeta[] = seo_script([
+        [
+            '@type' => 'CollectionPage',
+            '@id' => $listUrl . '#collection',
+            'url' => $listUrl,
+            'name' => 'Blog',
+            'isPartOf' => ['@id' => $origin . '/#website'],
+            'author' => ['@id' => $origin . '/#person'],
+            'mainEntity' => ['@type' => 'ItemList', 'numberOfItems' => (int)$totalPosts, 'itemListElement' => $listItems],
+        ],
+        seo_breadcrumbs([['Home', $origin . '/'], ['Blog', $origin . '/blog']]),
+    ]);
+}
+
 ui_render_head(
     'Blog' . ($currentPage > 1 ? ' (Page ' . $currentPage . ')' : '') . ': Long-Form Notes on AI and Software Architecture',
     'Long-form notes by Yunus Emre Vurgun (Yemre, YEV) on AI capability trends, model releases, free internet access, software architecture and post-code engineering.',
