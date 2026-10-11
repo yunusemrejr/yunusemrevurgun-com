@@ -148,6 +148,14 @@ ui_render_head(
                     </section>
                 </div>
         </section>
+
+        <?php ui_render_figure([
+            'file' => 'rack.svg',
+            'width' => 640,
+            'height' => 310,
+            'alt' => 'Illustration of a DIN-rail control rack on a bench plate: power supply, CPU with a blinking RUN lamp, digital and analogue I/O cards, a network card and spare terminal blocks, beside a signal tower with its green lamp lit.',
+            'class' => 'fig--bare',
+        ]); ?>
     </main>
 
     <?php ui_render_footer(); ?>

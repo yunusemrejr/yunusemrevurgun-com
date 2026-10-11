@@ -124,7 +124,11 @@ h6,
 }
 
 .ui-navbar {
-  padding: 0 var(--space-6);
+  padding: 0 var(--space-8);
+  /* The wrap grows to fit the announcement strip, which leaves a percentage
+     height with nothing to resolve against; give the bar its own height so
+     the links and the mark are centred in a full-height row. */
+  min-height: var(--navbar-height);
 }
 
 .ui-nav-left {
@@ -159,7 +163,7 @@ h6,
 }
 
 .ui-nav-links {
-  gap: var(--space-1);
+  gap: var(--space-2);
 }
 
 .ui-nav-link,
@@ -168,7 +172,7 @@ h6,
   font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-navy);
-  padding: 7px 14px 8px;
+  padding: 10px 18px;
   border-radius: var(--radius-full);
   transition:
     background-color var(--transition-fast),
@@ -186,6 +190,7 @@ h6,
 .ui-nav-link-more.is-active {
   color: var(--color-text-inverse);
   background: var(--color-navy);
+  text-decoration: none;
 }
 
 .ui-nav-link:active,
@@ -1246,6 +1251,20 @@ body.ui-landing {
 
 .ui-masthead-fact-value {
   color: var(--color-text-primary);
+}
+
+/* The counts on the "This site" row link to the sections they count. */
+.ui-masthead-fact-value a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.ui-masthead-fact-value a:hover {
+  color: var(--color-jelly);
+  text-decoration-color: currentColor;
 }
 
 .ui-masthead-links {

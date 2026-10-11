@@ -20,10 +20,13 @@ $blog = new Blog();
 $nPosts = $countOr($blog->getTotalPublishedPosts());
 $latestWriting = $blog->getPosts(0, 3);
 $nUpdates = $countOr((new Updates())->getTotalUpdates());
+// Each count links to the section it counts and agrees in number ("1 project").
+$archiveLink = static fn(int $n, string $one, string $many, string $path): string =>
+    '<a href="' . FULL_BASE_PATH . $path . '">' . $n . ' ' . ($n === 1 ? $one : $many) . '</a>';
 $archiveParts = array_filter([
-    $nProjects !== null ? $nProjects . ' projects' : null,
-    $nPosts !== null ? $nPosts . ' journal entries' : null,
-    $nUpdates !== null ? $nUpdates . ' dated updates' : null,
+    $nProjects !== null ? $archiveLink($nProjects, 'project', 'projects', 'portfolio') : null,
+    $nPosts !== null ? $archiveLink($nPosts, 'journal entry', 'journal entries', 'blog') : null,
+    $nUpdates !== null ? $archiveLink($nUpdates, 'dated update', 'dated updates', 'updates') : null,
 ]);
 $archiveLine = $archiveParts !== [] ? implode(', ', $archiveParts) . '.' : null;
 
@@ -121,7 +124,7 @@ ui_render_head(
             <p class="ui-masthead-eyebrow">Istanbul · Operational technology &amp; AI</p>
             <h1 class="ui-masthead-title">Yunus Emre Vurgun</h1>
             <p class="ui-masthead-role">Software developer &amp; IT specialist</p>
-            <p class="ui-masthead-lede">AI/ML systems, industrial automation, and the internal tools a factory floor depends on — documented as it is built, at ASP&nbsp;Otomasyon&nbsp;A.Ş.</p>
+            <p class="ui-masthead-lede">AI/ML systems, industrial automation, and the internal tools a factory floor depends on — documented as it is built.</p>
             <dl class="ui-masthead-facts">
                 <div class="ui-masthead-fact">
                     <dt class="ui-masthead-fact-term">Currently</dt>
@@ -133,7 +136,7 @@ ui_render_head(
                 </div>
                 <div class="ui-masthead-fact">
                     <dt class="ui-masthead-fact-term">This site</dt>
-                    <dd class="ui-masthead-fact-value"><?= $archiveLine !== null ? htmlspecialchars(ucfirst($archiveLine)) : 'Projects, journal, and notes' ?></dd>
+                    <dd class="ui-masthead-fact-value"><?= $archiveLine ?? 'Projects, journal, and notes' ?></dd>
                 </div>
             </dl>
         </div>
@@ -171,15 +174,15 @@ ui_render_head(
             </div>
         </div>
         <?php ui_render_figure([
-            'file' => 'rack.svg',
+            'file' => 'engine.svg',
             'width' => 640,
             'height' => 310,
-            'alt' => 'Illustration of a DIN-rail control rack on a bench plate: power supply, CPU with a blinking RUN lamp, digital and analogue I/O cards, a network card and spare terminal blocks, beside a signal tower with its green lamp lit.',
+            'alt' => 'Illustration of the Analytical Engine as a bench model: a card reader with a chain of punched cards, a Store of eight columns of digit wheels, a Mill of three columns of larger wheels, a toothed rack along the front, and a second card reader at the right. The card being read has a red edge.',
             'fig' => 'Fig. 1',
-            'title' => 'Control rack',
+            'title' => 'Analytical Engine',
             'hint' => 'Illustration',
-            'note' => 'Lamp: green',
-            'caption' => 'The kind of equipment this work talks to: a PLC rack on a DIN rail with its power supply, CPU, I/O and network cards. The one lamp that has to stay lit is the green one.',
+            'note' => 'Card: being read',
+            'caption' => 'Babbage’s Analytical Engine, the first design for a general-purpose computer: punched cards choose the operation, a Store of digit wheels holds the numbers and a Mill does the arithmetic. The wheels are set to the opening values of Ada Lovelace’s Note G (V1 = 1, V2 = 2, V3 = n = 4); the red-edged card is the one being read.',
             'class' => 'fig--split',
         ]); ?>
     </section>

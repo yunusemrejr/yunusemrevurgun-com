@@ -455,6 +455,16 @@ button:hover > .ui-arrow {
   }
 }
 
+/* A plate with no corner labels and no caption (the control rack at the foot of the About page):
+   the label margins would only be empty paper, so the drawing sits in an even border. */
+.fig--bare {
+  max-width: 860px; /* the width of the .ui-record cards above it */
+}
+
+.fig--bare .fig-plate {
+  padding: 28px;
+}
+
 .fig-plate {
   position: relative;
   padding: 50px 28px 58px;
