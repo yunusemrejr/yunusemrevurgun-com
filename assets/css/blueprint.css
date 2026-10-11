@@ -132,6 +132,29 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   bottom: calc(-1 * var(--space-8) - 2px);
 }
 
+/* Documentation pages (/yunobot/<topic>, /downloads/<app> ...) have no sky band; their article card carries
+   the page family's bench figure at its top right instead. */
+@media (min-width: 1100px) {
+  .dx-page > article {
+    position: relative;
+  }
+
+  .dx-page > article::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    right: 24px;
+    width: 176px;
+    height: 106px;
+    background: var(--spec) right top / contain no-repeat;
+    pointer-events: none;
+  }
+
+  .dx-head {
+    max-width: min(70ch, 640px);
+  }
+}
+
 /* ===== LABEL PLATES (eyebrows) ======================================================== */
 /* A navy plate with a rivet at each end, engraved in capitals. The text is the page's own
    section name, so the plate carries information, not decoration. */
@@ -639,6 +662,19 @@ button:hover > .ui-arrow {
   .ui-more-card::after,
   .ui-more-link {
     transition: none;
+  }
+}
+
+/* Windows high-contrast: backgrounds and shadows are dropped, so what makes a plate or a key must be a border. */
+@media (forced-colors: active) {
+  :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow,
+  .ui-masthead-eyebrow,
+  .ui-btn-secondary,
+  .ui-masthead-links a,
+  .fig-plate,
+  .jx-replay,
+  .ui-more-icon {
+    border: 1px solid CanvasText;
   }
 }
 

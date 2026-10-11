@@ -193,6 +193,7 @@
       void stage.offsetWidth;   // restart every CSS animation of the intro
       stage.setAttribute('data-intro', 'on');
       selfTimer = setTimeout(selfTest, 2900);
+      settleIntro();
     });
   }
 
@@ -222,6 +223,17 @@
     scheduleIdle();
   }
 
+  // When the intro is over, switch it off for good: its layers (and their will-change) are released and
+  // nothing animates but the ring. The finished figure does not depend on the intro rules.
+  var cleanTimer = 0;
+  function settleIntro() {
+    clearTimeout(cleanTimer);
+    cleanTimer = setTimeout(function () {
+      if (stage.getAttribute('data-intro') === 'on') stage.setAttribute('data-intro', 'off');
+    }, 4300);
+  }
+
   render();
   selfTimer = setTimeout(selfTest, 2900);   // the dial powers up as the render arrives
+  settleIntro();
 })();

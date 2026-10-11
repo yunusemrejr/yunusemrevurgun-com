@@ -403,7 +403,7 @@ html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-gauge {
 }
 
 /* a dial this size cannot sit beside the text column between the two layouts */
-@media (min-width: 901px) and (max-width: 1019px) {
+@media (min-width: 901px) and (max-width: 1099px) {
   .jx-gauge {
     display: none;
   }
