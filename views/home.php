@@ -117,7 +117,7 @@ ui_render_head(
         <i style="--row:5;--dur:35s;--delay:-24s"></i>
     </div>
     <div class="ui-masthead-grid">
-        <div>
+        <div class="ui-masthead-copy">
             <p class="ui-masthead-eyebrow">Istanbul · Operational technology &amp; AI</p>
             <h1 class="ui-masthead-title">Yunus Emre Vurgun</h1>
             <p class="ui-masthead-role">Software developer &amp; IT specialist</p>
@@ -136,13 +136,15 @@ ui_render_head(
                     <dd class="ui-masthead-fact-value"><?= $archiveLine !== null ? htmlspecialchars(ucfirst($archiveLine)) : 'Projects, journal, and notes' ?></dd>
                 </div>
             </dl>
-            <nav class="ui-masthead-links" aria-label="Start here">
-                <a href="<?= FULL_BASE_PATH ?>about">About &amp; CV →</a>
-                <a href="<?= FULL_BASE_PATH ?>portfolio">Selected work →</a>
-                <a href="<?= FULL_BASE_PATH ?>contact">Contact →</a>
-            </nav>
         </div>
         <?php require __DIR__ . '/includes/hero-stage.php'; ?>
+        <!-- Three grid items in DOM order copy, figure, links: the copy holds nothing focusable, so Tab follows
+             the picture on every screen (the figure sits first on phones and to the right on wide screens). -->
+        <nav class="ui-masthead-links" aria-label="Start here">
+            <a href="<?= FULL_BASE_PATH ?>about">About &amp; CV <span class="ui-arrow" aria-hidden="true"></span></a>
+            <a href="<?= FULL_BASE_PATH ?>portfolio">Selected work <span class="ui-arrow" aria-hidden="true"></span></a>
+            <a href="<?= FULL_BASE_PATH ?>contact">Contact <span class="ui-arrow" aria-hidden="true"></span></a>
+        </nav>
     </div>
 </header>
 
@@ -176,7 +178,7 @@ ui_render_head(
             'fig' => 'Fig. 1',
             'title' => 'Control rack',
             'hint' => 'Illustration',
-            'note' => 'Green lamp: running',
+            'note' => 'Lamp: green',
             'caption' => 'The kind of equipment this work talks to: a PLC rack on a DIN rail with its power supply, CPU, I/O and network cards. The one lamp that has to stay lit is the green one.',
             'class' => 'fig--split',
         ]); ?>

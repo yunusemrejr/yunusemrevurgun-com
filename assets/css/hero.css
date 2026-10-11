@@ -131,10 +131,27 @@ data-saver / low-memory devices skip the loops (and reduced motion skips the int
 }
 
 /* ===== the render ===== */
+/* The wrapper is the one thing that moves (the spring writes its transform): one composited layer holding the
+   render and its ground shadow. The shadow is a radial gradient on the bench line, not a CSS drop-shadow filter:
+   a blur filter on a layer that changes every frame was the single costly thing in a poke. */
 .jx-body {
   position: absolute;
   inset: 0;
   z-index: 1;
+  transform-origin: 50% 96%;
+  will-change: transform;
+}
+
+.jx-body::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 7%;
+  right: 7%;
+  bottom: -1.5%;
+  height: 9.5%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(27, 33, 64, 0.52), rgba(27, 33, 64, 0.26) 60%, rgba(27, 33, 64, 0));
 }
 
 .jx-stage .jx-body > img.ui-mascot {
@@ -144,14 +161,14 @@ data-saver / low-memory devices skip the loops (and reduced motion skips the int
   max-width: none;
   aspect-ratio: auto;
   animation: none;
-  transform-origin: 50% 96%;
-  will-change: transform;
-  cursor: pointer;
+  filter: none;
+  will-change: auto;
 }
 
 /* The render is in the DOM, loading and painting from the first frame (it is the LCP element), at an
    opacity a hair above zero until the sketch hands over to it. */
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-body > img.ui-mascot {
+html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-body > img.ui-mascot,
+html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-body::before {
   animation: jx-render-in 0.85s ease var(--t-render) both;
 }
 
@@ -404,7 +421,8 @@ html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-gauge {
 
 /* a dial this size cannot sit beside the text column between the two layouts */
 @media (min-width: 901px) and (max-width: 1099px) {
-  .jx-gauge {
+  .jx-gauge,
+  .jx-readout {
     display: none;
   }
 }
@@ -491,15 +509,39 @@ html[data-motion="lite"] .jx-replay {
   display: none;
 }
 
-@media (pointer: coarse) {
+@media (pointer: coarse), (max-width: 900px) {
   .jx-replay {
-    min-height: 40px;
-    padding-inline: 14px;
+    min-height: 44px;
+    padding: 10px 16px;
   }
 }
 
 /* ===== layout inside the masthead grid ===== */
+/* DOM order is copy, figure, links (so Tab follows the picture); the grid puts the figure on the right on
+   wide screens and first on phones. */
+.ui-masthead-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 400px);
+  column-gap: var(--space-12);
+  row-gap: 0;
+  align-items: start;
+}
+
+.ui-masthead-copy {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+}
+
+.ui-masthead-grid > .ui-masthead-links {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+}
+
 .ui-masthead-figure.jx-stage {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
   max-width: none;
   margin: 0;
 }
@@ -507,11 +549,26 @@ html[data-motion="lite"] .jx-replay {
 @media (max-width: 900px) {
   /* the figure keeps the column's width so the caption row has room; the frame itself is the
      small square */
+  .ui-masthead-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-6);
+  }
+
   .ui-masthead-figure.jx-stage {
-    order: -1;
+    grid-column: 1;
+    grid-row: 1;
     width: 100%;
     max-width: 400px;
     margin: var(--space-6) auto 0;
+  }
+
+  .ui-masthead-copy {
+    grid-row: 2;
+    align-self: auto;
+  }
+
+  .ui-masthead-grid > .ui-masthead-links {
+    grid-row: 3;
   }
 
   .jx-frame {
@@ -615,6 +672,7 @@ html[data-motion="lite"] .ui-masthead-field {
   /* the intro rules above are more specific than these, so the final state is forced */
   .jx-stage .jx-construct,
   .jx-stage .jx-body > img.ui-mascot,
+  .jx-stage .jx-body::before,
   .jx-ring-ticks,
   .jx-ring-index,
   .jx-stage .jx-gauge,

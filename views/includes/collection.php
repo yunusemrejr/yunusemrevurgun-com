@@ -17,7 +17,7 @@ function ui_collection_schema(string $name, string $path, array $titles, array $
 }
 function ui_collection_tools(array $modules): void { ?>
     <details class="ui-collection-index"><summary>Browse the index</summary><ol>
-        <?php foreach ($modules as $module): ?><li><a href="#<?= ui_entry_id($module['title']) ?>"><?= htmlspecialchars($module['title']) ?></a></li><?php endforeach; ?>
+        <?php foreach ($modules as $module): ?><li><a href="#<?= htmlspecialchars($module['anchor'] ?? ui_entry_id($module['title'])) ?>"><?= htmlspecialchars($module['title']) ?></a></li><?php endforeach; ?>
     </ol></details>
     <div class="ui-collection-tools">
         <div class="ui-collection-search"><label for="collectionSearch">Find an entry</label><input type="search" id="collectionSearch" data-collection-search placeholder="Search titles, topics, or text" autocomplete="off"></div>

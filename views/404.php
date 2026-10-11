@@ -51,7 +51,7 @@ ui_render_head('404 | Page Not Found', 'The page you requested was not found.', 
                 'fig' => 'Fig. 404',
                 'title' => 'Part not found',
                 'hint' => 'Exploded view',
-                'note' => 'Red lamp: stopped',
+                'note' => 'Lamp: red',
                 'caption' => 'The page you asked for is not in its slot. The search box and the links above are the way back onto the rail.',
                 'class' => 'fig--split',
             ]); ?>

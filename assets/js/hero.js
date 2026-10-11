@@ -21,13 +21,14 @@
 
   var frame = stage.querySelector('.jx-frame');
   var img = stage.querySelector('.ui-mascot');
+  var body = stage.querySelector('.jx-body');
   var needle = stage.querySelector('.jx-needle');
   var probe = stage.querySelector('.jx-probe');
   var tip = stage.querySelector('.jx-probe-tip');
   var poke = stage.querySelector('.jx-poke');
   var readout = stage.querySelector('[data-readout]');
   var replay = stage.querySelector('[data-replay]');
-  if (!frame || !img || !poke) return;
+  if (!frame || !img || !body || !poke) return;
 
   var root = document.documentElement;
   var still = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -51,7 +52,7 @@
   function render() {
     var sx = 1 + sq * 0.5;
     var sy = 1 - sq;
-    img.style.transform = 'rotate(' + lean.toFixed(3) + 'deg) scale(' + sx.toFixed(4) + ',' + sy.toFixed(4) + ')';
+    body.style.transform = 'rotate(' + lean.toFixed(3) + 'deg) scale(' + sx.toFixed(4) + ',' + sy.toFixed(4) + ')';
 
     var pct = -sq * 100;
     if (needle) needle.setAttribute('transform', 'rotate(' + Math.max(-125, Math.min(125, pct * 6)).toFixed(2) + ')');

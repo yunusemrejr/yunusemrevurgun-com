@@ -13,7 +13,8 @@ $slop = new Slop();
 $list = $slop->getAllSlops();
 
 $sectionUrl = rtrim(FULL_BASE_PATH, '/') . '/slop';
-$modules = array_map(fn($item) => ['title' => $item['title'] ?? 'Untitled'], $list);
+// The cards are id="slop-<slug>"; the index must link to those, not to a slug of the title.
+$modules = array_map(fn($item) => ['title' => $item['title'] ?? 'Untitled', 'anchor' => 'slop-' . $item['slug']], $list);
 $schemaItems = [];
 foreach (array_values($list) as $index => $item) {
     $schemaItems[] = [

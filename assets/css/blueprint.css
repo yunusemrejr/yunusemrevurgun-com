@@ -170,7 +170,7 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.25;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   box-shadow:
@@ -202,6 +202,13 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
 :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow::after,
 .ui-masthead-eyebrow::after {
   right: 10px;
+}
+
+@media (max-width: 400px) {
+  :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow,
+  .ui-masthead-eyebrow {
+    letter-spacing: 0.07em;
+  }
 }
 
 /* Eyebrows elsewhere stay red type, in the label face. */
@@ -276,7 +283,7 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   flex: none;
   width: 1.05em;
   height: 1em;
-  margin-left: 0.15em;
+  margin-left: 0.3em;
   background: currentColor;
   -webkit-mask: url("../images/blueprint/arrow.svg") center / contain no-repeat;
   mask: url("../images/blueprint/arrow.svg") center / contain no-repeat;
@@ -288,18 +295,28 @@ button:hover > .ui-arrow {
   transform: translateX(3px);
 }
 
-/* Text links get a rule that draws under them. */
+/* Text links keep a real underline that thickens and lifts on hover; a 44 px target without padding tricks. */
 .ui-more-link,
 .ui-case-link {
-  text-decoration: none;
-  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 2px no-repeat;
-  padding-bottom: 2px;
-  transition: background-size 260ms var(--press), color 160ms ease;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  transition:
+    text-decoration-thickness 160ms ease,
+    text-underline-offset 240ms var(--press),
+    color 160ms ease;
 }
 
 .ui-more-link:hover,
 .ui-case-link:hover {
-  background-size: 100% 3px;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 7px;
+}
+
+.ui-case-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 /* ===== CARDS: registration marks ====================================================== */
@@ -612,33 +629,50 @@ button:hover > .ui-arrow {
 /* ===== TOUCH TARGETS AND SMALL FIXES (from the responsive audit) ===================== */
 /* The announcement strip has a fixed height, so its two controls grow their hit area outward
    instead of growing the bar. */
-.ebook-notice-cta,
-.ebook-notice-dismiss {
-  position: relative;
+:root {
+  --ebook-notice-h: 45px;
 }
 
-.ebook-notice-cta::after {
-  content: "";
-  position: absolute;
-  inset: -12px -8px;
+.ebook-notice-inner {
+  min-height: 44px;
+}
+
+.ebook-notice-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 6px;
 }
 
 .ebook-notice-dismiss {
   width: 44px;
   height: 44px;
-  margin-block: -2px;
+}
+
+/* On phones the headline was cut to "New ebook: Re...": drop it and keep the badge, the link and the close. */
+@media (max-width: 400px) {
+  .ebook-notice-text {
+    display: none;
+  }
+
+  .ebook-notice-cta {
+    margin-right: auto;
+  }
 }
 
 .ui-page-link {
   min-width: 44px;
 }
 
-@media (pointer: coarse) {
+@media (pointer: coarse), (max-width: 900px) {
   .ui-footer-list a,
   .ui-footer-socials a,
   .ui-footer-socials button.ui-footer-social-btn {
     min-height: 44px;
   }
+}
+
+@media (pointer: coarse) {
 
   .ui-doc-link-btn,
   .ui-doc-share a,

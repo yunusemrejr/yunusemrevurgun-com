@@ -96,6 +96,7 @@
 .kn-card.is-open .kn-prose.is-clamped::after { opacity: 0; }
 .kn-math { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .kn-math math { max-width: 100%; }
+.kn-math mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 .kn-toggle { margin-top: var(--space-2); padding: 4px 14px 5px; border: 2px solid var(--color-navy); border-radius: var(--radius-full); background: transparent; color: var(--color-navy); font: 600 var(--text-sm)/1.3 var(--font-display); cursor: pointer; transition: background 160ms, color 160ms, transform 240ms var(--ease-jelly); }
 .kn-toggle:hover { background: var(--color-navy); color: var(--color-text-inverse); transform: scale(1.04); }
 .kn-toggle [data-close], .kn-toggle[aria-expanded="true"] [data-open] { display: none; }

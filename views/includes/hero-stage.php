@@ -40,6 +40,8 @@ $sketchFile = __DIR__ . '/jelly-sketch.html';
 
         <?php if (is_file($sketchFile)) readfile($sketchFile); ?>
 
+        <!-- The instrument is two SVGs: the body never changes (so it is painted once), and the needle, probe
+             and tip that the spring moves live in a small one of their own, which is all that repaints. -->
         <svg class="jx-gauge" viewBox="0 0 800 800" aria-hidden="true" focusable="false">
             <!-- stand: foot plate and post, standing on the bench line -->
             <path class="jg-bench" d="M-70 776H800"/>
@@ -55,6 +57,10 @@ $sketchFile = __DIR__ . '/jelly-sketch.html';
                 <path class="jg-major" d="M-45 26-60 34.6M-45-26-59-34M0-52V-68M45-26 59-34M45 26 60 34.6"/>
                 <path class="jg-zero" d="M-8-90h16L0-76z"/>
                 <path class="jg-glass" d="M-62-34A70 70 0 0 1-24-66"/>
+            </g>
+        </svg>
+        <svg class="jx-gauge jx-dial" viewBox="0 0 800 800" aria-hidden="true" focusable="false">
+            <g transform="translate(10 70)">
                 <g class="jx-needle">
                     <path class="jg-needle" d="M0 16V-58"/>
                     <path class="jg-tail" d="M0 0V20"/>
