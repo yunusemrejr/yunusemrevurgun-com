@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://yunusemrevurgun.com/</loc>
-    <lastmod>2026-10-03T18:42:32+00:00</lastmod>
+    <lastmod>2026-10-11T19:44:09+00:00</lastmod>
   </url>
   <url>
     <loc>https://yunusemrevurgun.com/about</loc>
-    <lastmod>2026-10-01T08:33:25+00:00</lastmod>
+    <lastmod>2026-10-11T19:44:09+00:00</lastmod>
   </url>
   <url>
     <loc>https://yunusemrevurgun.com/portfolio</loc>
@@ -45,7 +45,7 @@
   </url>
   <url>
     <loc>https://yunusemrevurgun.com/slop</loc>
-    <lastmod>2026-10-08T06:47:08+00:00</lastmod>
+    <lastmod>2026-10-13T03:58:49+00:00</lastmod>
   </url>
   <url>
     <loc>https://yunusemrevurgun.com/yunobot</loc>
@@ -776,6 +776,10 @@
   <url>
     <loc>https://yunusemrevurgun.com/rmrp/1</loc>
     <lastmod>2026-08-05T10:30:11+00:00</lastmod>
+  </url>
+  <url>
+    <loc>https://yunusemrevurgun.com/slop/lava-lamp</loc>
+    <lastmod>2026-10-13T03:58:49+00:00</lastmod>
   </url>
   <url>
     <loc>https://yunusemrevurgun.com/slop/the-double-slit-experiment-in-3d</loc>
