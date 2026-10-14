@@ -40,6 +40,8 @@ $homeSchema = [
             'name' => 'Yemre — The world of a developer',
             'description' => 'A new form of intelligence is emerging.',
             'inLanguage' => 'en-US',
+            'publisher' => ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#person'],
+            'author' => ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#person'],
             'potentialAction' => [
                 '@type' => 'SearchAction',
                 'target' => [
@@ -73,6 +75,11 @@ $homeSchema = [
                 (new Socials())->getActiveLinks()
             ))),
             'jobTitle' => 'Software Developer & IT Specialist',
+            'homeLocation' => [
+                '@type' => 'Place',
+                'name' => 'Istanbul, Turkey',
+                'address' => ['@type' => 'PostalAddress', 'addressLocality' => 'Istanbul', 'addressCountry' => 'TR'],
+            ],
             'worksFor' => [
                 '@type' => 'Organization',
                 'name' => 'ASP Otomasyon A.Ş.',
@@ -92,6 +99,7 @@ ui_render_head(
     'Yunus Emre Vurgun (Yemre) — Software Developer & IT Specialist',
     'Yunus Emre Vurgun (Yemre), software developer and IT specialist in Istanbul. Explore projects, writing, and work in AI/ML and operational technology.',
     [
+        'date_modified' => seo_newest_stamp($latestWriting, ['updated_at', 'created_at']),
         'lcp_image' => ['src' => $mascotUrl],
         'hero' => true,
         '<meta name="author" content="Yunus Emre Vurgun">',

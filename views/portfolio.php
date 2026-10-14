@@ -15,10 +15,35 @@ $years = array_unique($years); rsort($years);
 $categories = array_unique($categories); sort($categories);
 
 require_once __DIR__ . '/includes/collection.php';
+// Typed project entries (invisible): the same facts the cards show —
+// description, technologies, completion date, live/source links — as
+// CreativeWork nodes engines can attribute and date.
+$projectItems = [];
+foreach ($projects as $projectRow) {
+    $work = [
+        '@type' => 'CreativeWork',
+        'name' => (string)$projectRow['title'],
+        'author' => ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#person'],
+        'inLanguage' => 'en-US',
+    ];
+    if (!empty($projectRow['description'])) $work['description'] = seo_description((string)$projectRow['description'], 300);
+    if (!empty($projectRow['technologies'])) $work['keywords'] = (string)$projectRow['technologies'];
+    if (!empty($projectRow['category'])) $work['genre'] = (string)$projectRow['category'];
+    $doneAt = $projectRow['completion_date'] ?: ($projectRow['created_at'] ?? null);
+    if (!empty($doneAt)) $work['dateCreated'] = date('Y-m-d', (int)strtotime((string)$doneAt));
+    if (!empty($projectRow['image'])) $work['image'] = seo_asset_url((string)$projectRow['image']);
+    $sameAs = array_values(array_filter([(string)($projectRow['project_url'] ?? ''), (string)($projectRow['github_url'] ?? '')]));
+    if ($sameAs !== []) $work['sameAs'] = $sameAs;
+    $projectItems[] = ['anchor' => 'project-' . (int)$projectRow['id'], 'item' => $work];
+}
+$portfolioMeta = $projectItems !== [] ? [seo_collection_graph('Portfolio', 'portfolio', $projectItems)] : [];
+$portfolioFresh = seo_newest_stamp($projects, ['updated_at', 'created_at']);
+if ($portfolioFresh !== null) $portfolioMeta['date_modified'] = $portfolioFresh;
+
 ui_render_head(
     'Software Developer Portfolio – AI/ML, OT and Web Projects',
     'Project archive by Yunus Emre Vurgun (Yemre): AI/ML, operational technology, industrial automation and web projects, each with the technologies it uses.',
-    $projects ? [ui_collection_schema('Portfolio', 'portfolio', array_column($projects, 'title'), array_map(static fn($p) => 'project-' . (int)$p['id'], $projects))] : []
+    $portfolioMeta
 );
 ?>
 <body>

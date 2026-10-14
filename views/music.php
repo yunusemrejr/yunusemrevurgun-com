@@ -7,10 +7,20 @@ require_once dirname(__DIR__) . '/models/Music.php';
 $music = new Music();
 $tracks = $music->getAllTracks(false);
 
+$trackItems = array_map(
+    static fn($trackRow): array => ['anchor' => 'track-' . (int)$trackRow['id'], 'item' => seo_music_recording($trackRow)],
+    $tracks
+);
+$musicMeta = ['music' => true, $trackItems !== []
+    ? seo_collection_graph('Music', 'music', $trackItems)
+    : ui_collection_schema('Music', 'music', array_column($tracks, 'title'), array_map(fn($item) => 'track-' . $item['id'], $tracks))];
+$musicFresh = seo_newest_stamp($tracks, ['updated_at', 'uploaded_at']);
+if ($musicFresh !== null) $musicMeta['date_modified'] = $musicFresh;
+
 ui_render_head(
     'Music – Audio Recordings by Yunus Emre Vurgun',
     'Listen to audio recordings shared by Yunus Emre Vurgun, with track details and links to music platforms.',
-    ['music' => true, ui_collection_schema('Music', 'music', array_column($tracks, 'title'), array_map(fn($item) => 'track-' . $item['id'], $tracks))]
+    $musicMeta
 );
 ?>
 <body class="ui-collection">

@@ -72,6 +72,10 @@ $updatesJs = FULL_BASE_PATH . 'assets/js/updates.js?v=' . filemtime(dirname(__DI
 $pageMeta[] = '<link rel="stylesheet" href="' . $updatesCss . '">';
 $pageMeta[] = '<script src="' . $updatesJs . '" defer></script>';
 
+if ($currentPage === 1 && ($updatesFresh = seo_newest_stamp($allUpdates, ['updated_at', 'created_at'])) !== null) {
+    $pageMeta['date_modified'] = $updatesFresh;
+}
+
 $title = 'Updates — Journal by Yunus Emre Vurgun';
 $description = 'Fresh notes and rapid changes by Yunus Emre Vurgun — ' . $totalUpdates . ' timestamped entries, searchable, with an RSS feed at /updates.xml.';
 

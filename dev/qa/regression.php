@@ -60,4 +60,29 @@ check(str_contains($slopXml, '/slop</loc>'), 'Slop section in sitemap');
 $injected = Slop::injectSeoAndHomeButton('<!DOCTYPE html><html><head></head><body><p>x</p></body></html>', ['title' => 'Cube Test', 'description' => 'A cube.'], 'http://localhost/slop/cube-test');
 check(str_contains($injected, 'rel="canonical"') && str_contains($injected, 'yev-slop-home'), 'Slop SEO and home button injected');
 check(str_contains($injected, '"@type":"CreativeWork"'), 'Slop structured data injected');
+// Sitemap index + children (SEO overhaul): the index names typed children,
+// posts land in the posts child, pages carry the image extension, and no
+// child resurrects the ignored priority/changefreq hints.
+$index = (new Sitemap())->renderIndex();
+check($doc->loadXML($index), 'Sitemap index is valid XML');
+check(str_contains($index, '<sitemapindex'), 'Sitemap index root element');
+foreach (['sitemap-pages.xml', 'sitemap-posts.xml'] as $childName) {
+    check(str_contains($index, $childName), 'Index names ' . $childName);
+}
+$postsXml = (new Sitemap())->renderGroup('posts');
+check(str_contains($postsXml, '/blog/public-post'), 'Posts child holds blog posts');
+check(!str_contains($postsXml, 'private-draft'), 'Posts child excludes drafts');
+$pagesXml = (new Sitemap())->renderGroup('pages');
+check(str_contains($pagesXml, 'xmlns:image'), 'Pages child declares image extension');
+check(str_contains($pagesXml, '<image:loc>'), 'Pages child lists page images');
+check(!str_contains($pagesXml, '<priority>') && !str_contains($pagesXml, '<changefreq>'), 'Children keep unsupported hints removed');
+check(in_array('http://localhost/blog/public-post', (new Sitemap())->allUrls(), true) || str_contains(implode(' ', (new Sitemap())->allUrls()), '/blog/public-post'), 'allUrls enumerates entries');
+
+// IndexNow key discovery reads the root key file (<key>.txt whose body is
+// the key); submission itself is production-only and stays untested here.
+require_once __DIR__ . '/../../models/IndexNow.php';
+$keyFile = IndexNow::keyFile();
+check($keyFile !== null && preg_match('/^[a-f0-9]{32}$/', $keyFile['key']) === 1, 'IndexNow key file discovered');
+check(IndexNow::submit(['http://localhost/']) === 0, 'IndexNow is a no-op in development');
+
 echo "PASS: $checks regression checks\n";

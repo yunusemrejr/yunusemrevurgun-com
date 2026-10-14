@@ -8,7 +8,7 @@ if (php_sapi_name() === 'cli-server') {
         return;
     }
     
-    if (is_file($file) && $path !== '/sitemap.xml') {
+    if (is_file($file) && !preg_match('#^/sitemap(?:-(?:pages|posts|images|videos))?\.xml$#', $path)) {
         return false; // Let PHP built-in server handle the static file directly
     }
 }
@@ -37,6 +37,33 @@ $GLOBALS['yev_stateless'] = $yevStateless;
 
 if ($yevStateless) {
     header('Cache-Control: no-cache');
+    // Conditional GET for cookie-less content pages: the rendered body is
+    // identical for every visitor, so a strong ETag over it lets crawlers
+    // and feed readers revalidate with If-None-Match and receive a 304
+    // (headers only) instead of the full page on every revisit — cheaper
+    // recrawls and an unambiguous "unchanged" freshness signal. Redirects,
+    // errors, downloads and anything that set a cookie or its own ETag pass
+    // through untouched; session-backed routes never reach this branch.
+    ob_start(static function (string $body): string {
+        if ($body === '' || headers_sent()) return $body;
+        if (http_response_code() !== 200) return $body;
+        foreach (headers_list() as $sentHeader) {
+            if (preg_match('#^(Location|Content-Disposition|Set-Cookie|ETag):#i', $sentHeader)) return $body;
+        }
+        $etag = '"' . hash('sha256', $body) . '"';
+        header('ETag: ' . $etag);
+        $ifNoneMatch = trim((string)($_SERVER['HTTP_IF_NONE_MATCH'] ?? ''));
+        if ($ifNoneMatch !== '') {
+            foreach (explode(',', $ifNoneMatch) as $candidate) {
+                $candidate = trim($candidate);
+                if ($candidate === '*' || $candidate === $etag || $candidate === 'W/' . $etag) {
+                    http_response_code(304);
+                    return '';
+                }
+            }
+        }
+        return $body;
+    });
 } elseif (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 0,

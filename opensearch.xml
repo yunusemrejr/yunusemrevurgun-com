@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Yemre</ShortName>
+  <Description>Search yunusemrevurgun.com — projects, journal entries, updates and documentation by Yunus Emre Vurgun.</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="32" height="32" type="image/png">https://yunusemrevurgun.com/assets/images/favicon-32.png</Image>
+  <Url type="text/html" method="get" template="https://yunusemrevurgun.com/search?q={searchTerms}"/>
+  <moz:SearchForm xmlns:moz="http://www.mozilla.org/2006/browser/search/">https://yunusemrevurgun.com/search</moz:SearchForm>
+</OpenSearchDescription>

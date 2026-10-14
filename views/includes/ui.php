@@ -150,11 +150,46 @@ if (!function_exists('ui_render_head')) {
     <meta name="twitter:title" content="<?= $defaultOgTitle ?>">
     <meta name="twitter:description" content="<?= $defaultOgDesc ?>">
     <meta name="twitter:image" content="<?= htmlspecialchars($defaultOgImage) ?>">
+    <?php
+    // Identity corroboration, derived from the same socials table the footer
+    // renders: rel="me" lets Mastodon/Fediverse verify this domain belongs to
+    // those profiles (and vice versa), fediverse:creator credits the author
+    // when a page is shared there, and twitter:creator/site do the same on X.
+    // All invisible; emitted only for profiles that actually exist.
+    try {
+        foreach ((new Socials())->getActiveLinks() as $soc) {
+            $socUrl = trim((string)($soc['url'] ?? ''));
+            if ($socUrl === '' || !preg_match('#^https://#i', $socUrl)) continue;
+            echo '    <link rel="me" href="' . htmlspecialchars($socUrl, ENT_QUOTES) . '">' . "\n";
+            if (preg_match('~^https://([^/]+)/@([A-Za-z0-9_]+)~', $socUrl, $m) && !str_contains($m[1], 'threads') && !str_contains($m[1], 'instagram')) {
+                echo '    <meta name="fediverse:creator" content="@' . htmlspecialchars($m[2] . '@' . $m[1], ENT_QUOTES) . '">' . "\n";
+            }
+            if (preg_match('~^https://(?:www\.)?(?:twitter\.com|x\.com)/([A-Za-z0-9_]{1,15})(?:[/?#]|$)~i', $socUrl, $m)) {
+                echo '    <meta name="twitter:creator" content="@' . htmlspecialchars($m[1], ENT_QUOTES) . '">' . "\n";
+                echo '    <meta name="twitter:site" content="@' . htmlspecialchars($m[1], ENT_QUOTES) . '">' . "\n";
+            }
+        }
+    } catch (Throwable $e) { /* socials are decorative here; never break a page for them */ }
+    // Pages that know their true content-change time pass extraMeta['date_modified']
+    // (ISO 8601). It surfaces as og:updated_time and in the WebPage node below —
+    // a freshness signal that is only ever as new as the content really is.
+    $dateModified = null;
+    if (is_string($extraMeta['date_modified'] ?? null)) {
+        $stamp = strtotime($extraMeta['date_modified']);
+        if ($stamp !== false && $stamp > 0 && $stamp <= time()) $dateModified = date('c', $stamp);
+    }
+    if ($dateModified !== null && http_response_code() < 400) {
+        echo '    <meta property="og:updated_time" content="' . $dateModified . '">' . "\n";
+    }
+    ?>
     <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= FULL_BASE_PATH ?>sitemap.xml">
     <link rel="alternate" type="text/plain" title="LLMs" href="<?= FULL_BASE_PATH ?>llms.txt">
     <link rel="alternate" type="application/rss+xml" title="Journal (RSS)" href="<?= FULL_BASE_PATH ?>blog.xml">
     <link rel="alternate" type="application/rss+xml" title="Updates (RSS)" href="<?= FULL_BASE_PATH ?>updates.xml">
     <link rel="alternate" type="application/rss+xml" title="Random Memories (RSS)" href="<?= FULL_BASE_PATH ?>rmrp.xml">
+    <link rel="alternate" type="application/atom+xml" title="All content (Atom)" href="<?= FULL_BASE_PATH ?>atom.xml">
+    <link rel="alternate" type="application/feed+json" title="All content (JSON Feed)" href="<?= FULL_BASE_PATH ?>feed.json">
+    <link rel="search" type="application/opensearchdescription+xml" title="Yemre" href="<?= FULL_BASE_PATH ?>opensearch.xml">
     <link rel="manifest" href="<?= FULL_BASE_PATH ?>manifest.json?v=<?= filemtime(__DIR__ . '/../../manifest.json') ?>">
     <?php
     // Brand icons: built from the mascot by dev/scripts/build-brand-assets.py.
@@ -212,7 +247,7 @@ if (!function_exists('ui_render_head')) {
     <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
         if (!is_int($key) && !is_string($key)) continue;
-        if (is_string($key) && in_array($key, ['yunobot', 'gemmaclaim', 'chessko', 'jelloshop', 'music', 'downloads', 'docs', 'hero', 'og_image', 'og_type', 'robots', 'canonical', 'lcp_image'], true)) continue;
+        if (is_string($key) && in_array($key, ['yunobot', 'gemmaclaim', 'chessko', 'jelloshop', 'music', 'downloads', 'docs', 'hero', 'og_image', 'og_type', 'robots', 'canonical', 'lcp_image', 'date_modified'], true)) continue;
         if (!empty($value) && is_string($value)) {
             // Defaults above already own these tags; page-specific article data remains.
             if (preg_match('/<meta (?:name|property)="(?:author|description|keywords|og:(?:type|url|title|description|image)|twitter:(?:card|url|title|description|image))"/', $value)) continue;
@@ -224,10 +259,46 @@ if (!function_exists('ui_render_head')) {
     foreach ($extraMeta as $value) {
         if (is_string($value) && str_contains($value, 'BreadcrumbList')) { $ownCrumbs = true; break; }
     }
+    $autoCrumbs = null;
     if (!$ownCrumbs && !$isFacetRequest && http_response_code() < 400 && $normalizedPath !== '/' && !str_starts_with($normalizedPath, '/search')) {
         $autoCrumbs = seo_auto_breadcrumbs($normalizedPath, $title);
-        if ($autoCrumbs) echo seo_script([$autoCrumbs]) . "\n";
+        if ($autoCrumbs) $autoCrumbs['@id'] = $canonical . '#breadcrumb';
     }
+    // One WebPage node per page ties the entity graph together: this page is
+    // part of the one WebSite, about/by the one Person, with its share image
+    // as primary image and (when known) its true modification date. Pages
+    // that already declare a page-level node (CollectionPage, ProfilePage,
+    // FAQPage...) keep theirs as the single page entity — never two.
+    $ownPageNode = false;
+    foreach ($extraMeta as $value) {
+        if (is_string($value) && preg_match('/"@type"\s*:\s*"(?:WebPage|CollectionPage|ProfilePage|FAQPage|AboutPage|ContactPage|SearchResultsPage|ItemPage)"/', $value)) { $ownPageNode = true; break; }
+    }
+    $graphNodes = [];
+    if ($autoCrumbs) $graphNodes[] = $autoCrumbs;
+    if (!$ownPageNode && !$isFacetRequest && http_response_code() < 400 && !str_starts_with($normalizedPath, '/search')) {
+        $origin = rtrim(FULL_BASE_PATH, '/');
+        $webPage = [
+            '@type' => 'WebPage',
+            '@id' => $canonical . '#webpage',
+            'url' => $canonical,
+            'name' => $title,
+            'description' => $description,
+            'inLanguage' => 'en-US',
+            'isPartOf' => ['@id' => $origin . '/#website'],
+            'about' => ['@id' => $origin . '/#person'],
+            'author' => ['@id' => $origin . '/#person'],
+        ];
+        $primaryImage = ['@type' => 'ImageObject', 'url' => $defaultOgImage];
+        if (isset($ogImageDims) && is_array($ogImageDims)) {
+            $primaryImage['width'] = (int)$ogImageDims[0];
+            $primaryImage['height'] = (int)$ogImageDims[1];
+        }
+        $webPage['primaryImageOfPage'] = $primaryImage;
+        if ($autoCrumbs) $webPage['breadcrumb'] = ['@id' => $canonical . '#breadcrumb'];
+        if ($dateModified !== null) $webPage['dateModified'] = $dateModified;
+        $graphNodes[] = $webPage;
+    }
+    if ($graphNodes !== []) echo seo_script($graphNodes) . "\n";
     ?>
 </head>
 <?php

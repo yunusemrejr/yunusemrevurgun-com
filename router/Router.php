@@ -56,10 +56,17 @@ class Router {
         '404' => 'views/404.php',
         'sitemap' => 'views/sitemap.php',
         'sitemap.xml' => 'api/sitemap.php',
+        'sitemap-pages.xml' => 'api/sitemap.php',
+        'sitemap-posts.xml' => 'api/sitemap.php',
+        'sitemap-images.xml' => 'api/sitemap.php',
+        'sitemap-videos.xml' => 'api/sitemap.php',
         'blog.xml' => 'api/blog-feed.php',
         'updates.xml' => 'api/updates-feed.php',
         'rmrp.xml' => 'api/rmrp-feed.php',
+        'atom.xml' => 'api/combined-feed.php',
+        'feed.json' => 'api/combined-feed.php',
         'llms.txt' => 'api/llms.php',
+        'llms-full.txt' => 'api/llms-full.php',
         'privacy' => 'views/legal/privacy.php',
         'terms' => 'views/legal/terms.php',
         'cookies' => 'views/legal/cookies.php',
@@ -106,6 +113,23 @@ class Router {
             // Production mode: use GET parameter from .htaccess
             $url = $_GET['url'] ?? '';
             $url = trim($url, '/');
+        }
+
+        // Dev parity for the .htaccess machine-readable rewrites: production
+        // passes ?type=/?format= in the rewrite target; mirror that here so
+        // the built-in server answers the same bytes as production.
+        $machineParams = [
+            'sitemap.xml' => ['type', 'index'],
+            'sitemap-pages.xml' => ['type', 'pages'],
+            'sitemap-posts.xml' => ['type', 'posts'],
+            'sitemap-images.xml' => ['type', 'images'],
+            'sitemap-videos.xml' => ['type', 'videos'],
+            'atom.xml' => ['format', 'atom'],
+            'feed.json' => ['format', 'json'],
+        ];
+        if (isset($machineParams[$url])) {
+            [$machineKey, $machineValue] = $machineParams[$url];
+            $_GET[$machineKey] = $machineValue;
         }
 
         if (in_array($url, ['home', 'index', 'index.php'], true) && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {

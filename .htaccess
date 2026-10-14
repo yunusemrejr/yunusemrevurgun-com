@@ -15,12 +15,62 @@ RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
+# Canonical URL hygiene: the same page reachable at a second URL splits its
+# signals and wastes crawl time. THE_REQUEST matches only the client's
+# original request line, so the internal rewrites below never re-trigger.
+# Direct hits on the generator scripts go to their pretty public URLs.
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+api/sitemap\.php [NC]
+RewriteRule ^ /sitemap.xml [R=301,L]
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+api/llms\.php [NC]
+RewriteRule ^ /llms.txt [R=301,L]
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+api/llms-full\.php [NC]
+RewriteRule ^ /llms-full.txt [R=301,L]
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+api/blog-feed\.php [NC]
+RewriteRule ^ /blog.xml [R=301,L]
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+api/updates-feed\.php [NC]
+RewriteRule ^ /updates.xml [R=301,L]
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+api/rmrp-feed\.php [NC]
+RewriteRule ^ /rmrp.xml [R=301,L]
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+api/combined-feed\.php [NC]
+RewriteRule ^ /atom.xml [R=301,L]
+# /index.php (optionally with the router's ?url=) is the homepage or that path.
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+index\.php [NC]
+RewriteCond %{QUERY_STRING} ^url=([^&]+) [NC]
+RewriteRule ^ /%1? [R=301,L]
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{THE_REQUEST} \s/+index\.php [NC]
+RewriteRule ^ / [R=301,L]
+# One slash policy: no trailing slash except the root (real directories keep
+# theirs so mod_dir behaviour for uploads/ and assets/ is untouched).
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# Conventional feed aliases people and readers guess: send them to the
+# combined Atom feed instead of a 404.
+RewriteRule ^feed/?$ /atom.xml [R=301,L]
+RewriteRule ^feed\.xml$ /atom.xml [R=301,L]
+RewriteRule ^rss\.xml$ /atom.xml [R=301,L]
+RewriteRule ^security\.txt$ /.well-known/security.txt [R=301,L]
+
 # Dynamic machine-readable endpoints
-RewriteRule ^sitemap\.xml$ api/sitemap.php [L,QSA]
+RewriteRule ^sitemap\.xml$ api/sitemap.php?type=index [L,QSA]
+RewriteRule ^sitemap-(pages|posts|images|videos)\.xml$ api/sitemap.php?type=$1 [L,QSA]
 RewriteRule ^llms\.txt$ api/llms.php [L,QSA]
+RewriteRule ^llms-full\.txt$ api/llms-full.php [L,QSA]
 RewriteRule ^updates\.xml$ api/updates-feed.php [L,QSA]
 RewriteRule ^rmrp\.xml$ api/rmrp-feed.php [L,QSA]
 RewriteRule ^blog\.xml$ api/blog-feed.php [L,QSA]
+RewriteRule ^atom\.xml$ api/combined-feed.php?format=atom [L,QSA]
+RewriteRule ^feed\.json$ api/combined-feed.php?format=json [L,QSA]
 
 # Normalize /index
 RewriteRule ^index/?$ / [R=301,L]

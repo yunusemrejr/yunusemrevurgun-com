@@ -18,6 +18,9 @@ $posts = $blog->getPosts($offset, $postsPerPage);
 $canonicalParams = [];
 if ($currentPage > 1) $canonicalParams['page'] = $currentPage;
 $pageMeta = ['canonical' => FULL_BASE_PATH . 'blog' . ($canonicalParams ? '?' . http_build_query($canonicalParams) : '')];
+if ($currentPage === 1 && ($blogFresh = seo_newest_stamp($posts, ['updated_at', 'created_at'])) !== null) {
+    $pageMeta['date_modified'] = $blogFresh;
+}
 if ($totalPages > 1) {
     if ($currentPage > 1) {
         $pageMeta[] = '<link rel="prev" href="' . FULL_BASE_PATH . 'blog?page=' . ($currentPage - 1) . '">';

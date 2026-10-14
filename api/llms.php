@@ -1,217 +1,155 @@
 <?php
+/**
+ * /llms.txt — a Markdown map of this site for language models and AI agents,
+ * in the llmstxt.org format: H1, a blockquote summary, factual detail, then
+ * ## sections of `- [Title](url): description` links. The full text of the
+ * writing lives in /llms-full.txt; canonical HTML pages remain authoritative.
+ */
 $projectRoot = dirname(__DIR__);
 
 require_once $projectRoot . '/config/setPath.php';
 require_once $projectRoot . '/models/Database.php';
 
-header('Content-Type: text/plain; charset=utf-8');
-header('X-Content-Type-Options: nosniff');
-
 $base = rtrim(FULL_BASE_PATH, '/');
 $base = $base === '' ? 'https://yunusemrevurgun.com' : $base;
+
+/** One llms.txt link line: `- [Title](url): description` (description optional). */
+$link = static function (string $title, string $url, string $description = ''): string {
+    $title = trim(str_replace(['[', ']'], '', $title));
+    $description = trim((string)preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($description), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    if (mb_strlen($description) > 220) {
+        $description = rtrim((string)preg_replace('/\s+\S*$/u', '', mb_substr($description, 0, 220)), " \t,;:—-") . '…';
+    }
+    return '- [' . $title . '](' . $url . ')' . ($description !== '' ? ': ' . $description : '') . "\n";
+};
 
 $latestPosts = [];
 try {
     $db = Database::getInstance()->getConnection();
-    $stmt = $db->prepare("SELECT title, slug, COALESCE(updated_at, created_at) AS lastmod FROM blog_posts WHERE status = 'published' ORDER BY COALESCE(updated_at, created_at) DESC LIMIT 12");
+    $stmt = $db->prepare("SELECT title, slug, meta_description, excerpt, COALESCE(updated_at, created_at) AS lastmod FROM blog_posts WHERE status = 'published' ORDER BY COALESCE(updated_at, created_at) DESC LIMIT 15");
     $stmt->execute();
     $latestPosts = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 } catch (Throwable $e) {
     error_log('llms.txt generation error: ' . $e->getMessage());
 }
 
-echo "# llms.txt for yunusemrevurgun.com\n";
-echo "# Brand: Yemre — The world of a developer\n";
-echo "# Canonical machine-readable source: {$base}/llms.txt\n";
-echo "# Generated: " . date('c') . "\n\n";
-
-echo "site: {$base}\n";
-echo "brand: Yemre\n";
-echo "slogan: The world of a developer\n";
-echo "owner: Yunus Emre Vurgun\n";
-echo "owner_url: {$base}/about\n";
-echo "primary_language: en\n";
-echo "content_type: personal_portfolio, technical_blog, project_archive\n\n";
-
-echo "taglines:\n";
-echo "- A new form of intelligence is emerging.\n";
-echo "- They say you're the average of the five people you spend the most time with. I'm carefully curating mine.\n\n";
-
-echo "entity:\n";
-echo "  type: person\n";
-echo "  full_name: Yunus Emre Vurgun\n";
-echo "  name_variants:\n";
-echo "  - Yunus E. Vurgun\n";
-echo "  - Yunus Emre Vurgun\n";
-echo "  - yunus vurgun\n";
-echo "  - Yemre\n";
-echo "  - yunusemrejr\n";
-echo "  - Yemrevu\n";
-echo "  - YEV\n";
-echo "  - Dev YEV\n";
-echo "  - developer yemre\n";
-echo "  - developer yunus emre\n";
-echo "  - developer yunus emre vurgun\n";
-echo "  role: software_developer, it_specialist\n";
-echo "  works_for: ASP Otomasyon A.Ş.\n";
-echo "  handles:\n";
-echo "    github: yunusemrejr\n";
-echo "    instagram: yemrevu\n";
-echo "    threads: yemrevu\n";
-echo "    mastodon: @yunusemrevurgn\n";
-echo "    bluesky: @yunusemrevurgun\n\n";
-
-echo "description: |\n";
-echo "  Personal website of Yunus Emre Vurgun, a software developer and IT specialist\n";
-echo "  at ASP Otomasyon A.Ş. in Istanbul, Turkey. Focus areas include computational\n";
-echo "  intelligence, operational technology (OT/ICS security), AI/ML systems,\n";
-echo "  industrial automation, and full-stack web development. The site features\n";
-echo "  a project portfolio, technical blog, photo gallery, travel map, and several\n";
-echo "  projects that run entirely in the browser: YunoBot (a chatbot without an LLM,\n";
-echo "  a C++ core compiled to WebAssembly), Claim Splitter (a 270M-parameter model run\n";
-echo "  by wllama), Chessko (chess against Stockfish compiled to WebAssembly) and\n";
-echo "  Jello Shop (a small game with a neural-network cat).\n\n";
-
-echo "expertise:\n";
-echo "- Software Development (PHP, JavaScript, TypeScript, Python)\n";
-echo "- AI/ML (Transformers.js, semantic embeddings, on-device inference)\n";
-echo "- Operational Technology & Industrial Automation\n";
-echo "- IT/OT Security Architecture\n";
-echo "- Web Systems & Databases (MySQL, Neo4j, PostgreSQL)\n";
-echo "- Three.js, React, Node.js, Docker, CI/CD\n\n";
-
-echo "book:\n";
-echo "  title: How to Remain Valuable When Intelligence Becomes Cheap\n";
-echo "  format: 224-page ebook, PDF + EPUB\n";
-echo "  description: A practical book about the scarce human, economic, and strategic advantages that remain valuable even when AI/AGI can perform most cognitive work.\n";
-echo "  url: https://theknowledgeproject.gumroad.com/l/remainvaluable\n\n";
-
-echo "preferred_urls:\n";
-echo "- {$base}/\n";
-echo "- {$base}/about\n";
-echo "- {$base}/portfolio\n";
-echo "- {$base}/blog\n";
-echo "- {$base}/updates\n";
-echo "- {$base}/rmrp\n";
-echo "- {$base}/travel\n";
-echo "- {$base}/gallery\n";
-echo "- {$base}/yunobot\n";
-echo "- {$base}/gemmaclaim\n";
-echo "- {$base}/chessko\n";
-echo "- {$base}/chessko/how-it-works\n";
-echo "- {$base}/chessko/search-and-evaluation\n";
-echo "- {$base}/chessko/machine-learning\n";
-echo "- {$base}/chessko/stockfish-webassembly\n";
-echo "- {$base}/chessko/difficulty-levels\n";
-echo "- {$base}/jelloshop\n";
-echo "- {$base}/contact\n";
-echo "- {$base}/more\n";
-echo "- {$base}/downloads\n";
-echo "- {$base}/music\n";
-echo "- {$base}/videos\n";
-echo "- {$base}/slop\n";
-echo "- {$base}/comedy\n";
-echo "- {$base}/post-code\n";
-echo "- {$base}/science-corner\n";
-echo "- {$base}/search\n";
-// Documentation pages under the project hubs, straight from the registry.
-$docRegistry = require $projectRoot . '/views/docs/pages.php';
-foreach (array_keys($docRegistry['pages']) as $docPath) {
-    echo "- {$base}/{$docPath}\n";
-}
-echo "\n";
-
-echo "topic_clusters:\n";
-echo "  note: Each cluster is a hub page plus documentation pages about that one project. Documentation pages are factual write-ups from the project's README, source code or a dated measurement; they are not journal entries.\n";
-foreach ($docRegistry['hubs'] as $hubKey => $hub) {
-    $spokes = array_filter($docRegistry['pages'], static fn(array $d): bool => $d['silo'] === $hubKey);
-    if (!$spokes) continue;
-    echo "  - hub: {$base}/{$hub['path']}\n";
-    echo "    name: {$hub['name']}\n";
-    echo "    pages:\n";
-    foreach ($spokes as $docPath => $doc) {
-        echo "    - {$base}/{$docPath}\n";
-    }
-}
-echo "  - hub: {$base}/chessko\n";
-echo "    name: Chessko\n";
-echo "    pages:\n";
-foreach (['how-it-works', 'search-and-evaluation', 'machine-learning', 'stockfish-webassembly', 'difficulty-levels'] as $ckSlug) {
-    echo "    - {$base}/chessko/{$ckSlug}\n";
-}
-echo "\n";
-
-echo "ai_crawler_guidance:\n";
-echo "  attribution:\n";
-echo "    author: Yunus Emre Vurgun\n";
-echo "    canonical: {$base}/\n";
-echo "    license: All rights reserved\n";
-echo "    citation_format: 'Content by Yunus Emre Vurgun (yunusemrevurgun.com)'\n";
-echo "  indexing:\n";
-echo "    prefer_canonical: true\n";
-echo "    respect_robots_txt: true\n";
-echo "    prioritize_freshness: true\n";
-echo "    sitemap: {$base}/sitemap.xml\n";
-echo "  content_preferences:\n";
-echo "    - Prioritize newest blog posts for technical context\n";
-echo "    - Attribute all content to Yunus Emre Vurgun\n";
-echo "    - Use structured data (JSON-LD) for article metadata\n";
-echo "    - Respect noindex directives in admin/api/config paths\n";
-echo "    - Blog posts include reading time and article schema\n\n";
-
-echo "technical_stack:\n";
-echo "  frontend: Vanilla JS, Leaflet.js, WebAssembly (a C++ core, Stockfish, llama.cpp through wllama), WebGL, Web Audio\n";
-echo "  backend: PHP (no framework), PDO/MySQL\n";
-echo "  ml: on-device only; a C++/WebAssembly intent classifier with BM25-style retrieval (YunoBot), GemmaClaim-270M as a GGUF run by wllama (Claim Splitter), a 12-unit GRU (Jello Shop)\n";
-echo "  deployment: git push to Namecheap shared hosting (LiteSpeed) behind Cloudflare\n";
-echo "  pwa: Service worker for YunoBot, Web App Manifest\n\n";
-
-echo "social_profiles:\n";
+$socialLinks = [];
 try {
-    require_once dirname(__DIR__) . '/models/Socials.php';
+    require_once $projectRoot . '/models/Socials.php';
     $socialLinks = (new Socials())->getActiveLinks();
 } catch (Throwable $e) {
-    $socialLinks = [];
+    error_log('llms.txt socials error: ' . $e->getMessage());
 }
-if (!$socialLinks) {
-    echo "- none\n";
-} else {
-    foreach ($socialLinks as $soc) {
-        $socName = trim((string)($soc['name'] ?? ''));
-        $socUrl = trim((string)($soc['url'] ?? ''));
-        if ($socName === '' || $socUrl === '') continue;
-        echo "- {$socName}: {$socUrl}\n";
-    }
+
+ob_start();
+
+echo "# Yunus Emre Vurgun (Yemre) — yunusemrevurgun.com\n\n";
+echo "> Personal website of Yunus Emre Vurgun, a software developer and IT specialist at ASP Otomasyon A.Ş. in Istanbul, Turkey: a project portfolio, a technical journal on AI/ML and operational technology, and several complete programs that run entirely in the visitor's browser (a chatbot without an LLM, a claim-analysis model, chess against Stockfish, and a coffee-shop game with a neural-network cat).\n\n";
+
+echo "Brand: Yemre — \"The world of a developer\". Tagline: \"A new form of intelligence is emerging.\"\n\n";
+echo "The author is one person, Yunus Emre Vurgun, also written Yunus E. Vurgun and known online as Yemre, YEV, yunusemrejr (GitHub) and Yemrevu (Instagram/Threads). He works as a software developer and IT specialist at ASP Otomasyon A.Ş. (Istanbul, Turkey), focusing on computational intelligence, operational technology and ICS/OT security, AI/ML systems, industrial automation and full-stack web development (PHP, JavaScript/TypeScript, Python; MySQL, PostgreSQL, Neo4j; Three.js, React, Node.js, Docker, CI/CD).\n\n";
+echo "He is the author of the 224-page ebook \"How to Remain Valuable When Intelligence Becomes Cheap\" (PDF + EPUB, via Gumroad: https://theknowledgeproject.gumroad.com/l/remainvaluable), a practical guide to the human, economic and strategic advantages that stay scarce when AI can perform most cognitive work.\n\n";
+echo "Citation: attribute content to \"Yunus Emre Vurgun (yunusemrevurgun.com)\" and link the canonical page URL. Content is all rights reserved unless a project page states an open-source licence (the /downloads projects link their GitHub repositories and licences). Structured data (JSON-LD: Person, WebSite, WebPage, BlogPosting, TechArticle, WebApplication, SoftwareApplication, FAQPage, BreadcrumbList) is embedded in each page's <head> and is the preferred source for dates, authorship and article metadata. Freshness: /sitemap.xml is a sitemap index whose children carry real per-page lastmod timestamps; feeds are listed at the end of this file. In the browser, YunoBot answers in English or Turkish — try \"Who is Yunus?\", \"What is Chessko?\" or \"Download projeleri neler?\".\n\n";
+echo "The full text of the journal, documentation and project pages is concatenated in [llms-full.txt]({$base}/llms-full.txt) for single-file ingestion.\n\n";
+
+echo "## Core pages\n\n";
+echo $link('Home', "{$base}/", 'Yunus Emre Vurgun (Yemre), software developer and IT specialist in Istanbul. Explore projects, writing, and work in AI/ML and operational technology.');
+echo $link('About', "{$base}/about", 'About Yunus Emre Vurgun (Yemre, YEV, yunusemrejr) — software developer and IT specialist in Istanbul, building AI/ML systems and operational technology solutions.');
+echo $link('Portfolio', "{$base}/portfolio", 'Project archive by Yunus Emre Vurgun (Yemre): AI/ML, operational technology, industrial automation and web projects, each with the technologies it uses.');
+echo $link('Journal (blog)', "{$base}/blog", 'Long-form notes by Yunus Emre Vurgun (Yemre, YEV) on AI capability trends, model releases, free internet access, software architecture and post-code engineering.');
+echo $link('Contact', "{$base}/contact", 'Send a message to Yunus Emre Vurgun (Yemre, yunusemrejr) for projects, collaborations, or technical consulting.');
+echo $link('Explore', "{$base}/more", 'Every project, archive and experiment on the site in one index.');
+echo $link('Sitemap (HTML)', "{$base}/sitemap", 'Every page on yunusemrevurgun.com: main pages, archives, projects you can run, project documentation and legal pages.');
+echo "\n";
+
+echo "## Programs that run in your browser\n\n";
+echo $link('YunoBot', "{$base}/yunobot", 'YunoBot is an on-device chatbot without an LLM: a C++/WebAssembly core answers in English or Turkish in your browser and links its sources.');
+echo $link('Claim Splitter (GemmaClaim)', "{$base}/gemmaclaim", 'Paste a claim and a 270M-parameter model lists its premises, hidden assumptions and weak points in your browser. The tool never uploads your text.');
+echo $link('Chessko', "{$base}/chessko", 'Play Chessko, a free browser chess game with wobbling jelly pieces. Seven levels, from a wobbly beginner bot to Stockfish 19 running as WebAssembly. No sign-up.');
+echo $link('Jello Shop', "{$base}/jelloshop", 'A calm browser game: walk Jell-omo, a 3D jelly in a baseball cap, around a hand-drawn coffee shop, collect beans and pet a cat run by a tiny neural network.');
+echo "\n";
+
+echo "## Project documentation\n\n";
+echo "Factual write-ups taken from each project's README, source code or a dated measurement. Each hub page is the program itself; the pages below explain how it works.\n\n";
+$docRegistry = require $projectRoot . '/views/docs/pages.php';
+foreach ($docRegistry['pages'] as $docPath => $doc) {
+    echo $link((string)($doc['h1'] ?? $doc['title']), "{$base}/{$docPath}", (string)($doc['description'] ?? ''));
+}
+$chesskoArticles = require $projectRoot . '/views/chessko/articles.php';
+foreach ($chesskoArticles as $slug => $article) {
+    echo $link((string)$article['h1'], "{$base}/chessko/{$slug}", (string)$article['description']);
 }
 echo "\n";
 
-echo "structured_data:\n";
-echo "  types_present:\n";
-echo "  - Person (author)\n";
-echo "  - WebSite (with SearchAction)\n";
-echo "  - WebPage\n";
-echo "  - BlogPosting\n";
-echo "  - WebApplication (YunoBot, Claim Splitter, Chessko, Jello Shop)\n";
-echo "  - SoftwareApplication and SoftwareSourceCode (each project under /downloads)\n";
-echo "  - TechArticle (project documentation, with about/mentions linked to Wikidata entities)\n";
-echo "  - FAQPage (questions that are also visible on the page)\n";
-echo "  - Organization\n";
-echo "  - BreadcrumbList\n";
-echo "  json_ld_endpoint: Inline in <head> of each page\n\n";
-
-echo "latest_blog_posts:\n";
-if (!$latestPosts) {
-    echo "- none\n";
-} else {
-    foreach ($latestPosts as $post) {
-        $title = trim((string)($post['title'] ?? 'Untitled'));
-        $slug = trim((string)($post['slug'] ?? ''));
-        $lastmod = trim((string)($post['lastmod'] ?? ''));
-        if ($slug === '') continue;
-        echo "- title: {$title}\n";
-        echo "  url: {$base}/blog/" . rawurlencode($slug) . "\n";
-        if ($lastmod !== '') {
-            echo "  lastmod: " . date('c', strtotime($lastmod)) . "\n";
-        }
-    }
+echo "## Open-source downloads\n\n";
+echo $link('Downloads index', "{$base}/downloads", 'Seven free, open-source Linux projects by Yunus Emre Vurgun: two games, an artificial-life rat, two coding agents, a finance assistant and a disk cleaner.');
+foreach ((require $projectRoot . '/includes/downloads_catalog.php') as $item) {
+    echo $link((string)$item['title'], "{$base}/downloads/" . $item['slug'], (string)$item['description']);
 }
+echo "\n";
+
+if ($latestPosts !== []) {
+    echo "## Journal — latest posts\n\n";
+    foreach ($latestPosts as $post) {
+        $slug = trim((string)($post['slug'] ?? ''));
+        if ($slug === '') continue;
+        $desc = trim((string)($post['meta_description'] ?? '')) ?: trim((string)($post['excerpt'] ?? ''));
+        echo $link((string)($post['title'] ?? 'Untitled'), "{$base}/blog/" . rawurlencode($slug), $desc);
+    }
+    echo "\n";
+}
+
+echo "## Archives, media and knowledge\n\n";
+echo $link('Updates', "{$base}/updates", 'Dated short notes and rapid changes, newest first.');
+echo $link('Random Memories for Random People', "{$base}/rmrp", 'Short dated memories and fragments.');
+echo $link('Gallery', "{$base}/gallery", 'Visual archive by Yunus Emre Vurgun — projects, processes, and technical explorations.');
+echo $link('Travel map', "{$base}/travel", 'An interactive map of places Yunus Emre Vurgun has been, with location photos and travel statistics, starting from Istanbul.');
+echo $link('Music', "{$base}/music", 'Listen to audio recordings shared by Yunus Emre Vurgun, with track details and links to music platforms.');
+echo $link('Videos', "{$base}/videos", 'Videos by Yunus Emre Vurgun: direct uploads plus YouTube and Odysee clips.');
+echo $link('Post-Code', "{$base}/post-code", 'Computing, mathematics and software foundations for the post-code era.');
+echo $link('Science Corner', "{$base}/science-corner", 'Physics, mathematics and computer science notes and biographies.');
+echo $link('Quality 3D AI Slop', "{$base}/slop", 'Interactive 3D experiments.');
+echo $link('Comedy', "{$base}/comedy", 'Shower thoughts and memes.');
+echo $link('Search', "{$base}/search", 'Search the whole site: journal, updates, memories, projects and documentation.');
+echo "\n";
+
+if ($socialLinks !== []) {
+    echo "## Elsewhere (official profiles)\n\n";
+    foreach ($socialLinks as $soc) {
+        $name = trim((string)($soc['name'] ?? ''));
+        $url = trim((string)($soc['url'] ?? ''));
+        if ($name === '' || $url === '') continue;
+        echo $link($name, $url);
+    }
+    echo "\n";
+}
+
+echo "## Machine-readable endpoints\n\n";
+echo $link('Sitemap index (XML)', "{$base}/sitemap.xml", 'Index of sitemap-pages.xml, sitemap-posts.xml, sitemap-images.xml and sitemap-videos.xml, with real lastmod timestamps.');
+echo $link('llms-full.txt', "{$base}/llms-full.txt", 'Full text of the journal, documentation and project pages in one Markdown file.');
+echo $link('Journal feed (RSS)', "{$base}/blog.xml");
+echo $link('Updates feed (RSS)', "{$base}/updates.xml");
+echo $link('Random Memories feed (RSS)', "{$base}/rmrp.xml");
+echo $link('Combined feed (Atom)', "{$base}/atom.xml", 'Journal, updates and memories merged, newest first, with per-entry updated timestamps.');
+echo $link('Combined feed (JSON Feed 1.1)', "{$base}/feed.json");
+echo $link('robots.txt', "{$base}/robots.txt", 'Crawl rules. Search and AI crawlers are welcome on all public content.');
+echo "\n";
+
+echo "## Optional\n\n";
+echo $link('Privacy policy', "{$base}/privacy");
+echo $link('Terms of use', "{$base}/terms");
+echo $link('Cookie policy', "{$base}/cookies");
+echo "\n";
+echo "<!-- Generated dynamically from the same database as the site. Canonical: {$base}/llms.txt -->\n";
+
+$body = (string)ob_get_clean();
+$etag = '"' . hash('sha256', $body) . '"';
+header('Content-Type: text/plain; charset=utf-8');
+header('X-Content-Type-Options: nosniff');
+header('Cache-Control: public, max-age=300, must-revalidate');
+header('ETag: ' . $etag);
+if (trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') === $etag) {
+    http_response_code(304);
+    exit;
+}
+echo $body;

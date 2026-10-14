@@ -72,12 +72,23 @@ $galleryImageBase = FULL_BASE_PATH . 'uploads/gallery/';
 
 // Travel presentation lives in the shared design system
 // (assets/css/ui-rebuild.css, TRAVEL PAGE section) — no page-level styles.
+// The places as structured data (invisible): real coordinates from the
+// same rows the map plots, so engines see the locations, not just pins.
+$travelMeta = [
+    '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">',
+];
+$travelItems = array_map(
+    static fn($locRow): array => ['anchor' => null, 'item' => seo_place($locRow)],
+    $dbLocations
+);
+if ($travelItems !== []) $travelMeta[] = seo_collection_graph('Travel', 'travel', $travelItems);
+$travelFresh = seo_newest_stamp($dbLocations, ['created_at']);
+if ($travelFresh !== null) $travelMeta['date_modified'] = $travelFresh;
+
 ui_render_head(
     'Travel Map – Locations and Photos | Yunus Emre Vurgun',
     'An interactive map of places Yunus Emre Vurgun has been, with location photos and travel statistics, starting from Istanbul.',
-    [
-        '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">',
-    ]
+    $travelMeta
 );
 ?>
 <body>

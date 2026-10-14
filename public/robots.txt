@@ -1,53 +1,89 @@
+# robots.txt for yunusemrevurgun.com — personal site of Yunus Emre Vurgun (Yemre)
+# Canonical host: https://yunusemrevurgun.com (www and http 301 to it)
+# Sitemap index: https://yunusemrevurgun.com/sitemap.xml
+#   children: sitemap-pages.xml, sitemap-posts.xml, sitemap-images.xml, sitemap-videos.xml
+# For language models and AI agents: https://yunusemrevurgun.com/llms.txt
+#   full-text edition: https://yunusemrevurgun.com/llms-full.txt
+# Feeds: /blog.xml, /updates.xml, /rmrp.xml (RSS) · /atom.xml (Atom) · /feed.json (JSON Feed)
+# Search engines and AI crawlers are welcome on all public content below.
+# Please attribute as: Yunus Emre Vurgun (yunusemrevurgun.com)
+
 User-agent: *
 Allow: /
-
-# Sitemap
-Sitemap: https://yunusemrevurgun.com/sitemap.xml
-# LLM guidance
-# https://yunusemrevurgun.com/llms.txt
-
-# Disallow admin areas
-Disallow: /admin/
+Disallow: /admin
 Disallow: /api/
 Disallow: /config/
 Disallow: /dev/
 Disallow: /includes/
 Disallow: /middleware/
 Disallow: /models/
+Disallow: /public/
 Disallow: /router/
 Disallow: /scripts/
 Disallow: /views/
+Disallow: /.git/
+Disallow: /.agent_memory/
+Disallow: /.pi/
+Disallow: /.kilo/
 
-# AI-specific crawler rules
+# AI search, assistant and training crawlers: explicitly welcome on the same
+# public content (private paths stay closed, exactly as for everyone).
 User-agent: GPTBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: ChatGPT-User
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
 User-agent: OAI-SearchBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: Google-Extended
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
-User-agent: CCBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /config/
-
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
 User-agent: anthropic-ai
-Disallow: /admin/
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: Meta-ExternalAgent
+User-agent: Meta-ExternalFetcher
+User-agent: DuckAssistBot
+User-agent: MistralAI-User
+User-agent: cohere-ai
+User-agent: YouBot
+User-agent: Amazonbot
+User-agent: AI2Bot
+User-agent: Diffbot
+Allow: /
+Disallow: /admin
 Disallow: /api/
 Disallow: /config/
+Disallow: /dev/
+Disallow: /includes/
+Disallow: /middleware/
+Disallow: /models/
+Disallow: /public/
+Disallow: /router/
+Disallow: /scripts/
+Disallow: /views/
+Disallow: /.git/
+Disallow: /.agent_memory/
+Disallow: /.pi/
+Disallow: /.kilo/
 
-# Crawl delay
-Crawl-delay: 1
+User-agent: Yandex
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /config/
+Disallow: /dev/
+Disallow: /includes/
+Disallow: /middleware/
+Disallow: /models/
+Disallow: /public/
+Disallow: /router/
+Disallow: /scripts/
+Disallow: /views/
+Disallow: /.git/
+Disallow: /.agent_memory/
+Disallow: /.pi/
+Disallow: /.kilo/
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&fbclid&gclid&mc_cid&mc_eid
+
+Sitemap: https://yunusemrevurgun.com/sitemap.xml

@@ -1,0 +1,14 @@
+/* TEAM */
+Developer, designer and author: Yunus Emre Vurgun (Yemre)
+Site: https://yunusemrevurgun.com/about
+Location: Istanbul, Turkey
+Contact: https://yunusemrevurgun.com/contact
+
+/* SITE */
+Canonical: https://yunusemrevurgun.com/
+Language: English (en-US)
+Stack: PHP (no framework) with PDO, vanilla JavaScript, WebAssembly
+  (a C++ chatbot core, Stockfish 19, llama.cpp via wllama), Leaflet.js
+Hosting: LiteSpeed behind Cloudflare, deployed with git
+Machine-readable: /sitemap.xml (index), /llms.txt, /llms-full.txt,
+  /blog.xml, /updates.xml, /rmrp.xml, /atom.xml, /feed.json

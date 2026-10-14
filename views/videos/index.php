@@ -7,10 +7,21 @@ require_once dirname(__DIR__, 2) . '/models/Videos.php';
 $videos = new Videos();
 $videoList = $videos->getAllVideos(false);
 
+$videoItems = [];
+foreach ($videoList as $videoRow) {
+    $object = seo_video_object($videoRow);
+    if ($object !== null) $videoItems[] = ['anchor' => 'video-' . (int)$videoRow['id'], 'item' => $object];
+}
+$videoMeta = $videoItems !== []
+    ? [seo_collection_graph('Videos', 'videos', $videoItems)]
+    : [ui_collection_schema('Videos', 'videos', array_column($videoList, 'title'), array_map(fn($item) => 'video-' . $item['id'], $videoList))];
+$videoFresh = seo_newest_stamp($videoList, ['updated_at', 'uploaded_at']);
+if ($videoFresh !== null) $videoMeta['date_modified'] = $videoFresh;
+
 ui_render_head(
     'Videos – Uploads, YouTube and Odysee Clips | Yunus Emre Vurgun',
     'Videos by Yunus Emre Vurgun: direct uploads plus YouTube and Odysee clips. External embeds load only when you press play.',
-    [ui_collection_schema('Videos', 'videos', array_column($videoList, 'title'), array_map(fn($item) => 'video-' . $item['id'], $videoList))]
+    $videoMeta
 );
 ?>
 <body class="ui-collection">

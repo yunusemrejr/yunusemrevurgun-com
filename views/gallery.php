@@ -29,9 +29,27 @@ if ($useSingleSlideshow) {
     $images = $gallery->getAllImages(false);
 }
 
+// Structured data for the photographs themselves (invisible): one
+// ImageObject per visible image so image search can index them with their
+// titles, sizes and upload dates instead of guessing from filenames.
+$galleryImages = $gallery->getAllImages(false);
+$galleryItems = [];
+foreach ($galleryImages as $galleryImage) {
+    if (empty($galleryImage['filename'])) continue;
+    $galleryItems[] = ['anchor' => null, 'item' => seo_image_object(
+        'uploads/gallery/' . ltrim((string)$galleryImage['filename'], '/'),
+        (string)($galleryImage['title'] ?? ''),
+        isset($galleryImage['uploaded_at']) ? (string)$galleryImage['uploaded_at'] : null
+    )];
+}
+$galleryMeta = $galleryItems !== [] ? [seo_collection_graph('Gallery', 'gallery', $galleryItems)] : [];
+$galleryFresh = seo_newest_stamp($galleryImages, ['uploaded_at']);
+if ($galleryFresh !== null) $galleryMeta['date_modified'] = $galleryFresh;
+
 ui_render_head(
     'Gallery — Experiments | Yunus Emre Vurgun, Developer',
-    'Visual archive by Yunus Emre Vurgun — projects, processes, and technical explorations.'
+    'Visual archive by Yunus Emre Vurgun — projects, processes, and technical explorations.',
+    $galleryMeta
 );
 ?>
 <body>

@@ -224,3 +224,165 @@ if (!function_exists('seo_auto_breadcrumbs')) {
     }
 }
 
+if (!function_exists('seo_iso8601_duration')) {
+    /** Seconds as an ISO 8601 duration (schema.org `duration`), or null. */
+    function seo_iso8601_duration($seconds): ?string
+    {
+        $seconds = (int)$seconds;
+        return $seconds > 0 ? 'PT' . intdiv($seconds, 3600) . 'H' . intdiv($seconds % 3600, 60) . 'M' . ($seconds % 60) . 'S' : null;
+    }
+}
+
+if (!function_exists('seo_newest_stamp')) {
+    /**
+     * Newest timestamp across already-fetched rows, as ISO 8601 — the honest
+     * dateModified for a listing page. $keys are tried in order per row.
+     */
+    function seo_newest_stamp(array $rows, array $keys): ?string
+    {
+        $newest = 0;
+        foreach ($rows as $row) {
+            foreach ($keys as $key) {
+                if (!empty($row[$key])) {
+                    $stamp = strtotime((string)$row[$key]);
+                    if ($stamp !== false && $stamp > $newest) $newest = $stamp;
+                    break;
+                }
+            }
+        }
+        return $newest > 0 && $newest <= time() ? date('c', $newest) : null;
+    }
+}
+
+if (!function_exists('seo_collection_graph')) {
+    /**
+     * CollectionPage + ItemList of typed items + BreadcrumbList, as one JSON-LD
+     * script. $items: list of ['anchor' => ?string, 'item' => array]. The
+     * typed item (VideoObject, ImageObject...) carries the facts; the ListItem
+     * keeps the page anchor the visible card already owns. Richer sibling of
+     * ui_collection_schema() for sections whose rows have media facts.
+     */
+    function seo_collection_graph(string $name, string $path, array $items): string
+    {
+        $url = rtrim(FULL_BASE_PATH, '/') . '/' . $path;
+        $list = [];
+        foreach ($items as $i => $entry) {
+            $itemUrl = $url . (!empty($entry['anchor']) ? '#' . $entry['anchor'] : '');
+            $item = $entry['item'];
+            $item['@id'] = $item['@id'] ?? $itemUrl;
+            $list[] = ['@type' => 'ListItem', 'position' => $i + 1, 'url' => $itemUrl, 'item' => $item];
+        }
+        return seo_script([
+            [
+                '@type' => 'CollectionPage',
+                '@id' => $url . '#webpage',
+                'url' => $url,
+                'name' => $name,
+                'inLanguage' => 'en-US',
+                'isPartOf' => ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#website'],
+                'about' => ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#person'],
+                'mainEntity' => ['@type' => 'ItemList', 'numberOfItems' => count($list), 'itemListElement' => $list],
+            ],
+            seo_breadcrumbs([['Home', rtrim(FULL_BASE_PATH, '/') . '/'], [$name, $url]]),
+        ]);
+    }
+}
+
+if (!function_exists('seo_video_object')) {
+    /** VideoObject from a videos-table row; null when nothing playable is known. */
+    function seo_video_object(array $video): ?array
+    {
+        $thumb = trim((string)($video['thumbnail_url'] ?? ''));
+        if ($thumb === '' && ($video['platform'] ?? '') === 'youtube' && !empty($video['video_id'])) {
+            $thumb = 'https://i.ytimg.com/vi/' . rawurlencode((string)$video['video_id']) . '/hqdefault.jpg';
+        }
+        $node = ['@type' => 'VideoObject', 'name' => (string)($video['title'] ?? 'Untitled')];
+        $description = trim(strip_tags((string)($video['description'] ?? '')));
+        if ($description !== '') $node['description'] = $description;
+        if ($thumb !== '') $node['thumbnailUrl'] = [$thumb];
+        if (($video['type'] ?? '') === 'url') {
+            if (($video['platform'] ?? '') === 'youtube' && !empty($video['video_id'])) {
+                $node['embedUrl'] = 'https://www.youtube-nocookie.com/embed/' . rawurlencode((string)$video['video_id']) . '?rel=0';
+                $node['url'] = 'https://www.youtube.com/watch?v=' . rawurlencode((string)$video['video_id']);
+            } elseif (($video['platform'] ?? '') === 'odysee' && !empty($video['video_id'])) {
+                $node['embedUrl'] = 'https://odysee.com/$/embed/' . ltrim((string)$video['video_id'], '/');
+                if (!empty($video['url'])) $node['url'] = (string)$video['url'];
+            } elseif (!empty($video['url'])) {
+                $node['embedUrl'] = (string)$video['url'];
+            }
+        } elseif (!empty($video['filename'])) {
+            $node['contentUrl'] = FULL_BASE_PATH . 'uploads/videos/' . ltrim((string)$video['filename'], '/');
+        }
+        if (empty($node['embedUrl']) && empty($node['contentUrl'])) return null;
+        if (!empty($video['uploaded_at'])) $node['uploadDate'] = date('c', (int)strtotime((string)$video['uploaded_at']));
+        $duration = seo_iso8601_duration($video['duration'] ?? 0);
+        if ($duration !== null) $node['duration'] = $duration;
+        $node['inLanguage'] = 'en-US';
+        $node['author'] = ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#person'];
+        return $node;
+    }
+}
+
+if (!function_exists('seo_music_recording')) {
+    /** MusicRecording from a music_tracks row. */
+    function seo_music_recording(array $track): array
+    {
+        $node = [
+            '@type' => 'MusicRecording',
+            'name' => (string)($track['title'] ?? 'Untitled'),
+            'byArtist' => seo_person(),
+            'inLanguage' => 'en-US',
+        ];
+        $description = trim(strip_tags((string)($track['description'] ?? '')));
+        if ($description !== '') $node['description'] = $description;
+        if (!empty($track['filename'])) {
+            $node['audio'] = ['@type' => 'AudioObject', 'contentUrl' => FULL_BASE_PATH . 'uploads/music/' . ltrim((string)$track['filename'], '/')];
+        }
+        $duration = seo_iso8601_duration(isset($track['duration']) ? (int)round((float)$track['duration']) : 0);
+        if ($duration !== null) $node['duration'] = $duration;
+        $published = $track['recorded_at'] ?? $track['uploaded_at'] ?? null;
+        if (!empty($published)) $node['datePublished'] = date('c', (int)strtotime((string)$published));
+        return $node;
+    }
+}
+
+if (!function_exists('seo_image_object')) {
+    /** ImageObject for a gallery photograph (site-relative path under root). */
+    function seo_image_object(string $relativePath, string $title, ?string $uploadedAt): array
+    {
+        $node = [
+            '@type' => 'ImageObject',
+            'contentUrl' => FULL_BASE_PATH . ltrim($relativePath, '/'),
+            'name' => $title !== '' ? $title : 'Gallery photograph by Yunus Emre Vurgun',
+            'author' => ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#person'],
+            'copyrightHolder' => ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#person'],
+        ];
+        if ($title !== '') $node['caption'] = $title;
+        $file = dirname(__DIR__, 2) . '/' . ltrim($relativePath, '/');
+        $size = is_file($file) ? @getimagesize($file) : false;
+        if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
+            $node['width'] = (int)$size[0];
+            $node['height'] = (int)$size[1];
+        }
+        if (!empty($uploadedAt)) $node['uploadDate'] = date('c', (int)strtotime($uploadedAt));
+        return $node;
+    }
+}
+
+if (!function_exists('seo_place')) {
+    /** Place from a travel_locations row (city/country/lat/lng are real). */
+    function seo_place(array $loc): array
+    {
+        $name = trim(implode(', ', array_filter([(string)($loc['city'] ?? ''), (string)($loc['country'] ?? '')])));
+        $node = ['@type' => 'Place', 'name' => $name !== '' ? $name : 'Location'];
+        if (isset($loc['lat'], $loc['lng']) && is_numeric($loc['lat']) && is_numeric($loc['lng'])) {
+            $node['geo'] = ['@type' => 'GeoCoordinates', 'latitude' => (float)$loc['lat'], 'longitude' => (float)$loc['lng']];
+        }
+        $address = ['@type' => 'PostalAddress'];
+        if (!empty($loc['city'])) $address['addressLocality'] = (string)$loc['city'];
+        if (!empty($loc['country'])) $address['addressCountry'] = (string)$loc['country'];
+        if (count($address) > 1) $node['address'] = $address;
+        return $node;
+    }
+}
+

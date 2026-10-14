@@ -119,6 +119,10 @@ if ($noindex) $pageMeta['robots'] = 'noindex,follow';
 $pageMeta[] = '<script src="' . $rmrpJs . '" defer></script>';
 $pageMeta[] = '<script src="' . FULL_BASE_PATH . 'assets/js/rmrp-extras.js?v=' . filemtime(dirname(__DIR__) . '/assets/js/rmrp-extras.js') . '" defer></script>';
 
+if ($currentPage === 1 && ($rmrpFresh = seo_newest_stamp($allMemories, ['updated_at', 'created_at'])) !== null) {
+    $pageMeta['date_modified'] = $rmrpFresh;
+}
+
 $title = 'Random Memories for Random People — Yunus Emre Vurgun';
 $description = 'Fragments, fleeting thoughts, and small moments worth keeping — ' . $grandTotal . ' random memories by Yunus Emre Vurgun, with an RSS feed at /rmrp.xml.';
 
