@@ -81,10 +81,7 @@ include __DIR__ . '/../includes/header.php';
                             $size = $video['file_size'] > 0 ? round($video['file_size'] / 1024 / 1024, 1) . ' MB' : '--';
                             $typeLabel = $video['type'] === 'url' ? 'URL' : 'File';
                             $platformLabel = !empty($video['platform']) ? ucfirst($video['platform']) : '--';
-                            $thumbnail = '';
-                            if ($video['type'] === 'url' && !empty($video['thumbnail_url'])) {
-                                $thumbnail = $video['thumbnail_url'];
-                            }
+                            $thumbnail = $video['thumbnail_url'] ?? '';
                         ?>
                             <tr data-video-id="<?= $video['id'] ?>">
                                 <td><?= $offset + $i + 1 ?></td>

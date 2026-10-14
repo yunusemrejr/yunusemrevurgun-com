@@ -62,7 +62,7 @@ ui_render_head(
                                     $videoPath = FULL_BASE_PATH . 'uploads/videos/' . htmlspecialchars($video['filename']);
                                 ?>
                                 <div class="ui-video-embed-container">
-                                    <video class="ui-video-player" controls preload="metadata" playsinline>
+                                    <video class="ui-video-player" controls preload="metadata" playsinline<?= !empty($video['thumbnail_url']) ? ' poster="' . htmlspecialchars($video['thumbnail_url']) . '"' : '' ?>>
                                         <source src="<?= $videoPath ?>" type="video/mp4">
                                         <p>Your browser does not support HTML5 video.</p>
                                     </video>
