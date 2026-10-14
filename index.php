@@ -36,7 +36,12 @@ $yevStateless = in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'HEAD'], t
 $GLOBALS['yev_stateless'] = $yevStateless;
 
 if ($yevStateless) {
-    header('Cache-Control: no-cache');
+    // Revalidate-always, but in the public/must-revalidate form: Cloudflare
+    // strips ETag from `no-cache` HTML responses (verified against origin),
+    // which would defeat the conditional GET below; max-age=0 keeps the
+    // same always-revalidate semantics for browsers and lets the CDN edge
+    // itself revalidate with our ETag instead of re-downloading the page.
+    header('Cache-Control: public, max-age=0, must-revalidate');
     // Conditional GET for cookie-less content pages: the rendered body is
     // identical for every visitor, so a strong ETag over it lets crawlers
     // and feed readers revalidate with If-None-Match and receive a 304
