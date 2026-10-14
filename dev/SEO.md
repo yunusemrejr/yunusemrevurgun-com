@@ -46,10 +46,17 @@ to disk on production when a publishing hook regenerates them.
    index, ChatGPT search). The key is discovered from the root `<key>.txt`
    file. Google does not participate in IndexNow and its sitemap-ping
    endpoint is retired; Google reads the same `lastmod` values.
-3. **Conditional GET**: cookie-less content pages send a strong `ETag`
-   (sha256 of the body) from `index.php`, so recrawls validate with
-   `If-None-Match` and get `304` when unchanged. Feeds, sitemaps and
-   `llms*.txt` send `ETag` + `Last-Modified` likewise.
+3. **Conditional GET**: cookie-less content pages send a weak `ETag`
+   (sha256 of the body, emitted at shutdown from `index.php` — LSAPI drops
+   `header()` calls made inside an output-buffer callback), so recrawls
+   can validate with `If-None-Match`. Feeds, sitemaps and `llms*.txt`
+   send `ETag` + `Last-Modified` likewise and revalidate end-to-end.
+   Known platform limit: Cloudflare Rocket Loader rewrites every
+   `<script>` tag per response, so Cloudflare strips the HTML pages'
+   ETag at the edge (the origin emits it correctly — verified with a
+   direct-to-origin request). HTML conditional GET therefore only takes
+   effect if Rocket Loader is disabled in the Cloudflare dashboard;
+   sitemap `lastmod`, IndexNow and the feeds carry freshness meanwhile.
 4. **`dateModified`**: listing pages pass their newest row's timestamp to
    `ui_render_head(['date_modified' => ...])`, surfacing as
    `og:updated_time` and in the `WebPage` JSON-LD node.

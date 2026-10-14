@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://yunusemrevurgun.com/videos</loc>
+    <lastmod>2026-10-14T04:22:07+00:00</lastmod>
+    <video:video>
+      <video:thumbnail_loc>https://yunusemrevurgun.com/uploads/videos/b0fd57cf277ac3c0_yunusemrevurgun-trailer.jpg</video:thumbnail_loc>
+      <video:title>yunusemrevurgun.com Trailer</video:title>
+      <video:description>A 15-second motion trailer for this site.</video:description>
+      <video:content_loc>https://yunusemrevurgun.com/uploads/videos/b0fd57cf277ac3c0_yunusemrevurgun-trailer.mp4</video:content_loc>
+      <video:duration>15</video:duration>
+      <video:publication_date>2026-10-14T04:22:07+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://yunusemrevurgun.com/assets/images/og-image.png</video:thumbnail_loc>
+      <video:title>Neural Networks Explained in Cooking terms &amp; in C++_ From Whiteboard Math to Code</video:title>
+      <video:description>Neural Networks Explained in Cooking terms &amp; in C++_ From Whiteboard Math to Code</video:description>
+      <video:player_loc>https://odysee.com/%24/embed/%40programmingwithyunusemrevu7222%3A9%2FNeural-Networks-Explained-in-Cooking-terms---in-C%2B%2B_-From-Whiteboard-Math-to-Code%3Aa?r=3J97F71SwTcpAYEe2Sfi3xxGYE6Tn9T2</video:player_loc>
+      <video:publication_date>2026-07-17T08:22:54+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/E6UjgVi9B6M/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>LongCat 2.0</video:title>
+      <video:description>LongCat 2.0</video:description>
+      <video:player_loc>https://www.youtube-nocookie.com/embed/E6UjgVi9B6M?rel=0</video:player_loc>
+      <video:publication_date>2026-07-17T08:22:11+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/n2YYGyDephI/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>What if we had best AI in the world</video:title>
+      <video:description>What if we had best AI in the world</video:description>
+      <video:player_loc>https://www.youtube-nocookie.com/embed/n2YYGyDephI?rel=0</video:player_loc>
+      <video:publication_date>2026-07-17T08:21:58+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/KPVC1aNewUQ/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>2027 AI coding harness prediction</video:title>
+      <video:description>2027 AI coding harness prediction</video:description>
+      <video:player_loc>https://www.youtube-nocookie.com/embed/KPVC1aNewUQ?rel=0</video:player_loc>
+      <video:publication_date>2026-07-17T08:21:35+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/KPVC1aNewUQ/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>I never do (original song /demo recording)</video:title>
+      <video:description>I never do (original song /demo recording)</video:description>
+      <video:player_loc>https://www.youtube-nocookie.com/embed/KPVC1aNewUQ?rel=0</video:player_loc>
+      <video:publication_date>2026-07-17T08:21:18+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+    <video:video>
+      <video:thumbnail_loc>https://img.youtube.com/vi/5uWhD6SlKBc/hqdefault.jpg</video:thumbnail_loc>
+      <video:title>My AI predictions for my future self (1-10 years)</video:title>
+      <video:description>My predictions about the future of artificial intelligence and its effects over the next few years, and this video is for me to review later; I will see how much of it I got right.</video:description>
+      <video:player_loc>https://www.youtube-nocookie.com/embed/5uWhD6SlKBc?rel=0</video:player_loc>
+      <video:publication_date>2026-07-17T08:20:32+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+</urlset>
