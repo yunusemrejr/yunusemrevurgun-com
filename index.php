@@ -69,8 +69,13 @@ if ($yevStateless) {
                 return;
             }
         }
+        // Weak validator on purpose: Cloudflare strips strong ETags from
+        // HTML it transforms/recompresses (verified against the origin,
+        // which emits the strong form correctly), while weak ETags pass
+        // through — and If-None-Match revalidation uses weak comparison,
+        // so crawlers still get their 304s.
         $etag = '"' . hash('sha256', $body) . '"';
-        header('ETag: ' . $etag);
+        header('ETag: W/' . $etag);
         $ifNoneMatch = trim((string)($_SERVER['HTTP_IF_NONE_MATCH'] ?? ''));
         if ($ifNoneMatch !== '') {
             foreach (explode(',', $ifNoneMatch) as $candidate) {
