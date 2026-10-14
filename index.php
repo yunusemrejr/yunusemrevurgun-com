@@ -44,11 +44,30 @@ if ($yevStateless) {
     // recrawls and an unambiguous "unchanged" freshness signal. Redirects,
     // errors, downloads and anything that set a cookie or its own ETag pass
     // through untouched; session-backed routes never reach this branch.
-    ob_start(static function (string $body): string {
-        if ($body === '' || headers_sent()) return $body;
-        if (http_response_code() !== 200) return $body;
+    // Capture-and-re-emit at shutdown rather than an ob_start callback:
+    // under LSAPI the response headers are already committed when a buffer
+    // callback runs, so header() there is silently dropped (measured on
+    // production); holding the whole body in our own buffer keeps headers
+    // unsent until we decide.
+    ob_start();
+    $yevBufferLevel = ob_get_level();
+    register_shutdown_function(static function () use ($yevBufferLevel): void {
+        $chunks = [];
+        while (ob_get_level() >= $yevBufferLevel) {
+            $chunk = ob_get_clean();
+            if ($chunk === false) break;
+            $chunks[] = $chunk;
+        }
+        $body = implode('', array_reverse($chunks));
+        if ($body === '' || headers_sent() || http_response_code() !== 200) {
+            echo $body;
+            return;
+        }
         foreach (headers_list() as $sentHeader) {
-            if (preg_match('#^(Location|Content-Disposition|Set-Cookie|ETag):#i', $sentHeader)) return $body;
+            if (preg_match('#^(Location|Content-Disposition|Set-Cookie|ETag):#i', $sentHeader)) {
+                echo $body;
+                return;
+            }
         }
         $etag = '"' . hash('sha256', $body) . '"';
         header('ETag: ' . $etag);
@@ -58,11 +77,11 @@ if ($yevStateless) {
                 $candidate = trim($candidate);
                 if ($candidate === '*' || $candidate === $etag || $candidate === 'W/' . $etag) {
                     http_response_code(304);
-                    return '';
+                    return;
                 }
             }
         }
-        return $body;
+        echo $body;
     });
 } elseif (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
