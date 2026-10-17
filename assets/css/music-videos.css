@@ -1,0 +1,23 @@
+/* Music films live within the existing Jelly / Blueprint page system. */
+.music-video-jump{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;margin-top:1.25rem}
+.music-video-jump a,.music-video-tools a,.music-video-heading>a{min-height:44px;display:inline-flex;align-items:center;text-underline-offset:4px;font-weight:600}
+.music-video-section,.music-video-feature,#other-videos{scroll-margin-top:7rem}
+.music-video-feature{margin-top:2rem;padding:clamp(1rem,3vw,2rem);background:var(--color-bg-card);border-radius:var(--radius-xl);min-width:0}
+.music-video-heading{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.music-video-heading h3{margin:0 0 .3rem;font-size:clamp(1.7rem,4vw,2.7rem)}
+.music-video-heading p{margin:0;color:var(--color-ink-slate)}
+.music-video-advisory{font-size:.95rem;line-height:1.6;margin:0 0 1rem;max-width:70ch}
+.music-video-player{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;background:#080808;border-radius:var(--radius-md,8px)}
+.music-video-tools{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;align-items:center;margin:1rem 0 1.5rem}
+.music-video-tools label{display:flex;align-items:center;flex-wrap:wrap;gap:.6rem;font-weight:600}
+.music-video-tools select{min-height:44px;max-width:100%;padding:.4rem .75rem;border:2px solid var(--color-control-border);border-radius:var(--radius-md,8px);background:#fff;color:var(--color-ink-body);font:inherit}
+.music-video-description{max-width:72ch;line-height:1.8;margin:0 0 1.5rem}
+.music-video-details{border-top:1px solid var(--color-border-strong);padding:.5rem 0}
+.music-video-details summary{cursor:pointer;min-height:44px;align-content:center;padding:.6rem 0;font-weight:600}
+.music-video-details p{max-width:72ch;line-height:1.75}
+.music-video-details audio{width:min(100%,620px);display:block}
+.music-video-details ul{padding-left:1.4rem;columns:2;column-gap:2rem;line-height:1.65}
+.music-video-details li{break-inside:avoid;margin:.5rem 0}
+.music-video-details a{overflow-wrap:anywhere;text-underline-offset:3px}
+.music-video-feature :focus-visible{outline:3px solid var(--color-ink-body);outline-offset:4px}
+@media(max-width:600px){.music-video-details ul{columns:1}.music-video-feature{padding:1rem}.music-video-tools{align-items:flex-start;flex-direction:column}.music-video-heading{gap:.25rem}}
