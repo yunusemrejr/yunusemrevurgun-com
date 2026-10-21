@@ -45,7 +45,7 @@ The Jelly skin kept its palette, type, mascot and spring. A second layer, `asset
 | Personal archive | `/updates`, `/updates/ID`, `/rmrp`, `/rmrp/ID`; paginated entries and individual detail pages |
 | Media | `/gallery`, `/travel`, `/music`, `/videos`, `/downloads`, `/slop`, `/slop/SLUG` |
 | Interests | `/post-code`, `/science-corner`, `/comedy`, `/yunobot`, `/gemmaclaim` (Claim Splitter: in-browser GemmaClaim-270M via vendored wllama; model streams from Hugging Face, so CSP `connect-src` allows `*.hf.co`) |
-| Project clusters | Each project hub has documentation pages beneath it: `/downloads/<app>` (seven open-source apps), `/yunobot/how-it-works`, `/yunobot/does-it-send-my-messages`, `/gemmaclaim/how-it-works`, `/gemmaclaim/example-output`, `/jelloshop/cat-brain`, and the five Chessko articles under `/chessko/<slug>` |
+| Project clusters | Each project hub has documentation pages beneath it: `/downloads/<app>` (eight open-source apps), `/yunobot/how-it-works`, `/yunobot/does-it-send-my-messages`, `/gemmaclaim/how-it-works`, `/gemmaclaim/example-output`, `/jelloshop/cat-brain`, and the five Chessko articles under `/chessko/<slug>` |
 | Discovery | `/more`, `/search`, `/sitemap`; search results are noindex |
 | Policies/errors | `/privacy`, `/terms`, `/cookies`, `/404`; unknown URLs return 404, maintenance returns 503 |
 | Machine-readable | `/sitemap.xml`, `/blog.xml`, `/updates.xml`, `/rmrp.xml`, `/llms.txt`, `/robots.txt` |

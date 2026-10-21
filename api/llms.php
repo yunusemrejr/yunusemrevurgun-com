@@ -82,7 +82,7 @@ foreach ($chesskoArticles as $slug => $article) {
 echo "\n";
 
 echo "## Open-source downloads\n\n";
-echo $link('Downloads index', "{$base}/downloads", 'Seven free, open-source Linux projects by Yunus Emre Vurgun: two games, an artificial-life rat, two coding agents, a finance assistant and a disk cleaner.');
+echo $link('Downloads index', "{$base}/downloads", 'Eight free, open-source Linux projects by Yunus Emre Vurgun: two games, an artificial-life rat, two coding agents, a local AI agent, a finance assistant and a disk cleaner.');
 foreach ((require $projectRoot . '/includes/downloads_catalog.php') as $item) {
     echo $link((string)$item['title'], "{$base}/downloads/" . $item['slug'], (string)$item['description']);
 }

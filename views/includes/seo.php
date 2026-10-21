@@ -78,6 +78,8 @@ if (!function_exists('seo_wikidata')) {
             'rts'                 => ['Real-time strategy', 'Q208189'],
             'shmup'               => ["Shoot 'em up", 'Q1044478'],
             'alife'               => ['Artificial life', 'Q263847'],
+            'python'              => ['Python (programming language)', 'Q28865'],
+            'sqlite'              => ['SQLite', 'Q319417'],
         ];
         return $map;
     }

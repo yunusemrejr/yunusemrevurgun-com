@@ -237,7 +237,7 @@ ui_render_head(
             </a>
             <a class="ui-more-card ui-more-card--plain" href="<?= FULL_BASE_PATH ?>downloads">
                 <h3 class="ui-more-title">Open-source downloads</h3>
-                <p class="ui-more-desc">Seven Linux games, tools and coding agents, each with its requirements, how to run it and a GitHub link.</p>
+                <p class="ui-more-desc">Eight Linux games, tools and coding agents, each with its requirements, how to run it and a GitHub link.</p>
             </a>
         </div>
     </section>

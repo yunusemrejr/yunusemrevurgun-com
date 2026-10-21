@@ -23,7 +23,7 @@ $itemList = ['@type' => 'ItemList', '@id' => $origin . '/downloads#projects', 'n
 
 ui_render_head(
     'Open-Source Linux Games and Dev Tools – Free, Source on GitHub',
-    'Seven free, open-source Linux projects by Yunus Emre Vurgun: two games, an artificial-life rat, two coding agents, a finance assistant and a disk cleaner.',
+    'Eight free, open-source Linux projects by Yunus Emre Vurgun: two games, an artificial-life rat, two coding agents, a local AI agent, a finance assistant and a disk cleaner.',
     ['downloads' => true, ui_collection_schema('Downloads', 'downloads', array_column($list, 'title'), array_column($list, 'slug')), seo_script([$itemList])]
 );
 ?>
@@ -35,7 +35,7 @@ ui_render_head(
         <section class="ui-section">
             <p class="ui-eyebrow">Software</p>
             <h1 class="ui-section-title">Open-source Linux games, tools and coding agents</h1>
-            <p class="ui-section-text">Seven free projects I have built, mostly small Linux-native C++: two games, an artificial-life rat, two coding-agent harnesses, a local finance assistant and a disk-cleanup app. Each has its own page with requirements, how to run it and how it works; the code lives on GitHub, so you can clone it, read it and run it locally.</p>
+            <p class="ui-section-text">Eight free projects I have built, mostly small Linux-native C++: two games, an artificial-life rat, two coding-agent harnesses, a local AI agent for LM Studio, a local finance assistant and a disk-cleanup app. Each has its own page with requirements, how to run it and how it works; the code lives on GitHub, so you can clone it, read it and run it locally.</p>
         </section>
 
         <section class="ui-section">

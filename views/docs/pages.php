@@ -50,6 +50,60 @@ return [
     'pages' => [
 
         // ------------------------------------------------------------------ Downloads
+        'downloads/kiwibro' => [
+            'kind' => 'software', 'silo' => 'downloads',
+            'title' => 'Local AI Agent for Linux With LM Studio – Kiwibro',
+            'h1' => 'Kiwibro: a local AI agent for Linux that runs on LM Studio',
+            'description' => 'Kiwibro is a local-first AI agent for Linux: chat with any LM Studio model, keep an editable memory, and approve web, file and shell tools. Python, MIT.',
+            'crumb' => 'Kiwibro',
+            'published' => '2026-10-21', 'modified' => '2026-10-21',
+            'cover_caption' => 'The start screen, from the screenshots in the repository.',
+            'app' => ['category' => 'DeveloperApplication'],
+            'about' => ['llm', 'chatbot'], 'mentions' => ['python', 'sqlite', 'linux'],
+            'related' => ['downloads/pocketharness'],
+            'answer' => <<<'HTML'
+<p>Kiwibro is a local-first AI agent for Linux. A small Python Flask server on your machine talks to <a href="https://lmstudio.ai" target="_blank" rel="noopener noreferrer">LM Studio</a> through its local OpenAI-compatible API, and a browser GUI styled like a GNOME app sits on top. Pick any model you have, chat with it, and let it search the web, read pages, edit files or run commands inside its own workspace, with your permission. Chats, memories and settings stay in SQLite on disk; there are no accounts and no telemetry. It is MIT-licensed.</p>
+HTML,
+            'sections' => [
+                ['How do I run Kiwibro?', <<<'HTML'
+<pre><code>git clone https://github.com/yunusemrejr/kiwibro.git
+cd kiwibro
+./scripts/run.sh        # installs Flask, requests and beautifulsoup4 into a local .venv if needed</code></pre>
+<p>Then open <code>http://127.0.0.1:8777</code>. In LM Studio, start the local server (Developer → Start Server, default <code>http://127.0.0.1:1234</code>). Kiwibro lists every chat model you have; LM Studio loads one just in time if it is not loaded yet. <code>./scripts/install.sh</code> adds an app icon and a <code>.desktop</code> launcher that starts the server and opens a Chrome app window, without root.</p>
+HTML],
+                ['What can the agent do?', <<<'HTML'
+<table>
+<thead><tr><th>Tool</th><th>Default</th></tr></thead>
+<tbody>
+<tr><td><code>web_search</code>, <code>fetch_page</code></td><td>Runs automatically</td></tr>
+<tr><td><code>read_file</code>, <code>list_files</code>, <code>remember</code></td><td>Runs automatically</td></tr>
+<tr><td><code>write_file</code>, <code>replace_in_file</code></td><td>Asks first, with a preview of the file</td></tr>
+<tr><td><code>run_command</code></td><td>Asks first, with the exact command</td></tr>
+</tbody>
+</table>
+<p>Each approval card offers <strong>Allow</strong> once, <strong>Always</strong> for that tool, or <strong>Deny</strong>, and every mode can be changed in Settings. Files live in <code>~/Kiwibro</code> by default. Commands run as your user, inside the workspace, with a timeout and a blocklist; the README calls that a strong guardrail, not a container.</p>
+HTML],
+                ['How do memory and context work?', <<<'HTML'
+<p>After each reply Kiwibro extracts durable facts, deduplicates and categorises them, and adds only the relevant ones to the prompt. Memory is global: it is shared across chats and survives model swaps and restarts, and you can pin, edit or delete each fact. When a conversation nears the model's context window, the older part is folded into a rolling summary and recent turns stay verbatim, so long chats keep going without a "context length exceeded" error. The transcript itself is never rewritten.</p>
+HTML],
+                ['How is it kept local?', <<<'HTML'
+<ul>
+<li>The Flask server binds to <code>127.0.0.1</code> and rejects non-local <code>Host</code> headers.</li>
+<li>Chats, memories and settings are in <code>~/.local/share/kiwibro/kiwibro.db</code>.</li>
+<li>No analytics, accounts, CDNs or web fonts. The network is used only by the web tools.</li>
+<li>File tools are confined to the workspace; page fetching refuses localhost, private and link-local addresses.</li>
+</ul>
+<p>The repository's tests cover this contract: 67 unit, API and security tests and 54 end-to-end checks against a fake LM Studio, run in CI on every push.</p>
+HTML],
+            ],
+            'faq' => [
+                ['Does Kiwibro need an internet connection?', 'No. It talks to LM Studio on localhost and stores everything in a local SQLite database. Only the web search and page-reading tools use the network.'],
+                ['Which models does Kiwibro work with?', 'Any chat model you have in LM Studio. Kiwibro reads the live model list, and you can switch models from the header mid-chat without changing transcripts or memory.'],
+                ['Is Kiwibro an Electron app?', 'No. It is a browser GUI on purpose: a Flask server on loopback plus a Chrome app window opened by its desktop launcher. Any modern browser also works.'],
+                ['Can the agent run commands without asking?', 'Not by default. File writes and shell commands pause for approval. You can choose Always for a tool, and every permission mode can be changed in Settings.'],
+            ],
+        ],
+
         'downloads/dataclean' => [
             'kind' => 'software', 'silo' => 'downloads',
             'title' => 'Linux Disk Space Analyzer (GTK 4) – Trash, Never Delete',
