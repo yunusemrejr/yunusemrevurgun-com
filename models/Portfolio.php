@@ -56,6 +56,71 @@ class Portfolio {
         if (!in_array('category', $columns, true)) {
             $this->db->exec('ALTER TABLE portfolio_projects ADD COLUMN category ' . ($driver === 'sqlite' ? 'TEXT' : 'VARCHAR(255)'));
         }
+
+        // CLI (tests, one-off scripts) never seeds, so it never writes into uploads/.
+        if (PHP_SAPI !== 'cli') $this->applySeeds();
+    }
+
+    /**
+     * Inserts each project in includes/portfolio_seed.php once. The key is
+     * recorded first inside the transaction, so concurrent requests cannot add
+     * it twice, and a project removed in the admin panel is not added back.
+     */
+    private function applySeeds() {
+        $seeds = require __DIR__ . '/../includes/portfolio_seed.php';
+        if (!$seeds) return;
+        $this->db->exec("CREATE TABLE IF NOT EXISTS portfolio_seeds (
+            seed_key VARCHAR(64) PRIMARY KEY,
+            applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
+        $applied = $this->db->query('SELECT seed_key FROM portfolio_seeds')->fetchAll(PDO::FETCH_COLUMN);
+
+        foreach ($seeds as $key => $seed) {
+            if (in_array($key, $applied, true)) continue;
+            $copied = null;
+            try {
+                $this->db->beginTransaction();
+                $this->db->prepare('INSERT INTO portfolio_seeds (seed_key) VALUES (?)')->execute([$key]);
+
+                $exists = $this->db->prepare('SELECT COUNT(*) FROM portfolio_projects WHERE title = ?');
+                $exists->execute([$seed['title']]);
+                if (!$exists->fetchColumn()) {
+                    $image = null;
+                    $source = __DIR__ . '/../' . $seed['image_source'];
+                    $uploadDir = __DIR__ . '/../uploads/portfolio/';
+                    if (is_file($source) && (is_dir($uploadDir) || mkdir($uploadDir, 0755, true))) {
+                        $filename = uniqid('', true) . '_' . basename($source);
+                        if (copy($source, $uploadDir . $filename)) {
+                            chmod($uploadDir . $filename, 0644);
+                            $copied = $uploadDir . $filename;
+                            $image = 'uploads/portfolio/' . $filename;
+                        }
+                    }
+                    $stmt = $this->db->prepare("INSERT INTO portfolio_projects (
+                            title, description, image, project_url, github_url, technologies, category, completion_date, featured, created_by
+                        ) VALUES (
+                            :title, :description, :image, :project_url, :github_url, :technologies, :category, :completion_date, :featured, 1
+                        )");
+                    $stmt->execute([
+                        ':title' => $seed['title'],
+                        ':description' => $seed['description'],
+                        ':image' => $image,
+                        ':project_url' => $seed['project_url'],
+                        ':github_url' => $seed['github_url'],
+                        ':technologies' => $seed['technologies'],
+                        ':category' => $seed['category'],
+                        ':completion_date' => $seed['completion_date'],
+                        ':featured' => (int)$seed['featured'],
+                    ]);
+                }
+                $this->db->commit();
+            } catch (PDOException $e) {
+                // Another request recorded the key first, or the insert failed.
+                if ($this->db->inTransaction()) $this->db->rollBack();
+                if ($copied !== null && is_file($copied)) unlink($copied);
+                if ($e->getCode() !== '23000') error_log('Portfolio seed ' . $key . ' failed: ' . $e->getMessage());
+            }
+        }
     }
 
     public function getAllProjects() {
