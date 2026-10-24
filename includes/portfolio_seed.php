@@ -20,4 +20,15 @@ return [
         'completion_date' => '2026-10-21',
         'featured' => 1,
     ],
+    'flyingkiwi' => [
+        'title' => 'Flyingkiwi',
+        'description' => 'An experimental English and Turkish AI chat project with a simple, elegant interface. Two language-specific local models and browser-based WASM/WebGPU deployment are in development. The current public preview does not generate replies.',
+        'image_source' => '',
+        'project_url' => 'https://flyingkiwi.yunusemrevurgun.com/',
+        'github_url' => '',
+        'technologies' => 'JavaScript, Python, WASM/WebGPU research',
+        'category' => 'AI/ML',
+        'completion_date' => null,
+        'featured' => 0,
+    ],
 ];
