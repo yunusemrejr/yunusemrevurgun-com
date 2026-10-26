@@ -163,7 +163,8 @@ class Sitemap {
             'videos' => $this->latestModifiedTolerant('SELECT MAX(COALESCE(updated_at, uploaded_at)) FROM videos WHERE is_archived = 0'),
         ];
         $musicFilms = require dirname(__DIR__) . '/content/music-videos.php';
-        foreach ($musicFilms as $film) {
+        $shortFilms = require dirname(__DIR__) . '/content/films.php';
+        foreach (array_merge($shortFilms, $musicFilms) as $film) {
             if ($latest['videos'] === null || strtotime($film['published_at']) > strtotime($latest['videos'])) {
                 $latest['videos'] = $film['published_at'];
             }
@@ -293,6 +294,20 @@ class Sitemap {
                 ];
             }
             if ($entry['images'] !== []) $add($entry);
+        }
+
+        // Curated short films are public alongside music films and database-backed videos.
+        foreach ($shortFilms as $film) {
+            $media = $this->baseUrl . '/' . $film['media_path'];
+            $add(['path' => 'videos', 'lastmod' => $latest['videos'], 'group' => 'videos', 'images' => [], 'videos' => [[
+                'thumbnail_loc' => $media . '-poster.jpg',
+                'title' => $film['title'],
+                'description' => $film['description'],
+                'player_loc' => null,
+                'content_loc' => $media . '-1080p.mp4',
+                'duration' => (string)(int)round($film['duration']),
+                'publication_date' => $film['published_at'],
+            ]]]);
         }
 
         // Curated music films are public alongside database-backed videos.

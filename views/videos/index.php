@@ -7,8 +7,23 @@ require_once dirname(__DIR__, 2) . '/models/Videos.php';
 $videos = new Videos();
 $videoList = $videos->getAllVideos(false);
 $musicVideos = require dirname(__DIR__, 2) . '/content/music-videos.php';
+$shortFilms = require dirname(__DIR__, 2) . '/content/films.php';
 
 $videoItems = [];
+foreach ($shortFilms as $film) {
+    $filmBase = FULL_BASE_PATH . $film['media_path'];
+    $videoItems[] = ['anchor' => $film['slug'], 'item' => [
+        '@type' => 'VideoObject',
+        'name' => $film['title'],
+        'description' => $film['description'],
+        'thumbnailUrl' => [$filmBase . '-poster.jpg'],
+        'contentUrl' => $filmBase . '-1080p.mp4',
+        'uploadDate' => $film['published_at'],
+        'duration' => 'PT' . (float)$film['duration'] . 'S',
+        'author' => ['@id' => rtrim(FULL_BASE_PATH, '/') . '/#person'],
+        'creditText' => 'Original Three.js render and synthesised soundtrack by Yunus Emre Vurgun. No stock footage.',
+    ]];
+}
 foreach ($musicVideos as $film) {
     $filmBase = FULL_BASE_PATH . $film['media_path'];
     $videoItems[] = ['anchor' => $film['slug'], 'item' => [
@@ -31,14 +46,14 @@ $videoMeta = $videoItems !== []
     ? [seo_collection_graph('Videos', 'videos', $videoItems)]
     : [ui_collection_schema('Videos', 'videos', array_column($videoList, 'title'), array_map(fn($item) => 'video-' . $item['id'], $videoList))];
 $videoFresh = seo_newest_stamp($videoList, ['updated_at', 'uploaded_at']);
-foreach ($musicVideos as $film) {
+foreach (array_merge($shortFilms, $musicVideos) as $film) {
     if ($videoFresh === null || strtotime($film['published_at']) > strtotime($videoFresh)) $videoFresh = $film['published_at'];
 }
 if ($videoFresh !== null) $videoMeta['date_modified'] = $videoFresh;
 
 ui_render_head(
-    'Videos & Music Videos | Yunus Emre Vurgun',
-    'Music videos and clips by Yunus Emre Vurgun. Watch Destontris, a full-length black-and-white film for the original instrumental.',
+    'Videos, Short Films & Music Videos | Yunus Emre Vurgun',
+    'Short films, music videos and clips by Yunus Emre Vurgun. Watch 42, a 30-second space film rendered in Three.js, and the Destontris music film.',
     $videoMeta + ['music_video_css' => '<link rel="stylesheet" href="' . FULL_BASE_PATH . 'assets/css/music-videos.css?v=' . filemtime(dirname(__DIR__, 2) . '/assets/css/music-videos.css') . '">']
 );
 ?>
@@ -50,8 +65,46 @@ ui_render_head(
         <section class="ui-section">
             <p class="ui-eyebrow">Video</p>
             <h1 class="ui-section-title">Videos</h1>
-            <p class="ui-section-text">Music films, uploaded clips, and videos from YouTube and Odysee.</p>
-            <nav class="music-video-jump" aria-label="Video sections"><a href="#music-videos">Music Videos</a><a href="#other-videos">More videos</a></nav>
+            <p class="ui-section-text">Short films, music films, uploaded clips, and videos from YouTube and Odysee.</p>
+            <nav class="music-video-jump" aria-label="Video sections"><a href="#short-films">Short Films</a><a href="#music-videos">Music Videos</a><a href="#other-videos">More videos</a></nav>
+        </section>
+
+        <section class="ui-section music-video-section" id="short-films" aria-labelledby="short-films-title">
+            <p class="ui-eyebrow">Coded cinema</p>
+            <h2 class="ui-section-title" id="short-films-title">Short Films</h2>
+            <?php foreach ($shortFilms as $film):
+                $filmBase = FULL_BASE_PATH . $film['media_path'];
+                $filmId = htmlspecialchars($film['slug']);
+                $filmDuration = (int)floor($film['duration'] / 60) . ':' . str_pad((string)((int)$film['duration'] % 60), 2, '0', STR_PAD_LEFT);
+            ?>
+            <article class="music-video-feature" id="<?= $filmId ?>" aria-labelledby="<?= $filmId ?>-title">
+                <div class="music-video-heading">
+                    <div><h3 id="<?= $filmId ?>-title"><?= htmlspecialchars($film['title']) ?></h3><p><?= htmlspecialchars($film['maker']) ?> · <?= $filmDuration ?> · Short film</p></div>
+                    <a href="#<?= $filmId ?>" aria-label="Link to <?= htmlspecialchars($film['title']) ?>">Permalink</a>
+                </div>
+                <p class="music-video-advisory" id="<?= $filmId ?>-advisory"><strong>Motion advisory:</strong> fast flybys, a burst of television static and a closing sweep past the lens. Sound on: synthesised ambience and static, no dialogue.</p>
+                <video id="<?= $filmId ?>-player" class="music-video-player" width="1920" height="1080" controls playsinline preload="none" poster="<?= htmlspecialchars($filmBase) ?>-poster.jpg" aria-label="<?= htmlspecialchars($film['title']) ?>" aria-describedby="<?= $filmId ?>-advisory">
+                    <source src="<?= htmlspecialchars($filmBase) ?>-1080p.mp4" type="video/mp4">
+                    <track kind="captions" src="<?= htmlspecialchars($filmBase) ?>-captions.vtt" srclang="en" label="Descriptive captions (no dialogue)">
+                    <p><a href="<?= htmlspecialchars($filmBase) ?>-1080p.mp4">Watch the MP4 video</a>.</p>
+                </video>
+                <div class="music-video-tools">
+                    <label for="<?= $filmId ?>-quality">Video quality <select id="<?= $filmId ?>-quality" data-music-video-quality="<?= $filmId ?>-player"><option value="<?= htmlspecialchars($filmBase) ?>-1080p.mp4">1080p</option><option value="<?= htmlspecialchars($filmBase) ?>-720p.mp4">720p · smaller file</option></select></label>
+                    <a href="<?= htmlspecialchars($filmBase) ?>-1080p.mp4" download>Download video</a>
+                </div>
+                <p class="music-video-description"><?= htmlspecialchars($film['description']) ?></p>
+                <details class="music-video-details">
+                    <summary>Listen without the motion</summary>
+                    <p>Synthesised soundtrack; no vocals or dialogue. The audio-only player uses the mastered soundtrack file.</p>
+                    <audio controls preload="none" aria-label="<?= htmlspecialchars($film['title']) ?> soundtrack"><source src="<?= htmlspecialchars($filmBase) ?>-soundtrack.mp3" type="audio/mpeg"><a href="<?= htmlspecialchars($filmBase) ?>-soundtrack.mp3">Listen to the soundtrack MP3</a>.</audio>
+                    <p><a href="<?= htmlspecialchars($filmBase) ?>-soundtrack.mp3" download="42-soundtrack.mp3">Download the soundtrack MP3</a></p>
+                </details>
+                <details class="music-video-details">
+                    <summary>How it was made</summary>
+                    <p><?= htmlspecialchars($film['made']) ?></p>
+                </details>
+            </article>
+            <?php endforeach; ?>
         </section>
 
         <section class="ui-section music-video-section" id="music-videos" aria-labelledby="music-videos-title">
