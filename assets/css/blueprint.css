@@ -158,7 +158,7 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
 /* ===== LABEL PLATES (eyebrows) ======================================================== */
 /* A navy plate with a rivet at each end, engraved in capitals. The text is the page's own
    section name, so the plate carries information, not decoration. */
-:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow,
+:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow,
 .ui-masthead-eyebrow {
   position: relative;
   display: inline-flex;
@@ -179,8 +179,8 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
     0 2px 0 rgba(20, 26, 51, 0.38);
 }
 
-:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow::before,
-:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow::after,
+:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow::before,
+:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow::after,
 .ui-masthead-eyebrow::before,
 .ui-masthead-eyebrow::after {
   content: "";
@@ -194,18 +194,18 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   box-shadow: 0 0 0 1px rgba(10, 14, 32, 0.55);
 }
 
-:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow::before,
+:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow::before,
 .ui-masthead-eyebrow::before {
   left: 10px;
 }
 
-:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow::after,
+:is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow::after,
 .ui-masthead-eyebrow::after {
   right: 10px;
 }
 
 @media (max-width: 400px) {
-  :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow,
+  :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow,
   .ui-masthead-eyebrow {
     letter-spacing: 0.07em;
   }
@@ -711,7 +711,7 @@ button:hover > .ui-arrow {
 
 /* Windows high-contrast: backgrounds and shadows are dropped, so what makes a plate or a key must be a border. */
 @media (forced-colors: active) {
-  :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy) > .ui-eyebrow,
+  :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow,
   .ui-masthead-eyebrow,
   .ui-btn-secondary,
   .ui-masthead-links a,

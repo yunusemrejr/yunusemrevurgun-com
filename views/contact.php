@@ -185,14 +185,14 @@ ui_render_head(
             <div class="ui-contact-grid">
                 <div class="ui-glass-panel">
                     <?php if ($success): ?>
-                        <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, var(--color-success-bg) 0%, var(--color-surface) 100%); border: 1px solid var(--color-success-border); border-radius: var(--radius-lg);">
-                            <p style="color: var(--color-ink-body);">Thank you. Your message has been sent.</p>
+                        <div class="ui-notice is-success" role="status">
+                            <p>Thank you. Your message has been sent.</p>
                             <?php ui_render_ebook_line('contact', true); ?>
                         </div>
                     <?php endif; ?>
                     <?php if ($error): ?>
-                        <div style="margin-bottom: 1rem; padding: 1rem; background: linear-gradient(135deg, var(--color-danger-bg) 0%, var(--color-surface) 100%); border: 1px solid var(--color-danger-border); border-radius: var(--radius-lg);">
-                            <p style="color: var(--color-ink-body);"><?= htmlspecialchars($error) ?></p>
+                        <div class="ui-notice is-error" role="alert">
+                            <p><?= htmlspecialchars($error) ?></p>
                         </div>
                     <?php endif; ?>
 
@@ -230,22 +230,24 @@ ui_render_head(
                             <?php endif; ?>
                         </div>
 
-                        <div class="ui-captcha-section">
-                            <label class="ui-field-label">Security Verification</label>
+                        <fieldset class="ui-captcha-section">
+                            <legend class="ui-field-label">Security check</legend>
                             <div class="ui-captcha-container">
                                 <span class="ui-captcha-question"><?= htmlspecialchars($_SESSION['contact_captcha_question'] ?? '? + ?') ?> = ?</span>
                                 <button type="button" class="ui-captcha-refresh" id="refresh-captcha" title="Get a new question" aria-label="Refresh CAPTCHA">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
                                 </button>
+                                <label class="ui-sr-only" for="captcha_answer">Answer to the question</label>
+                                <input type="number" class="ui-input ui-captcha-answer" id="captcha_answer" name="captcha_answer" placeholder="Answer" required autocomplete="off" min="0" max="20" inputmode="numeric">
                             </div>
-                            <input type="number" class="ui-input" id="captcha_answer" name="captcha_answer" placeholder="Enter answer" required autocomplete="off" min="0" max="20" style="max-width: 160px; margin-top: 0.5rem;">
+                            <p class="ui-captcha-hint">A small arithmetic check that keeps automated spam out.</p>
                             <input type="hidden" name="captcha_hash" value="<?= htmlspecialchars($_SESSION['contact_captcha_answer_hash'] ?? '') ?>">
                             <?php if ($captchaError): ?>
                                 <span class="ui-field-error"><?= htmlspecialchars($captchaError) ?></span>
                             <?php endif; ?>
-                        </div>
+                        </fieldset>
 
-                        <div>
+                        <div class="ui-form-actions">
                             <button class="ui-btn ui-btn-primary" type="submit">Send Message</button>
                         </div>
                     </form>

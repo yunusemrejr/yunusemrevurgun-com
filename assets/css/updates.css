@@ -13,28 +13,32 @@
 }
 
 .ui-updates-count {
- font-size: var(--text-sm);
+ font: 600 0.72rem/1.2 var(--font-mono);
+ letter-spacing: 0.12em;
+ text-transform: uppercase;
  color: var(--color-text-secondary);
- font-family: var(--font-display);
- font-weight: 500;
 }
 
+/* Grid / List is a two-position switch: a recessed track, the selected side latched in navy. */
 .ui-view-toggle {
  display: inline-flex;
- border: 2px solid var(--color-navy);
- border-radius: var(--radius-full);
- overflow: hidden;
- background: var(--color-bg-card);
+ gap: 3px;
+ padding: 3px;
+ border: 1.5px solid rgba(38, 46, 77, 0.3);
+ border-radius: 14px;
+ background: rgba(38, 46, 77, 0.07);
+ box-shadow: inset 0 2px 3px rgba(38, 46, 77, 0.12), 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .ui-view-toggle a {
  display: inline-flex;
  align-items: center;
  gap: var(--space-2);
- padding: var(--space-2) var(--space-3);
+ padding: 0 16px;
+ border-radius: 10px;
  font-family: var(--font-display);
  font-size: var(--text-sm);
- font-weight: 500;
+ font-weight: 600;
  color: var(--color-navy);
  text-decoration: none;
  transition:
@@ -42,14 +46,18 @@
   color var(--transition-fast);
 }
 
-.ui-view-toggle a:hover {
- background-color: var(--color-sky-soft);
+.ui-view-toggle a:not(.is-active):hover {
+ background-color: rgba(255, 255, 255, 0.75);
  color: var(--color-navy);
 }
 
 .ui-view-toggle a.is-active {
- background-color: var(--color-navy);
+ background: linear-gradient(180deg, var(--navy-600) 0%, var(--navy-800) 100%);
  color: var(--color-text-inverse);
+ box-shadow:
+  inset 0 1px 0 rgba(255, 255, 255, 0.18),
+  0 2px 0 var(--navy-900),
+  0 4px 8px -4px rgba(20, 26, 51, 0.6);
 }
 
 .ui-updates-per {
@@ -65,8 +73,9 @@
 
 .ui-updates-per select {
  background-color: var(--color-surface);
- border: 2px solid var(--color-control-border);
- border-radius: var(--radius-md);
+ border: 1.5px solid var(--color-control-border);
+ border-radius: 12px;
+ box-shadow: inset 0 2px 0 rgba(38, 46, 77, 0.06);
  color: var(--color-ink-body);
  padding: var(--space-2) var(--space-3);
  font-family: var(--font-display);
@@ -167,17 +176,58 @@
  margin-bottom: var(--space-3);
 }
 
+/* Category and importance are labels on a part, not bubbles. */
+.ui-update-badges .ui-tag,
+.ui-article-tags .ui-tag {
+ min-height: 0;
+ padding: 4px 9px;
+ border: 1px solid rgba(38, 46, 77, 0.24);
+ border-radius: 6px;
+ background: #fff;
+ box-shadow: 0 1px 0 rgba(38, 46, 77, 0.12);
+ font: 600 0.72rem/1.2 var(--font-mono);
+ letter-spacing: 0.1em;
+ text-transform: uppercase;
+}
+
+.ui-update-badges .ui-tag:hover,
+.ui-article-tags .ui-tag:hover {
+ background: #fff;
+ transform: none;
+}
+
+/* Importance is a three-step level meter: one, two or three bars lit. */
 .ui-importance {
+ --s2: color-mix(in srgb, currentColor 22%, transparent);
+ --s3: color-mix(in srgb, currentColor 22%, transparent);
  display: inline-flex;
  align-items: center;
- padding: var(--space-1) var(--space-2);
- font-family: var(--font-display);
- font-size: var(--text-xs);
- font-weight: 600;
- letter-spacing: 0.04em;
+ gap: 7px;
+ padding: 4px 9px 4px 8px;
+ border-radius: 6px;
+ font: 600 0.72rem/1.2 var(--font-mono);
+ letter-spacing: 0.1em;
  text-transform: uppercase;
- border-radius: var(--radius-full);
- padding: 2px 10px 3px;
+}
+
+.ui-importance::before {
+ content: "";
+ flex: none;
+ width: 13px;
+ height: 10px;
+ background:
+  linear-gradient(currentColor, currentColor) 0 100% / 3px 4px no-repeat,
+  linear-gradient(var(--s2), var(--s2)) 5px 100% / 3px 7px no-repeat,
+  linear-gradient(var(--s3), var(--s3)) 10px 100% / 3px 10px no-repeat;
+}
+
+.ui-importance.is-medium {
+ --s2: currentColor;
+}
+
+.ui-importance.is-high {
+ --s2: currentColor;
+ --s3: currentColor;
 }
 
 .ui-importance.is-high {
@@ -210,6 +260,24 @@
 }
 
 /* Archive controls keep the public reading font and visible boundaries. */
-.ui-view-toggle a, .ui-updates-count, .ui-updates-per, .ui-updates-per select { font-family: var(--font-display); }
-.ui-view-toggle a, .ui-updates-per select { min-height: 44px; }
-.ui-updates-per select { background-color: #fff; border-color: var(--color-control-border); }
+.ui-view-toggle a, .ui-updates-per, .ui-updates-per select { font-family: var(--font-display); }
+.ui-view-toggle a { min-height: 38px; }
+.ui-updates-per select { min-height: 44px; background-color: #fff; border-color: var(--color-control-border); }
+
+.ui-update-card .ui-feed-meta {
+ margin-top: var(--space-2);
+ color: var(--color-text-tertiary);
+}
+
+/* List view: the avatar gets the bezel's rim and cream gap (an <img> has no pseudo elements). */
+.ui-updates-grid .ui-update-avatar {
+ border-radius: 50%;
+ border: 3px solid var(--color-bg-card);
+ box-shadow: 0 0 0 1.5px var(--color-navy), 0 4px 8px -4px rgba(27, 33, 64, 0.45);
+}
+
+/* /updates/<id>: the tags line up with the text column, not the card's edge. */
+.ui-article-tags {
+ max-width: 72ch;
+ margin: 0 auto var(--space-5);
+}

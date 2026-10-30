@@ -82,45 +82,54 @@ ui_render_head(
                         }
                         $tagsRaw = (string) ($project['technologies'] ?? '');
                         $isFeatured = !empty($project['featured']) ? '1' : '0';
+                        // Thumbnails are cropped to 4:3 by convention; an image far from that (a 1.9:1 social
+                        // card, a tall phone shot) is shown whole on the light table instead of being cut.
+                        $shotFit = '';
+                        if (!empty($project['image'])) {
+                            $shotFile = dirname(__DIR__) . '/' . ltrim((string)$project['image'], '/');
+                            $shotSize = !str_contains((string)$project['image'], '..') && is_file($shotFile) ? @getimagesize($shotFile) : false;
+                            if (is_array($shotSize) && $shotSize[1] > 0 && abs(($shotSize[0] / $shotSize[1]) / (4 / 3) - 1) > 0.15) $shotFit = ' is-fit';
+                        }
                         ?>
                         <article id="project-<?= (int)$project['id'] ?>" class="ui-project-card" data-year="<?= htmlspecialchars($year) ?>" data-featured="<?= $isFeatured ?>" data-tags="<?= htmlspecialchars($tagsRaw) ?>" data-category="<?= htmlspecialchars($project['category'] ?? '') ?>">
                             <?php if (!empty($project['image'])): ?>
-                                <img class="ui-media" loading="lazy" decoding="async" src="<?= FULL_BASE_PATH . htmlspecialchars($project['image']) ?>"<?= ui_image_size_attrs($project['image']) ?> alt="<?= htmlspecialchars($project['title']) ?>">
-                            <?php endif; ?>
-                            <h2 class="ui-project-title"><a href="#project-<?= (int)$project['id'] ?>"><?= htmlspecialchars($project['title']) ?></a></h2>
-                            <?php
-                            $metaParts = array_filter([
-                                $isFeatured === '1' ? 'Featured' : null,
-                                $year !== '' ? $year : null,
-                                !empty($project['category']) ? $project['category'] : null,
-                            ]);
-                            ?>
-                            <?php if (!empty($metaParts)): ?>
-                                <p class="ui-project-meta"><?= htmlspecialchars(implode(' · ', $metaParts)) ?></p>
-                            <?php endif; ?>
-                            <?php if (!empty($project['description'])): ?>
-                                <p class="ui-project-desc"><?= nl2br(htmlspecialchars($project['description'])) ?></p>
-                            <?php endif; ?>
-
-                            <?php
-                            $techItems = array_filter(array_map('trim', explode(',', $tagsRaw)));
-                            if (!empty($techItems)): ?>
-                                <div class="ui-project-stack">
-                                    <?php foreach ($techItems as $tech): ?>
-                                        <span class="ui-tech-tag"><?= htmlspecialchars($tech) ?></span>
-                                    <?php endforeach; ?>
+                                <div class="ui-project-shot<?= $shotFit ?>">
+                                    <img class="ui-media" loading="lazy" decoding="async" src="<?= FULL_BASE_PATH . htmlspecialchars($project['image']) ?>"<?= ui_image_size_attrs($project['image']) ?> alt="<?= htmlspecialchars($project['title']) ?>">
                                 </div>
                             <?php endif; ?>
+                            <div class="ui-project-body">
+                                <?php if ($isFeatured === '1' || $year !== '' || !empty($project['category'])): ?>
+                                    <p class="ui-project-meta">
+                                        <?php if ($isFeatured === '1'): ?><span class="ui-project-flag">Featured</span><?php endif; ?>
+                                        <?php if ($year !== ''): ?><span><?= htmlspecialchars($year) ?></span><?php endif; ?>
+                                        <?php if (!empty($project['category'])): ?><span><?= htmlspecialchars($project['category']) ?></span><?php endif; ?>
+                                    </p>
+                                <?php endif; ?>
+                                <h2 class="ui-project-title"><a href="#project-<?= (int)$project['id'] ?>"><?= htmlspecialchars($project['title']) ?></a></h2>
+                                <?php if (!empty($project['description'])): ?>
+                                    <p class="ui-project-desc"><?= nl2br(htmlspecialchars($project['description'])) ?></p>
+                                <?php endif; ?>
 
-                            <?php if (!empty($project['project_url']) || !empty($project['github_url'])): ?>
-                                <div>
-                                    <?php if (!empty($project['project_url'])): ?>
-                                        <a class="ui-case-link" href="<?= htmlspecialchars($project['project_url']) ?>" target="_blank" rel="noopener noreferrer">View Project →</a>
-                                    <?php else: ?>
-                                        <a class="ui-case-link" href="<?= htmlspecialchars($project['github_url']) ?>" target="_blank" rel="noopener noreferrer">View on GitHub →</a>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endif; ?>
+                                <?php
+                                $techItems = array_filter(array_map('trim', explode(',', $tagsRaw)));
+                                if (!empty($techItems)): ?>
+                                    <div class="ui-project-stack">
+                                        <?php foreach ($techItems as $tech): ?>
+                                            <span class="ui-tech-tag"><?= htmlspecialchars($tech) ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($project['project_url']) || !empty($project['github_url'])): ?>
+                                    <div class="ui-project-links">
+                                        <?php if (!empty($project['project_url'])): ?>
+                                            <a class="ui-case-link" href="<?= htmlspecialchars($project['project_url']) ?>" target="_blank" rel="noopener noreferrer">View Project →</a>
+                                        <?php else: ?>
+                                            <a class="ui-case-link" href="<?= htmlspecialchars($project['github_url']) ?>" target="_blank" rel="noopener noreferrer">View on GitHub →</a>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </article>
                     <?php endforeach; ?>
                 </div>

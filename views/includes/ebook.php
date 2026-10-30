@@ -28,6 +28,17 @@ if (!function_exists('ebook_cover_url')) {
     }
 }
 
+if (!function_exists('ebook_cover_thumb_url')) {
+    // 240x320 WebP cut from the cover above for the small asides (12 KB instead of 800).
+    function ebook_cover_thumb_url(): string
+    {
+        $path = __DIR__ . '/../../assets/images/ebook-remain-valuable-240.webp';
+        return is_file($path)
+            ? FULL_BASE_PATH . 'assets/images/ebook-remain-valuable-240.webp?v=' . filemtime($path)
+            : ebook_cover_url();
+    }
+}
+
 if (!function_exists('ebook_link_attrs')) {
     // External-link convention matches the rest of the site (footer Books
     // link, socials): new tab, opener protection.
@@ -129,26 +140,33 @@ if (!function_exists('ui_render_ebook_aside')) {
             'article' => [
                 'eyebrow' => 'From the author',
                 'text' => 'If this post got you thinking about where technical work is headed, the book develops the argument in full: the scarce human, economic, and strategic advantages that stay valuable even when AI can do most cognitive work.',
-                'cta' => 'Get the 224-page ebook (PDF + EPUB) →',
             ],
             'post-code' => [
                 'eyebrow' => 'Going deeper',
                 'text' => 'These modules are the free starting point. The book extends the same question — what stays valuable when intelligence is cheap — into a 224-page practical guide on the human, economic, and strategic advantages that remain scarce when AI can do most cognitive work.',
-                'cta' => 'Get the ebook (PDF + EPUB) →',
             ],
             'downloads' => [
                 'eyebrow' => 'Prefer reading to installing',
                 'text' => 'Alongside the free software here, there is a 224-page ebook: a practical guide to the scarce human, economic, and strategic advantages that stay valuable even when AI can do most cognitive work.',
-                'cta' => 'Get the ebook (PDF + EPUB) →',
             ],
         ];
         $c = $copy[$variant] ?? $copy['article'];
         ?>
 <aside class="ebook-aside" aria-label="About the author's ebook">
-    <p class="ui-eyebrow"><?= htmlspecialchars($c['eyebrow']) ?></p>
-    <h2 class="ebook-aside-title"><?= htmlspecialchars(EBOOK_TITLE) ?></h2>
-    <p class="ebook-aside-text"><?= htmlspecialchars($c['text']) ?></p>
-    <a class="ebook-aside-cta" <?= ebook_link_attrs() ?>><?= htmlspecialchars($c['cta']) ?></a>
+    <a class="ebook-aside-cover" <?= ebook_link_attrs() ?> tabindex="-1" aria-hidden="true"><img src="<?= htmlspecialchars(ebook_cover_thumb_url()) ?>" width="240" height="320" loading="lazy" decoding="async" alt=""></a>
+    <div class="ebook-aside-body">
+        <p class="ui-eyebrow"><?= htmlspecialchars($c['eyebrow']) ?></p>
+        <h2 class="ebook-aside-title"><?= htmlspecialchars(EBOOK_TITLE) ?></h2>
+        <p class="ebook-aside-text"><?= htmlspecialchars($c['text']) ?></p>
+        <div class="ebook-aside-foot">
+            <a class="ui-btn ui-btn-secondary ebook-aside-cta" <?= ebook_link_attrs() ?>>Get the ebook <span class="ui-arrow" aria-hidden="true"></span></a>
+            <dl class="ebook-aside-spec">
+                <div><dt>Pages</dt><dd>224</dd></div>
+                <div><dt>Format</dt><dd>PDF + EPUB</dd></div>
+                <div><dt>Store</dt><dd>Gumroad</dd></div>
+            </dl>
+        </div>
+    </div>
 </aside>
 <?php
     }

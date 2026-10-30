@@ -68,19 +68,25 @@ ui_render_head($title, $description, $pageMeta);
 
     <main class="ui-main" id="main-content" tabindex="-1">
         <section class="ui-section">
-            <div class="ui-update-row" style="margin-bottom: 1.5rem;">
-                <img
-                    class="ui-update-avatar"
-                    src="<?= FULL_BASE_PATH ?>assets/images/pfp-avatar.webp"
-                    width="192" height="192"
-                    alt="Yunus Emre Vurgun"
-                    loading="eager"
-                >
+            <?php
+            $updateStamp = strtotime($update['update_date'] ?? $update['created_at'] ?? 'now');
+            // Entries dated without a time are stored at midnight; "00:00" would read as a real timestamp.
+            $updateWhen = date('H:i', $updateStamp) === '00:00' ? date('F j, Y', $updateStamp) : date('F j, Y · H:i', $updateStamp);
+            ?>
+            <div class="ui-update-head">
+                <span class="ui-avatar-bezel ui-avatar-bezel--lg">
+                    <img
+                        src="<?= FULL_BASE_PATH ?>assets/images/pfp-avatar.webp"
+                        width="192" height="192"
+                        alt="Yunus Emre Vurgun"
+                        loading="eager"
+                    >
+                </span>
                 <div class="ui-update-body">
-                    <p class="ui-eyebrow" style="margin-bottom: 0.25rem;">Updates</p>
-                    <h1 class="ui-section-title" style="margin-bottom: 0.25rem;"><?= htmlspecialchars($update['title']) ?></h1>
+                    <p class="ui-eyebrow">Update</p>
+                    <h1 class="ui-section-title"><?= htmlspecialchars($update['title']) ?></h1>
                     <p class="ui-section-text">
-                        <time datetime="<?= date('c', strtotime($update['update_date'] ?? $update['created_at'] ?? 'now')) ?>"><?= date('F j, Y H:i', strtotime($update['update_date'] ?? $update['created_at'] ?? 'now')) ?></time>
+                        <time datetime="<?= date('c', $updateStamp) ?>"><?= $updateWhen ?></time>
                     </p>
                 </div>
             </div>
@@ -89,17 +95,19 @@ ui_render_head($title, $description, $pageMeta);
         <section class="ui-section">
             <article>
                 <?php if (!empty($update['category']) || !empty($update['importance'])): ?>
-                    <div class="ui-tags" style="margin-bottom: 1rem;">
+                    <div class="ui-tags ui-article-tags">
                         <?php if (!empty($update['category'])): ?><span class="ui-tag"><?= htmlspecialchars($update['category']) ?></span><?php endif; ?>
                         <?php if (!empty($update['importance'])): ?><span class="ui-importance is-<?= htmlspecialchars($update['importance']) ?>"><?= htmlspecialchars(ucfirst($update['importance'])) ?></span><?php endif; ?>
                     </div>
                 <?php endif; ?>
                 <div class="ui-rich-content"><?= RichText::markdown($update['description'] ?? '') ?></div>
             </article>
-            <div class="ui-doc-links">
-                <a href="<?= FULL_BASE_PATH ?>updates">← Back to Updates</a>
-                <a href="<?= FULL_BASE_PATH ?>updates.xml">RSS</a>
-            </div>
+            <nav class="ui-share-bar" aria-label="Update actions">
+                <a class="ui-share-back" href="<?= FULL_BASE_PATH ?>updates"><span aria-hidden="true">←</span> Back to Updates</a>
+                <div class="ui-share-keys">
+                    <a class="ui-share-key" href="<?= FULL_BASE_PATH ?>updates.xml"><svg class="ui-share-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="18.5" r="2.2" fill="currentColor"/><path d="M4 10.5a9.5 9.5 0 0 1 9.5 9.5M4 4a16 16 0 0 1 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>RSS feed</span></a>
+                </div>
+            </nav>
         </section>
     </main>
 

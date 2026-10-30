@@ -29,7 +29,7 @@ if (!function_exists('ui_render_head')) {
         // is requested once.
         $cssHref = static fn(string $file): string => FULL_BASE_PATH . 'assets/css/' . $file . '?v=' . filemtime(__DIR__ . '/../../assets/css/' . $file);
         $fontHref = static fn(string $file): string => FULL_BASE_PATH . 'assets/fonts/' . $file;
-        $coreCss = array_map($cssHref, ['variables.css', 'ui-rebuild.css', 'ebook.css', 'jelly.css', 'blueprint.css']);
+        $coreCss = array_map($cssHref, ['variables.css', 'ui-rebuild.css', 'ebook.css', 'jelly.css', 'blueprint.css', 'detail.css']);
         $coreFonts = array_map($fontHref, ['fredoka-latin.woff2', 'atkinson-next-latin.woff2']);
         $lcpImage = is_array($extraMeta['lcp_image'] ?? null) ? $extraMeta['lcp_image'] : null;
         // The first path segment names the "sheet" (about, portfolio, yunobot ...). It rides on <html>

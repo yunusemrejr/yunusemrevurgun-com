@@ -46,6 +46,45 @@ $galleryMeta = $galleryItems !== [] ? [seo_collection_graph('Gallery', 'gallery'
 $galleryFresh = seo_newest_stamp($galleryImages, ['uploaded_at']);
 if ($galleryFresh !== null) $galleryMeta['date_modified'] = $galleryFresh;
 
+// One slideshow per set. "Untitled" is the upload default, not a caption, so it is not shown; the
+// alt text then names the set and the position instead.
+$renderSlideshow = static function (array $set, string $setName): void {
+    $total = count($set);
+    $captionOf = static function (array $image): string {
+        $title = trim((string)($image['title'] ?? ''));
+        return strcasecmp($title, 'Untitled') === 0 ? '' : $title;
+    };
+    ?>
+                    <div class="ui-slideshow" data-slideshow data-count="<?= $total ?>">
+                        <div class="ui-slideshow-stage">
+                            <button type="button" class="ui-slideshow-arrow ui-slideshow-prev" data-slideshow-prev aria-label="Previous image">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <div class="ui-slideshow-viewport">
+                                <div class="ui-slideshow-track">
+                                    <?php foreach (array_values($set) as $i => $image):
+                                        $file = 'uploads/gallery/' . ltrim((string)($image['filename'] ?? ''), '/');
+                                        $caption = $captionOf($image);
+                                        $alt = $caption !== '' ? $caption : $setName . ', photo ' . ($i + 1) . ' of ' . $total;
+                                        ?>
+                                        <figure class="ui-slideshow-slide" data-title="<?= htmlspecialchars($caption) ?>">
+                                            <img class="ui-slideshow-image" src="<?= htmlspecialchars(FULL_BASE_PATH . $file) ?>"<?= ui_image_size_attrs($file) ?> alt="<?= htmlspecialchars($alt) ?>" loading="<?= $i === 0 ? 'eager' : 'lazy' ?>" decoding="async">
+                                        </figure>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <button type="button" class="ui-slideshow-arrow ui-slideshow-next" data-slideshow-next aria-label="Next image">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                        <div class="ui-slideshow-meta">
+                            <span class="ui-slideshow-counter"><span data-slideshow-current>1</span><span class="ui-slideshow-of">/ <?= $total ?></span></span>
+                            <span class="ui-slideshow-caption" data-slideshow-caption><?= htmlspecialchars($captionOf($set[array_key_first($set)] ?? [])) ?></span>
+                        </div>
+                    </div>
+    <?php
+};
+
 ui_render_head(
     'Gallery — Experiments | Yunus Emre Vurgun, Developer',
     'Visual archive by Yunus Emre Vurgun — projects, processes, and technical explorations.',
@@ -75,34 +114,7 @@ ui_render_head(
                 <?php if (empty($images)): ?>
                     <div class="ui-empty">No gallery images available yet.</div>
                 <?php else: ?>
-                    <div class="ui-slideshow" data-slideshow data-count="<?= count($images) ?>">
-                        <div class="ui-slideshow-stage">
-                            <button type="button" class="ui-slideshow-arrow ui-slideshow-prev" data-slideshow-prev aria-label="Previous image">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="ui-slideshow-viewport">
-                                <div class="ui-slideshow-track">
-                                    <?php foreach ($images as $i => $image):
-                                        $imageSrc = FULL_BASE_PATH . 'uploads/gallery/' . ltrim((string)($image['filename'] ?? ''), '/');
-                                        $title = (string) ($image['title'] ?? 'Untitled');
-                                        ?>
-                                        <figure class="ui-slideshow-slide" data-title="<?= htmlspecialchars($title) ?>">
-                                            <img class="ui-slideshow-image" src="<?= htmlspecialchars($imageSrc) ?>"<?= ui_image_size_attrs('uploads/gallery/' . ltrim((string)($image['filename'] ?? ''), '/')) ?> alt="<?= htmlspecialchars($title) ?>" loading="<?= $i === 0 ? 'eager' : 'lazy' ?>" decoding="async">
-                                        </figure>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                            <button type="button" class="ui-slideshow-arrow ui-slideshow-next" data-slideshow-next aria-label="Next image">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                        </div>
-                        <div class="ui-slideshow-meta">
-                            <span class="ui-slideshow-counter">
-                                <span data-slideshow-current>1</span> / <?= count($images) ?>
-                            </span>
-                            <span class="ui-slideshow-caption" data-slideshow-caption><?= htmlspecialchars((string)($images[0]['title'] ?? 'Untitled')) ?></span>
-                        </div>
-                    </div>
+                    <?php $renderSlideshow($images, 'Gallery'); ?>
                 <?php endif; ?>
             </section>
         <?php else: ?>
@@ -112,39 +124,12 @@ ui_render_head(
                 <section class="ui-section">
                     <div class="ui-album-header">
                         <h2 class="ui-album-title"><?= htmlspecialchars($album['name']) ?></h2>
+                        <span class="ui-album-count"><?= (int)$album['image_count'] ?> <?= (int)$album['image_count'] === 1 ? 'photo' : 'photos' ?></span>
                         <?php if (!empty($album['description'])): ?>
                         <p class="ui-album-description"><?= htmlspecialchars($album['description']) ?></p>
                         <?php endif; ?>
                     </div>
-                    
-                    <div class="ui-slideshow" data-slideshow data-count="<?= $album['image_count'] ?>">
-                        <div class="ui-slideshow-stage">
-                            <button type="button" class="ui-slideshow-arrow ui-slideshow-prev" data-slideshow-prev aria-label="Previous image">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                            <div class="ui-slideshow-viewport">
-                                <div class="ui-slideshow-track">
-                                    <?php foreach ($album['images'] as $i => $image):
-                                        $imageSrc = FULL_BASE_PATH . 'uploads/gallery/' . ltrim((string)($image['filename'] ?? ''), '/');
-                                        $title = (string) ($image['title'] ?? 'Untitled');
-                                        ?>
-                                        <figure class="ui-slideshow-slide" data-title="<?= htmlspecialchars($title) ?>">
-                                            <img class="ui-slideshow-image" src="<?= htmlspecialchars($imageSrc) ?>"<?= ui_image_size_attrs('uploads/gallery/' . ltrim((string)($image['filename'] ?? ''), '/')) ?> alt="<?= htmlspecialchars($title) ?>" loading="<?= $i === 0 ? 'eager' : 'lazy' ?>" decoding="async">
-                                        </figure>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                            <button type="button" class="ui-slideshow-arrow ui-slideshow-next" data-slideshow-next aria-label="Next image">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </button>
-                        </div>
-                        <div class="ui-slideshow-meta">
-                            <span class="ui-slideshow-counter">
-                                <span data-slideshow-current>1</span> / <?= $album['image_count'] ?>
-                            </span>
-                            <span class="ui-slideshow-caption" data-slideshow-caption><?= htmlspecialchars((string)($album['images'][0]['title'] ?? 'Untitled')) ?></span>
-                        </div>
-                    </div>
+                    <?php $renderSlideshow($album['images'], (string)$album['name']); ?>
                 </section>
                 <?php endif; ?>
             <?php endforeach; ?>

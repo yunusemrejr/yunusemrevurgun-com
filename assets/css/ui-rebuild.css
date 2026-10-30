@@ -1969,17 +1969,19 @@ textarea.ui-input {
   scroll-margin-top: calc(var(--navbar-height) + 24px);
 }
 
-.ui-project-card:has(.ui-media) {
+/* Two cells, one row: the thumbnail plate and the text body. The body is one element, so the
+   image can never claim a row of its own and push the text below it. */
+.ui-project-card:has(.ui-project-shot) {
   grid-template-columns: 240px minmax(0, 1fr);
+  align-items: start;
 }
 
-.ui-project-card:has(.ui-media) > .ui-media {
-  grid-column: 1;
-  grid-row: 1 / -1;
-}
-
-.ui-project-card:has(.ui-media) > :not(.ui-media) {
-  grid-column: 2;
+.ui-project-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
 }
 
 .ui-project-card.ui-project-hidden {
@@ -1996,7 +1998,6 @@ textarea.ui-input {
   color: var(--color-ink-slate);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  order: -1;
 }
 
 .ui-project-title {
@@ -2044,18 +2045,8 @@ textarea.ui-input {
 }
 
 @media (max-width: 700px) {
-  .ui-project-card:has(.ui-media) {
+  .ui-project-card:has(.ui-project-shot) {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .ui-project-card:has(.ui-media) > .ui-media {
-    grid-column: 1;
-    grid-row: auto;
-    aspect-ratio: 16 / 9;
-  }
-
-  .ui-project-card:has(.ui-media) > :not(.ui-media) {
-    grid-column: 1;
   }
 }
 

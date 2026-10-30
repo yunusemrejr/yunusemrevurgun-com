@@ -108,12 +108,15 @@ ui_render_head(
                 <?php endif; ?>
                 <div class="ui-rich-content"><?= ui_sanitize_html($post['content'] ?? '') ?></div>
             </article>
-            <div class="ui-doc-links">
-                <a href="<?= FULL_BASE_PATH ?>blog">← Back to Blog</a>
-                <a href="https://twitter.com/intent/tweet?text=<?= rawurlencode($title) ?>&url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on X</a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
-                <button class="ui-doc-link-btn" type="button" onclick="navigator.clipboard.writeText('<?= htmlspecialchars($postUrl, ENT_QUOTES) ?>');this.textContent='Copied';">Copy link</button>
-            </div>
+            <nav class="ui-share-bar" aria-label="Post actions">
+                <a class="ui-share-back" href="<?= FULL_BASE_PATH ?>blog"><span aria-hidden="true">←</span> Back to Blog</a>
+                <div class="ui-share-keys" role="group" aria-labelledby="shareLabel">
+                    <span class="ui-share-label" id="shareLabel">Share</span>
+                    <a class="ui-share-key" href="https://twitter.com/intent/tweet?text=<?= rawurlencode($title) ?>&url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer"><?= Socials::iconSvg('x', 'ui-share-icon') ?><span>Share on X</span></a>
+                    <a class="ui-share-key" href="https://www.linkedin.com/sharing/share-offsite/?url=<?= rawurlencode($postUrl) ?>" target="_blank" rel="noopener noreferrer"><?= Socials::iconSvg('linkedin', 'ui-share-icon') ?><span>LinkedIn</span></a>
+                    <button class="ui-share-key" type="button" onclick="navigator.clipboard.writeText('<?= htmlspecialchars($postUrl, ENT_QUOTES) ?>');this.lastElementChild.textContent='Copied';this.classList.add('is-done');"><?= Socials::iconSvg('link', 'ui-share-icon') ?><span>Copy link</span></button>
+                </div>
+            </nav>
         </section>
 
         <?php
@@ -133,11 +136,22 @@ ui_render_head(
         <?php if ($morePosts !== []): ?>
         <section class="ui-section">
             <h2 class="ui-section-title">Keep reading</h2>
-            <ul class="ui-reading-list" role="list">
-                <?php foreach ($morePosts as $more): ?>
+            <ul class="ui-reading-list ui-reading-list--cards" role="list">
+                <?php foreach ($morePosts as $more):
+                    $moreText = seo_plain((string)($more['content'] ?? ''));
+                    $moreExcerpt = trim((string)($more['excerpt'] ?? '')) !== '' ? trim(strip_tags((string)$more['excerpt'])) : $moreText;
+                    $moreExcerpt = mb_strlen($moreExcerpt) > 150 ? rtrim(mb_substr($moreExcerpt, 0, 150)) . '…' : $moreExcerpt;
+                    $moreMinutes = max(1, (int)ceil(str_word_count($moreText) / 200));
+                ?>
                 <li><a href="<?= FULL_BASE_PATH ?>blog/<?= rawurlencode($more['slug']) ?>">
-                    <span class="ui-reading-title"><?= htmlspecialchars($more['title']) ?></span>
-                    <span class="ui-reading-date"><time datetime="<?= date('c', strtotime($more['created_at'] ?? 'now')) ?>"><?= date('F j, Y', strtotime($more['created_at'] ?? 'now')) ?></time></span>
+                    <span class="ui-reading-main">
+                        <span class="ui-reading-title"><?= htmlspecialchars($more['title']) ?></span>
+                        <?php if ($moreExcerpt !== ''): ?><span class="ui-reading-excerpt"><?= htmlspecialchars($moreExcerpt) ?></span><?php endif; ?>
+                    </span>
+                    <span class="ui-reading-side">
+                        <time class="ui-reading-date" datetime="<?= date('c', strtotime($more['created_at'] ?? 'now')) ?>"><?= date('M j, Y', strtotime($more['created_at'] ?? 'now')) ?></time>
+                        <span class="ui-reading-time"><?= $moreMinutes ?> min read</span>
+                    </span>
                 </a></li>
                 <?php endforeach; ?>
             </ul>
@@ -145,12 +159,18 @@ ui_render_head(
         <?php endif; ?>
 
         <section class="ui-section">
-            <h2 class="ui-section-title">Yunus Emre Vurgun</h2>
-            <p class="ui-section-text">Software developer and IT specialist in Istanbul, working on AI/ML systems, operational technology and industrial automation at ASP Otomasyon A.Ş.</p>
-            <div class="ui-doc-links">
-                <a href="<?= FULL_BASE_PATH ?>about">About &amp; CV</a>
-                <a href="<?= FULL_BASE_PATH ?>portfolio">Project archive</a>
-                <a href="<?= FULL_BASE_PATH ?>contact">Contact</a>
+            <div class="ui-author-card">
+                <span class="ui-avatar-bezel ui-avatar-bezel--lg"><img src="<?= FULL_BASE_PATH ?>assets/images/pfp-avatar.webp" width="192" height="192" alt="" loading="lazy" decoding="async"></span>
+                <div class="ui-author-body">
+                    <p class="ui-author-kicker">Written by</p>
+                    <h2 class="ui-author-name">Yunus Emre Vurgun</h2>
+                    <p class="ui-author-role">Software developer and IT specialist in Istanbul, working on AI/ML systems, operational technology and industrial automation at ASP Otomasyon A.Ş.</p>
+                    <div class="ui-author-links">
+                        <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>about">About &amp; CV</a>
+                        <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>portfolio">Project archive</a>
+                        <a class="ui-btn ui-btn-secondary" href="<?= FULL_BASE_PATH ?>contact">Contact</a>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

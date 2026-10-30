@@ -23,10 +23,11 @@
             this.submitButton = null;
             this.isSubmitting = false;
             this.validationRules = {
-                name: { required: true, minLength: 2, maxLength: 50 },
+                // Same limits as the server (views/contact.php) and the fields' maxlength.
+                name: { required: true, minLength: 2, maxLength: 80 },
                 email: { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
-                subject: { required: true, minLength: 5, maxLength: 100 },
-                message: { required: true, minLength: 10, maxLength: 1000 }
+                subject: { required: true, minLength: 3, maxLength: 140 },
+                message: { required: true, minLength: 10, maxLength: 2000 }
             };
         }
 
@@ -82,7 +83,7 @@
             // Create character count element
             const charCount = document.createElement('div');
             charCount.className = 'char-count';
-            charCount.textContent = '0 / 1000 characters';
+            charCount.textContent = `0 / ${this.validationRules.message.maxLength} characters`;
             messageField.parentNode.appendChild(charCount);
 
             // Update character count on input
@@ -374,7 +375,7 @@
             // Reset character count
             const charCount = this.form.querySelector('.char-count');
             if (charCount) {
-                charCount.textContent = '0 / 1000 characters';
+                charCount.textContent = `0 / ${this.validationRules.message.maxLength} characters`;
                 charCount.classList.remove('warning', 'error');
             }
             

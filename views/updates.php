@@ -130,6 +130,9 @@ ui_render_head($title, $description, $pageMeta);
                         $excerpt = mb_substr($plainText, 0, 170);
                         $excerptIsTruncated = mb_strlen($plainText) > 170;
                         $dateRaw = $update['update_date'] ?? $update['created_at'] ?? 'now';
+                        $dateStamp = strtotime($dateRaw);
+                        // Entries dated without a time are stored at midnight; "00:00" would read as a real timestamp.
+                        $dateLabel = date('H:i', $dateStamp) === '00:00' ? date('M j, Y', $dateStamp) : date('M j, Y · H:i', $dateStamp);
                         ?>
                         <article class="ui-update-card">
                             <div class="ui-update-row">
@@ -155,7 +158,7 @@ ui_render_head($title, $description, $pageMeta);
                                         <a href="<?= FULL_BASE_PATH ?>updates/<?= intval($update['id']) ?>"><?= htmlspecialchars($update['title']) ?></a>
                                     </h2>
                                     <p class="ui-feed-meta">
-                                        <time datetime="<?= date('c', strtotime($dateRaw)) ?>"><?= date('M j, Y H:i', strtotime($dateRaw)) ?></time>
+                                        <time datetime="<?= date('c', $dateStamp) ?>"><?= $dateLabel ?></time>
                                     </p>
                                     <p class="ui-feed-text"><?= htmlspecialchars($excerpt) ?><?= $excerptIsTruncated ? '…' : '' ?></p>
                                 </div>
