@@ -585,7 +585,7 @@ HTML],
 <thead><tr><th>When</th><th>To</th><th>What</th></tr></thead>
 <tbody>
 <tr><td>On load</td><td>This site (21 requests)</td><td>The page, CSS, fonts, scripts, the worker, <code>core.wasm</code>, the knowledge pack, images and the manifest, plus a Cloudflare real-user-monitoring POST</td></tr>
-<tr><td>On load</td><td>Third parties</td><td>Google Tag Manager and Google Analytics, Yandex Metrika (including its cookie-sync requests), the Cloudflare Insights beacon and gor.bio</td></tr>
+<tr><td>On load</td><td>Third parties</td><td>Google Tag Manager and Google Analytics, Yandex Metrika (including its cookie-sync requests) and the Cloudflare Insights beacon</td></tr>
 <tr><td>After sending</td><td>Yandex Metrika</td><td>A click-map GET carrying the page address and where the click landed, and a POST with an empty body</td></tr>
 <tr><td>After sending</td><td>This site</td><td>Nothing</td></tr>
 </tbody>
@@ -598,7 +598,7 @@ HTML],
 <li>Wait until the page has settled, tick <em>Preserve log</em> and clear the list.</li>
 <li>Send a message containing a word nobody else would use, for example <code>quokka-7731 weather</code>.</li>
 <li>Search the traffic for that word: use the Network panel's search (Ctrl+Shift+F, or Cmd+Option+F on a Mac), which searches request headers and bodies, and also type the word into the filter box, which matches URLs.</li>
-<li>To take the analytics out of the picture, block <code>*yandex*</code>, <code>*googletagmanager*</code>, <code>*google-analytics*</code> and <code>*gor.bio*</code> in <em>Network request blocking</em>, reload and repeat.</li>
+<li>To take the analytics out of the picture, block <code>*yandex*</code>, <code>*googletagmanager*</code> and <code>*google-analytics*</code> in <em>Network request blocking</em>, reload and repeat.</li>
 </ol>
 <p>If the word appears nowhere, your message did not leave the page.</p>
 HTML],
