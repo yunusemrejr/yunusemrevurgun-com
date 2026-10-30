@@ -87,8 +87,8 @@ ui_render_head(
             <?php else: ?>
                 <div class="ui-feed-list">
                     <?php foreach ($posts as $post):
-                        $excerpt = !empty($post['excerpt']) ? $post['excerpt'] : strip_tags((string) $post['content']);
-                        $excerpt = mb_substr(trim($excerpt), 0, 220) . (mb_strlen($excerpt) > 220 ? '...' : '');
+                        $excerpt = seo_post_excerpt($post);
+                        $excerpt = mb_strlen($excerpt) > 220 ? rtrim(mb_substr($excerpt, 0, 220)) . '…' : $excerpt;
                         ?>
                         <article class="ui-feed-card">
                             <a href="<?= FULL_BASE_PATH . 'blog/' . urlencode($post['slug']) ?>" style="display: block;">

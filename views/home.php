@@ -250,7 +250,8 @@ ui_render_head(
             <article class="ui-feed-card">
                 <p class="ui-feed-meta"><time datetime="<?= date('c', strtotime($entry['created_at'])) ?>"><?= date('F j, Y', strtotime($entry['created_at'])) ?></time></p>
                 <h3 class="ui-feed-title"><a href="<?= FULL_BASE_PATH . 'blog/' . rawurlencode($entry['slug']) ?>"><?= htmlspecialchars($entry['title']) ?></a></h3>
-                <?php if (!empty($entry['excerpt'])): ?><p class="ui-feed-text"><?= htmlspecialchars(mb_substr(strip_tags($entry['excerpt']), 0, 200)) ?></p><?php endif; ?>
+                <?php $entryExcerpt = !empty($entry['excerpt']) ? seo_post_excerpt($entry) : ''; ?>
+                <?php if ($entryExcerpt !== ''): ?><p class="ui-feed-text"><?= htmlspecialchars(mb_strlen($entryExcerpt) > 200 ? rtrim(mb_substr($entryExcerpt, 0, 200)) . '…' : $entryExcerpt) ?></p><?php endif; ?>
             </article>
             <?php endforeach; ?>
         </div>

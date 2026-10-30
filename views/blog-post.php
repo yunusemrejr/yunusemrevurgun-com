@@ -139,7 +139,7 @@ ui_render_head(
             <ul class="ui-reading-list ui-reading-list--cards" role="list">
                 <?php foreach ($morePosts as $more):
                     $moreText = seo_plain((string)($more['content'] ?? ''));
-                    $moreExcerpt = trim((string)($more['excerpt'] ?? '')) !== '' ? trim(strip_tags((string)$more['excerpt'])) : $moreText;
+                    $moreExcerpt = seo_post_excerpt($more);
                     $moreExcerpt = mb_strlen($moreExcerpt) > 150 ? rtrim(mb_substr($moreExcerpt, 0, 150)) . '…' : $moreExcerpt;
                     $moreMinutes = max(1, (int)ceil(str_word_count($moreText) / 200));
                 ?>

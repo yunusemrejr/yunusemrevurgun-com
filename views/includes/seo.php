@@ -161,6 +161,23 @@ if (!function_exists('seo_plain')) {
     }
 }
 
+if (!function_exists('seo_post_excerpt')) {
+    /**
+     * Plain-text excerpt of a blog post row, uncut. The admin auto-fills `excerpt` from the start of the
+     * post, and older auto-fills lost the editor's <div> paragraph breaks ("abilities.Too much"). An
+     * excerpt that is only that auto-filled start is rebuilt from the content; a hand-written one is kept.
+     */
+    function seo_post_excerpt(array $post): string
+    {
+        $text = seo_plain((string)($post['content'] ?? ''));
+        $stored = trim((string)preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags((string)($post['excerpt'] ?? '')), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+        if ($stored === '') return $text;
+        $squash = static fn(string $s): string => (string)preg_replace('/\s+/u', '', $s);
+        $storedCore = $squash(rtrim($stored, ".… \t"));
+        return ($text !== '' && $storedCore !== '' && str_starts_with($squash($text), $storedCore)) ? $text : $stored;
+    }
+}
+
 if (!function_exists('seo_description')) {
     /**
      * A meta description from free text: tags and entities resolved, whitespace collapsed, then cut at the
