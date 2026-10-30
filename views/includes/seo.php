@@ -153,7 +153,10 @@ if (!function_exists('seo_plain')) {
     /** Visible-text version of an HTML fragment, for schema text fields and word counts. */
     function seo_plain(string $html): string
     {
-        $text = html_entity_decode(strip_tags(str_replace(['</p>', '</li>', '<br>', '<br/>'], ' ', $html)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        // Block boundaries become spaces (the editor writes paragraphs as <div>s, so "end.<div>Next" must not
+        // read "end.Next"); inline tags such as <strong> or <a> are removed without one.
+        $html = (string)preg_replace('#<(?:/?(?:p|div|li|h[1-6]|blockquote|pre|tr|td|th|ul|ol|section|article|figure|figcaption)\b[^>]*|br\b[^>]*)>#i', ' ', $html);
+        $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         return trim((string)preg_replace('/\s+/', ' ', $text));
     }
 }
