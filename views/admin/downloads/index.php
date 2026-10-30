@@ -20,14 +20,14 @@ $thumbBase = FULL_BASE_PATH . Downloads::UPLOAD_DIR . '/';
 $page = "downloads";
 $pageTitle = "Downloads";
 $actionButton = '<button type="button" class="admin-btn admin-btn-primary" id="addDownloadBtn"><i class="bi bi-plus-lg me-2"></i>Add Download</button>';
+$pageHeader = '<div class="admin-page-header"><div class="admin-page-heading"><h1 class="admin-page-title">' . htmlspecialchars($pageTitle) . '</h1><p class="admin-page-subtitle">Desktop &amp; offline apps for visitors. Binaries stay on GitHub — only metadata and thumbnails are stored here.</p></div><div class="admin-page-actions">' . $actionButton . '</div></div>';
 include __DIR__ . '/../includes/header.php';
 ?>
 
-<p class="admin-page-subtitle" style="margin: -1.25rem 0 1.5rem;">Desktop &amp; offline apps for visitors. Binaries stay on GitHub — only metadata and thumbnails are stored here.</p>
 
 <?php if (count($list) > 0): ?>
-<div class="admin-table">
-    <table>
+<div class="admin-list admin-table-scroll">
+    <table class="admin-table">
         <thead>
             <tr>
                 <th>App</th>
@@ -76,10 +76,10 @@ include __DIR__ . '/../includes/header.php';
                             <i class="bi bi-github"></i> <?= htmlspecialchars(mb_strimwidth(preg_replace('#^https?://#', '', $item['download_url'] ?? ''), 0, 34, '…')) ?>
                         </a>
                     </td>
-                    <td><?= !empty($item['created_at']) ? date('M d, Y', strtotime($item['created_at'])) : '—' ?></td>
+                    <td class="admin-nowrap"><?= !empty($item['created_at']) ? date('M d, Y', strtotime($item['created_at'])) : '—' ?></td>
                     <td>
-                        <div class="admin-page-actions">
-                            <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" data-action="edit"
+                        <div class="admin-action-buttons">
+                            <button type="button" class="admin-btn admin-btn-secondary admin-btn-icon" data-action="edit" aria-label="Edit" title="Edit"
                                 data-id="<?= $item['id'] ?>"
                                 data-title="<?= htmlspecialchars($item['title'] ?? '', ENT_QUOTES) ?>"
                                 data-url="<?= htmlspecialchars($item['download_url'] ?? '', ENT_QUOTES) ?>"
@@ -89,7 +89,7 @@ include __DIR__ . '/../includes/header.php';
                                 data-thumbnail="<?= $hasThumb ? htmlspecialchars($thumbBase . $item['thumbnail'], ENT_QUOTES) : '' ?>">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button type="button" class="admin-btn admin-btn-danger admin-btn-sm" data-action="delete" data-id="<?= $item['id'] ?>" data-title="<?= htmlspecialchars($item['title'] ?? '', ENT_QUOTES) ?>">
+                            <button type="button" class="admin-btn admin-btn-danger admin-btn-icon" data-action="delete" aria-label="Delete" title="Delete" data-id="<?= $item['id'] ?>" data-title="<?= htmlspecialchars($item['title'] ?? '', ENT_QUOTES) ?>">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -177,17 +177,17 @@ $pageScripts = '
 <style>
 .dl-app-cell { display: flex; align-items: center; gap: 12px; }
 .dl-thumb { width: 56px; height: 56px; object-fit: cover; border: 1px solid var(--color-border); border-radius: var(--radius-md); flex-shrink: 0; background: var(--color-bg-subtle); }
-.dl-thumb-empty { display: flex; align-items: center; justify-content: center; color: var(--color-accent); font-size: 1.25rem; }
+.dl-thumb-empty { display: flex; align-items: center; justify-content: center; color: var(--color-text-tertiary); font-size: 1.25rem; }
 .dl-app-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .dl-app-title { font-weight: 600; color: var(--color-ink-body); }
-.dl-app-desc { font-size: 0.8rem; color: var(--color-accent); }
-.dl-app-deps { font-size: 0.75rem; color: var(--color-accent); }
+.dl-app-desc { font-size: 0.8rem; color: var(--color-text-secondary); }
+.dl-app-deps { font-size: 0.75rem; color: var(--color-text-secondary); }
 .dl-platform { margin: 0 4px 4px 0; }
 .dl-muted { color: var(--color-text-tertiary); }
 .dl-source-link { color: var(--color-ink-body); text-decoration: none; font-size: 0.85rem; }
 .dl-source-link:hover { color: var(--color-accent); text-decoration: underline; }
 .dl-required { color: var(--color-danger); }
-.dl-help { display: block; margin-top: 4px; color: var(--color-accent); font-size: 0.8rem; }
+.dl-help { display: block; margin-top: 4px; color: var(--color-text-secondary); font-size: 0.8rem; }
 .dl-preview { margin-top: 12px; display: flex; align-items: center; gap: 12px; }
 .dl-preview img { width: 80px; height: 80px; object-fit: cover; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
 </style>

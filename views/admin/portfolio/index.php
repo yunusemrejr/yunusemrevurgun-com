@@ -45,7 +45,8 @@ $pageTitle = "Portfolio Projects";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
+                <h1 class="admin-page-title">Portfolio Projects</h1>
                 <p class="admin-page-subtitle">Manage your portfolio projects</p>
             </div>
             <div class="admin-page-actions">
@@ -76,14 +77,9 @@ include __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
 
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <h5 class="admin-card-title">All Projects</h5>
-            </div>
-            <div class="admin-card-body">
                 <?php if (count($projects) > 0): ?>
-                    <div class="portfolio-admin-table-container">
-                            <table class="portfolio-admin-table">
+                    <div class="portfolio-admin-table-container admin-list admin-table-scroll">
+                            <table class="portfolio-admin-table admin-table">
                             <thead>
                                 <tr>
                                     <th>Title</th>
@@ -100,7 +96,7 @@ include __DIR__ . '/../includes/header.php';
                                         <td>
                                             <strong><?= htmlspecialchars($project['title']) ?></strong>
                                             <?php if (!empty($project['description'])): ?>
-                                                <br><small class="portfolio-admin-text-muted"><?= htmlspecialchars(substr($project['description'], 0, 100)) ?><?= strlen($project['description']) > 100 ? '...' : '' ?></small>
+                                                <small class="portfolio-admin-text-muted"><?= htmlspecialchars(mb_substr($project['description'], 0, 120)) ?><?= mb_strlen($project['description']) > 120 ? '…' : '' ?></small>
                                             <?php endif; ?>
                                         </td>
                                         <td>
@@ -111,13 +107,14 @@ include __DIR__ . '/../includes/header.php';
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <?php if (!empty($project['technologies'])): ?>
-                                                <span class="portfolio-admin-badge portfolio-admin-badge-featured"><?= htmlspecialchars($project['technologies']) ?></span>
+                                            <?php $techList = array_filter(array_map('trim', explode(',', (string)($project['technologies'] ?? '')))); ?>
+                                            <?php if ($techList !== []): ?>
+                                                <span class="portfolio-admin-tags"><?php foreach ($techList as $tech): ?><span class="portfolio-admin-badge portfolio-admin-badge-featured"><?= htmlspecialchars($tech) ?></span><?php endforeach; ?></span>
                                             <?php else: ?>
                                                 <span class="portfolio-admin-text-muted">No technologies specified</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
+                                        <td class="admin-nowrap">
                                             <?= isset($project['completion_date']) ? date('M d, Y', strtotime($project['completion_date'])) : 'No date' ?>
                                         </td>
                                         <td>
@@ -157,9 +154,6 @@ include __DIR__ . '/../includes/header.php';
                         <span>No portfolio projects yet. <a href="<?= FULL_BASE_PATH ?>admin/portfolio/create" class="portfolio-admin-btn portfolio-admin-btn-primary portfolio-admin-btn-sm" style="margin-left: 0.5rem;">Create your first project</a></span>
                     </div>
                 <?php endif; ?>
-            </div>
-        </div>
-
 
      <?php
 // Include footer

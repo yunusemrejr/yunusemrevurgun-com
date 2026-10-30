@@ -37,7 +37,8 @@ $pageTitle = "Tracker Codes";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
+                <h1 class="admin-page-title"><?= htmlspecialchars($pageTitle) ?></h1>
                 <p class="admin-page-subtitle">Manage your analytics and tracking codes</p>
             </div>
             <div class="admin-page-actions">
@@ -68,16 +69,9 @@ include __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
 
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <h5 class="admin-card-title">
-                    <i class="bi bi-code-slash me-2"></i>All Tracker Codes
-                </h5>
-            </div>
-            <div class="admin-card-body">
                 <?php if (count($trackerCodes) > 0): ?>
-                    <div class="admin-tracker-table admin-table-scroll">
-                        <table>
+                    <div class="admin-list admin-tracker-table admin-table-scroll">
+                        <table class="admin-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -118,12 +112,11 @@ include __DIR__ . '/../includes/header.php';
                         </table>
                     </div>
                 <?php else: ?>
-                    <p class="admin-empty-state">
-                        <i class="bi bi-inbox me-2"></i>
-                        No tracker codes yet. <a href="<?= FULL_BASE_PATH ?>admin/tracker-codes/create">Create your first tracker code</a>.
-                    </p>
+                    <div class="admin-card admin-empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>No tracker codes yet.</p>
+                        <a href="<?= FULL_BASE_PATH ?>admin/tracker-codes/create" class="admin-btn admin-btn-primary">Create your first tracker code</a>
+                    </div>
                 <?php endif; ?>
-            </div>
-        </div>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>

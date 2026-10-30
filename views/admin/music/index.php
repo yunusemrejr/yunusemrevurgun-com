@@ -34,7 +34,7 @@ $pageTitle = "Music";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
                 <h1 class="admin-page-title">Music</h1>
                 <p class="admin-page-subtitle">Manage audio tracks</p>
             </div>
@@ -58,7 +58,7 @@ include __DIR__ . '/../includes/header.php';
         </div>
 
         <?php if (count($tracks) > 0): ?>
-            <div class="admin-music-table">
+            <div class="admin-list admin-music-table admin-table-scroll">
                 <table class="admin-table">
                     <thead>
                         <tr>
@@ -86,25 +86,25 @@ include __DIR__ . '/../includes/header.php';
                                 <td>
                                     <span class="admin-music-desc" data-field="description"><?= htmlspecialchars(mb_substr($track['description'] ?? '', 0, 80)) ?></span>
                                 </td>
-                                <td><?= $recordedDate ?></td>
-                                <td><?= $duration ?></td>
-                                <td><?= $size ?></td>
-                                <td><?= isset($track['uploaded_at']) ? date('M d, Y', strtotime($track['uploaded_at'])) : '--' ?></td>
+                                <td class="admin-nowrap"><?= $recordedDate ?></td>
+                                <td class="admin-nowrap"><?= $duration ?></td>
+                                <td class="admin-nowrap"><?= $size ?></td>
+                                <td class="admin-nowrap"><?= isset($track['uploaded_at']) ? date('M d, Y', strtotime($track['uploaded_at'])) : '--' ?></td>
                                 <td>
                                     <div class="admin-music-actions">
-                                        <button class="admin-btn admin-btn-secondary admin-btn-sm" data-action="edit" data-id="<?= $track['id'] ?>" data-title="<?= htmlspecialchars($track['title'] ?? '', ENT_QUOTES) ?>" data-description="<?= htmlspecialchars($track['description'] ?? '', ENT_QUOTES) ?>" data-recorded-at="<?= htmlspecialchars($track['recorded_at'] ?? '', ENT_QUOTES) ?>">
+                                        <button class="admin-btn admin-btn-secondary admin-btn-icon" data-action="edit" aria-label="Edit" title="Edit" data-id="<?= $track['id'] ?>" data-title="<?= htmlspecialchars($track['title'] ?? '', ENT_QUOTES) ?>" data-description="<?= htmlspecialchars($track['description'] ?? '', ENT_QUOTES) ?>" data-recorded-at="<?= htmlspecialchars($track['recorded_at'] ?? '', ENT_QUOTES) ?>">
                                             <i class="bi bi-pencil"></i>
                                         </button>
                                         <?php if ($isArchived): ?>
-                                            <button class="admin-btn admin-btn-warning admin-btn-sm" data-action="restore" data-id="<?= $track['id'] ?>">
+                                            <button class="admin-btn admin-btn-warning admin-btn-icon" data-action="restore" aria-label="Restore" title="Restore" data-id="<?= $track['id'] ?>">
                                                 <i class="bi bi-arrow-counterclockwise"></i>
                                             </button>
                                         <?php else: ?>
-                                            <button class="admin-btn admin-btn-secondary admin-btn-sm" data-action="archive" data-id="<?= $track['id'] ?>">
+                                            <button class="admin-btn admin-btn-secondary admin-btn-icon" data-action="archive" aria-label="Archive" title="Archive" data-id="<?= $track['id'] ?>">
                                                 <i class="bi bi-archive"></i>
                                             </button>
                                         <?php endif; ?>
-                                        <button class="admin-btn admin-btn-danger admin-btn-sm" data-action="delete" data-id="<?= $track['id'] ?>">
+                                        <button class="admin-btn admin-btn-danger admin-btn-icon" data-action="delete" aria-label="Delete" title="Delete" data-id="<?= $track['id'] ?>">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
@@ -121,9 +121,14 @@ include __DIR__ . '/../includes/header.php';
             </div>
             <?php endif; ?>
         <?php else: ?>
-            <div class="admin-empty-state">
-                <i class="bi bi-music-note-beamed me-2"></i>
-                <?= $isArchived ? 'No archived tracks.' : 'No tracks yet. <button type="button" class="admin-btn admin-btn-primary admin-btn-sm" id="emptyUploadBtn">Upload your first track</button>' ?>
+            <div class="admin-card admin-empty-state">
+                <i class="bi bi-music-note-beamed"></i>
+                <?php if ($isArchived): ?>
+                <p>No archived tracks.</p>
+                <?php else: ?>
+                <p>No tracks yet.</p>
+                <button type="button" class="admin-btn admin-btn-primary" id="emptyUploadBtn">Upload your first track</button>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
 
@@ -135,7 +140,7 @@ include __DIR__ . '/../includes/header.php';
                     <i class="bi bi-plus-lg me-2"></i>Add Link
                 </button>
             </div>
-            <p style="font-size:0.85rem;color:var(--color-accent);margin-bottom:1rem;">Links to external platforms like Spotify, Apple Music, etc.</p>
+            <p style="font-size:0.85rem;color:var(--color-text-secondary);margin-bottom:1rem;">Links to external platforms like Spotify, Apple Music, etc.</p>
 
             <?php
             $links = $music->getAllLinks();
@@ -174,7 +179,7 @@ include __DIR__ . '/../includes/header.php';
                                 <h5 class="admin-card-title"><?= htmlspecialchars($link['title']) ?></h5>
                                 <p class="admin-card-text" style="font-size:0.8rem;"><?= htmlspecialchars($pname) ?></p>
                                 <?php if (!empty($link['description'])): ?>
-                                <p class="admin-card-text" style="font-size:0.75rem;color:var(--color-accent);"><?= htmlspecialchars(mb_substr($link['description'], 0, 100)) ?></p>
+                                <p class="admin-card-text" style="font-size:0.75rem;color:var(--color-text-secondary);"><?= htmlspecialchars(mb_substr($link['description'], 0, 100)) ?></p>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -193,9 +198,10 @@ include __DIR__ . '/../includes/header.php';
                 <?php endforeach; ?>
             </div>
             <?php else: ?>
-            <div class="admin-empty-state">
-                <i class="bi bi-link-45deg me-2"></i>
-                No links yet. <button type="button" class="admin-btn admin-btn-primary admin-btn-sm" id="emptyAddLinkBtn">Add your first link</button>
+            <div class="admin-card admin-empty-state">
+                <i class="bi bi-link-45deg"></i>
+                <p>No links yet.</p>
+                <button type="button" class="admin-btn admin-btn-primary" id="emptyAddLinkBtn">Add your first link</button>
             </div>
             <?php endif; ?>
         </div>

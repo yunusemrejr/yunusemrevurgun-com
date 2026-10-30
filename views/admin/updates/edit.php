@@ -93,7 +93,8 @@ $pageTitle = "Edit Update";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
+                <h1 class="admin-page-title"><?= htmlspecialchars($pageTitle) ?></h1>
                 <p class="admin-page-subtitle">Update announcement details</p>
             </div>
             <div class="admin-page-actions">
@@ -123,7 +124,7 @@ include __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
 
-        <div class="admin-card">
+        <div class="admin-card admin-form-card">
             <div class="admin-card-header">
                 <h5 class="admin-card-title">
                     <i class="bi bi-bell me-2"></i>Update Details

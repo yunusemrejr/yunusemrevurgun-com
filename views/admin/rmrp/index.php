@@ -46,10 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete']) && is_numer
 $page = "rmrp";
 $pageTitle = "Random Memories";
 $actionButton = '<a href="' . FULL_BASE_PATH . 'admin/rmrp/create" class="admin-btn admin-btn-primary"><i class="bi bi-plus-circle me-2"></i>Add New Memory</a>';
+$pageHeader = '<div class="admin-page-header"><div class="admin-page-heading"><h1 class="admin-page-title">' . htmlspecialchars($pageTitle) . '</h1><p class="admin-page-subtitle">Random memories for random people — fragments and fleeting thoughts, separate from the Updates log.</p></div><div class="admin-page-actions">' . $actionButton . '</div></div>';
 include __DIR__ . '/../includes/header.php';
 ?>
 
-<p class="admin-page-subtitle" style="margin: -1.25rem 0 1.5rem;">Random memories for random people — fragments and fleeting thoughts, separate from the Updates log.</p>
 
 <?php if (isset($_SESSION['success'])): ?>
     <div class="admin-alert admin-alert-success">
@@ -65,15 +65,8 @@ include __DIR__ . '/../includes/header.php';
     </div>
 <?php endif; ?>
 
-<div class="admin-card">
-    <div class="admin-card-header">
-        <h5 class="admin-card-title">
-            <i class="bi bi-dice-5 me-2"></i>All Memories
-        </h5>
-    </div>
-    <div class="admin-card-body">
         <?php if (count($allMemories) > 0): ?>
-            <div class="admin-table-scroll">
+            <div class="admin-list admin-table-scroll">
                 <table class="admin-table">
                     <thead>
                         <tr>
@@ -88,7 +81,7 @@ include __DIR__ . '/../includes/header.php';
                         <?php foreach ($allMemories as $memory): ?>
                             <tr>
                                 <td><?= htmlspecialchars($memory['title']) ?></td>
-                                <td><?= !empty($memory['memory_date']) ? date('M d, Y', strtotime($memory['memory_date'])) : 'N/A' ?></td>
+                                <td class="admin-nowrap"><?= !empty($memory['memory_date']) ? date('M d, Y', strtotime($memory['memory_date'])) : 'N/A' ?></td>
                                 <td><?= htmlspecialchars($memory['category'] ?? 'General') ?></td>
                                 <td>
                                     <?php if ($memory['importance'] === 'high'): ?>
@@ -122,13 +115,12 @@ include __DIR__ . '/../includes/header.php';
             <?php echo renderPagination($currentPage, $totalPages, FULL_BASE_PATH . 'admin/rmrp'); ?>
 
         <?php else: ?>
-            <p class="admin-empty-state">
-                <i class="bi bi-dice-5 me-2"></i>
-                No memories yet. <a href="<?= FULL_BASE_PATH ?>admin/rmrp/create">Write your first memory</a>.
-            </p>
+            <div class="admin-card admin-empty-state">
+                <i class="bi bi-dice-5"></i>
+                <p>No memories yet.</p>
+                <a href="<?= FULL_BASE_PATH ?>admin/rmrp/create" class="admin-btn admin-btn-primary">Write your first memory</a>
+            </div>
         <?php endif; ?>
-    </div>
-</div>
 
 <?php
 include __DIR__ . '/../includes/footer.php';

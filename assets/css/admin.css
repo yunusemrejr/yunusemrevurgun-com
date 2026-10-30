@@ -792,11 +792,11 @@ select.admin-form-control {
 
 /* ===== TEXT UTILITIES ===== */
 .admin-text-muted {
-  color: var(--color-accent) !important;
+  color: var(--color-ink-slate) !important;
 }
 
 .admin-text-secondary {
-  color: var(--color-accent) !important;
+  color: var(--color-ink-slate) !important;
 }
 
 .admin-text-primary {
@@ -824,49 +824,6 @@ select.admin-form-control {
 
 .admin-empty-state a:hover {
   color: var(--color-brand-hover);
-}
-
-/* ===== PAGINATION ===== */
-.admin-pagination {
-  margin-top: var(--space-8);
-  margin-bottom: var(--space-8);
-}
-
-.admin-pagination .pagination {
-  gap: var(--space-1);
-  margin: 0;
-  justify-content: center;
-}
-
-.admin-pagination .page-link {
-  background: var(--color-bg-subtle) !important;
-  color: var(--color-ink-body) !important;
-  padding: 0.4375rem 0.75rem !important;
-  transition: all var(--transition-fast) !important;
-  font-family: var(--font-body) !important;
-  font-weight: var(--font-normal) !important;
-  font-size: var(--text-sm) !important;
-  text-decoration: none !important;
-  min-width: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.admin-pagination .page-link:hover {
-  background: var(--color-bg-hover) !important;
-  border-color: var(--color-border-strong) !important;
-}
-
-.admin-pagination .page-item.active .page-link {
-  background: var(--color-accent) !important;
-  border-color: var(--color-accent) !important;
-  color: var(--color-text-inverse) !important;
-}
-
-.admin-pagination .page-item.disabled .page-link {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 /* ===== RESPONSIVE ===== */

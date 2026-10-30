@@ -55,20 +55,6 @@ ADMIN TRAVEL PAGE — DARK THEME
   padding: 0.25rem 0.5rem;
 }
 
-/* ===== TABLE ACTIONS ===== */
-.admin-table-actions {
-  display: flex;
-  gap: var(--space-1);
-  flex-wrap: wrap;
-}
-
-.admin-table-actions .admin-btn {
-  font-size: 0.7rem;
-  padding: 0.25rem 0.5rem;
-  min-height: 28px;
-  white-space: nowrap;
-}
-
 /* ===== EMPTY PHOTO STATE ===== */
 #photoGrid .admin-empty-photos {
   grid-column: 1 / -1;
@@ -85,13 +71,6 @@ ADMIN TRAVEL PAGE — DARK THEME
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   }
 
-  .admin-table-actions {
-    flex-direction: column;
-  }
-
-  .admin-table-actions .admin-btn {
-    width: 100%;
-  }
 }
 
 /* Bootstrap's default hot-pink <code> color is off-palette — use site body color. */

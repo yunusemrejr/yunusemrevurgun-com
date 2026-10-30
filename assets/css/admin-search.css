@@ -9,59 +9,8 @@ ADMIN SEARCH — POLISHED DARK THEME
   --search-accent-subtle: var(--color-accent-subtle);
 }
 
-/* ===== SEARCH INPUT ===== */
-.admin-search-container {
-  position: relative;
-  width: 220px;
-}
-
-.admin-search-input-group {
-  display: flex;
-  align-items: center;
-  background: var(--color-bg-subtle);
-  padding: 0.125rem;
-  transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.admin-search-input-group:focus-within {
-  box-shadow: var(--shadow-focus);
-}
-
-.admin-search-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--color-ink-body);
-  font-family: var(--font-body);
-  font-weight: var(--font-normal);
-  font-size: var(--text-sm);
-  padding: 0.3125rem 0.375rem;
-  min-width: 0;
-}
-
-.admin-search-input::placeholder {
-  color: var(--color-ink-slate);
-}
-
-.admin-search-button {
-  background: transparent;
-  border: none;
-  color: var(--color-ink-slate);
-  cursor: pointer;
-  padding: 0.3125rem 0.375rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color var(--transition-fast);
-  flex-shrink: 0;
-}
-
-.admin-search-button:hover {
-  color: var(--color-ink-body);
-}
+/* ===== SEARCH INPUT =====
+   The topbar control (field + button joined into one pill) is styled in admin-space.css. */
 
 /* ===== DROPDOWN RESULTS ===== */
 .admin-search-results {

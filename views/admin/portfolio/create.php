@@ -132,17 +132,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && hash
 // Set page title
 $page = "portfolio-create";
 $pageTitle = "Create Portfolio Project";
-// Include header
+// Header row: title and subtitle on the left, the way back on the right (same as Create Update).
+ob_start();
+?>
+<div class="admin-page-header">
+            <div class="admin-page-heading">
+                <h1 class="admin-page-title"><?= htmlspecialchars($pageTitle) ?></h1>
+                <p class="admin-page-subtitle">Add a project to the public archive</p>
+            </div>
+            <div class="admin-page-actions">
+                <a href="<?= FULL_BASE_PATH ?>admin/portfolio" class="admin-btn admin-btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Projects
+                </a>
+            </div>
+        </div>
+<?php
+$pageHeader = ob_get_clean();
 include __DIR__ . '/../includes/header.php';
 ?>
 
 
         <div class="portfolio-admin-form-container">
-            <div class="portfolio-admin-back-btn">
-                <a href="<?php echo FULL_BASE_PATH; ?>admin/portfolio" class="portfolio-admin-btn portfolio-admin-btn-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Projects
-                </a>
-            </div>
 
             <?php if ($error): ?>
                 <div class="portfolio-admin-alert portfolio-admin-alert-danger" role="alert">
@@ -152,7 +162,6 @@ include __DIR__ . '/../includes/header.php';
             <?php endif; ?>
 
             <div class="portfolio-admin-form">
-                <h2 class="admin-page-title" style="margin-bottom: 1.5rem;">Create New Portfolio Project</h2>
 
                 <form method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">

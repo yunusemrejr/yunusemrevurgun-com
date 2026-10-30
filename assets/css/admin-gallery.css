@@ -229,31 +229,10 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   color: var(--color-text-inverse);
 }
 
-/* ===== PAGE TITLE ===== */
-.admin-content .admin-page-title {
-  font-family: var(--font-display);
-  font-weight: var(--font-light);
-  font-size: var(--text-3xl);
-  color: var(--color-ink-body) !important;
-  margin: 0;
-}
-
-.admin-page-subtitle {
-  font-family: var(--font-body);
-  font-weight: var(--font-normal);
-  color: var(--color-ink-slate);
-  margin: 0;
-  font-size: var(--text-sm);
-}
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .admin-gallery-grid {
     grid-template-columns: 1fr;
-  }
-
-  .admin-page-header {
-    flex-direction: column;
   }
 
   .admin-gallery-tabs {
@@ -340,50 +319,6 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
   color: var(--color-ink-body);
 }
 
-/* ===== PAGINATION ===== */
-.gallery-pagination {
-  margin-top: var(--space-8);
-  margin-bottom: var(--space-8);
-}
-
-.gallery-pagination .pagination {
-  margin: 0;
-  justify-content: center;
-  gap: var(--space-1);
-}
-
-.gallery-pagination .page-link {
-  background: var(--color-bg-subtle) !important;
-  color: var(--color-ink-body) !important;
-  padding: 0.4375rem 0.75rem !important;
-  transition: all var(--transition-fast) !important;
-  font-family: var(--font-body) !important;
-  font-weight: var(--font-normal) !important;
-  font-size: var(--text-sm) !important;
-  text-decoration: none !important;
-  min-width: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gallery-pagination .page-link:hover {
-  background: var(--gallery-accent-subtle) !important;
-  border-color: var(--gallery-accent) !important;
-  color: var(--gallery-accent) !important;
-}
-
-.gallery-pagination .page-item.active .page-link {
-  background: var(--color-accent) !important;
-  border-color: var(--color-accent) !important;
-  color: var(--color-bg) !important;
-}
-
-.gallery-pagination .page-item.disabled .page-link {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 /* ===== ALBUMS ===== */
 .admin-section {
   margin-bottom: var(--space-8);
@@ -411,7 +346,9 @@ Shared upload-modal/dropzone styles live in admin.css (loaded on all admin pages
 }
 
 .admin-album-card {
-  background: var(--color-bg-subtle);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
   padding: var(--space-5);
   transition: all var(--transition-fast);
   display: flex;

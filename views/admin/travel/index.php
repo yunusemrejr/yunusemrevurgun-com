@@ -15,7 +15,7 @@ $pageTitle = "Travel";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
                 <h1 class="admin-page-title">Travel</h1>
                 <p class="admin-page-subtitle">Manage travel locations and photos</p>
             </div>
@@ -54,7 +54,7 @@ include __DIR__ . '/../includes/header.php';
             </div>
 
             <?php if (count($locations) > 0): ?>
-            <div class="admin-table-scroll">
+            <div class="admin-list admin-table-scroll">
                 <table class="admin-table">
                     <thead>
                         <tr>
@@ -77,7 +77,7 @@ include __DIR__ . '/../includes/header.php';
                                 <td><?= htmlspecialchars($location['city']) ?></td>
                                 <td><code><?= htmlspecialchars($location['lat']) ?></code></td>
                                 <td><code><?= htmlspecialchars($location['lng']) ?></code></td>
-                                <td><?= $visitedDate ?></td>
+                                <td class="admin-nowrap"><?= $visitedDate ?></td>
                                 <td><?= $imageCount ?></td>
                                 <td>
                                     <div class="admin-table-actions">
@@ -98,9 +98,10 @@ include __DIR__ . '/../includes/header.php';
                 </table>
             </div>
             <?php else: ?>
-            <div class="admin-empty-state">
-                <i class="bi bi-geo-alt me-2"></i>
-                No travel locations yet. <button type="button" class="admin-btn admin-btn-primary admin-btn-sm" id="emptyAddLocationBtn">Add your first location</button>
+            <div class="admin-card admin-empty-state">
+                <i class="bi bi-geo-alt"></i>
+                <p>No travel locations yet.</p>
+                <button type="button" class="admin-btn admin-btn-primary" id="emptyAddLocationBtn">Add your first location</button>
             </div>
             <?php endif; ?>
         </div>

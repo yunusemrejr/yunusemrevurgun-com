@@ -18,14 +18,14 @@ $list = $socials->getAll();
 $page = "socials";
 $pageTitle = "Socials";
 $actionButton = '<button type="button" class="admin-btn admin-btn-primary" id="addSocialBtn"><i class="bi bi-plus-lg me-2"></i>Add Social</button>';
+$pageHeader = '<div class="admin-page-header"><div class="admin-page-heading"><h1 class="admin-page-title">' . htmlspecialchars($pageTitle) . '</h1><p class="admin-page-subtitle">Social profiles shown in the site footer, the contact page, and the /more "Socials" listing. Visibility: <strong>Footer</strong> = site footer only, <strong>Contact</strong> = contact page only, <strong>Both</strong> = both. Inactive entries are hidden everywhere. Popup-type entries (e.g. the X/Twitter joke button) only ever appear in the footer and have no URL.</p></div><div class="admin-page-actions">' . $actionButton . '</div></div>';
 include __DIR__ . '/../includes/header.php';
 ?>
 
-<p class="admin-page-subtitle" style="margin: -1.25rem 0 1.5rem;">Social profiles shown in the site footer, the contact page, and the /more "Socials" listing. Visibility: <strong>Footer</strong> = site footer only, <strong>Contact</strong> = contact page only, <strong>Both</strong> = both. Inactive entries are hidden everywhere. Popup-type entries (e.g. the X/Twitter joke button) only ever appear in the footer and have no URL.</p>
 
 <?php if (count($list) > 0): ?>
-<div class="admin-table">
-    <table>
+<div class="admin-list admin-table-scroll">
+    <table class="admin-table">
         <thead>
             <tr>
                 <th>Social</th>
@@ -69,8 +69,8 @@ include __DIR__ . '/../includes/header.php';
                     </td>
                     <td><?= (int) $item['sort_order'] ?></td>
                     <td>
-                        <div class="admin-page-actions">
-                            <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" data-action="edit"
+                        <div class="admin-action-buttons">
+                            <button type="button" class="admin-btn admin-btn-secondary admin-btn-icon" data-action="edit" aria-label="Edit" title="Edit"
                                 data-id="<?= $item['id'] ?>"
                                 data-name="<?= htmlspecialchars($item['name'] ?? '', ENT_QUOTES) ?>"
                                 data-url="<?= htmlspecialchars($item['url'] ?? '', ENT_QUOTES) ?>"
@@ -82,7 +82,7 @@ include __DIR__ . '/../includes/header.php';
                                 data-sort="<?= (int) $item['sort_order'] ?>">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button type="button" class="admin-btn admin-btn-danger admin-btn-sm" data-action="delete" data-id="<?= $item['id'] ?>" data-name="<?= htmlspecialchars($item['name'] ?? '', ENT_QUOTES) ?>">
+                            <button type="button" class="admin-btn admin-btn-danger admin-btn-icon" data-action="delete" aria-label="Delete" title="Delete" data-id="<?= $item['id'] ?>" data-name="<?= htmlspecialchars($item['name'] ?? '', ENT_QUOTES) ?>">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -93,7 +93,7 @@ include __DIR__ . '/../includes/header.php';
     </table>
 </div>
 <?php else: ?>
-<div class="admin-empty-state">
+<div class="admin-card admin-empty-state">
     <i class="bi bi-share"></i>
     <p>No socials yet. Add your first social profile.</p>
 </div>

@@ -34,7 +34,7 @@ $pageTitle = "Videos";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
                 <h1 class="admin-page-title">Videos</h1>
                 <p class="admin-page-subtitle">Manage video uploads and embedded videos</p>
             </div>
@@ -61,7 +61,7 @@ include __DIR__ . '/../includes/header.php';
         </div>
 
         <?php if (count($videoList) > 0): ?>
-            <div class="admin-videos-table">
+            <div class="admin-list admin-videos-table admin-table-scroll">
                 <table class="admin-table">
                     <thead>
                         <tr>
@@ -95,24 +95,24 @@ include __DIR__ . '/../includes/header.php';
                                 </td>
                                 <td><span class="admin-badge admin-badge-<?= $video['type'] === 'url' ? 'info' : 'secondary' ?>"><?= $typeLabel ?></span></td>
                                 <td><?= $platformLabel ?></td>
-                                <td><?= $duration ?></td>
-                                <td><?= $size ?></td>
-                                <td><?= isset($video['uploaded_at']) ? date('M d, Y', strtotime($video['uploaded_at'])) : '--' ?></td>
+                                <td class="admin-nowrap"><?= $duration ?></td>
+                                <td class="admin-nowrap"><?= $size ?></td>
+                                <td class="admin-nowrap"><?= isset($video['uploaded_at']) ? date('M d, Y', strtotime($video['uploaded_at'])) : '--' ?></td>
                                 <td>
                                     <div class="admin-videos-actions">
-                                        <button class="admin-btn admin-btn-secondary admin-btn-sm" data-action="edit" data-id="<?= $video['id'] ?>" data-title="<?= htmlspecialchars($video['title'] ?? '', ENT_QUOTES) ?>" data-description="<?= htmlspecialchars($video['description'] ?? '', ENT_QUOTES) ?>" data-type="<?= $video['type'] ?>" data-url="<?= htmlspecialchars($video['url'] ?? '', ENT_QUOTES) ?>">
+                                        <button class="admin-btn admin-btn-secondary admin-btn-icon" data-action="edit" aria-label="Edit" title="Edit" data-id="<?= $video['id'] ?>" data-title="<?= htmlspecialchars($video['title'] ?? '', ENT_QUOTES) ?>" data-description="<?= htmlspecialchars($video['description'] ?? '', ENT_QUOTES) ?>" data-type="<?= $video['type'] ?>" data-url="<?= htmlspecialchars($video['url'] ?? '', ENT_QUOTES) ?>">
                                             <i class="bi bi-pencil"></i>
                                         </button>
                                         <?php if ($isArchived): ?>
-                                            <button class="admin-btn admin-btn-warning admin-btn-sm" data-action="restore" data-id="<?= $video['id'] ?>">
+                                            <button class="admin-btn admin-btn-warning admin-btn-icon" data-action="restore" aria-label="Restore" title="Restore" data-id="<?= $video['id'] ?>">
                                                 <i class="bi bi-arrow-counterclockwise"></i>
                                             </button>
                                         <?php else: ?>
-                                            <button class="admin-btn admin-btn-secondary admin-btn-sm" data-action="archive" data-id="<?= $video['id'] ?>">
+                                            <button class="admin-btn admin-btn-secondary admin-btn-icon" data-action="archive" aria-label="Archive" title="Archive" data-id="<?= $video['id'] ?>">
                                                 <i class="bi bi-archive"></i>
                                             </button>
                                         <?php endif; ?>
-                                        <button class="admin-btn admin-btn-danger admin-btn-sm" data-action="delete" data-id="<?= $video['id'] ?>">
+                                        <button class="admin-btn admin-btn-danger admin-btn-icon" data-action="delete" aria-label="Delete" title="Delete" data-id="<?= $video['id'] ?>">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
@@ -129,9 +129,9 @@ include __DIR__ . '/../includes/header.php';
             </div>
             <?php endif; ?>
         <?php else: ?>
-            <div class="admin-empty-state">
-                <i class="bi bi-camera-reel me-2"></i>
-                <?= $isArchived ? 'No archived videos.' : 'No videos yet. Add a URL or upload a video.' ?>
+            <div class="admin-card admin-empty-state">
+                <i class="bi bi-camera-reel"></i>
+                <p><?= $isArchived ? 'No archived videos.' : 'No videos yet. Add a URL or upload a video.' ?></p>
             </div>
         <?php endif; ?>
 

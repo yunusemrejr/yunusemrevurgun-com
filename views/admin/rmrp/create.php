@@ -81,7 +81,7 @@ include __DIR__ . '/../includes/header.php';
     </div>
 <?php endif; ?>
 
-<div class="admin-card">
+<div class="admin-card admin-form-card">
     <div class="admin-card-header">
         <h5 class="admin-card-title">
             <i class="bi bi-dice-5 me-2"></i>Memory Details

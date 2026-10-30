@@ -46,7 +46,8 @@ $pageTitle = "Updates";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
+                <h1 class="admin-page-title">Updates</h1>
                 <p class="admin-page-subtitle">Manage your site updates and announcements</p>
             </div>
             <div class="admin-page-actions">
@@ -77,15 +78,8 @@ include __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
 
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <h5 class="admin-card-title">
-                    <i class="bi bi-bell me-2"></i>All Updates
-                </h5>
-            </div>
-            <div class="admin-card-body">
-                <?php if (count($allUpdates) > 0): ?>
-                    <div class="admin-updates-table admin-table-scroll">
+        <?php if (count($allUpdates) > 0): ?>
+                    <div class="admin-list admin-updates-table admin-table-scroll">
                         <table>
                             <thead>
                                 <tr>
@@ -102,7 +96,7 @@ include __DIR__ . '/../includes/header.php';
                                 <?php foreach ($allUpdates as $update): ?>
                                     <tr>
                                         <td><?= htmlspecialchars($update['title']) ?></td>
-                                        <td><?= !empty($update['update_date']) ? date('M d, Y', strtotime($update['update_date'])) : 'N/A' ?></td>
+                                        <td class="admin-nowrap"><?= !empty($update['update_date']) ? date('M d, Y', strtotime($update['update_date'])) : 'N/A' ?></td>
                                         <td><?= htmlspecialchars($update['category'] ?? 'General') ?></td>
                                         <td>
                                             <?php if ($update['importance'] === 'high'): ?>
@@ -178,13 +172,12 @@ include __DIR__ . '/../includes/header.php';
                     <?php echo renderPagination($currentPage, $totalPages, FULL_BASE_PATH . 'admin/updates'); ?>
 
                 <?php else: ?>
-                    <p class="admin-empty-state">
-                        <i class="bi bi-inbox me-2"></i>
-                        No updates yet. <a href="<?= FULL_BASE_PATH ?>admin/updates/create">Create your first update</a>.
-                    </p>
+                    <div class="admin-card admin-empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>No updates yet.</p>
+                        <a href="<?= FULL_BASE_PATH ?>admin/updates/create" class="admin-btn admin-btn-primary">Create your first update</a>
+                    </div>
                 <?php endif; ?>
-            </div>
-        </div>
 
 
 

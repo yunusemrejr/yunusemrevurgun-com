@@ -50,8 +50,8 @@ $actionButton = '<a href="' .  FULL_BASE_PATH . 'admin/blog/create" class="blog-
 include __DIR__ . '/../includes/header.php';
 ?>
 
-    <div class="blog-admin-table-container">
-        <table class="blog-admin-table">
+    <div class="blog-admin-table-container admin-list admin-table-scroll">
+        <table class="blog-admin-table admin-table">
             <thead>
                 <tr>
                     <th>Title</th>
@@ -66,7 +66,7 @@ include __DIR__ . '/../includes/header.php';
                     <td>
                         <strong><?= htmlspecialchars($post['title'] ?? '') ?></strong>
                         <?php if (!empty($post['excerpt'])): ?>
-                            <br><small style="color: var(--blog-admin-text-secondary); opacity: 0.8;"><?= htmlspecialchars(substr($post['excerpt'], 0, 100)) ?><?= strlen($post['excerpt']) > 100 ? '...' : '' ?></small>
+                            <small><?= htmlspecialchars(substr($post['excerpt'], 0, 100)) ?><?= strlen($post['excerpt']) > 100 ? '...' : '' ?></small>
                         <?php endif; ?>
                     </td>
                     <td>
@@ -76,7 +76,7 @@ include __DIR__ . '/../includes/header.php';
                             <span class="blog-admin-badge blog-admin-badge-draft">Draft</span>
                         <?php endif; ?>
                     </td>
-                    <td><?= !empty($post['created_at']) ? date('M d, Y', strtotime($post['created_at'])) : 'N/A' ?></td>
+                    <td class="admin-nowrap"><?= !empty($post['created_at']) ? date('M d, Y', strtotime($post['created_at'])) : 'N/A' ?></td>
                     <td>
                         <div class="blog-admin-action-buttons">
                             <a href="<?=  FULL_BASE_PATH ?>blog/<?= $post['slug'] ?>" class="blog-admin-btn blog-admin-btn-secondary" target="_blank">

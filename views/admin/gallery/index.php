@@ -44,7 +44,7 @@ $pageTitle = "Gallery";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
                 <h1 class="admin-page-title">Gallery</h1>
                 <p class="admin-page-subtitle">Manage your gallery images and albums</p>
             </div>
@@ -105,9 +105,10 @@ include __DIR__ . '/../includes/header.php';
                 <?php endforeach; ?>
             </div>
             <?php else: ?>
-            <div class="admin-empty-state">
-                <i class="bi bi-folder me-2"></i>
-                No albums yet. <button type="button" class="admin-btn admin-btn-primary admin-btn-sm" id="emptyCreateAlbumBtn">Create your first album</button>
+            <div class="admin-card admin-empty-state">
+                <i class="bi bi-folder"></i>
+                <p>No albums yet.</p>
+                <button type="button" class="admin-btn admin-btn-primary" id="emptyCreateAlbumBtn">Create your first album</button>
             </div>
             <?php endif; ?>
         </div>
@@ -178,9 +179,14 @@ include __DIR__ . '/../includes/header.php';
                 <?php echo renderPagination($currentPage, $totalPages, $baseUrl); ?>
             </div>
         <?php else: ?>
-            <div class="admin-empty-state">
-                <i class="bi bi-images me-2"></i>
-                <?= $isArchived ? 'No archived images.' : 'No active images. <button type="button" class="admin-btn admin-btn-primary admin-btn-sm" id="emptyUploadBtn">Upload your first image</button>' ?>
+            <div class="admin-card admin-empty-state">
+                <i class="bi bi-images"></i>
+                <?php if ($isArchived): ?>
+                <p>No archived images.</p>
+                <?php else: ?>
+                <p>No active images.</p>
+                <button type="button" class="admin-btn admin-btn-primary" id="emptyUploadBtn">Upload your first image</button>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
         </div>

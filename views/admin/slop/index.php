@@ -30,7 +30,7 @@ $pageTitle = "Quality 3D AI Slop";
 ob_start();
 ?>
 <div class="admin-page-header">
-            <div>
+            <div class="admin-page-heading">
                 <h1 class="admin-page-title">Quality 3D AI Slop</h1>
                 <p class="admin-page-subtitle">Upload single-file HTML 3D pages, served publicly at /slop/&lt;slug&gt;</p>
             </div>
@@ -52,7 +52,7 @@ include __DIR__ . '/../includes/header.php';
         <?php endif; ?>
 
         <?php if (count($slopList) > 0): ?>
-            <div class="admin-videos-table">
+            <div class="admin-list admin-videos-table admin-table-scroll">
                 <table class="admin-table">
                     <thead>
                         <tr>
@@ -74,18 +74,18 @@ include __DIR__ . '/../includes/header.php';
                                 <td>
                                     <span class="admin-video-title" data-field="title"><?= htmlspecialchars($item['title'] ?? 'Untitled') ?></span>
                                     <?php if (!empty($item['description'])): ?>
-                                        <br><small class="admin-form-help"><?= htmlspecialchars(mb_substr($item['description'], 0, 120)) ?></small>
+                                        <small class="admin-form-help"><?= htmlspecialchars(mb_substr($item['description'], 0, 120)) ?></small>
                                     <?php endif; ?>
                                 </td>
                                 <td><a href="<?= htmlspecialchars($publicUrl) ?>" target="_blank" rel="noopener noreferrer">/slop/<?= htmlspecialchars($item['slug']) ?> ↗</a></td>
-                                <td><?= $size ?></td>
-                                <td><?= isset($item['created_at']) ? date('M d, Y', strtotime($item['created_at'])) : '--' ?></td>
+                                <td class="admin-nowrap"><?= $size ?></td>
+                                <td class="admin-nowrap"><?= isset($item['created_at']) ? date('M d, Y', strtotime($item['created_at'])) : '--' ?></td>
                                 <td>
                                     <div class="admin-videos-actions">
-                                        <button class="admin-btn admin-btn-secondary admin-btn-sm" data-action="edit" data-id="<?= (int)$item['id'] ?>" data-title="<?= htmlspecialchars($item['title'] ?? '', ENT_QUOTES) ?>" data-description="<?= htmlspecialchars($item['description'] ?? '', ENT_QUOTES) ?>" data-slug="<?= htmlspecialchars($item['slug'] ?? '', ENT_QUOTES) ?>">
+                                        <button class="admin-btn admin-btn-secondary admin-btn-icon" data-action="edit" aria-label="Edit" title="Edit" data-id="<?= (int)$item['id'] ?>" data-title="<?= htmlspecialchars($item['title'] ?? '', ENT_QUOTES) ?>" data-description="<?= htmlspecialchars($item['description'] ?? '', ENT_QUOTES) ?>" data-slug="<?= htmlspecialchars($item['slug'] ?? '', ENT_QUOTES) ?>">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="admin-btn admin-btn-danger admin-btn-sm" data-action="delete" data-id="<?= (int)$item['id'] ?>">
+                                        <button class="admin-btn admin-btn-danger admin-btn-icon" data-action="delete" aria-label="Delete" title="Delete" data-id="<?= (int)$item['id'] ?>">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
@@ -96,12 +96,10 @@ include __DIR__ . '/../includes/header.php';
                 </table>
             </div>
         <?php else: ?>
-            <div class="admin-empty-state">
-                <i class="bi bi-box me-2"></i>
-                No slop yet. Upload an .html file to publish the first one.
-                <div style="margin-top: 12px;">
-                    <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" id="seedExampleBtn">Add test example</button>
-                </div>
+            <div class="admin-card admin-empty-state">
+                <i class="bi bi-box"></i>
+                <p>No slop yet. Upload an .html file to publish the first one.</p>
+                <button type="button" class="admin-btn admin-btn-secondary" id="seedExampleBtn">Add test example</button>
             </div>
         <?php endif; ?>
 

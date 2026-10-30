@@ -93,7 +93,7 @@ include __DIR__ . '/includes/header.php';
                 <?php if ($type === 'all' || $type === 'blog'): ?>
                     <?php if (!empty($results['blog'])): ?>
                         <h2 style="font-family: var(--admin-font-display); font-weight: 500; color: var(--admin-text-primary); margin-bottom: var(--space-md); font-size: 1.25rem;">Blog Posts</h2>
-                        <div style="overflow-x: auto;">
+                        <div class="admin-list admin-table-scroll">
                             <table class="admin-table">
                                 <thead>
                                     <tr>
@@ -114,7 +114,7 @@ include __DIR__ . '/includes/header.php';
                                                     <span class="admin-badge admin-badge-warning">Draft</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td><?= !empty($post['created_at']) ? date('M j, Y', strtotime($post['created_at'])) : 'N/A' ?></td>
+                                            <td class="admin-nowrap"><?= !empty($post['created_at']) ? date('M j, Y', strtotime($post['created_at'])) : 'N/A' ?></td>
                                             <td>
                                                 <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap;">
                                                     <a href="<?= $post['url'] ?>" class="admin-btn admin-btn-primary admin-btn-sm">Edit</a>
@@ -134,7 +134,7 @@ include __DIR__ . '/includes/header.php';
                 <?php if ($type === 'all' || $type === 'updates'): ?>
                     <?php if (!empty($results['updates'])): ?>
                         <h2 style="font-family: var(--admin-font-display); font-weight: 500; color: var(--admin-text-primary); margin-bottom: var(--space-md); margin-top: var(--space-lg); font-size: 1.25rem;">Updates</h2>
-                        <div style="overflow-x: auto;">
+                        <div class="admin-list admin-table-scroll">
                             <table class="admin-table">
                                 <thead>
                                     <tr>
@@ -155,7 +155,7 @@ include __DIR__ . '/includes/header.php';
                                                     <span class="admin-badge admin-badge-warning">Draft</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td><?= !empty($update['created_at']) ? date('M j, Y', strtotime($update['created_at'])) : 'N/A' ?></td>
+                                            <td class="admin-nowrap"><?= !empty($update['created_at']) ? date('M j, Y', strtotime($update['created_at'])) : 'N/A' ?></td>
                                             <td>
                                                 <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap;">
                                                     <a href="<?= $update['url'] ?>" class="admin-btn admin-btn-primary admin-btn-sm">Edit</a>
@@ -173,7 +173,7 @@ include __DIR__ . '/includes/header.php';
                 <?php if ($type === 'all' || $type === 'portfolio'): ?>
                     <?php if (!empty($results['portfolio'])): ?>
                         <h2 style="font-family: var(--admin-font-display); font-weight: 500; color: var(--admin-text-primary); margin-bottom: var(--space-md); margin-top: var(--space-lg); font-size: 1.25rem;">Portfolio Items</h2>
-                        <div style="overflow-x: auto;">
+                        <div class="admin-list admin-table-scroll">
                             <table class="admin-table">
                                 <thead>
                                     <tr>
@@ -194,7 +194,7 @@ include __DIR__ . '/includes/header.php';
                                                     <span class="admin-badge admin-badge-warning">Hidden</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td><?= !empty($item['created_at']) ? date('M j, Y', strtotime($item['created_at'])) : 'N/A' ?></td>
+                                            <td class="admin-nowrap"><?= !empty($item['created_at']) ? date('M j, Y', strtotime($item['created_at'])) : 'N/A' ?></td>
                                             <td>
                                                 <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap;">
                                                     <a href="<?= $item['url'] ?>" class="admin-btn admin-btn-primary admin-btn-sm">Edit</a>
