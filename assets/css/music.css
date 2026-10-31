@@ -400,14 +400,14 @@
 }
 
 /* ============================================================
-   JELLY SYSTEM — rounded, cream tiles; Fredoka for titles.
+   FIELD SYSTEM — rounded, stone tiles; Barlow Semi Condensed for titles.
    ============================================================ */
 .ui-music-track {
   background: var(--color-bg-card);
   border: 0;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
-  transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+  transition: transform 320ms var(--ease-settle), box-shadow 200ms ease;
 }
 
 .ui-music-track:hover {
@@ -418,7 +418,7 @@
 
 .ui-music-track.is-active {
   background: var(--color-bg-card);
-  box-shadow: 0 0 0 3px var(--color-jelly), var(--shadow-md);
+  box-shadow: 0 0 0 3px var(--color-action), var(--shadow-md);
 }
 
 .ui-music-track-cover {
@@ -428,29 +428,29 @@
 
 .ui-music-play-btn,
 .ui-music-player-btn {
-  border: 2px solid var(--color-navy);
+  border: 2px solid var(--color-pine);
   border-radius: var(--radius-full);
-  color: var(--color-navy);
+  color: var(--color-pine);
   background: var(--color-bg-card);
 }
 
 .ui-music-play-btn:hover,
 .ui-music-track.is-active .ui-music-play-btn:hover {
-  background: var(--color-jelly);
-  border-color: var(--color-jelly);
+  background: var(--color-action);
+  border-color: var(--color-action);
   color: #fff;
 }
 
 .ui-music-track.is-active .ui-music-play-btn {
-  border-color: var(--color-jelly);
-  color: var(--color-jelly);
+  border-color: var(--color-action);
+  color: var(--color-action);
 }
 
 .ui-music-link-card {
   border: 0;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
-  transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+  transition: transform 320ms var(--ease-settle), box-shadow 200ms ease;
 }
 
 .ui-music-link-card:hover {

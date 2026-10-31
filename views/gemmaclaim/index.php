@@ -66,13 +66,13 @@ ui_render_head($title, $description, [
 
         <header class="gc-head">
             <svg class="gc-sprite" viewBox="0 0 16 13" width="96" height="78" aria-hidden="true" focusable="false">
-                <rect x="0" y="0" width="7" height="3" rx="1.2" fill="#db1816"/>
-                <rect x="9" y="0" width="7" height="3" rx="1.2" fill="#db1816"/>
-                <rect x="1" y="5" width="4" height="3" rx="1.2" fill="#262e4d"/>
-                <rect x="6" y="5" width="4" height="3" rx="1.2" fill="#262e4d"/>
-                <rect x="11" y="5" width="4" height="3" rx="1.2" fill="#262e4d"/>
-                <rect x="3" y="10" width="4" height="3" rx="1.2" fill="#eee2d7"/>
-                <rect x="9" y="10" width="4" height="3" rx="1.2" fill="#eee2d7"/>
+                <rect x="0" y="0" width="7" height="3" rx="1.2" fill="#e3a227"/>
+                <rect x="9" y="0" width="7" height="3" rx="1.2" fill="#e3a227"/>
+                <rect x="1" y="5" width="4" height="3" rx="1.2" fill="#355238"/>
+                <rect x="6" y="5" width="4" height="3" rx="1.2" fill="#355238"/>
+                <rect x="11" y="5" width="4" height="3" rx="1.2" fill="#355238"/>
+                <rect x="3" y="10" width="4" height="3" rx="1.2" fill="#a9c3dc"/>
+                <rect x="9" y="10" width="4" height="3" rx="1.2" fill="#a9c3dc"/>
             </svg>
             <div>
                 <h1 class="gc-title">Claim Splitter: premises and hidden assumptions, in your browser</h1>

@@ -29,8 +29,8 @@ if (!function_exists('ui_render_head')) {
         // is requested once.
         $cssHref = static fn(string $file): string => FULL_BASE_PATH . 'assets/css/' . $file . '?v=' . filemtime(__DIR__ . '/../../assets/css/' . $file);
         $fontHref = static fn(string $file): string => FULL_BASE_PATH . 'assets/fonts/' . $file;
-        $coreCss = array_map($cssHref, ['variables.css', 'ui-rebuild.css', 'ebook.css', 'jelly.css', 'blueprint.css', 'detail.css']);
-        $coreFonts = array_map($fontHref, ['fredoka-latin.woff2', 'atkinson-next-latin.woff2']);
+        $coreCss = array_map($cssHref, ['variables.css', 'ui-rebuild.css', 'ebook.css', 'field.css', 'blueprint.css', 'detail.css']);
+        $coreFonts = array_map($fontHref, ['barlow-semicondensed-600-latin.woff2', 'atkinson-next-latin.woff2']);
         $lcpImage = is_array($extraMeta['lcp_image'] ?? null) ? $extraMeta['lcp_image'] : null;
         // The first path segment names the "sheet" (about, portfolio, yunobot ...). It rides on <html>
         // so the drafting layer can key a rule to one page without every view adding a body class.
@@ -54,7 +54,7 @@ if (!function_exists('ui_render_head')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#69b0f9">
+    <meta name="theme-color" content="#1c2b20">
     <?php
     // Pages may override the index directive via extraMeta['robots'] (e.g. the
     // search results page, which is thin and has an unbounded ?q= URL space).
@@ -142,7 +142,7 @@ if (!function_exists('ui_render_head')) {
     <meta property="og:description" content="<?= $defaultOgDesc ?>">
     <meta property="og:image" content="<?= htmlspecialchars($defaultOgImage) ?>">
     <?= $ogImageSize . "\n" ?>
-    <meta property="og:image:alt" content="<?= is_string($extraMeta['og_image'] ?? null) && $extraMeta['og_image'] !== '' ? $defaultOgTitle : 'Yunus Emre Vurgun, software developer and IT specialist, beside Jell-omo, the red jelly mascot in a baseball cap' ?>">
+    <meta property="og:image:alt" content="<?= is_string($extraMeta['og_image'] ?? null) && $extraMeta['og_image'] !== '' ? $defaultOgTitle : 'Yunus Emre Vurgun, software developer and IT specialist, photographed in front of a pine stand with one gold birch' ?>">
     <meta property="og:site_name" content="Yunus Emre Vurgun">
     <meta name="author" content="Yunus Emre Vurgun">
     <meta name="twitter:card" content="summary_large_image">
@@ -192,7 +192,7 @@ if (!function_exists('ui_render_head')) {
     <link rel="search" type="application/opensearchdescription+xml" title="Yemre" href="<?= FULL_BASE_PATH ?>opensearch.xml">
     <link rel="manifest" href="<?= FULL_BASE_PATH ?>manifest.json?v=<?= filemtime(__DIR__ . '/../../manifest.json') ?>">
     <?php
-    // Brand icons: built from the mascot by dev/scripts/build-brand-assets.py.
+    // Brand icons: the forked-Y mark, built by dev/scripts/build-brand-assets.py.
     $iconV = static fn(string $f): string => FULL_BASE_PATH . 'assets/images/' . $f . '?v=' . (@filemtime(__DIR__ . '/../../assets/images/' . $f) ?: '1');
     ?>
     <link rel="icon" type="image/svg+xml" href="<?= $iconV('favicon.svg') ?>">
@@ -200,7 +200,7 @@ if (!function_exists('ui_render_head')) {
     <link rel="shortcut icon" href="<?= $iconV('favicon.ico') ?>">
     <link rel="apple-touch-icon" sizes="180x180" href="<?= $iconV('apple-touch-icon.png') ?>">
     <meta name="msapplication-TileImage" content="<?= $iconV('pwa-icon-192.png') ?>">
-    <meta name="msapplication-TileColor" content="#69b0f9">
+    <meta name="msapplication-TileColor" content="#1c2b20">
     <?php $collectionPage = in_array(trim($requestPath, '/'), ['post-code','science-corner','comedy','music','videos','downloads','slop','more','rmrp'], true); ?>
     <?php foreach ($coreFonts as $href): ?>
     <link rel="preload" href="<?= $href ?>" as="font" type="font/woff2" crossorigin>
@@ -242,7 +242,7 @@ if (!function_exists('ui_render_head')) {
     <?php if (isset($extraMeta['hero']) && $extraMeta['hero']): ?>
     <link rel="stylesheet" href="<?= FULL_BASE_PATH ?>assets/css/hero.css?v=<?= filemtime(__DIR__ . '/../../assets/css/hero.css') ?>">
     <?php /* Low-end and data-saver devices get the finished hero with no intro and no looping motion; the choice
-       must be made before first paint, so it is a tiny inline script rather than part of hero.js. */ ?>
+       must be made before first paint, so it is a tiny inline script. */ ?>
     <script data-cfasync="false">(function(){var n=navigator,c=n.connection||{};if(c.saveData||(n.deviceMemory&&n.deviceMemory<=2)||(n.hardwareConcurrency&&n.hardwareConcurrency<=2))document.documentElement.setAttribute('data-motion','lite')})()</script>
     <?php endif; ?>
     <?php foreach ($extraMeta as $key => $value):
@@ -354,7 +354,7 @@ if (!function_exists('ui_render_navbar')) {
     <nav class="ui-navbar" aria-label="Main">
         <div class="ui-nav-left">
             <a class="ui-wordmark" href="<?= FULL_BASE_PATH ?>" aria-label="Yemre — home">
-                <img class="ui-wordmark-mark" src="<?= FULL_BASE_PATH ?>assets/images/mascot-160.webp" width="40" height="40" alt="" decoding="async">
+                <img class="ui-wordmark-mark" src="<?= FULL_BASE_PATH ?>assets/images/brand/logo-mark.svg?v=<?= @filemtime(__DIR__ . '/../../assets/images/brand/logo-mark.svg') ?: 1 ?>" width="36" height="36" alt="" decoding="async">
                 <span>Yemre</span>
             </a>
             <ul class="ui-nav-links" role="list">
@@ -489,7 +489,6 @@ if (!function_exists('ui_render_footer')) {
         }
         ?>
 <footer class="ui-footer">
-    <img class="ui-footer-mascot" src="<?= FULL_BASE_PATH ?>assets/images/mascot-160.webp" width="112" height="112" alt="" loading="lazy" decoding="async">
     <div class="ui-footer-inner">
         <div>
             <p class="ui-footer-name">Yunus Emre Vurgun</p>

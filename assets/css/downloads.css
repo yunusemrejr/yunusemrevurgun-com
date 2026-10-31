@@ -89,16 +89,16 @@
   width: 100%;
 }
 
-/* GitHub is the primary action: navy ink with the mark, so it reads as the source link. */
+/* GitHub is the primary action: pine ink with the mark, so it reads as the source link. */
 .ui-btn-github {
-  background: var(--color-ink, #262E4D);
+  background: var(--color-ink, #1c2b20);
   color: #fff;
-  border-color: var(--color-ink, #262E4D);
+  border-color: var(--color-ink, #1c2b20);
 }
 
 .ui-btn-github:hover,
 .ui-btn-github:focus-visible {
-  background: #1a2038;
+  background: #142019;
   color: #fff;
 }
 

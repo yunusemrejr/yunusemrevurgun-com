@@ -88,19 +88,15 @@ $homeSchema = [
     ],
 ];
 
-// The masthead mascot is the largest element on first paint. It renders 246 px wide
-// on phones and 409 px on desktop, so one 640 px file covers up to about 2.6x pixel
-// density on a phone and 1.5x on desktop (72 KB, down from 115 KB). It is a single
-// file, not a srcset, so the Early Hints preload (which cannot carry a srcset) always
-// names the file the <img> will use.
-$mascotUrl = FULL_BASE_PATH . 'assets/images/mascot-640.webp?v=' . (@filemtime(dirname(__DIR__) . '/assets/images/mascot-640.webp') ?: 1);
+// The masthead portrait is the largest element on first paint (views/includes/hero-stage.php).
+$portraitLcp = FULL_BASE_PATH . 'assets/images/field/portrait-738.webp?v=' . (@filemtime(dirname(__DIR__) . '/assets/images/field/portrait-738.webp') ?: 1);
 
 ui_render_head(
     'Yunus Emre Vurgun (Yemre) — Software Developer & IT Specialist',
     'Yunus Emre Vurgun (Yemre), software developer and IT specialist in Istanbul. Explore projects, writing, and work in AI/ML and operational technology.',
     [
         'date_modified' => seo_newest_stamp($latestWriting, ['updated_at', 'created_at']),
-        'lcp_image' => ['src' => $mascotUrl],
+        'lcp_image' => ['src' => $portraitLcp],
         'hero' => true,
         '<meta name="author" content="Yunus Emre Vurgun">',
         '<meta name="keywords" content="Yunus Emre Vurgun, Yemre, YEV, yunusemrejr, Yemrevu, software developer, developer, IT specialist, computational intelligence, operational technology">',
@@ -118,15 +114,6 @@ ui_render_head(
 <!-- Front page of the record: name, current identity, facts, and actions.
      The most-linked URL answers "who is this" without scrolling or clicking. -->
 <header class="ui-masthead">
-    <!-- Ambient field: a few signal packets travelling along the drafting grid's major rows (transform
-         only, five tiny layers, paused off screen, absent under reduced motion). Decoration. -->
-    <div class="ui-masthead-field" aria-hidden="true">
-        <i style="--row:1;--dur:23s;--delay:-6s"></i>
-        <i style="--row:2;--dur:31s;--delay:-19s"></i>
-        <i style="--row:3;--dur:19s;--delay:-2s"></i>
-        <i style="--row:4;--dur:27s;--delay:-11s"></i>
-        <i style="--row:5;--dur:35s;--delay:-24s"></i>
-    </div>
     <div class="ui-masthead-grid">
         <div class="ui-masthead-copy">
             <p class="ui-masthead-eyebrow">Istanbul · Operational technology &amp; AI</p>
@@ -185,12 +172,12 @@ ui_render_head(
             'file' => 'engine.svg',
             'width' => 640,
             'height' => 310,
-            'alt' => 'Illustration of the Analytical Engine as a bench model: a card reader with a chain of punched cards, a Store of eight columns of digit wheels, a Mill of three columns of larger wheels, a toothed rack along the front, and a second card reader at the right. The card being read has a red edge.',
+            'alt' => 'Illustration of the Analytical Engine as a bench model: a card reader with a chain of punched cards, a Store of eight columns of digit wheels, a Mill of three columns of larger wheels, a toothed rack along the front, and a second card reader at the right. The card being read is picked out in gold.',
             'fig' => 'Fig. 1',
             'title' => 'Analytical Engine',
             'hint' => 'Illustration',
             'note' => 'Card: being read',
-            'caption' => 'Babbage’s Analytical Engine, the first design for a general-purpose computer: punched cards choose the operation, a Store of digit wheels holds the numbers and a Mill does the arithmetic. The wheels are set to the opening values of Ada Lovelace’s Note G (V1 = 1, V2 = 2, V3 = n = 4); the red-edged card is the one being read.',
+            'caption' => 'Babbage’s Analytical Engine, the first design for a general-purpose computer: punched cards choose the operation, a Store of digit wheels holds the numbers and a Mill does the arithmetic. The wheels are set to the opening values of Ada Lovelace’s Note G (V1 = 1, V2 = 2, V3 = n = 4); the gold card is the one being read.',
             'class' => 'fig--split',
         ]); ?>
     </section>
@@ -263,7 +250,6 @@ ui_render_head(
 </div>
 
 <?php ui_render_footer('landing-right'); ?>
-<script data-cfasync="false" src="<?= FULL_BASE_PATH ?>assets/js/hero.js?v=<?= filemtime(dirname(__DIR__) . '/assets/js/hero.js') ?>" defer></script>
 <?php ui_render_tracker_codes(dirname(__DIR__)); ?>
 </body>
 </html>

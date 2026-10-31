@@ -187,13 +187,13 @@ ADMIN SEARCH — POLISHED DARK THEME
 
 .search-section .admin-badge-success {
   background: var(--color-success-bg) !important;
-  color: #22c55e !important;
+  color: #2b6a3c !important;
   border: 1px solid var(--color-success-border) !important;
 }
 
 .search-section .admin-badge-warning {
   background: var(--color-warning-bg) !important;
-  color: #eab308 !important;
+  color: #c3830f !important;
   border: 1px solid var(--color-warning-border) !important;
 }
 

@@ -1,8 +1,8 @@
 /* Chessko (/chessko and /chessko/<article>): the page around the game.
-   Uses the site's jelly tokens. The game itself is a self-contained island
+   Uses the site's Field tokens. The game itself is a self-contained island
    (assets/chessko/css/chessko.css, generated, scoped to .ck); its palette
-   variables are re-pointed to the brand here so the board reads as the mascot's
-   colours: jelly-red and sky squares, cream and navy pieces. */
+   variables are re-pointed to the brand here so the board reads as the site's
+   colours: moss and fog squares, stone and pine pieces. */
 
 .ck-page {
   max-width: 1120px;
@@ -266,22 +266,22 @@
 /* ---- brand palette for the game island (overrides the generated file's
    variables; higher specificity, so load order does not matter) ---- */
 .ck-stage .ck {
-  --tray: #e4f0fe;
-  --tray-deep: #c9e0fc;
-  --surface: #fbf8f4;
-  --surface-2: #f3f8ff;
-  --rim: #a9c9f0;
-  --ink: #1b2140;
-  --ink-soft: #3d4770;
-  --ink-faint: #586390;
-  --lime: #69b0f9;
-  --lime-deep: #2a6fc0;
-  --lime-pale: #d6e8fd;
-  --straw: #db1816;
-  --straw-deep: #b80f0d;
-  --straw-pale: #fde0df;
-  --currant: #262e4d;
-  --milk: #fbf8f4;
+  --tray: #e8edef;
+  --tray-deep: #cddcea;
+  --surface: #f7f8f6;
+  --surface-2: #f2f6f7;
+  --rim: #b7cde0;
+  --ink: #142019;
+  --ink-soft: #34493a;
+  --ink-faint: #4d6450;
+  --lime: #a9c3dc;
+  --lime-deep: #3c5067;
+  --lime-pale: #dde6ee;
+  --straw: #7fa07f;
+  --straw-deep: #4a6f4e;
+  --straw-pale: #e6efe4;
+  --currant: #1c2b20;
+  --milk: #f7f8f6;
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-lg);
 }
@@ -289,24 +289,24 @@
 /* Tile depth tones and piece gradients. The generated game file hard-codes
    these (tile --deep/--lit; SVG gradient stops built in pieces.js); CSS beats
    presentation attributes, so they are re-pointed here to the brand:
-   sky and jelly-red tiles, cream ("milk") and navy pieces. */
+   fog and needle-green tiles, stone ("milk") and pine pieces. */
 .ck-stage .ck .sq {
-  --deep: #2a6fc0;
-  --lit: #eaf4ff;
+  --deep: #3c5067;
+  --lit: #eef3f6;
 }
 .ck-stage .ck .sq.dark {
-  --deep: #9c0d0c;
-  --lit: #ffd0cf;
+  --deep: #4a6f4e;
+  --lit: #c9dcc5;
 }
-#ckCurrant stop:nth-child(1) { stop-color: #7a8ec8; }
-#ckCurrant stop:nth-child(2) { stop-color: #414f86; }
-#ckCurrant stop:nth-child(3) { stop-color: #262e4d; }
-#ckCurrant stop:nth-child(4) { stop-color: #141a33; }
-#ckMilk stop:nth-child(2) { stop-color: #fdf8f2; }
-#ckMilk stop:nth-child(3) { stop-color: #f2e6da; }
-#ckMilk stop:nth-child(4) { stop-color: #dfcdbd; }
-#ckShade stop:nth-child(3) { stop-color: #a9b8dc; }
+#ckCurrant stop:nth-child(1) { stop-color: #7f9fc2; }
+#ckCurrant stop:nth-child(2) { stop-color: #3a5040; }
+#ckCurrant stop:nth-child(3) { stop-color: #1c2b20; }
+#ckCurrant stop:nth-child(4) { stop-color: #142019; }
+#ckMilk stop:nth-child(2) { stop-color: #f7f8f6; }
+#ckMilk stop:nth-child(3) { stop-color: #e6eae4; }
+#ckMilk stop:nth-child(4) { stop-color: #cbd2c9; }
+#ckShade stop:nth-child(3) { stop-color: #b5c4bb; }
 .ck-stage .ck .scoop[data-level="6"] .blob,
 .ck-stage .ck .scoop[data-level="7"] .blob {
-  background: radial-gradient(circle at 34% 30%, #fff 0%, #7a8ec8 40%, var(--currant) 100%);
+  background: radial-gradient(circle at 34% 30%, #fff 0%, #7f9fc2 40%, var(--currant) 100%);
 }

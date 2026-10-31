@@ -1,6 +1,6 @@
 /* Documentation pages: /downloads/<app>, /yunobot/<topic>, /gemmaclaim/<topic>,
    /jelloshop/<topic>. One reading column with the direct answer and the key facts
-   first, then the detail. Built on the site's jelly tokens and the existing
+   first, then the detail. Built on the site's Field tokens and the existing
    .ui-btn / .ui-rich-content components; nothing here restyles them. */
 
 .dx-page {

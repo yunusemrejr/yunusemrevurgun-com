@@ -1,526 +1,25 @@
 /*
 ===============================================================================
-HOMEPAGE HERO — Jell-omo on a drawing bench
+HOMEPAGE HERO — the field plate
 ===============================================================================
-Loaded on the homepage only. Markup: views/includes/hero-stage.php. Behaviour: assets/js/hero.js.
+Loaded on the homepage only. Markup: views/includes/hero-stage.php. No script.
 
-Beat sheet (the intro is pure CSS, so it plays before any script runs):
-  0.05 – 0.6 s   construction lines fade in (axis, fitted circle, bounding corners, dimension lines)
-  0.35 – 2.4 s   ink linework draws itself, line by line (stroke-dashoffset)
-  1.5  – 2.2 s   flat colour fills in region by region
-  2.35 – 3.2 s   the render fades in as the sketch and the flat colour dissolve
-  2.3  – 4.6 s   the dial appears and its needle sweeps the scale once (a self-test)
-After that the figure is the render, the instrument and the faint construction lines. A poke drives
-a spring in JS; the dial, the probe and the readout follow the same spring.
+The masthead is a survey sheet in fog (see field.css and blueprint.css): contour lines over a
+drafting grid, the fog photo's ridge along its foot and a steel scale under that. The owner's
+photograph stands on it as a mounted plate: stone mat, corner labels, a scale down the left edge
+and three callouts naming what is in the picture.
 
-Cost control: only transform and opacity animate on the compositor, apart from the one-off dash
-draw on ~25 paths; the ring is a single composited layer and pauses off screen; reduced motion and
-data-saver / low-memory devices skip the loops (and reduced motion skips the intro).
+Motion: the callout leader lines draw once (stroke via scaleX, compositor only) and their labels
+fade in. Nothing loops. Reduced motion and data-motion="lite" show the finished plate at once.
+The photo itself never animates: it is the LCP element and paints at full opacity.
 ===============================================================================
 */
-
-.jx-stage {
-  --t-fill: 1.5s;
-  --t-render: 2.35s;
-  --t-out: 2.5s;
-  position: relative;
-  /* the jelly skin gave the figure a grid + centring; the ring is allowed to overhang its column */
-  overflow: visible;
-}
-
-.jx-frame {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  aspect-ratio: 1;
-  margin-inline: auto;
-  /* room for the ring's lower arc, so it does not run through the caption */
-  margin-bottom: 34px;
-}
-
-/* ===== the field: signal packets on the grid's major rows ===== */
-.ui-masthead-field {
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 100vw;
-  transform: translateX(-50%);
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.ui-masthead-field i {
-  position: absolute;
-  top: calc(var(--row) * 120px - 1px);
-  left: 0;
-  width: 120px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75));
-  opacity: 0.55;
-  will-change: transform;
-  animation: jx-flow var(--dur, 24s) linear var(--delay, 0s) infinite;
-}
-
-.jx-paused .ui-masthead-field i {
-  animation-play-state: paused;
-}
-
-/* ===== the ring: a degree bezel behind the mascot ===== */
-.jx-ring {
-  position: absolute;
-  inset: -9%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.jx-ring svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.jx-ring circle {
-  fill: none;
-  stroke: var(--ink);
-}
-
-.jx-rim {
-  stroke-width: 1.2;
-  opacity: 0.35;
-}
-
-.jx-t5 {
-  stroke-width: 9;
-  stroke-dasharray: 0.55 4.45;
-  opacity: 0.34;
-}
-
-.jx-t30 {
-  stroke-width: 17;
-  stroke-dasharray: 0.9 29.1;
-  opacity: 0.5;
-}
-
-.jx-dash {
-  stroke-width: 1.1;
-  stroke-dasharray: 3 7;
-  opacity: 0.28;
-}
-
-.jx-ring-ticks {
-  will-change: transform;
-  animation:
-    jx-fade 0.9s ease 0.15s both,
-    jx-spin 240s linear infinite;
-}
-
-.jx-ring-index path {
-  fill: var(--color-jelly);
-  stroke: var(--ink);
-  stroke-width: 1.2;
-  stroke-linejoin: round;
-}
-
-.jx-ring-index {
-  animation: jx-fade 0.9s ease 0.15s both;
-}
-
-/* ===== the render ===== */
-/* The wrapper is the one thing that moves (the spring writes its transform): one composited layer holding the
-   render and its ground shadow. The shadow is a radial gradient on the bench line, not a CSS drop-shadow filter:
-   a blur filter on a layer that changes every frame was the single costly thing in a poke. */
-.jx-body {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  transform-origin: 50% 96%;
-  will-change: transform;
-}
-
-.jx-body::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 7%;
-  right: 7%;
-  bottom: -1.5%;
-  height: 9.5%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(27, 33, 64, 0.52), rgba(27, 33, 64, 0.26) 60%, rgba(27, 33, 64, 0));
-}
-
-.jx-stage .jx-body > img.ui-mascot {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  aspect-ratio: auto;
-  animation: none;
-  filter: none;
-  will-change: auto;
-}
-
-/* The render is in the DOM, loading and painting from the first frame (it is the LCP element), at an
-   opacity a hair above zero until the sketch hands over to it. */
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-body > img.ui-mascot,
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-body::before {
-  animation: jx-render-in 0.85s ease var(--t-render) both;
-}
-
-/* ===== the sketch (generated: views/includes/jelly-sketch.html) ===== */
-/* Four stacked SVGs, one per beat, so a fade is a composited opacity change and only the few ink outlines
-   repaint while they draw: construct (drafting furniture, stays), fills (flat colour), mesh (hatching,
-   rings, flutes, seams, stitching) and ink (the outlines). */
-.jx {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.jx > svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.jx-construct path {
-  --o: 0.38;
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.2;
-  opacity: var(--o);
-}
-
-.jx-construct .jx-axis,
-.jx-construct .jx-circle {
-  stroke-dasharray: 26 8 5 8;
-  --o: 0.3;
-}
-
-.jx-construct .jx-dim {
-  fill: var(--ink);
-  stroke-width: 2;
-}
-
-.jx-fill {
-  fill: var(--c, #fff);
-}
-
-.jx-fill-glint {
-  fill: #fff;
-  opacity: 0.92;
-}
-
-.jx-line {
-  fill: none;
-  stroke: var(--ink);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.jx-line-main {
-  stroke-width: 3.4;
-}
-
-.jx-line-fine {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.8;
-}
-
-.jx-stitch {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2;
-  stroke-dasharray: 11 9;
-  opacity: 0.7;
-}
-
-.jx-hatch {
-  opacity: 0.55;
-}
-
-#jx-hatch path {
-  stroke: var(--ink);
-  stroke-width: 1.4;
-  opacity: 0.5;
-}
-
-/* intro: the beat sheet. Everything here is scoped to a device that is not "lite" (see the inline script
-   in <head>): data-saver, <= 2 GB or <= 2 cores get the finished figure with no intro. */
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-construct {
-  opacity: 0;
-  will-change: opacity;
-  animation: jx-fade 0.5s ease 0.1s forwards;
-}
-
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-line {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: jx-draw 1.05s cubic-bezier(0.45, 0.05, 0.3, 1) var(--d, 0s) forwards;
-}
-
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-mesh {
-  opacity: 0;
-  will-change: opacity;
-  animation:
-    jx-fade 0.6s ease 1s forwards,
-    jx-out 0.7s ease var(--t-out) forwards;
-}
-
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-fills {
-  opacity: 0;
-  will-change: opacity;
-  animation:
-    jx-fade 0.6s ease var(--t-fill) forwards,
-    jx-out 0.7s ease var(--t-out) forwards;
-}
-
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-ink {
-  will-change: opacity;
-  animation: jx-out 0.7s ease var(--t-out) forwards;
-}
-
-/* after the intro (a script took over) and for lite devices: only the faint construction lines stay */
-.jx-stage[data-intro="off"] .jx-ink,
-.jx-stage[data-intro="off"] .jx-fills,
-.jx-stage[data-intro="off"] .jx-mesh,
-html[data-motion="lite"] .jx-ink,
-html[data-motion="lite"] .jx-fills,
-html[data-motion="lite"] .jx-mesh {
-  display: none;
-}
-
-/* ===== the instrument ===== */
-.jx-gauge {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-html:not([data-motion="lite"]) .jx-stage[data-intro="on"] .jx-gauge {
-  opacity: 0;
-  animation: jx-fade 0.6s ease 2.3s forwards;
-}
-
-.jg-bench {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 3;
-  opacity: 0.5;
-}
-
-.jg-part {
-  fill: #f4ece3;
-  stroke: var(--ink);
-  stroke-width: 3;
-}
-
-.jg-seam {
-  stroke: var(--ink);
-  stroke-width: 2;
-  opacity: 0.4;
-}
-
-.jg-case {
-  fill: #fbf8f4;
-  stroke: var(--ink);
-  stroke-width: 4;
-}
-
-.jg-knurl {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 13;
-  stroke-dasharray: 2.4 3.9;
-  opacity: 0.3;
-}
-
-.jg-face {
-  fill: #fffdf9;
-  stroke: var(--ink);
-  stroke-width: 2;
-}
-
-.jg-minor {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 8;
-  stroke-dasharray: 0.22 1.78;
-  opacity: 0.55;
-}
-
-.jg-major {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 3.2;
-}
-
-.jg-zero {
-  fill: var(--color-jelly);
-}
-
-.jg-glass {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 5;
-  stroke-linecap: round;
-  opacity: 0.7;
-}
-
-.jg-needle,
-.jg-tail {
-  fill: none;
-  stroke: var(--color-jelly);
-  stroke-linecap: round;
-}
-
-.jg-needle {
-  stroke-width: 5;
-}
-
-.jg-tail {
-  stroke-width: 7;
-}
-
-.jg-hub {
-  fill: var(--ink);
-}
-
-.jg-hub-dot {
-  fill: #fbf8f4;
-}
-
-.jx-probe {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.4;
-  opacity: 0.8;
-}
-
-.jx-probe-tip {
-  fill: var(--color-jelly);
-  stroke: var(--ink);
-  stroke-width: 2.4;
-}
-
-/* a dial this size cannot sit beside the text column between the two layouts */
-@media (min-width: 901px) and (max-width: 1099px) {
-  .jx-gauge,
-  .jx-readout {
-    display: none;
-  }
-}
-
-/* ===== the poke target and its feedback ===== */
-.jx-poke {
-  position: absolute;
-  inset: 3% 3% 2%;
-  z-index: 4;
-  padding: 0;
-  border: 0;
-  border-radius: 42% 42% 30% 30%;
-  background: transparent;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.jx-poke:focus-visible {
-  outline: 3px solid var(--ink);
-  outline-offset: 2px;
-}
-
-.jx-ripple {
-  position: absolute;
-  z-index: 3;
-  width: 22%;
-  aspect-ratio: 1;
-  margin: -11% 0 0 -11%;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-  pointer-events: none;
-  animation: jx-ripple 0.75s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-}
-
-/* ===== caption row ===== */
-.jx-meta {
-  display: flex;
-  flex: 1 0 100%;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 6px 14px;
-}
-
-.jx-readout {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.03em;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink);
-}
-
-.jx-replay {
-  padding: 5px 10px 4px;
-  border: 1.5px solid var(--ink);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 160ms ease, transform 220ms var(--press);
-}
-
-.jx-replay:hover {
-  background: rgba(251, 248, 244, 0.7);
-  transform: translateY(-1px);
-}
-
-.jx-replay:active {
-  transform: translateY(1px);
-}
-
-.jx-replay:focus-visible {
-  outline: 3px solid var(--ink);
-  outline-offset: 3px;
-}
-
-html[data-motion="lite"] .jx-replay {
-  display: none;
-}
-
-@media (pointer: coarse), (max-width: 900px) {
-  .jx-replay {
-    min-height: 44px;
-    padding: 10px 16px;
-  }
-}
 
 /* ===== layout inside the masthead grid ===== */
 /* DOM order is copy, figure, links (so Tab follows the picture); the grid puts the figure on the right on
    wide screens and first on phones. */
 .ui-masthead-grid {
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 400px);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
   column-gap: var(--space-12);
   row-gap: 0;
   align-items: start;
@@ -538,27 +37,204 @@ html[data-motion="lite"] .jx-replay {
   align-self: start;
 }
 
-.ui-masthead-figure.jx-stage {
+.ui-masthead-figure.fp-plate {
   grid-column: 2;
   grid-row: 1 / span 2;
   align-self: center;
   max-width: none;
-  margin: 0;
+  margin: var(--space-4) 0 var(--space-10);
 }
 
+/* ===== the plate ===== */
+.fp-plate {
+  position: relative;
+  display: block;
+  padding: 40px 18px 16px;
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-card);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(28, 43, 32, 0.1),
+    0 24px 44px -22px rgba(16, 26, 19, 0.55);
+}
+
+/* the inner drawing border, as on the figure plates */
+.fp-plate::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid var(--rule, rgba(28, 43, 32, 0.16));
+  border-radius: calc(var(--radius-xl) - 5px);
+  pointer-events: none;
+}
+
+.fp-corner {
+  position: absolute;
+  top: 17px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.fp-corner[data-corner="fig"] {
+  left: 20px;
+  color: var(--color-pine);
+}
+
+.fp-corner[data-corner="title"] {
+  right: 20px;
+}
+
+.fp-frame {
+  position: relative;
+  margin-left: 22px; /* room for the scale */
+}
+
+.fp-plate .fp-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 738 / 1107;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--fog-300);
+  /* the masthead's shared img rule draws a mat; the plate already is one */
+  border: 0 !important;
+  box-shadow: 0 0 0 1px rgba(16, 26, 19, 0.18) !important;
+}
+
+/* A scale down the left edge: a tick every 2 %, a longer one every 10 %. No numbers: it frames the
+   picture, it does not claim to measure it. */
+.fp-scale {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -18px;
+  width: 12px;
+  border-right: 1.5px solid var(--color-pine);
+  opacity: 0.55;
+  background:
+    repeating-linear-gradient(to bottom, var(--color-pine) 0 1px, transparent 1px 10%) 100% 0 / 12px 100% no-repeat,
+    repeating-linear-gradient(to bottom, var(--color-pine) 0 1px, transparent 1px 2%) 100% 0 / 6px 100% no-repeat;
+}
+
+.fp-caption {
+  margin: 12px 2px 2px;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-text-tertiary);
+  text-align: left;
+}
+
+/* ===== callouts ===== */
+/* Each callout is anchored at (--x, --y) on the photo: a birch dot there, a leader line --len long
+   running to the right or the left (data-side), and a stone label plate at its end. */
+.fp-callouts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fp-callout {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  display: flex;
+  align-items: center;
+  transform: translate(-3.5px, -50%);
+}
+
+.fp-callout[data-side="left"] {
+  flex-direction: row-reverse;
+  transform: translate(calc(-100% + 3.5px), -50%);
+}
+
+/* the anchor: a birch dot with a stone ring, readable on dark needles and on pale sky */
+.fp-callout::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-lit);
+  box-shadow: 0 0 0 2px var(--stone-50), 0 1px 3px rgba(16, 26, 19, 0.5);
+}
+
+/* the leader line */
+.fp-callout::after {
+  content: "";
+  flex: none;
+  order: 1;
+  width: var(--len);
+  height: 1.5px;
+  background: var(--stone-50);
+  box-shadow: 0 0 0 0.5px rgba(16, 26, 19, 0.3);
+  transform-origin: left center;
+}
+
+.fp-callout[data-side="left"]::after {
+  transform-origin: right center;
+}
+
+.fp-callout b {
+  order: 2;
+  padding: 4px 7px 3px;
+  border-radius: 3px;
+  background: var(--stone-50);
+  box-shadow: 0 1px 4px rgba(16, 26, 19, 0.35);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-pine);
+}
+
+/* draw-in, once */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="lite"]) .fp-callout b,
+  html:not([data-motion="lite"]) .fp-callout::before {
+    animation: fp-label 500ms ease-out both;
+    animation-delay: calc(700ms + var(--i, 0) * 220ms);
+  }
+
+  html:not([data-motion="lite"]) .fp-callout::after {
+    animation: fp-lead 600ms cubic-bezier(0.3, 0.9, 0.3, 1) both;
+    animation-delay: calc(500ms + var(--i, 0) * 220ms);
+  }
+
+  .fp-callout:nth-child(2) { --i: 1; }
+  .fp-callout:nth-child(3) { --i: 2; }
+}
+
+@keyframes fp-lead {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes fp-label {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ===== small screens ===== */
 @media (max-width: 900px) {
-  /* the figure keeps the column's width so the caption row has room; the frame itself is the
-     small square */
   .ui-masthead-grid {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--space-6);
   }
 
-  .ui-masthead-figure.jx-stage {
+  .ui-masthead-figure.fp-plate {
     grid-column: 1;
     grid-row: 1;
     width: 100%;
-    max-width: 400px;
+    max-width: 320px;
     margin: var(--space-6) auto 0;
   }
 
@@ -570,133 +246,22 @@ html[data-motion="lite"] .jx-replay {
   .ui-masthead-grid > .ui-masthead-links {
     grid-row: 3;
   }
-
-  .jx-frame {
-    max-width: 240px;
-  }
 }
 
-/* ===== keyframes ===== */
-@keyframes jx-in {
-  to {
-    opacity: var(--o, 1);
-  }
-}
-
-@keyframes jx-fade {
-  from {
-    opacity: 0;
+@media (max-width: 480px) {
+  .fp-callout b {
+    font-size: 0.58rem;
+    letter-spacing: 0.05em;
   }
 
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes jx-out {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-
-@keyframes jx-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes jx-render-in {
-  from {
-    opacity: 0.01;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes jx-flow {
-  from {
-    transform: translateX(-140px);
-  }
-
-  to {
-    transform: translateX(100vw);
-  }
-}
-
-@keyframes jx-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes jx-ripple {
-  from {
-    transform: scale(0.15);
-    opacity: 0.7;
-  }
-
-  to {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-/* ===== motion policy ===== */
-.jx-stage.is-paused .jx-ring-ticks {
-  animation-play-state: paused;
-}
-
-/* data-saver / <= 2 GB / <= 2 cores: the intro still plays once, nothing loops */
-html[data-motion="lite"] .jx-ring-ticks {
-  animation: jx-fade 0.9s ease 0.15s both;
-}
-
-html[data-motion="lite"] .ui-masthead-field {
-  display: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ui-masthead-field {
-    display: none;
-  }
-
-  .jx-ink,
-  .jx-fills,
-  .jx-mesh {
-    display: none;
-  }
-
-  /* the intro rules above are more specific than these, so the final state is forced */
-  .jx-stage .jx-construct,
-  .jx-stage .jx-body > img.ui-mascot,
-  .jx-stage .jx-body::before,
-  .jx-ring-ticks,
-  .jx-ring-index,
-  .jx-stage .jx-gauge,
-  .jx-stage .jx-needle {
-    animation: none !important;
-    opacity: 1 !important;
-  }
-
-  .jx-replay,
-  .jx-ripple {
-    display: none;
+  .fp-callout {
+    --len: 16px !important;
   }
 }
 
 @media print {
-  .jx,
-  .jx-ring,
-  .jx-gauge,
-  .jx-meta {
-    display: none !important;
-  }
-
-  .jx-stage .jx-body > img.ui-mascot {
-    animation: none !important;
-    opacity: 1;
+  .fp-callouts,
+  .fp-scale {
+    display: none;
   }
 }

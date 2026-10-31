@@ -2,7 +2,7 @@
 /**
  * The site's line-icon set: one 24 px grid, 1.7 px strokes, round joins. Each glyph is a small part
  * drawn the way the rest of the drafting layer is (a plate, a pin, a gauge), in the current text
- * colour, with at most one stroke in the jelly-red accent (`.ic-a`) marking the part that moves or
+ * colour, with at most one stroke in the birch-gold accent (`.ic-a`) marking the part that moves or
  * is pressed. They replace the Unicode characters the /more cards and the 404 page used as icons,
  * which rendered from whichever fallback font the visitor's system happened to pick.
  *

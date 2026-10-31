@@ -53,7 +53,7 @@ $faviconMime = 'image/svg+xml';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#69b0f9">
+    <meta name="theme-color" content="#1c2b20">
     <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
     <meta name="description" content="Admin Panel - <?php echo htmlspecialchars($pageTitle); ?>">
     <meta name="robots" content="noindex, nofollow">
@@ -109,7 +109,7 @@ $faviconMime = 'image/svg+xml';
     <header class="admin-ui-topbar">
         <div class="admin-ui-topbar-row">
             <div class="admin-ui-brand">
-                <a href="<?php echo FULL_BASE_PATH; ?>admin/dashboard"><img class="admin-ui-brand-mark" src="<?php echo FULL_BASE_PATH; ?>assets/images/mascot-160.webp" width="38" height="38" alt="">Yemre</a>
+                <a href="<?php echo FULL_BASE_PATH; ?>admin/dashboard"><img class="admin-ui-brand-mark" src="<?php echo FULL_BASE_PATH; ?>assets/images/brand/logo-mark.svg" width="38" height="38" alt="">Yemre</a>
                 <span>ADMIN</span>
             </div>
 

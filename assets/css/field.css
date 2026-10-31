@@ -1,18 +1,19 @@
 /*
 ===============================================================================
-YUNUS EMRE VURGUN — "JELLY" BRAND LAYER
+YUNUS EMRE VURGUN — "FIELD" BRAND LAYER
 ===============================================================================
 Loaded after ui-rebuild.css (which owns structure, grids and responsive
 behaviour) and variables.css (which owns every token). This file owns the
 brand's look:
 
-  · the page is the mascot's own light-blue sky; content sits on cream, like
-    the crown of the mascot's cap; ink is the cap's navy; red is the jelly.
-  · the shape language is the gelatine mould: chunky radii, lobed (scalloped)
-    edges where a section meets the page, a bright top edge on every surface.
-  · motion is the jelly spring — press squashes, release overshoots — and it
-    exists only where something is pressable or the mascot is. Everything
-    reads fully with animation disabled.
+  · the page is an overcast sky; content sits on stone, like the caps of a
+    dry-stone wall; ink is the pine stand in shadow; moss green is the one
+    action colour and the gold birch is the single lit highlight.
+  · the shape language is cut stone and milled plate: small firm radii, square
+    keys, plates with rivets; edges where a section meets the page are a
+    ridge line and a steel scale (blueprint.css), never scallops.
+  · motion is short and settles without bounce, and it exists only where
+    something is pressable. Everything reads fully with animation disabled.
 
 Never hard-code a colour here: consume the tokens in variables.css.
 ===============================================================================
@@ -20,8 +21,8 @@ Never hard-code a colour here: consume the tokens in variables.css.
 
 /* ===== BASE ===== */
 :root {
-  /* Lobe size for scalloped section edges. */
-  --lobe: 22px;
+  /* Depth of the edge strip that closes a sheet (the scale; see blueprint.css). */
+  --lobe: 14px;
   color-scheme: light;
 }
 
@@ -33,7 +34,7 @@ body {
   color-scheme: light;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
-  --color-control-border: #6e79a0;
+  --color-control-border: #6f8172;
   overflow-x: clip;
 }
 
@@ -42,8 +43,8 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-sky);
-  color: var(--color-navy);
+  background-color: var(--color-fog);
+  color: var(--color-pine);
 }
 
 a {
@@ -66,7 +67,7 @@ a:hover {
   top: -80px;
   z-index: 1200;
   padding: var(--space-3) var(--space-5);
-  background: var(--color-navy);
+  background: var(--color-pine);
   color: var(--color-text-inverse);
   border-radius: var(--radius-full);
   font-family: var(--font-display);
@@ -120,7 +121,7 @@ h6,
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border-bottom: 0;
-  box-shadow: 0 1px 0 var(--color-border), 0 8px 24px -16px rgba(27, 33, 64, 0.35);
+  box-shadow: 0 1px 0 var(--color-border), 0 8px 24px -16px rgba(16, 26, 19, 0.35);
 }
 
 .ui-navbar {
@@ -143,23 +144,24 @@ h6,
   font-size: 1.65rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: var(--color-navy);
+  color: var(--color-pine);
 }
 
 .ui-wordmark:hover {
   opacity: 1;
-  color: var(--color-navy);
+  color: var(--color-pine);
 }
 
 .ui-wordmark-mark {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
-  transform-origin: 50% 100%;
+  border-radius: 8px;
+  transition: transform 260ms var(--ease-settle);
 }
 
 .ui-wordmark:hover .ui-wordmark-mark {
-  animation: jelly-wobble 700ms var(--ease-jelly);
+  transform: rotate(-4deg);
 }
 
 .ui-nav-links {
@@ -171,43 +173,49 @@ h6,
   font-family: var(--font-display);
   font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--color-navy);
-  padding: 10px 18px;
-  border-radius: var(--radius-full);
+  color: var(--color-pine);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast),
-    transform 260ms var(--ease-jelly);
+    transform 260ms var(--ease-settle);
 }
 
 .ui-nav-link:hover,
 .ui-nav-link-more:hover {
-  color: var(--color-navy);
-  background: var(--color-sky-soft);
+  color: var(--color-pine);
+  background: var(--color-fog-soft);
 }
 
 .ui-nav-link.is-active,
 .ui-nav-link-more.is-active {
   color: var(--color-text-inverse);
-  background: var(--color-navy);
+  background: var(--color-pine);
   text-decoration: none;
 }
 
 .ui-nav-link:active,
 .ui-nav-link-more:active {
-  transform: scale(0.94, 1.05);
+  transform: translateY(1px);
+}
+
+/* the current page also carries a birch rule under its label */
+.ui-nav-link.is-active,
+.ui-nav-link-more.is-active {
+  box-shadow: inset 0 -3px 0 var(--color-lit);
 }
 
 .ui-mobile-toggle {
-  color: var(--color-navy);
-  border-radius: var(--radius-full);
-  background: var(--color-sky-soft);
+  color: var(--color-pine);
+  border-radius: var(--radius-md);
+  background: var(--color-fog-soft);
 }
 
 .ui-mobile-toggle:hover,
 .ui-mobile-toggle:focus-visible {
-  color: var(--color-navy);
-  background: var(--color-sky);
+  color: var(--color-pine);
+  background: var(--color-fog);
 }
 
 .ui-mobile-toggle span {
@@ -218,21 +226,21 @@ h6,
 /* Mobile sheet */
 .ui-mobile-panel {
   background: var(--color-bg-card);
-  border-radius: var(--radius-2xl) 0 0 var(--radius-2xl);
+  border-radius: var(--radius-xl) 0 0 var(--radius-xl);
   box-shadow: var(--shadow-xl);
 }
 
 .ui-mobile-close {
-  color: var(--color-navy);
-  background: var(--color-sky-soft);
-  border-radius: var(--radius-full);
+  color: var(--color-pine);
+  background: var(--color-fog-soft);
+  border-radius: var(--radius-md);
   margin-left: auto;
 }
 
 .ui-mobile-close:hover,
 .ui-mobile-close:focus {
-  color: var(--color-navy);
-  background: var(--color-sky);
+  color: var(--color-pine);
+  background: var(--color-fog);
 }
 
 .ui-mobile-links {
@@ -246,15 +254,15 @@ h6,
 .ui-mobile-links a {
   font-family: var(--font-display);
   font-weight: 500;
-  color: var(--color-navy);
+  color: var(--color-pine);
   border-radius: var(--radius-lg);
   min-height: 48px;
 }
 
 .ui-mobile-links a:hover,
 .ui-mobile-links a:focus {
-  color: var(--color-navy);
-  background: var(--color-sky-soft);
+  color: var(--color-pine);
+  background: var(--color-fog-soft);
   padding-left: var(--space-4);
 }
 
@@ -262,22 +270,22 @@ h6,
   box-shadow: none;
 }
 
-/* Announcement strip: navy, with the jelly-red marker. */
+/* Announcement strip: pine, with a birch marker. */
 .ebook-notice {
-  background: var(--color-navy);
+  background: var(--color-pine);
   border-bottom: 0;
 }
 
 .ebook-notice-marker {
-  color: var(--color-text-inverse);
-  background: var(--color-jelly);
-  padding: 2px 10px 3px;
-  border-radius: var(--radius-full);
+  color: var(--pine-900);
+  background: var(--color-lit);
+  padding: 2px 8px 3px;
+  border-radius: var(--radius-sm);
   letter-spacing: 0.04em;
 }
 
 .ebook-notice-text {
-  color: var(--color-sky-soft);
+  color: var(--color-fog-soft);
 }
 
 .ebook-notice-text strong {
@@ -290,21 +298,22 @@ h6,
 }
 
 .ebook-notice-cta:hover {
-  color: var(--color-sky);
+  color: var(--color-fog);
 }
 
 .ebook-notice-dismiss {
-  color: var(--color-sky-soft);
+  color: var(--color-fog-soft);
 }
 
 .ebook-notice-dismiss:hover {
   color: var(--color-text-inverse);
 }
 
-/* ===== PAGE HEADER — the sky band ===== */
+/* ===== PAGE HEADER — the fog sheet ===== */
 /* Every inner page opens with one section (eyebrow, title, intro). That
-   section is drawn as a full-bleed band of the brand blue whose lower edge is
-   lobed like a jelly mould, with the mascot sitting on it. */
+   section is drawn as a full-bleed band of fog; blueprint.css lays the survey
+   sheet over it (contours, grid, the ridge from the fog photograph, the scale)
+   and stands the pine stand from the portrait at its right edge. */
 .ui-main > .ui-section:first-of-type {
   position: relative;
   isolation: isolate;
@@ -321,27 +330,12 @@ h6,
   left: 50%;
   width: 100vw;
   transform: translateX(-50%);
-  background:
-    radial-gradient(circle at 50% 0, var(--color-sky) 0 calc(var(--lobe) - 0.5px), transparent var(--lobe))
-      0 100% / calc(var(--lobe) * 2) var(--lobe) repeat-x,
-    linear-gradient(var(--color-sky), var(--color-sky)) 0 0 / 100% calc(100% - var(--lobe) + 1px) no-repeat;
-}
-
-.ui-main > .ui-section:first-of-type::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: calc(-1 * var(--space-8) - 10px);
-  width: 150px;
-  height: 150px;
-  background: url("../images/mascot-160.webp") center / contain no-repeat;
-  transform-origin: 50% 100%;
-  pointer-events: none;
+  background: var(--color-fog-soft);
 }
 
 .ui-main > .ui-section:first-of-type .ui-section-text,
 .ui-main > .ui-section:first-of-type .ui-section-text a {
-  color: var(--color-navy);
+  color: var(--color-pine);
 }
 
 .ui-main > .ui-section:first-of-type .ui-section-text a {
@@ -349,30 +343,16 @@ h6,
   text-underline-offset: 3px;
 }
 
-/* In the page header the eyebrow is a navy label. */
+/* In the page header the eyebrow is a pine label (blueprint.css turns it into a riveted plate). */
 .ui-main > .ui-section:first-of-type > .ui-eyebrow {
   display: inline-block;
-  background: var(--color-navy);
+  background: var(--color-pine);
   color: var(--color-text-inverse);
   text-transform: none;
   letter-spacing: 0.02em;
   font-weight: 500;
   padding: 4px 16px 5px;
-  border-radius: var(--radius-full);
-}
-
-@media (max-width: 768px) {
-  .ui-main > .ui-section:first-of-type::after {
-    width: 96px;
-    height: 96px;
-    bottom: calc(-1 * var(--space-8) - 6px);
-  }
-}
-
-@media (max-width: 480px) {
-  .ui-main > .ui-section:first-of-type::after {
-    display: none;
-  }
+  border-radius: var(--radius-sm);
 }
 
 /* ===== BUTTONS ===== */
@@ -380,47 +360,49 @@ h6,
   font-family: var(--font-display);
   font-weight: 600;
   font-size: var(--text-base);
-  padding: 11px 26px 12px;
-  border-radius: var(--radius-full);
+  padding: 11px 24px 12px;
+  border-radius: var(--radius-md);
   border-width: 2px;
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast),
     border-color var(--transition-fast),
-    transform 320ms var(--ease-jelly),
+    transform 320ms var(--ease-settle),
     box-shadow 200ms ease;
 }
 
 .ui-btn-primary {
-  background: var(--color-jelly);
-  border-color: var(--color-jelly);
-  color: #fff;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(120, 8, 8, 0.28), 0 6px 14px -6px rgba(184, 15, 13, 0.55);
+  background: var(--color-action);
+  border-color: var(--color-action);
+  color: var(--color-text-inverse);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 3px 0 var(--pine-900), 0 8px 14px -8px rgba(16, 26, 19, 0.55);
 }
 
 .ui-btn-primary:hover {
-  background: var(--color-jelly-hover);
-  border-color: var(--color-jelly-hover);
-  color: #fff;
-  transform: scale(1.04, 0.97);
+  background: var(--color-action-hover);
+  border-color: var(--color-action-hover);
+  color: var(--color-text-inverse);
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 2px 0 var(--pine-900), 0 6px 12px -8px rgba(16, 26, 19, 0.55);
 }
 
 .ui-btn-secondary {
   background: var(--color-bg-card);
-  border-color: var(--color-navy);
-  color: var(--color-navy);
-  box-shadow: 0 3px 0 var(--color-navy);
+  border-color: var(--color-pine);
+  color: var(--color-pine);
+  box-shadow: 0 3px 0 var(--color-pine);
 }
 
 .ui-btn-secondary:hover {
-  background: var(--color-sky-soft);
-  border-color: var(--color-navy);
-  color: var(--color-navy);
-  transform: scale(1.04, 0.97);
+  background: var(--color-fog-soft);
+  border-color: var(--color-pine);
+  color: var(--color-pine);
+  transform: translateY(1px);
 }
 
 .ui-btn:active {
-  transform: scale(0.95, 1.06);
+  transform: translateY(3px);
+  box-shadow: none;
 }
 
 /* Bare <button class="ui-btn"> in forms and the generic submit affordances */
@@ -428,7 +410,7 @@ button.ui-btn {
   cursor: pointer;
 }
 
-/* ===== SURFACES — cream cards ===== */
+/* ===== SURFACES — stone cards ===== */
 .ui-glass-panel,
 .ui-feed-card,
 .ui-video-card,
@@ -456,13 +438,13 @@ button.ui-btn {
 
 .ui-feed-card {
   padding: var(--space-6) var(--space-8);
-  transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+  transition: transform 320ms var(--ease-settle), box-shadow 200ms ease;
 }
 
 .ui-feed-card:hover,
 .ui-more-card:hover,
 .ui-video-card:hover {
-  transform: translateY(-3px) scale(1.006);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
@@ -498,7 +480,7 @@ button.ui-btn {
 
 .ui-update-avatar {
   border-radius: var(--radius-full);
-  background: var(--color-sky-soft);
+  background: var(--color-fog-soft);
 }
 
 .ui-figure img,
@@ -516,7 +498,7 @@ button.ui-btn {
   color: var(--color-text-tertiary);
 }
 
-/* Explore / site index: a grid of cream tiles */
+/* Explore / site index: a grid of stone tiles */
 .ui-more-grid {
   border-bottom: 0;
   gap: var(--space-5);
@@ -529,7 +511,7 @@ button.ui-btn {
   padding: var(--space-6);
   grid-template-columns: 3.25rem minmax(0, 1fr);
   align-content: start;
-  transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+  transition: transform 320ms var(--ease-settle), box-shadow 200ms ease;
 }
 
 .ui-more-card:hover {
@@ -547,9 +529,9 @@ button.ui-btn {
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
-  border-radius: var(--radius-full);
-  background: var(--color-sky);
-  color: var(--color-navy);
+  border-radius: var(--radius-md);
+  background: var(--color-fog);
+  color: var(--color-pine);
   font-family: var(--font-display);
   font-weight: 600;
   font-size: var(--text-sm);
@@ -582,11 +564,11 @@ button.ui-btn {
 }
 
 .ui-tech-tag {
-  background: var(--color-sky-soft);
+  background: var(--color-fog-soft);
   border: 0;
-  color: var(--color-navy);
-  border-radius: var(--radius-full);
-  padding: 3px 12px 4px;
+  color: var(--color-pine);
+  border-radius: var(--radius-sm);
+  padding: 3px 10px 4px;
   font-weight: 500;
 }
 
@@ -626,7 +608,7 @@ button.ui-btn {
 
 /* Timeline */
 .ui-timeline-item {
-  border-left: 3px solid var(--color-sky);
+  border-left: 3px solid var(--color-fog);
 }
 
 .ui-timeline-item::before {
@@ -634,8 +616,8 @@ button.ui-btn {
   width: 13px;
   height: 13px;
   border-radius: var(--radius-full);
-  background: var(--color-jelly);
-  box-shadow: 0 0 0 3px var(--color-bg-primary);
+  background: var(--color-lit);
+  box-shadow: 0 0 0 3px var(--color-bg-primary), 0 0 0 4px var(--color-pine);
 }
 
 /* Reading list */
@@ -650,7 +632,7 @@ button.ui-btn {
   border-radius: var(--radius-lg);
   padding: var(--space-4) var(--space-5);
   box-shadow: var(--shadow-sm);
-  transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+  transition: transform 320ms var(--ease-settle), box-shadow 200ms ease;
 }
 
 .ui-reading-list a:hover {
@@ -700,18 +682,18 @@ select.ui-input {
   border-radius: var(--radius-lg);
   color: var(--color-text-primary);
   padding: 12px 16px;
-  transition: border-color var(--transition-fast), box-shadow 200ms ease, transform 260ms var(--ease-jelly);
+  transition: border-color var(--transition-fast), box-shadow 200ms ease, transform 260ms var(--ease-settle);
 }
 
 .ui-input:hover {
-  border-color: var(--navy-600);
+  border-color: var(--pine-600);
 }
 
 .ui-input:focus {
   outline: 0;
-  border-color: var(--color-navy);
+  border-color: var(--color-pine);
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(105, 176, 249, 0.55);
+  box-shadow: 0 0 0 4px rgba(227, 162, 39, 0.4);
 }
 
 .ui-input::placeholder {
@@ -726,23 +708,23 @@ select.ui-input {
 
 .ui-captcha-question {
   background: var(--color-bg-card);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   padding: var(--space-2) var(--space-5);
   box-shadow: var(--shadow-sm);
 }
 
 .ui-captcha-refresh {
-  background: var(--color-sky-soft);
-  border-radius: var(--radius-full);
-  color: var(--color-navy);
+  background: var(--color-fog-soft);
+  border-radius: var(--radius-md);
+  color: var(--color-pine);
 }
 
 .ui-captcha-refresh:hover {
-  background: var(--color-sky);
-  color: var(--color-navy);
+  background: var(--color-fog);
+  color: var(--color-pine);
 }
 
-/* Tags, filter pills, pagination: pills that squish */
+/* Tags, filter keys, pagination: small square keys */
 .ui-tag,
 .ui-filter-pill,
 .ui-page-link {
@@ -750,15 +732,15 @@ select.ui-input {
   font-weight: 500;
   text-transform: none;
   letter-spacing: 0;
-  color: var(--color-navy);
+  color: var(--color-pine);
   background: var(--color-bg-card);
   border: 2px solid transparent;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast),
-    transform 300ms var(--ease-jelly);
+    transform 300ms var(--ease-settle);
 }
 
 .ui-tag {
@@ -774,17 +756,17 @@ select.ui-input {
 .ui-tag:hover,
 .ui-filter-pill:hover,
 .ui-page-link:hover {
-  color: var(--color-navy);
-  background: var(--color-sky-soft);
+  color: var(--color-pine);
+  background: var(--color-fog-soft);
   border-color: transparent;
-  transform: scale(1.06, 0.96);
+  transform: translateY(-1px);
 }
 
 .ui-tag.is-active,
 .ui-filter-pill.is-active,
 .ui-page-link.is-active {
   color: var(--color-text-inverse);
-  background: var(--color-navy);
+  background: var(--color-pine);
 }
 
 .ui-page-link {
@@ -801,7 +783,7 @@ select.ui-input {
 /* Video tiles */
 .ui-video-card {
   border: 0;
-  transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease;
+  transition: transform 320ms var(--ease-settle), box-shadow 200ms ease;
 }
 
 .ui-video-title {
@@ -810,24 +792,24 @@ select.ui-input {
 
 .ui-video-duration,
 .ui-video-platform {
-  background: var(--color-sky-soft);
-  color: var(--color-navy);
+  background: var(--color-fog-soft);
+  color: var(--color-pine);
   border: 0;
-  border-radius: var(--radius-full);
-  padding: 2px 10px 3px;
+  border-radius: var(--radius-sm);
+  padding: 2px 8px 3px;
 }
 
 .ui-video-play-btn {
-  background: var(--color-jelly);
-  border: 3px solid #fff;
+  background: var(--color-action);
+  border: 3px solid var(--stone-50);
 }
 
 .ui-video-play-btn:hover {
-  background: var(--color-jelly-hover);
+  background: var(--color-action-hover);
 }
 
 .ui-video-embed-container {
-  background: var(--navy-900);
+  background: var(--pine-900);
 }
 
 /* Socials */
@@ -846,7 +828,7 @@ select.ui-input {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--space-3) var(--space-5);
-  transition: transform 320ms var(--ease-jelly), background-color var(--transition-fast);
+  transition: transform 320ms var(--ease-settle), background-color var(--transition-fast);
 }
 
 .ui-socials-link:hover {
@@ -855,7 +837,7 @@ select.ui-input {
 }
 
 .ui-socials-icon {
-  color: var(--color-navy);
+  color: var(--color-pine);
 }
 
 /* Travel */
@@ -898,9 +880,9 @@ select.ui-input {
   width: 14px;
   height: 14px;
   border-radius: var(--radius-full);
-  background: var(--color-jelly);
-  border: 3px solid #fff;
-  box-shadow: 0 2px 6px rgba(27, 33, 64, 0.4);
+  background: var(--color-lit);
+  border: 3px solid var(--pine-800);
+  box-shadow: 0 2px 6px rgba(16, 26, 19, 0.4);
 }
 
 .leaflet-popup-content-wrapper {
@@ -917,7 +899,7 @@ select.ui-input {
 
 /* Gallery slideshow */
 .ui-slideshow-arrow {
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
 }
 
 /* ===== RICH CONTENT (blog posts, updates — including archived production posts) ===== */
@@ -960,7 +942,7 @@ article:has(> .ui-rich-content) > .ui-figure img {
 .ui-rich-content a {
   color: var(--color-accent);
   text-decoration-thickness: 2px;
-  text-decoration-color: rgba(200, 17, 15, 0.35);
+  text-decoration-color: rgba(53, 82, 56, 0.4);
   text-underline-offset: 3px;
 }
 
@@ -970,7 +952,7 @@ article:has(> .ui-rich-content) > .ui-figure img {
 }
 
 .ui-rich-content ul li::marker {
-  color: var(--color-jelly);
+  color: var(--birch-600);
 }
 
 .ui-rich-content ol li::marker {
@@ -987,14 +969,14 @@ article:has(> .ui-rich-content) > .ui-figure img {
 }
 
 .ui-rich-content code {
-  background: var(--color-sky-soft);
-  color: var(--navy-800);
-  border-radius: 6px;
+  background: var(--color-fog-soft);
+  color: var(--pine-800);
+  border-radius: 4px;
 }
 
 .ui-rich-content pre {
-  background: var(--navy-800);
-  color: var(--color-cream);
+  background: var(--pine-800);
+  color: var(--color-stone);
   border-radius: var(--radius-lg);
 }
 
@@ -1009,7 +991,7 @@ article:has(> .ui-rich-content) > .ui-figure img {
 }
 
 .ui-rich-content hr {
-  border-top: 3px dotted var(--color-sky);
+  border-top: 2px dashed var(--color-fog);
 }
 
 .ui-rich-content table {
@@ -1031,8 +1013,8 @@ article:has(> .ui-rich-content) > .ui-figure img {
 }
 
 .ui-rich-content th {
-  background: var(--color-sky-soft);
-  color: var(--color-navy);
+  background: var(--color-fog-soft);
+  color: var(--color-pine);
   font-family: var(--font-display);
   font-weight: 600;
 }
@@ -1048,13 +1030,13 @@ article:has(> .ui-rich-content) > .ui-figure img {
 }
 
 /* ===== FOOTER ===== */
-/* Navy, with lobes rising into the page and the mascot on the edge. */
+/* Pine, the darkest tone of the stand; blueprint.css hangs the scale from its top edge. */
 .ui-footer,
 .ui-landing-footer {
   position: relative;
   margin-top: calc(var(--lobe) + var(--space-8));
   background: var(--color-bg-dark);
-  color: var(--color-sky-soft);
+  color: var(--color-fog-soft);
   border-top: 0;
 }
 
@@ -1064,11 +1046,8 @@ article:has(> .ui-rich-content) > .ui-figure img {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 100%;
-  height: var(--lobe);
-  background: radial-gradient(circle at 50% 100%, var(--color-bg-dark) 0 calc(var(--lobe) - 0.5px), transparent var(--lobe)) 0 0 / calc(var(--lobe) * 2) var(--lobe) repeat-x;
   pointer-events: none;
-  z-index: 1; /* over the cameo, which stands behind the curves */
+  z-index: 1; /* over the cameo */
 }
 
 .ui-footer-name,
@@ -1082,7 +1061,7 @@ article:has(> .ui-rich-content) > .ui-figure img {
 }
 
 .ui-footer-heading {
-  color: var(--color-sky);
+  color: var(--color-fog);
   letter-spacing: 0.1em;
   font-family: var(--font-display);
   font-weight: 500;
@@ -1091,7 +1070,7 @@ article:has(> .ui-rich-content) > .ui-figure img {
 .ui-footer-tag,
 .ui-footer-copy,
 .ui-landing-footer-copy {
-  color: var(--color-sky-soft);
+  color: var(--color-fog-soft);
 }
 
 .ui-footer a,
@@ -1109,39 +1088,21 @@ article:has(> .ui-rich-content) > .ui-figure img {
 .ui-footer-socials button.ui-footer-social-btn:hover,
 .ui-landing-footer a:hover,
 .ui-landing-footer-nav a:hover {
-  color: var(--color-sky);
+  color: var(--color-fog);
 }
 
 .ui-footer :focus-visible,
 .ui-landing-footer :focus-visible {
-  outline-color: var(--color-sky);
+  outline-color: var(--color-fog);
 }
 
 .ui-footer-social-icon {
-  color: var(--color-sky);
-}
-
-.ui-footer-mascot {
-  position: absolute;
-  right: var(--space-8);
-  bottom: calc(100% - 4px);
-  width: 112px;
-  height: 112px;
-  pointer-events: none;
-  transform-origin: 50% 100%;
+  color: var(--color-fog);
 }
 
 .ui-landing-footer-nav a {
   font-family: var(--font-display);
   font-weight: 500;
-}
-
-@media (max-width: 640px) {
-  .ui-footer-mascot {
-    width: 84px;
-    height: 84px;
-    right: var(--space-4);
-  }
 }
 
 /* X popup */
@@ -1151,13 +1112,13 @@ article:has(> .ui-rich-content) > .ui-figure img {
 }
 
 .ui-x-popup-close {
-  border-radius: var(--radius-full);
-  background: var(--color-sky-soft);
-  color: var(--color-navy);
+  border-radius: var(--radius-md);
+  background: var(--color-fog-soft);
+  color: var(--color-pine);
 }
 
 .ui-x-popup-icon {
-  color: var(--color-navy);
+  color: var(--color-pine);
 }
 
 .ui-x-popup-title {
@@ -1186,10 +1147,7 @@ body.ui-landing {
   left: 50%;
   width: 100vw;
   transform: translateX(-50%);
-  background:
-    radial-gradient(circle at 50% 0, var(--color-sky) 0 calc(var(--lobe) - 0.5px), transparent var(--lobe))
-      0 100% / calc(var(--lobe) * 2) var(--lobe) repeat-x,
-    linear-gradient(var(--color-sky), var(--color-sky)) 0 0 / 100% calc(100% - var(--lobe) + 1px) no-repeat;
+  background: var(--color-fog-soft);
 }
 
 .ui-masthead-grid {
@@ -1203,18 +1161,18 @@ body.ui-landing {
   font-family: var(--font-display);
   font-weight: 500;
   color: var(--color-text-inverse);
-  background: var(--color-navy);
+  background: var(--color-pine);
   padding: 4px 16px 5px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-sm);
 }
 
 .ui-masthead-title {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(2.75rem, 7vw, 5rem);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--navy-800);
+  font-weight: 700;
+  font-size: clamp(2.9rem, 7.4vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  color: var(--pine-800);
 }
 
 .ui-masthead-role {
@@ -1222,11 +1180,11 @@ body.ui-landing {
   font-style: normal;
   font-weight: 500;
   font-size: clamp(1.15rem, 2.4vw, 1.6rem);
-  color: var(--color-navy);
+  color: var(--color-pine);
 }
 
 .ui-masthead-lede {
-  color: var(--navy-800);
+  color: var(--pine-800);
 }
 
 .ui-masthead-facts {
@@ -1236,7 +1194,7 @@ body.ui-landing {
 }
 
 .ui-masthead-fact {
-  background: rgba(251, 248, 244, 0.86);
+  background: rgba(247, 248, 246, 0.9);
   border-bottom: 0;
   border-radius: var(--radius-lg);
   padding: var(--space-3) var(--space-5);
@@ -1263,7 +1221,7 @@ body.ui-landing {
 }
 
 .ui-masthead-fact-value a:hover {
-  color: var(--color-jelly);
+  color: var(--color-action);
   text-decoration-color: currentColor;
 }
 
@@ -1277,116 +1235,36 @@ body.ui-landing {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: var(--text-base);
-  color: var(--color-navy);
+  color: var(--color-pine);
   background: var(--color-bg-card);
-  border-radius: var(--radius-full);
-  padding: 9px 22px 10px;
+  border-radius: var(--radius-md);
+  padding: 9px 20px 10px;
   text-decoration: none;
-  box-shadow: 0 3px 0 var(--color-navy);
-  border: 2px solid var(--color-navy);
-  transition: transform 320ms var(--ease-jelly), background-color var(--transition-fast);
+  box-shadow: 0 3px 0 var(--color-pine);
+  border: 2px solid var(--color-pine);
+  transition: transform 320ms var(--ease-settle), background-color var(--transition-fast);
 }
 
 .ui-masthead-links a:first-child {
-  background: var(--color-jelly);
-  border-color: var(--color-jelly);
-  color: #fff;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(120, 8, 8, 0.28), 0 6px 14px -6px rgba(184, 15, 13, 0.55);
+  background: var(--color-action);
+  border-color: var(--pine-900);
+  color: var(--color-text-inverse);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 3px 0 var(--pine-900), 0 8px 14px -8px rgba(16, 26, 19, 0.55);
 }
 
 .ui-masthead-links a:hover {
-  transform: scale(1.05, 0.96);
-  background: var(--color-sky-soft);
-  color: var(--color-navy);
+  transform: translateY(1px);
+  background: var(--color-fog-soft);
+  color: var(--color-pine);
 }
 
 .ui-masthead-links a:first-child:hover {
-  background: var(--color-jelly-hover);
-  color: #fff;
+  background: var(--color-action-hover);
+  color: var(--color-text-inverse);
 }
 
 .ui-masthead-links a:active {
-  transform: scale(0.95, 1.06);
-}
-
-/* The mascot is the face of the site. */
-.ui-masthead-figure {
-  margin: 0;
-  display: grid;
-  place-items: center;
-}
-
-.ui-masthead-figure img.ui-mascot {
-  width: 100%;
-  max-width: 400px;
-  aspect-ratio: 1;
-  object-fit: contain;
-  border: 0;
-  background: none;
-  box-shadow: none;
-  border-radius: 0;
-  filter: drop-shadow(0 24px 22px rgba(27, 33, 64, 0.28));
-  transform-origin: 50% 96%;
-  animation: jelly-breathe 5.5s ease-in-out infinite;
-  will-change: transform;
-  cursor: pointer;
-}
-
-.ui-masthead-figure img.ui-mascot.is-poked {
-  animation: jelly-wobble 800ms var(--ease-jelly);
-}
-
-.ui-masthead-figure figcaption {
-  color: var(--color-navy);
-  margin-top: var(--space-1);
-  text-align: center;
-}
-
-/* The caption and, beside it, the way into Jell-omo's coffee shop. */
-.ui-masthead-figure .ui-masthead-caption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2) var(--space-3);
-  margin-top: var(--space-2);
-}
-
-.ui-cafe-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 18px 8px 14px;
-  font-size: 0.95rem;
-  line-height: 1.2;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.ui-cafe-btn-mug {
-  flex: none;
-  transform-origin: 50% 100%;
-}
-
-/* The steam curls when the button is pressed on, and the mug tips a little. */
-.ui-cafe-btn:hover .ui-cafe-btn-mug {
-  animation: cafe-mug-tip 700ms var(--ease-jelly);
-}
-
-.ui-cafe-btn:hover .ui-cafe-btn-steam {
-  animation: cafe-steam 1.1s ease-in-out infinite;
-}
-
-@keyframes cafe-mug-tip {
-  0% { transform: rotate(0); }
-  30% { transform: rotate(-12deg); }
-  60% { transform: rotate(6deg); }
-  100% { transform: rotate(0); }
-}
-
-@keyframes cafe-steam {
-  0%, 100% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(-1.5px); opacity: 0.55; }
+  transform: translateY(3px);
 }
 
 .ui-brief-title {
@@ -1411,50 +1289,10 @@ body.ui-landing {
   gap: var(--space-5);
 }
 
-@media (max-width: 900px) {
-  .ui-masthead-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-6);
-  }
-
-  .ui-masthead-figure {
-    order: -1;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-}
-
-/* ===== JELLY MOTION ===== */
-@keyframes jelly-wobble {
-  0% { transform: scale(1, 1); }
-  18% { transform: scale(1.14, 0.84) rotate(-2deg); }
-  36% { transform: scale(0.9, 1.12) rotate(2deg); }
-  54% { transform: scale(1.06, 0.95) rotate(-1deg); }
-  72% { transform: scale(0.97, 1.03); }
-  100% { transform: scale(1, 1); }
-}
-
-@keyframes jelly-breathe {
-  0%, 100% { transform: scale(1, 1); }
-  50% { transform: scale(1.025, 0.975); }
-}
-
-.ui-main > .ui-section:first-of-type:hover::after {
-  animation: jelly-wobble 800ms var(--ease-jelly);
-}
-
-.ui-footer-mascot:hover {
-  animation: jelly-wobble 800ms var(--ease-jelly);
-}
-
+/* ===== MOTION POLICY ===== */
 @media (prefers-reduced-motion: reduce) {
-  .ui-masthead-figure img.ui-mascot,
-  .ui-cafe-btn:hover .ui-cafe-btn-mug,
-  .ui-cafe-btn:hover .ui-cafe-btn-steam,
-  .ui-wordmark:hover .ui-wordmark-mark,
-  .ui-footer-mascot:hover,
-  .ui-main > .ui-section:first-of-type:hover::after {
-    animation: none !important;
+  .ui-wordmark:hover .ui-wordmark-mark {
+    transform: none !important;
   }
 
   .ui-btn:hover,
@@ -1472,7 +1310,7 @@ body.ui-landing {
   }
 }
 
-/* ===== ERROR / EMPTY STATE MASCOT ===== */
+/* ===== ERROR / EMPTY STATE MARK ===== */
 .ui-mascot-note {
   display: flex;
   align-items: center;
@@ -1481,14 +1319,10 @@ body.ui-landing {
 }
 
 .ui-mascot-note img {
-  width: 180px;
-  height: 180px;
-  filter: drop-shadow(0 16px 14px rgba(27, 33, 64, 0.25));
-}
-
-.ui-mascot-note img.is-squished {
-  transform: rotate(-9deg) scale(1.08, 0.86);
-  transform-origin: 50% 100%;
+  width: 120px;
+  height: 120px;
+  border-radius: 22px;
+  box-shadow: var(--shadow-md);
 }
 
 /* ===== PRINT ===== */
@@ -1497,8 +1331,7 @@ body.ui-landing {
   .ui-main > .ui-section:first-of-type::after,
   .ui-masthead::before,
   .ui-footer::before,
-  .ui-landing-footer::before,
-  .ui-footer-mascot {
+  .ui-landing-footer::before {
     display: none !important;
   }
 
@@ -1508,13 +1341,8 @@ body.ui-landing {
   }
 }
 
-/* 404: the mascot has been dropped. */
-body.ui-404 .ui-main > .ui-section:first-of-type::after {
-  transform: rotate(-11deg) scale(1.1, 0.86);
-}
-
 /* ===== HOME: PHOTO DECK ===== */
-/* Two cream cards overlapped like a hand of cards. The one behind is tilted,
+/* Two stone cards overlapped like a hand of cards. The one behind is tilted,
    smaller and a touch faded; clicking it flips it to the front. */
 .ui-landing-study-figures.is-deck {
   position: relative;
@@ -1529,7 +1357,7 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   position: absolute;
   width: 78%;
   margin: 0;
-  transition: transform 520ms var(--ease-jelly), opacity 320ms ease, filter 320ms ease, box-shadow 320ms ease;
+  transition: transform 520ms var(--ease-settle), opacity 320ms ease, filter 320ms ease, box-shadow 320ms ease;
   will-change: transform;
   backface-visibility: hidden;
   overflow: hidden;
@@ -1567,7 +1395,7 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
 }
 
 .is-deck > figure.is-flipping {
-  animation: deck-flip 640ms var(--ease-jelly);
+  animation: deck-flip 640ms var(--ease-settle);
 }
 
 @keyframes deck-flip {

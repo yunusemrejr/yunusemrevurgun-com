@@ -65,21 +65,21 @@
 
 
 /* ==========================================================================
-   JELLY ADMIN — the same system as the public site, denser.
-   Navy sidebar (the cap) beside a light-blue working field; cream cards;
-   jelly-red for the one primary action.
+   FIELD ADMIN — the same system as the public site, denser.
+   Pine sidebar beside a pale page-tone working field; stone cards;
+   moss green for the one primary action.
    ========================================================================== */
 
 body.admin-container {
   background: var(--color-bg-primary);
   color: var(--color-text-primary);
   color-scheme: light;
-  --color-control-border: #6e79a0;
+  --color-control-border: #6f8172;
 }
 
 body.admin-container :focus-visible { outline: 3px solid var(--color-focus-ring); outline-offset: 2px; }
 
-body.admin-container ::selection { background: var(--color-sky); color: var(--color-navy); }
+body.admin-container ::selection { background: var(--color-fog); color: var(--color-pine); }
 
 body.admin-container a:hover { color: inherit; }
 
@@ -89,34 +89,34 @@ body.admin-container a:hover { color: inherit; }
 body.admin-container .admin-ui-topbar {
   background: var(--color-bg-card);
   border-bottom: 0;
-  box-shadow: 0 1px 0 var(--color-border), 0 8px 24px -16px rgba(27, 33, 64, 0.35);
+  box-shadow: 0 1px 0 var(--color-border), 0 8px 24px -16px rgba(16, 26, 19, 0.35);
 }
 
 body.admin-container .admin-ui-brand { display: flex; align-items: center; gap: 10px; }
 
 body.admin-container .admin-ui-brand a {
   display: inline-flex; align-items: center; gap: 10px;
-  font-family: var(--font-display); font-weight: 600; font-size: 1.55rem; letter-spacing: -0.01em; color: var(--color-navy);
+  font-family: var(--font-display); font-weight: 600; font-size: 1.55rem; letter-spacing: -0.01em; color: var(--color-pine);
 }
 
-body.admin-container .admin-ui-brand-mark { width: 38px; height: 38px; flex-shrink: 0; }
+body.admin-container .admin-ui-brand-mark { width: 38px; height: 38px; flex-shrink: 0; border-radius: 8px; transition: transform 260ms var(--ease-settle); }
 
-body.admin-container .admin-ui-brand a:hover .admin-ui-brand-mark { animation: jelly-wobble 700ms var(--ease-jelly); }
+body.admin-container .admin-ui-brand a:hover .admin-ui-brand-mark { transform: rotate(-4deg); }
 
 body.admin-container .admin-ui-brand span {
   font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.08em;
-  color: var(--color-text-inverse); background: var(--color-navy); border-radius: var(--radius-full); padding: 3px 11px 4px;
+  color: var(--color-text-inverse); background: var(--color-pine); border-radius: var(--radius-sm); padding: 3px 11px 4px;
 }
 
-body.admin-container .admin-ui-link { color: var(--color-navy); font-family: var(--font-display); font-weight: 500; font-size: var(--text-sm); border-radius: var(--radius-full); padding: 0 14px; text-transform: none; letter-spacing: 0; }
+body.admin-container .admin-ui-link { color: var(--color-pine); font-family: var(--font-display); font-weight: 500; font-size: var(--text-sm); border-radius: var(--radius-md); padding: 0 14px; text-transform: none; letter-spacing: 0; }
 
-body.admin-container .admin-ui-link:hover { background: var(--color-sky-soft); color: var(--color-navy); }
+body.admin-container .admin-ui-link:hover { background: var(--color-fog-soft); color: var(--color-pine); }
 
 body.admin-container .admin-ui-link-danger { color: var(--color-danger); }
 
 body.admin-container .admin-ui-link-danger:hover { background: var(--color-danger-bg); color: var(--color-danger); }
 
-body.admin-container .admin-ui-menu-toggle { background: var(--color-sky-soft); border: 0; border-radius: var(--radius-full); color: var(--color-navy); font-family: var(--font-display); font-weight: 600; padding: 0 18px; }
+body.admin-container .admin-ui-menu-toggle { background: var(--color-fog-soft); border: 0; border-radius: var(--radius-md); color: var(--color-pine); font-family: var(--font-display); font-weight: 600; padding: 0 18px; }
 
 
 /* Sidebar (desktop): runs the full height under the topbar, square edges. */
@@ -135,34 +135,34 @@ body.admin-container .admin-ui-menu-toggle { background: var(--color-sky-soft); 
 body.admin-container .admin-ui-nav-link,
 body.admin-container .admin-ui-nav-link.is-active {
   font-family: var(--font-display); font-weight: 500; font-size: var(--text-sm);
-  color: var(--color-sky-soft); border-radius: var(--radius-full); border-left: 0; letter-spacing: 0; text-transform: none;
-  transition: background-color var(--transition-fast), color var(--transition-fast), transform 260ms var(--ease-jelly);
+  color: var(--color-fog-soft); border-radius: var(--radius-md); border-left: 0; letter-spacing: 0; text-transform: none;
+  transition: background-color var(--transition-fast), color var(--transition-fast), transform 260ms var(--ease-settle);
 }
 
-body.admin-container .admin-ui-nav-link:hover { background: rgba(105, 176, 249, 0.18); color: var(--color-text-inverse); }
+body.admin-container .admin-ui-nav-link:hover { background: rgba(227, 162, 39, 0.18); color: var(--color-text-inverse); }
 
 body.admin-container .admin-ui-nav-link[aria-current],
 body.admin-container .admin-ui-nav-link.is-active {
-  background: var(--color-sky); color: var(--color-navy); font-weight: 600; border-left: 0;
+  background: var(--color-fog); color: var(--color-pine); font-weight: 600; border-left: 0;
 }
 
 body.admin-container .admin-ui-nav-link:active { transform: scale(0.96, 1.04); }
 
-body.admin-container .admin-ui-nav :focus-visible { outline-color: var(--color-sky); }
+body.admin-container .admin-ui-nav :focus-visible { outline-color: var(--color-fog); }
 
 
 /* Mobile drawer */
 
 body.admin-container .admin-ui-mobile-panel { background: var(--color-bg-dark); border-radius: var(--radius-2xl) 0 0 var(--radius-2xl); }
 
-body.admin-container .admin-ui-mobile-links a { font-family: var(--font-display); font-weight: 500; color: var(--color-sky-soft); border-radius: var(--radius-lg); border-bottom: 0; }
+body.admin-container .admin-ui-mobile-links a { font-family: var(--font-display); font-weight: 500; color: var(--color-fog-soft); border-radius: var(--radius-lg); border-bottom: 0; }
 
-body.admin-container .admin-ui-mobile-links a[aria-current] { background: var(--color-sky); color: var(--color-navy); border-left: 0; }
+body.admin-container .admin-ui-mobile-links a[aria-current] { background: var(--color-fog); color: var(--color-pine); border-left: 0; }
 
-body.admin-container .admin-ui-mobile-close { color: var(--color-navy); background: var(--color-sky); border-radius: var(--radius-full); }
+body.admin-container .admin-ui-mobile-close { color: var(--color-pine); background: var(--color-fog); border-radius: var(--radius-md); }
 
 
-/* Page header: one pattern everywhere. Title (Fredoka 600) with the subtitle
+/* Page header: one pattern everywhere. Title (Barlow Semi Condensed 600) with the subtitle
    directly under it, left-aligned; actions right-aligned on the title row. */
 
 body.admin-container .admin-page-header {
@@ -179,7 +179,7 @@ body.admin-container .admin-page-heading { min-width: 0; flex: 1 1 320px; }
 
 body.admin-container .admin-page-title {
   font-family: var(--font-display); font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.25rem);
-  line-height: 1.15; letter-spacing: -0.01em; color: var(--color-navy); margin: 0;
+  line-height: 1.15; letter-spacing: -0.01em; color: var(--color-pine); margin: 0;
 }
 
 body.admin-container .admin-page-subtitle {
@@ -201,7 +201,7 @@ body.admin-container .admin-draft-notice {
   background: var(--color-bg-card); border: 0; border-radius: var(--radius-xl); box-shadow: var(--shadow-md);
 }
 
-body.admin-container .admin-stat-card { transition: transform 320ms var(--ease-jelly), box-shadow 200ms ease; }
+body.admin-container .admin-stat-card { transition: transform 320ms var(--ease-settle), box-shadow 200ms ease; }
 
 body.admin-container .admin-card:hover { transform: none; }
 
@@ -215,7 +215,7 @@ body.admin-container .admin-stat-label { font-family: var(--font-display); font-
 body.admin-container .admin-card-header { border-bottom: 2px dotted var(--color-border-strong); background: transparent; }
 
 body.admin-container .admin-card-title,
-body.admin-container .admin-section-title { font-family: var(--font-display); font-weight: 600; color: var(--color-navy); }
+body.admin-container .admin-section-title { font-family: var(--font-display); font-weight: 600; color: var(--color-pine); }
 
 body.admin-container .admin-card-text,
 body.admin-container .admin-card-body p { color: var(--color-text-secondary); }
@@ -228,8 +228,8 @@ body.admin-container .list-item-title { font-family: var(--font-display); }
 
 
 /* Buttons: header/topbar size 44px, compact 34px inside tables and cards.
-   Primary = jelly red. Secondary = cream with navy outline and key shadow.
-   Danger = cream with red outline. Pressed outline buttons sink 2px. */
+   Primary = moss green. Secondary = stone with pine outline and key shadow.
+   Danger = stone with red outline. Pressed outline buttons sink 2px. */
 
 body.admin-container .admin-btn,
 body.admin-container .blog-admin-btn,
@@ -239,8 +239,8 @@ body.admin-container .settings-btn {
   min-height: var(--admin-control-h); padding: 0 20px;
   font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600; line-height: 1.2;
   letter-spacing: 0; text-transform: none; text-decoration: none; white-space: nowrap; cursor: pointer;
-  border: 1.5px solid transparent; border-radius: var(--radius-full);
-  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), transform 320ms var(--ease-jelly), box-shadow 120ms ease;
+  border: 1.5px solid transparent; border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), transform 320ms var(--ease-settle), box-shadow 120ms ease;
 }
 
 body.admin-container .admin-btn:hover,
@@ -257,28 +257,28 @@ body.admin-container .admin-btn-primary,
 body.admin-container .blog-admin-btn-primary,
 body.admin-container .portfolio-admin-btn-primary,
 body.admin-container .settings-btn {
-  background: var(--color-jelly); border-color: var(--color-jelly); color: #fff;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(120, 8, 8, 0.28), 0 6px 14px -6px rgba(184, 15, 13, 0.55);
+  background: var(--color-action); border-color: var(--color-action); color: #fff;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(12, 22, 15, 0.28), 0 6px 14px -6px rgba(40, 64, 43, 0.55);
 }
 
 body.admin-container .admin-btn-primary:hover,
 body.admin-container .blog-admin-btn-primary:hover,
 body.admin-container .portfolio-admin-btn-primary:hover,
-body.admin-container .settings-btn:hover { background: var(--color-jelly-hover); border-color: var(--color-jelly-hover); color: #fff; }
+body.admin-container .settings-btn:hover { background: var(--color-action-hover); border-color: var(--color-action-hover); color: #fff; }
 
 body.admin-container .admin-btn-secondary,
 body.admin-container .blog-admin-btn-secondary,
 body.admin-container .portfolio-admin-btn-secondary {
-  background: var(--color-bg-card); border-color: var(--color-navy); color: var(--color-navy); box-shadow: 0 3px 0 var(--color-navy);
+  background: var(--color-bg-card); border-color: var(--color-pine); color: var(--color-pine); box-shadow: 0 3px 0 var(--color-pine);
 }
 
 body.admin-container .admin-btn-secondary:hover,
 body.admin-container .blog-admin-btn-secondary:hover,
-body.admin-container .portfolio-admin-btn-secondary:hover { background: var(--color-sky-soft); border-color: var(--color-navy); color: var(--color-navy); }
+body.admin-container .portfolio-admin-btn-secondary:hover { background: var(--color-fog-soft); border-color: var(--color-pine); color: var(--color-pine); }
 
 body.admin-container .admin-btn-secondary:active,
 body.admin-container .blog-admin-btn-secondary:active,
-body.admin-container .portfolio-admin-btn-secondary:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--color-navy); }
+body.admin-container .portfolio-admin-btn-secondary:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--color-pine); }
 
 body.admin-container .admin-btn-danger,
 body.admin-container .blog-admin-btn-danger,
@@ -328,7 +328,7 @@ body.admin-container .portfolio-admin-btn[disabled] { opacity: 0.55; transform: 
 body.admin-container .admin-stat-card .admin-btn { box-shadow: none; }
 
 
-/* Forms: left-aligned cream cards, 960px max, 28px padding, 6px label gap,
+/* Forms: left-aligned stone cards, 960px max, 28px padding, 6px label gap,
    20px between fields, 10px radius and 1.5px borders on controls. */
 
 body.admin-container .blog-admin-form-container,
@@ -361,7 +361,7 @@ body.admin-container .admin-label,
 body.admin-container .settings-label,
 body.admin-container .settings-form-group label {
   display: block; font-family: var(--font-display); font-weight: 500; font-size: .9375rem; line-height: 1.3;
-  color: var(--color-navy); margin: 0 0 6px;
+  color: var(--color-pine); margin: 0 0 6px;
 }
 
 body.admin-container .admin-form-control,
@@ -393,7 +393,7 @@ body.admin-container .admin-select:focus,
 body.admin-container .form-control:focus,
 body.admin-container .form-select:focus,
 body.admin-container .settings-textarea:focus {
-  outline: 0; border-color: var(--color-navy); box-shadow: 0 0 0 4px rgba(105, 176, 249, 0.55); background: #fff; color: var(--color-text-primary);
+  outline: 0; border-color: var(--color-pine); box-shadow: 0 0 0 4px rgba(227, 162, 39, 0.55); background: #fff; color: var(--color-text-primary);
 }
 
 body.admin-container .admin-form-control::placeholder,
@@ -411,7 +411,7 @@ body.admin-container .admin-form-help {
 
 body.admin-container .admin-form-check-input,
 body.admin-container input[type="checkbox"],
-body.admin-container input[type="radio"] { accent-color: var(--color-jelly); }
+body.admin-container input[type="radio"] { accent-color: var(--color-action); }
 
 body.admin-container .admin-form-actions,
 body.admin-container .blog-admin-btn-group,
@@ -430,8 +430,8 @@ body.admin-container .admin-form-card > .admin-card-body { padding: 28px; }
 
 
 /* List tables: one style for every admin index.
-   Cream card, sky header row with small mono labels, cream rows with hairline
-   dividers, subtle sky hover, navy titles, muted secondary line under titles.
+   Stone card, page-tone header row with small mono labels, stone rows with hairline
+   dividers, subtle pale hover, pine titles, muted secondary line under titles.
    Wrap any index table in .admin-list. Action cells stay on one row. */
 
 body.admin-container .admin-list {
@@ -446,7 +446,7 @@ body.admin-container .admin-list table {
 body.admin-container .admin-list thead th {
   font-family: var(--font-mono); font-size: .72rem; font-weight: 600; line-height: 1.3;
   letter-spacing: .08em; text-transform: uppercase; text-align: left; vertical-align: middle;
-  color: var(--color-navy); background: var(--color-bg-primary);
+  color: var(--color-pine); background: var(--color-bg-primary);
   padding: 12px 16px; border: 0; border-bottom: 1px solid var(--color-border); white-space: nowrap;
 }
 
@@ -461,11 +461,11 @@ body.admin-container .admin-list tbody tr:last-child td { border-bottom: 0; }
 
 body.admin-container .admin-list tbody tr:hover td { background: var(--color-bg-elevated); }
 
-body.admin-container .admin-list tbody td:first-child { font-family: var(--font-display); font-weight: 600; color: var(--color-navy); }
+body.admin-container .admin-list tbody td:first-child { font-family: var(--font-display); font-weight: 600; color: var(--color-pine); }
 
-body.admin-container .admin-list tbody td:first-child > a:not(.admin-btn) { color: var(--color-navy); }
+body.admin-container .admin-list tbody td:first-child > a:not(.admin-btn) { color: var(--color-pine); }
 
-body.admin-container .admin-list td strong { font-weight: 600; color: var(--color-navy); }
+body.admin-container .admin-list td strong { font-weight: 600; color: var(--color-pine); }
 
 body.admin-container .admin-list .dl-app-desc,
 body.admin-container .admin-list .dl-app-deps { font-family: var(--font-body); font-weight: 400; }
@@ -478,7 +478,7 @@ body.admin-container .admin-list td .admin-list-meta {
 body.admin-container .admin-list td br { display: none; }
 
 body.admin-container .admin-list .admin-music-title,
-body.admin-container .admin-list .admin-video-title { font-family: var(--font-display); font-weight: 600; color: var(--color-navy); }
+body.admin-container .admin-list .admin-video-title { font-family: var(--font-display); font-weight: 600; color: var(--color-pine); }
 
 body.admin-container .admin-list td:last-child,
 body.admin-container .admin-list th:last-child { width: 1%; white-space: nowrap; }
@@ -509,9 +509,9 @@ body.admin-container .admin-table-scroll { border: 0; border-radius: var(--radiu
 
 /* Badges + alerts */
 
-body.admin-container .admin-badge { font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: 0.03em; text-transform: none; border-radius: var(--radius-full); padding: 3px 12px 4px; border: 0; }
+body.admin-container .admin-badge { font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: 0.03em; text-transform: none; border-radius: var(--radius-sm); padding: 3px 12px 4px; border: 0; }
 
-body.admin-container .admin-badge-secondary { background: var(--color-sky-soft); color: var(--color-navy); }
+body.admin-container .admin-badge-secondary { background: var(--color-fog-soft); color: var(--color-pine); }
 
 body.admin-container .admin-alert,
 body.admin-container .admin-notification { border-radius: var(--radius-lg); border-width: 0; box-shadow: var(--shadow-sm); }
@@ -549,25 +549,25 @@ body.admin-container .admin-upload-modal-content,
 body.admin-container .admin-modal-content,
 body.admin-container .modal-content { background: var(--color-bg-card); border: 0; border-radius: var(--radius-2xl); box-shadow: var(--shadow-xl); color: var(--color-text-primary); }
 
-body.admin-container .admin-modal-title { font-family: var(--font-display); font-weight: 600; color: var(--color-navy); }
+body.admin-container .admin-modal-title { font-family: var(--font-display); font-weight: 600; color: var(--color-pine); }
 
 body.admin-container .admin-btn-close,
-body.admin-container .admin-modal-close { background: var(--color-sky-soft); border-radius: var(--radius-full); color: var(--color-navy); border: 0; }
+body.admin-container .admin-modal-close { background: var(--color-fog-soft); border-radius: var(--radius-md); color: var(--color-pine); border: 0; }
 
 body.admin-container .admin-upload-dropzone { border: 3px dashed var(--color-control-border); border-radius: var(--radius-xl); background: var(--color-bg-elevated); }
 
-body.admin-container .admin-upload-dropzone.is-dragover { border-color: var(--color-jelly); background: var(--color-accent-subtle); }
+body.admin-container .admin-upload-dropzone.is-dragover { border-color: var(--color-action); background: var(--color-accent-subtle); }
 
-body.admin-container .admin-upload-progress { border-radius: var(--radius-full); background: var(--color-sky-soft); }
+body.admin-container .admin-upload-progress { border-radius: var(--radius-full); background: var(--color-fog-soft); }
 
-body.admin-container .admin-upload-progress-bar { border-radius: var(--radius-full); background: var(--color-jelly); }
+body.admin-container .admin-upload-progress-bar { border-radius: var(--radius-full); background: var(--color-action); }
 
 body.admin-container .admin-upload-preview img { border-radius: var(--radius-md); }
 
 /* Pagination: one style for every list (blog, updates, portfolio, gallery, rmrp ...), the same small
-   keys as the public archive: cream with a short skirt, the current page latched down in navy. */
+   keys as the public archive: stone with a short skirt, the current page latched down in pine. */
 body.admin-container .pagination {
-  --bs-pagination-focus-box-shadow: 0 0 0 3px rgba(105, 176, 249, 0.6);
+  --bs-pagination-focus-box-shadow: 0 0 0 3px rgba(227, 162, 39, 0.6);
   flex-wrap: wrap;
   justify-content: center;
   gap: 6px;
@@ -581,29 +581,29 @@ body.admin-container .pagination .page-link {
   min-width: 38px;
   height: 38px;
   padding: 0 12px;
-  border: 1.5px solid rgba(38, 46, 77, 0.3);
+  border: 1.5px solid rgba(28, 43, 32, 0.3);
   border-radius: 10px;
-  background: linear-gradient(180deg, #fffefb 0%, #f2e9df 100%);
-  color: var(--color-navy);
+  background: linear-gradient(180deg, #fcfdfb 0%, #eef0ec 100%);
+  color: var(--color-pine);
   font-family: var(--font-display);
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
-  box-shadow: inset 0 1.5px 0 #fff, 0 2px 0 rgba(38, 46, 77, 0.3);
+  box-shadow: inset 0 1.5px 0 #fff, 0 2px 0 rgba(28, 43, 32, 0.3);
   transition: background-color 120ms ease, border-color 120ms ease, transform 160ms ease;
 }
 
 body.admin-container .pagination .page-link:hover {
-  border-color: var(--color-navy);
-  background: linear-gradient(180deg, #ffffff 0%, #d9e9fd 100%);
-  color: var(--color-navy);
+  border-color: var(--color-pine);
+  background: linear-gradient(180deg, #ffffff 0%, #e4ecf2 100%);
+  color: var(--color-pine);
 }
 
 body.admin-container .pagination .page-item.active .page-link {
-  border-color: var(--navy-900);
-  background: linear-gradient(180deg, var(--navy-800) 0%, var(--navy-600) 100%);
+  border-color: var(--pine-900);
+  background: linear-gradient(180deg, var(--pine-800) 0%, var(--pine-600) 100%);
   color: var(--color-text-inverse);
-  box-shadow: inset 0 2px 3px rgba(10, 14, 32, 0.45);
+  box-shadow: inset 0 2px 3px rgba(8, 14, 10, 0.45);
   transform: translateY(2px);
 }
 
@@ -655,13 +655,13 @@ body.admin-container .system-item-icon { font-size: 1.375rem; margin: 0 0 4px; l
 
 body.admin-container .system-item-content { display: flex; flex-direction: column; align-items: flex-start; flex: 1; width: 100%; min-width: 0; }
 
-body.admin-container .system-item-title { margin: 0 0 4px; font-size: var(--text-md); color: var(--color-navy); }
+body.admin-container .system-item-title { margin: 0 0 4px; font-size: var(--text-md); color: var(--color-pine); }
 
 body.admin-container .system-item-desc { margin: 0 0 14px; flex: 1; font-size: var(--text-sm); color: var(--color-text-secondary); }
 
 body.admin-container .system-item-content > .admin-btn { margin-top: auto; }
 
-body.admin-container .list-item-title { color: var(--color-navy); }
+body.admin-container .list-item-title { color: var(--color-pine); }
 
 body.admin-container .list-item-date,
 body.admin-container .list-item-excerpt,
@@ -688,11 +688,11 @@ body.admin-container .list-item-meta { color: var(--color-text-secondary); }
 
 body.admin-container .admin-search-input-group {
   display: flex; align-items: center; gap: 4px; height: var(--admin-control-h);
-  padding: 0 4px 0 16px; background: #fff; border: 1.5px solid var(--color-control-border); border-radius: var(--radius-full);
+  padding: 0 4px 0 16px; background: #fff; border: 1.5px solid var(--color-control-border); border-radius: var(--radius-md);
   transition: border-color var(--transition-fast), box-shadow 200ms ease;
 }
 
-body.admin-container .admin-search-input-group:focus-within { border-color: var(--color-navy); box-shadow: 0 0 0 4px rgba(105, 176, 249, 0.55); }
+body.admin-container .admin-search-input-group:focus-within { border-color: var(--color-pine); box-shadow: 0 0 0 4px rgba(227, 162, 39, 0.55); }
 
 body.admin-container .admin-search-input {
   flex: 1; min-width: 0; height: 100%; min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none;
@@ -708,56 +708,47 @@ body.admin-container .admin-search-input::placeholder { color: var(--color-text-
 
 body.admin-container .admin-search-button {
   width: var(--admin-compact-h); height: var(--admin-compact-h); flex-shrink: 0; border-radius: 50%;
-  background: var(--color-sky-soft); color: var(--color-navy); border: 0;
+  background: var(--color-fog-soft); color: var(--color-pine); border: 0;
   display: flex; align-items: center; justify-content: center; cursor: pointer;
   transition: background-color var(--transition-fast);
 }
 
-body.admin-container .admin-search-button:hover { background: var(--color-sky); color: var(--color-navy); }
+body.admin-container .admin-search-button:hover { background: var(--color-fog); color: var(--color-pine); }
 
 body.admin-container .admin-search-button:focus-visible { outline: 3px solid var(--color-focus-ring); outline-offset: 2px; }
 
-
-@keyframes jelly-wobble {
-  0% { transform: scale(1, 1); }
-  18% { transform: scale(1.14, 0.84) rotate(-2deg); }
-  36% { transform: scale(0.9, 1.12) rotate(2deg); }
-  54% { transform: scale(1.06, 0.95) rotate(-1deg); }
-  72% { transform: scale(0.97, 1.03); }
-  100% { transform: scale(1, 1); }
-}
 
 /* Per-page toolbars and small containers. */
 
 body.admin-container .blog-admin-editor-toolbar button,
 body.admin-container .rmrp-md-toolbar button {
-  background: var(--color-sky-soft); color: var(--color-navy); border: 0; border-radius: var(--radius-full);
-  transition: transform 300ms var(--ease-jelly), background-color var(--transition-fast);
+  background: var(--color-fog-soft); color: var(--color-pine); border: 0; border-radius: var(--radius-sm);
+  transition: transform 300ms var(--ease-settle), background-color var(--transition-fast);
 }
 
 body.admin-container .blog-admin-editor-toolbar button:hover,
-body.admin-container .rmrp-md-toolbar button:hover { background: var(--color-sky); color: var(--color-navy); transform: scale(1.06, 0.95); }
+body.admin-container .rmrp-md-toolbar button:hover { background: var(--color-fog); color: var(--color-pine); transform: scale(1.06, 0.95); }
 
 body.admin-container .blog-admin-editor-toolbar button:active,
 body.admin-container .rmrp-md-toolbar button:active { transform: scale(0.94, 1.06); }
 
-body.admin-container .settings-card-title { font-family: var(--font-display); font-weight: 600; color: var(--color-navy); }
+body.admin-container .settings-card-title { font-family: var(--font-display); font-weight: 600; color: var(--color-pine); }
 
-body.admin-container .settings-switch-slider { background: var(--color-sky-soft); border-radius: var(--radius-full); }
+body.admin-container .settings-switch-slider { background: var(--color-fog-soft); border-radius: var(--radius-full); }
 
-body.admin-container .settings-switch-slider:before { border-radius: var(--radius-full); background: #fff; box-shadow: 0 1px 3px rgba(27, 33, 64, 0.4); }
+body.admin-container .settings-switch-slider:before { border-radius: var(--radius-full); background: #fff; box-shadow: 0 1px 3px rgba(16, 26, 19, 0.4); }
 
-body.admin-container .settings-switch input:checked + .settings-switch-slider { background: var(--color-jelly); border-color: var(--color-jelly); }
+body.admin-container .settings-switch input:checked + .settings-switch-slider { background: var(--color-action); border-color: var(--color-action); }
 
 body.admin-container .settings-switch input:checked + .settings-switch-slider:before { background: #fff; }
 
 body.admin-container .admin-gallery-tabs { border-bottom: 2px dotted var(--color-border-strong); }
 
-body.admin-container .admin-gallery-tab { font-family: var(--font-display); font-weight: 500; border: 0; border-radius: var(--radius-full); margin-bottom: 6px; color: var(--color-navy); }
+body.admin-container .admin-gallery-tab { font-family: var(--font-display); font-weight: 500; border: 0; border-radius: var(--radius-md); margin-bottom: 6px; color: var(--color-pine); }
 
-body.admin-container .admin-gallery-tab:hover { background: var(--color-sky-soft); color: var(--color-navy); }
+body.admin-container .admin-gallery-tab:hover { background: var(--color-fog-soft); color: var(--color-pine); }
 
-body.admin-container .admin-gallery-tab.is-active { background: var(--color-navy); color: var(--color-text-inverse); }
+body.admin-container .admin-gallery-tab.is-active { background: var(--color-pine); color: var(--color-text-inverse); }
 
 body.admin-container .admin-gallery-item { border-radius: var(--radius-xl); overflow: hidden; }
 
@@ -768,9 +759,9 @@ body.admin-container .blog-admin-editor-toolbar { border-radius: var(--radius-lg
 
 body.admin-container .blog-admin-content-editor { border: 1.5px solid var(--color-control-border); border-radius: var(--admin-radius-control); background: #fff; }
 
-body.admin-container .blog-admin-content-editor:focus { outline: 0; border-color: var(--color-navy); box-shadow: 0 0 0 4px rgba(105, 176, 249, 0.55); }
+body.admin-container .blog-admin-content-editor:focus { outline: 0; border-color: var(--color-pine); box-shadow: 0 0 0 4px rgba(227, 162, 39, 0.55); }
 
-body.admin-container .search-section h4 { font-family: var(--font-display); color: var(--color-navy); text-transform: none; letter-spacing: 0; }
+body.admin-container .search-section h4 { font-family: var(--font-display); color: var(--color-pine); text-transform: none; letter-spacing: 0; }
 
 body.admin-container .admin-search-results { background: var(--color-bg-card); border: 0; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
 

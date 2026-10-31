@@ -1,6 +1,17 @@
 /* Jello Shop (/jelloshop): the page around Jell-omo's café, and the café's own frame.
-   Consumes the site's jelly tokens so it reads as part of the same site; the
+   Consumes the site's Field tokens so it reads as part of the same site; the
    game itself is a single canvas that scales to fit whatever screen it gets. */
+
+/* The café's own signs (the CLOSED board, the bean counter) are drawn on the canvas in Fredoka, the
+   game's face. The site's text moved to Barlow Semi Condensed, so the game page declares Fredoka here. */
+@font-face {
+  font-family: 'Fredoka';
+  src: url('../fonts/fredoka-latin.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
+}
 
 .js-page {
   max-width: 1120px;
@@ -60,7 +71,7 @@
   background: #3a1d10;
   box-shadow:
     0 0 0 4px var(--color-bg-card),
-    0 18px 40px -18px rgba(27, 33, 64, 0.55);
+    0 18px 40px -18px rgba(16, 26, 19, 0.55);
 }
 
 .js-canvas-wrap {
@@ -92,7 +103,7 @@
   gap: 8px;
   padding: 7px 14px 7px 10px;
   border-radius: 999px;
-  background: rgba(27, 33, 64, 0.72);
+  background: rgba(16, 26, 19, 0.72);
   color: var(--color-text-inverse);
   font-family: var(--font-display);
   font-weight: 600;
@@ -121,7 +132,7 @@
   padding: 8px 14px;
   border: 0;
   border-radius: 999px;
-  background: rgba(27, 33, 64, 0.72);
+  background: rgba(16, 26, 19, 0.72);
   color: var(--color-text-inverse);
   font-family: var(--font-display);
   font-weight: 600;
@@ -133,7 +144,7 @@
   transition: background-color 160ms ease, transform 160ms ease;
 }
 .js-sound:hover {
-  background: rgba(38, 46, 77, 0.86);
+  background: rgba(28, 43, 32, 0.86);
 }
 .js-sound:active {
   transform: scale(0.96);
@@ -156,7 +167,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  background: rgba(27, 33, 64, 0.34);
+  background: rgba(16, 26, 19, 0.34);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   transition: opacity 420ms ease, visibility 420ms ease;
@@ -174,8 +185,8 @@
   max-width: 22rem;
   padding: 22px 26px;
   border-radius: 22px;
-  background: rgba(251, 248, 244, 0.95);
-  color: var(--color-navy, #262e4d);
+  background: rgba(247, 248, 246, 0.95);
+  color: var(--color-pine, #1c2b20);
   text-align: center;
   box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.7);
   cursor: pointer;
@@ -192,12 +203,12 @@
   margin: 0;
   font-size: 0.9375rem;
   line-height: 1.45;
-  color: var(--color-ink-slate, #3d4770);
+  color: var(--color-ink-slate, #34493a);
 }
 .js-start-hint {
   margin: 6px 0 0;
   font-size: 0.8125rem;
-  color: var(--color-jelly, #db1816);
+  color: var(--color-action, #355238);
   font-weight: 600;
 }
 
@@ -257,7 +268,7 @@
     border-radius: 20px;
     box-shadow:
       0 0 0 3px var(--color-bg-card),
-      0 12px 28px -16px rgba(27, 33, 64, 0.5);
+      0 12px 28px -16px rgba(16, 26, 19, 0.5);
   }
   .js-hud {
     top: 8px;

@@ -6,7 +6,7 @@
  * cover art is drawn deterministically from a seed (entry id or title), so a
  * new entry gets a unique, on-brand illustration the moment it is published.
  * Colours come from CSS custom properties (.vis--<motif> in knowledge.css /
- * rmrp.css) so the art follows the jelly palette.
+ * rmrp.css) so the art follows the Field palette.
  */
 
 if (!function_exists('vis_topics')) {

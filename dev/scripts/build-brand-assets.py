@@ -1,105 +1,110 @@
 #!/usr/bin/env python3
-"""Rebuild every raster brand asset from the mascot source render.
+"""Rebuild every brand mark and icon from one drawing: the forked Y.
 
-Source:  assets/images/brand/mascot-source.png   (jelly + cap on flat #69B0F9)
-Outputs: assets/images/mascot.png|.webp          transparent cutout, 800px
-         assets/images/mascot-160.png|.webp      navbar / avatar size
-         assets/images/mascot-640.webp           homepage masthead image (single file, see views/home.php)
-         assets/images/favicon.svg               transparent, embeds a 96px cutout
-         assets/images/favicon-32.png, /favicon.ico (16/32/48, transparent)
-         assets/images/apple-touch-icon.png      180px on the brand blue (iOS fills alpha black)
-         assets/images/pwa-icon-192|512.png      transparent, purpose "any"
-         assets/images/pwa-maskable-512.png      brand blue, mascot inside the 80% safe zone
-The Open Graph card is built separately by build-og-image.sh.
-Needs Pillow, numpy and scipy. Dev-only.
+The mark is the letter Y drawn as a tree forking: a trunk that splits into two branches, the way a
+birch forks, and the way a binary tree or a decision tree does. One branch ends in a birch-gold node,
+the other in a stone one. It sits on a pine plate with a ground line under the trunk. Colours are the
+Field tokens in assets/css/variables.css (pine #1c2b20, stone #eef0ec, birch #e3a227, fog #a9c3dc).
+
+Outputs (assets/images/):
+  brand/logo-mark.svg       the plate mark (navbar, admin, error pages, YunoBot)
+  favicon.svg               same drawing, tuned for 16-32 px
+  favicon-32.png, favicon.ico (16/32/48)
+  apple-touch-icon.png      180 px, full-bleed plate (iOS fills alpha black)
+  pwa-icon-192|512.png      transparent corners, purpose "any"
+  pwa-maskable-512.png      pine field, mark inside the 80 % safe zone
+The Open Graph cards are built separately by build-og-image.sh.
+Needs google-chrome (headless) and Pillow. Dev-only. Run: python3 dev/scripts/build-brand-assets.py
 """
-import base64, io, pathlib
-import numpy as np
+import io
+import pathlib
+import subprocess
+import tempfile
+
 from PIL import Image
-from scipy import ndimage as ndi
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 IMG = ROOT / "assets" / "images"
-SRC = IMG / "brand" / "mascot-source.png"
-SKY = (105, 176, 249)  # sampled from the source background: #69B0F9
+(IMG / "brand").mkdir(parents=True, exist_ok=True)
+
+PINE = "#1c2b20"
+PINE_EDGE = "#2c4232"
+STONE = "#eef0ec"
+BIRCH = "#e3a227"
+FOG = "#a9c3dc"
 
 
-def matte(im: Image.Image) -> Image.Image:
-    """Key the flat blue field out. The mascot has no blue in it, so the
-    background is the border-connected region near SKY; a 3px band along the
-    edge gets a partial alpha and has the blue spill removed from its colour."""
-    p = np.asarray(im.convert("RGB")).astype(float)
-    bg = np.array(SKY, float)
-    d = np.sqrt(((p - bg) ** 2).sum(2))
-    lab, _ = ndi.label(d < 26)
-    edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
-    bgmask = np.isin(lab, list(edge))
-    dist = ndi.distance_transform_edt(~bgmask)
-    alpha = np.where(bgmask, 0.0, 1.0)
-    band = (~bgmask) & (dist <= 3)
-    inner = (~bgmask) & (dist > 3)
-    idx = ndi.distance_transform_edt(~inner, return_distances=False, return_indices=True)
-    fg = p[idx[0], idx[1]]
-    a = np.clip(((p - bg) * (fg - bg)).sum(2) / (((fg - bg) ** 2).sum(2) + 1e-6), 0, 1)
-    alpha[band] = a[band]
-    out = p.copy()
-    m = band & (alpha > 0.02)
-    out[m] = np.clip((p[m] - (1 - alpha[m, None]) * bg) / alpha[m, None], 0, 255)
-    return Image.fromarray(np.dstack([out, alpha * 255]).astype(np.uint8), "RGBA")
+def mark(size=64, plate=True, rx=13, ground=True, inset=0.0):
+    """The drawing in a 64-unit box. `inset` shrinks the drawing toward the centre (maskable icon)."""
+    k = 1 - inset
+    t = f'translate({32 - 32 * k:.2f} {32 - 32 * k:.2f}) scale({k:.4f})'
+    body = []
+    if plate:
+        body.append(f'<rect x="1" y="1" width="62" height="62" rx="{rx}" fill="{PINE}"/>')
+        body.append(f'<rect x="2.5" y="2.5" width="59" height="59" rx="{rx - 1.5}" fill="none" stroke="{PINE_EDGE}" stroke-width="1"/>')
+    g = []
+    if ground:
+        g.append(f'<path d="M15 52.5H49" stroke="{FOG}" stroke-width="2.4" stroke-linecap="round" opacity=".9"/>')
+        g.append(f'<path d="M21 52.5v3.2M43 52.5v3.2" stroke="{FOG}" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>')
+    # trunk and the two branches, slightly curved like a real fork
+    g.append(
+        f'<path d="M32 52V35.5C32 29.5 27.5 24.5 20.5 17.5M32 35.5C32 29.5 36.5 24.5 43.5 17.5" '
+        f'fill="none" stroke="{STONE}" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/>'
+    )
+    # nodes
+    g.append(f'<circle cx="44.6" cy="16.4" r="5.6" fill="{BIRCH}"/>')
+    g.append(f'<circle cx="19.4" cy="16.4" r="4" fill="{STONE}"/>')
+    body.append(f'<g transform="{t}">' + "".join(g) + "</g>")
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" viewBox="0 0 64 64">'
+        + "".join(body)
+        + "</svg>\n"
+    )
 
 
-def square_crop(im: Image.Image, pad: float) -> Image.Image:
-    box = im.getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox()
-    w, h = box[2] - box[0], box[3] - box[1]
-    side = int(max(w, h) * (1 + pad))
-    cx, cy = (box[0] + box[2]) // 2, (box[1] + box[3]) // 2
-    canvas = Image.new("RGBA", (side, side), (0, 0, 0, 0))
-    canvas.paste(im.crop(box), (side // 2 - w // 2, side // 2 - h // 2))
-    return canvas
+def full_bleed(size, inset):
+    """Square pine field (no rounded corners): apple-touch and maskable icons."""
+    svg = mark(64, plate=False, inset=inset)
+    return svg.replace('viewBox="0 0 64 64">', f'viewBox="0 0 64 64"><rect width="64" height="64" fill="{PINE}"/>', 1).replace(
+        'width="64" height="64" viewBox', f'width="{size}" height="{size}" viewBox', 1
+    )
 
 
-def sized(im, n):
-    return im.resize((n, n), Image.LANCZOS)
-
-
-def on_sky(mascot, size, scale):
-    canvas = Image.new("RGBA", (size, size), SKY + (255,))
-    m = sized(mascot, int(size * scale))
-    canvas.alpha_composite(m, ((size - m.width) // 2, (size - m.height) // 2 + int(size * 0.02)))
-    return canvas
+def render(svg: str, size: int) -> Image.Image:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = pathlib.Path(tmp)
+        page = tmp / "m.html"
+        page.write_text(
+            "<!doctype html><html><body style='margin:0;background:transparent'>"
+            f"<img src='data:image/svg+xml;utf8,{svg.replace('#', '%23').strip()}' width='{size}' height='{size}' style='display:block'>"
+            "</body></html>"
+        )
+        out = tmp / "o.png"
+        subprocess.run(
+            [
+                "google-chrome", "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                "--default-background-color=00000000", f"--window-size={size},{size}",
+                f"--user-data-dir={tmp / 'prof'}", f"--screenshot={out}", f"file://{page}",
+            ],
+            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        return Image.open(out).convert("RGBA").crop((0, 0, size, size))
 
 
 def main():
-    cut = matte(Image.open(SRC))
-    tight = square_crop(cut, 0.0)   # touching the bbox: favicons want every pixel
-    roomy = square_crop(cut, 0.06)  # the general-purpose cutout
+    logo = mark(64)
+    (IMG / "brand" / "logo-mark.svg").write_text(logo)
+    (IMG / "favicon.svg").write_text(mark(64, rx=14))
 
-    for name, n in (("mascot", 800), ("mascot-160", 160)):
-        m = sized(roomy, n)
-        m.save(IMG / f"{name}.png", optimize=True)
-        m.save(IMG / f"{name}.webp", quality=90, method=6)
-
-    # The homepage masthead image: shown 246 CSS px wide on phones and 409 on
-    # desktop, so 640px is enough and weighs 72 KB against 115 KB for the 800px file.
-    sized(roomy, 640).save(IMG / "mascot-640.webp", quality=90, method=6)
-
-    f96 = sized(tight, 96)
-    buf = io.BytesIO(); f96.save(buf, "PNG", optimize=True)
-    b64 = base64.b64encode(buf.getvalue()).decode()
-    (IMG / "favicon.svg").write_text(
-        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
-        'viewBox="0 0 96 96" width="96" height="96"><title>Yemre</title>'
-        f'<image width="96" height="96" href="data:image/png;base64,{b64}" '
-        f'xlink:href="data:image/png;base64,{b64}"/></svg>\n')
-    sized(tight, 32).save(IMG / "favicon-32.png", optimize=True)
-    tight_big = sized(tight, 256)
-    tight_big.save(IMG / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
-
-    on_sky(roomy, 180, 0.82).convert("RGB").save(IMG / "apple-touch-icon.png", optimize=True)
-    for n in (192, 512):
-        sized(roomy, n).save(IMG / f"pwa-icon-{n}.png", optimize=True)
-    on_sky(roomy, 512, 0.62).convert("RGB").save(IMG / "pwa-maskable-512.png", optimize=True)
-    print("brand assets written to", IMG)
+    big = render(mark(64), 512)
+    big.save(IMG / "pwa-icon-512.png", optimize=True)
+    big.resize((192, 192), Image.LANCZOS).save(IMG / "pwa-icon-192.png", optimize=True)
+    fav = render(mark(64), 256)
+    fav.resize((32, 32), Image.LANCZOS).save(IMG / "favicon-32.png", optimize=True)
+    fav.save(IMG / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
+    render(full_bleed(64, 0.16), 512).convert("RGB").save(IMG / "pwa-maskable-512.png", optimize=True)
+    render(full_bleed(64, 0.06), 180).convert("RGB").save(IMG / "apple-touch-icon.png", optimize=True)
+    print("brand mark and icons written to", IMG)
 
 
 if __name__ == "__main__":

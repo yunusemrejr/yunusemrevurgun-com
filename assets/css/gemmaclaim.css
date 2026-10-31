@@ -1,11 +1,11 @@
-/* Claim Splitter (/gemmaclaim): the tool page, in the site's jelly system.
-   Cream panels on the sky field, navy ink, jelly-red for the one main action.
-   The head sprite is a claim split into jelly-coloured pieces. Motion is the
+/* Claim Splitter (/gemmaclaim): the tool page, in the site's Field system.
+   Stone panels on the page field, pine ink, moss green for the one main action.
+   The head sprite is a claim split into pieces. Motion is the
    shared press-and-release spring on buttons only. */
 
 .gc {
   --gc-panel: var(--color-bg-card);
-  --gc-ink: var(--color-navy);
+  --gc-ink: var(--color-pine);
   --gc-text: var(--color-text-primary);
   --gc-dim: var(--color-text-secondary);
   --gc-line: var(--color-border-strong);
@@ -27,9 +27,9 @@
   min-height: 46px;
   margin: 4px;
   padding: 10px 24px 11px;
-  border: 2px solid var(--color-jelly);
+  border: 2px solid var(--color-action);
   border-radius: var(--radius-full);
-  background: var(--color-jelly);
+  background: var(--color-action);
   color: #fff;
   font-family: var(--font-display);
   font-size: var(--text-base);
@@ -37,12 +37,12 @@
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(120, 8, 8, 0.28), 0 6px 14px -6px rgba(184, 15, 13, 0.55);
-  transition: transform 320ms var(--ease-jelly), background-color var(--transition-fast);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(12, 22, 15, 0.28), 0 6px 14px -6px rgba(40, 64, 43, 0.55);
+  transition: transform 320ms var(--ease-settle), background-color var(--transition-fast);
 }
 .gc-btn:hover {
-  background: var(--color-jelly-hover);
-  border-color: var(--color-jelly-hover);
+  background: var(--color-action-hover);
+  border-color: var(--color-action-hover);
   color: #fff;
   transform: scale(1.04, 0.97);
 }
@@ -55,8 +55,8 @@
   outline-offset: 3px;
 }
 .gc-btn[disabled] {
-  background: var(--color-sky-soft);
-  border-color: var(--color-sky-soft);
+  background: var(--color-fog-soft);
+  border-color: var(--color-fog-soft);
   color: var(--color-text-tertiary);
   box-shadow: none;
   cursor: not-allowed;
@@ -64,14 +64,14 @@
 }
 .gc-btn-ghost {
   background: var(--color-bg-card);
-  border-color: var(--color-navy);
-  color: var(--color-navy);
-  box-shadow: 0 3px 0 var(--color-navy);
+  border-color: var(--color-pine);
+  color: var(--color-pine);
+  box-shadow: 0 3px 0 var(--color-pine);
 }
 .gc-btn-ghost:hover {
-  background: var(--color-sky-soft);
-  border-color: var(--color-navy);
-  color: var(--color-navy);
+  background: var(--color-fog-soft);
+  border-color: var(--color-pine);
+  color: var(--color-pine);
 }
 
 .gc-back {
@@ -139,7 +139,7 @@
   height: 16px;
   padding: 3px;
   border-radius: var(--radius-full);
-  background: var(--color-sky-soft);
+  background: var(--color-fog-soft);
 }
 .gc-bar[hidden] {
   display: none;
@@ -149,7 +149,7 @@
   height: 100%;
   width: 0;
   border-radius: var(--radius-full);
-  background: var(--color-jelly);
+  background: var(--color-action);
 }
 
 .gc-label {
@@ -182,7 +182,7 @@
   max-width: 88%;
   padding: 12px 18px;
   border-radius: var(--radius-xl) var(--radius-xl) 6px var(--radius-xl);
-  background: var(--color-navy);
+  background: var(--color-pine);
   color: var(--color-text-inverse);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -243,7 +243,7 @@
   width: 10px;
   height: 10px;
   border-radius: var(--radius-full);
-  background: var(--color-jelly);
+  background: var(--color-action);
 }
 .gc-plain {
   color: var(--gc-text);
@@ -300,8 +300,8 @@
 }
 .gc-input:focus {
   outline: 0;
-  border-color: var(--color-navy);
-  box-shadow: 0 0 0 4px rgba(105, 176, 249, 0.55);
+  border-color: var(--color-pine);
+  box-shadow: 0 0 0 4px rgba(227, 162, 39, 0.55);
 }
 .gc-input::placeholder {
   color: var(--color-text-tertiary);

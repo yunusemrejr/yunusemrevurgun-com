@@ -1,32 +1,34 @@
 /*
 ===============================================================================
-YUNUS EMRE VURGUN — "BLUEPRINT" LAYER
+YUNUS EMRE VURGUN — "SURVEY SHEET" LAYER
 ===============================================================================
-Loaded last of the four core sheets (variables, ui-rebuild, ebook, jelly). It does not change the
-palette, the mascot, the type or the spring in the buttons; it changes what the page is made of.
-The jelly skin drew a children's-book world (scalloped edges, bubble badges, numbered circles).
-This layer draws the same world as a drafting sheet:
+Loaded after variables, ui-rebuild, ebook and field. It does not change the palette or the type; it
+changes what the page is made of. Every page header (and the homepage masthead) is a survey sheet
+laid over fog:
 
-  · a sheet closes with a steel-rule scale, not a scallop; its field carries a faint drafting grid
-  · eyebrows are riveted label plates, not pills
-  · the quiet button is a machined key that travels when pressed; the red one stays a jelly
-  · cards carry registration marks at their corners; icons are small drawn parts
+  · the field is fog-soft, with a drafting grid and contour lines (assets/images/field/contours.svg)
+  · along its foot runs the hill line traced from the owner's fog photograph (ridge.svg), and under
+    that a steel-rule scale; the pine stand traced from the owner's portrait, with its gold birch,
+    stands at the right edge (stand.svg); the page's anatomy specimen stands on the scale beside it
+  · eyebrows are riveted label plates; the quiet button is a machined key; cards carry registration
+    marks; icons are small drawn parts with one birch stroke
   · every animation here moves only transform or opacity, runs only while visible, and is off
     under prefers-reduced-motion or on a device that asked for less data
 
-Colour comes from variables.css; the only literals are the paper tints a ruled sheet needs.
-Fonts: the system monospace stack (--font-mono), so labels cost no download.
+The field art is built by dev/scripts/build-field-assets.py from dev/field-src/.
+Fonts: the system monospace stack (--font-mono) for labels, so they cost no download.
 ===============================================================================
 */
 
 :root {
-  /* Height of the scale strip that now closes a sheet (it replaces the jelly scallop's depth). */
+  /* Height of the scale strip that closes a sheet. */
   --lobe: 14px;
-  --ink: var(--color-navy);
-  --paper: var(--cream-50);
-  --rule: rgba(38, 46, 77, 0.16);
-  --rule-strong: rgba(38, 46, 77, 0.34);
-  --press: cubic-bezier(0.3, 1.45, 0.5, 1);
+  --ink: var(--color-pine);
+  --paper: var(--stone-50);
+  --rule: rgba(28, 43, 32, 0.16);
+  --rule-strong: rgba(28, 43, 32, 0.34);
+  --press: cubic-bezier(0.25, 1.2, 0.5, 1);
+  --ridge-h: 76px;
   --key-shadow: 0 4px 0 var(--ink);
 }
 
@@ -37,48 +39,58 @@ html {
 }
 
 /* ===== THE SHEET: page header band ==================================================== */
-/* Every inner page opens with one section; the jelly skin drew it as a sky band with a scalloped
-   lower edge. Now it is a drafting sheet: sky ground, a faint grid whose major lines fall on the
-   content's top edge, and a steel scale along the lower edge for the mascot to stand on. */
+/* Fog ground; the scale on the lower edge, the ridge just above it, contours and a drafting grid whose
+   major lines fall on the content's top edge. */
 .ui-main > .ui-section:first-of-type::before,
 .ui-masthead::before {
-  background-color: var(--color-sky);
-  background-image: url("../images/blueprint/ruler-up.svg?v=20261011"), url("../images/blueprint/grid.svg?v=20261011");
-  background-position: 50% 100%, 50% 400px;
-  background-size: 160px 14px, 120px 120px;
-  background-repeat: repeat-x, repeat;
+  background-color: var(--color-fog-soft);
+  background-image:
+    url("../images/blueprint/ruler-up.svg?v=20261031"),
+    url("../images/field/ridge.svg?v=20261031"),
+    url("../images/field/contours.svg?v=20261031"),
+    url("../images/blueprint/grid.svg?v=20261031");
+  background-position: 50% 100%, 50% calc(100% - 13px), 50% 400px, 50% 400px;
+  background-size: 160px 14px, 100% var(--ridge-h), 360px 360px, 120px 120px;
+  background-repeat: repeat-x, no-repeat, repeat, repeat;
 }
 
-/* A bench figure (a "specimen") stands on the scale beside the mascot on a wide sheet, and the sheet's
-   margins carry registration marks. Which figure comes from the page: html[data-sheet] is the first
+/* A bench figure (a "specimen") stands on the scale beside the pine stand on a wide sheet, and the
+   sheet's margins carry registration marks. Which figure comes from the page: html[data-sheet] is the first
    path segment (set in ui_render_head). The figures are built by dev/anatomy/build-specimens.mjs. */
 :root {
-  --spec: url("../anatomy/spec-dial.svg?v=20261011");
+  --spec: url("../anatomy/spec-dial.svg?v=20261031");
+}
+
+html[data-sheet="about"],
+html[data-sheet="gallery"],
+html[data-sheet="slop"] {
+  --spec: url("../anatomy/spec-pine.svg?v=20261031");
 }
 
 html[data-sheet="portfolio"],
 html[data-sheet="downloads"] {
-  --spec: url("../anatomy/spec-cabinet.svg?v=20261011");
+  --spec: url("../anatomy/spec-cabinet.svg?v=20261031");
 }
 
 html[data-sheet="blog"],
 html[data-sheet="updates"],
 html[data-sheet="rmrp"] {
-  --spec: url("../anatomy/spec-books.svg?v=20261011");
+  --spec: url("../anatomy/spec-books.svg?v=20261031");
 }
 
 html[data-sheet="travel"],
-html[data-sheet="more"] {
-  --spec: url("../anatomy/spec-compass.svg?v=20261011");
+html[data-sheet="more"],
+html[data-sheet="science-corner"] {
+  --spec: url("../anatomy/spec-compass.svg?v=20261031");
 }
 
 html[data-sheet="yunobot"],
 html[data-sheet="gemmaclaim"] {
-  --spec: url("../anatomy/spec-chip.svg?v=20261011");
+  --spec: url("../anatomy/spec-chip.svg?v=20261031");
 }
 
 html[data-sheet="contact"] {
-  --spec: url("../anatomy/spec-jack.svg?v=20261011");
+  --spec: url("../anatomy/spec-jack.svg?v=20261031");
 }
 
 html[data-sheet="home"],
@@ -90,49 +102,75 @@ html[data-sheet="error"] {
   .ui-main > .ui-section:first-of-type::before {
     background-image:
       var(--spec),
-      url("../images/blueprint/ruler-up.svg?v=20261011"),
-      url("../images/blueprint/crosshair.svg?v=20261011"),
-      url("../images/blueprint/crosshair.svg?v=20261011"),
-      url("../images/blueprint/grid.svg?v=20261011");
+      url("../images/blueprint/ruler-up.svg?v=20261031"),
+      url("../images/field/ridge.svg?v=20261031"),
+      url("../images/blueprint/crosshair.svg?v=20261031"),
+      url("../images/blueprint/crosshair.svg?v=20261031"),
+      url("../images/field/contours.svg?v=20261031"),
+      url("../images/blueprint/grid.svg?v=20261031");
     background-position:
-      left calc(min(50% + 216px, 100% - 212px)) bottom -10px,
+      left calc(min(50% + 150px, 100% - 470px)) bottom -10px,
       50% 100%,
+      50% calc(100% - 13px),
       14px 452px,
       calc(100% - 14px) 452px,
+      50% 400px,
       50% 400px;
-    background-size: 264px auto, 160px 14px, 28px 28px, 28px 28px, 120px 120px;
-    background-repeat: no-repeat, repeat-x, no-repeat, no-repeat, repeat;
+    background-size: 264px auto, 160px 14px, 100% var(--ridge-h), 28px 28px, 28px 28px, 360px 360px, 120px 120px;
+    background-repeat: no-repeat, repeat-x, no-repeat, no-repeat, no-repeat, repeat, repeat;
   }
 
   /* the intro paragraph gives the figure its room */
   .ui-main > .ui-section:first-of-type .ui-section-text {
-    max-width: min(var(--content-narrow), 590px);
+    max-width: min(var(--content-narrow), 560px);
   }
 }
 
 @media (min-width: 1240px) {
   .ui-masthead::before {
     background-image:
-      url("../images/blueprint/ruler-up.svg?v=20261011"),
-      url("../images/blueprint/crosshair.svg?v=20261011"),
-      url("../images/blueprint/crosshair.svg?v=20261011"),
-      url("../images/blueprint/grid.svg?v=20261011");
-    background-position: 50% 100%, 14px 452px, calc(100% - 14px) 452px, 50% 400px;
-    background-size: 160px 14px, 28px 28px, 28px 28px, 120px 120px;
-    background-repeat: repeat-x, no-repeat, no-repeat, repeat;
+      url("../images/blueprint/ruler-up.svg?v=20261031"),
+      url("../images/field/ridge.svg?v=20261031"),
+      url("../images/blueprint/crosshair.svg?v=20261031"),
+      url("../images/blueprint/crosshair.svg?v=20261031"),
+      url("../images/field/contours.svg?v=20261031"),
+      url("../images/blueprint/grid.svg?v=20261031");
+    background-position: 50% 100%, 50% calc(100% - 13px), 14px 452px, calc(100% - 14px) 452px, 50% 400px, 50% 400px;
+    background-size: 160px 14px, 100% 104px, 28px 28px, 28px 28px, 360px 360px, 120px 120px;
+    background-repeat: repeat-x, no-repeat, no-repeat, no-repeat, repeat, repeat;
   }
 }
 
-/* The mascot stands on the scale. */
+/* The pine stand, traced from the portrait, stands on the scale at the sheet's right edge (where the
+   viewport ends, not the content column). It is the same stand the homepage photograph shows. */
 .ui-main > .ui-section:first-of-type::after {
-  bottom: calc(-1 * var(--space-8) - 4px);
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: min(0px, calc((100% - 100vw) / 2));
+  bottom: calc(-1 * var(--space-8) + 13px);
+  width: clamp(130px, 16vw, 236px);
+  aspect-ratio: 738 / 512;
+  background: url("../images/field/stand.svg?v=20261031") right bottom / contain no-repeat;
+  pointer-events: none;
 }
 
-body.ui-404 .ui-main > .ui-section:first-of-type::after {
-  bottom: calc(-1 * var(--space-8) - 2px);
+/* the intro clears the ridge */
+.ui-main > .ui-section:first-of-type {
+  padding-bottom: calc(var(--ridge-h) - var(--space-4));
 }
 
-/* Documentation pages (/yunobot/<topic>, /downloads/<app> ...) have no sky band; their article card carries
+.ui-masthead {
+  padding-bottom: calc(var(--space-8) + 64px);
+}
+
+@media (max-width: 640px) {
+  .ui-main > .ui-section:first-of-type::after {
+    width: 104px;
+  }
+}
+
+/* Documentation pages (/yunobot/<topic>, /downloads/<app> ...) have no fog sheet; their article card carries
    the page family's bench figure at its top right instead. */
 @media (min-width: 1100px) {
   .dx-page > article {
@@ -156,7 +194,7 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
 }
 
 /* ===== LABEL PLATES (eyebrows) ======================================================== */
-/* A navy plate with a rivet at each end, engraved in capitals. The text is the page's own
+/* A pine plate with a rivet at each end, engraved in capitals. The text is the page's own
    section name, so the plate carries information, not decoration. */
 :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow,
 .ui-masthead-eyebrow {
@@ -164,9 +202,9 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   display: inline-flex;
   align-items: center;
   padding: 8px 26px 7px;
-  border-radius: 7px;
+  border-radius: 4px;
   background: var(--ink);
-  color: #e9f1ff;
+  color: var(--stone-100);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
@@ -176,7 +214,7 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 2px 0 rgba(20, 26, 51, 0.38);
+    0 2px 0 rgba(16, 26, 19, 0.38);
 }
 
 :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow::before,
@@ -190,8 +228,8 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   height: 6px;
   margin-top: -3px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff 0 16%, #b6c1e0 46%, #66719c 100%);
-  box-shadow: 0 0 0 1px rgba(10, 14, 32, 0.55);
+  background: radial-gradient(circle at 35% 30%, #fff8e4 0 16%, var(--birch-400) 46%, var(--birch-700) 100%);
+  box-shadow: 0 0 0 1px rgba(8, 14, 10, 0.55);
 }
 
 :is(.ui-main > .ui-section:first-of-type, .ui-rmrp-hero-copy, .ui-update-head .ui-update-body) > .ui-eyebrow::before,
@@ -211,7 +249,7 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   }
 }
 
-/* Eyebrows elsewhere stay red type, in the label face. */
+/* Eyebrows elsewhere are moss type, in the label face. */
 .ui-eyebrow {
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -220,20 +258,19 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
 }
 
 /* ===== BUTTONS ======================================================================== */
-/* Red stays the one action colour and keeps its jelly (gloss, squash, overshoot). The quiet
-   button was a flat cream pill with a hard shadow; it is now a machined key: a lit top, a navy
-   skirt, and real travel when pressed. */
+/* Moss is the one action colour, a solid key with a pine skirt. The quiet button is a machined
+   stone key: a lit top, a pine skirt, and real travel when pressed. */
 .ui-btn-secondary,
 .ui-masthead-links a:not(:first-child),
 .ui-docs-page .ui-btn-secondary {
   color: var(--ink);
-  background: linear-gradient(180deg, #fffefb 0%, #f4ece3 100%);
+  background: linear-gradient(180deg, #fcfdfb 0%, var(--stone-100) 100%);
   border: 1.5px solid var(--ink);
   box-shadow:
     inset 0 1.5px 0 #fff,
-    inset 0 -2px 0 rgba(38, 46, 77, 0.09),
+    inset 0 -2px 0 rgba(28, 43, 32, 0.09),
     var(--key-shadow),
-    0 10px 14px -8px rgba(27, 33, 64, 0.5);
+    0 10px 14px -8px rgba(16, 26, 19, 0.5);
   transition:
     transform 220ms var(--press),
     box-shadow 160ms ease,
@@ -244,13 +281,13 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
 .ui-btn-secondary:hover,
 .ui-masthead-links a:not(:first-child):hover {
   color: var(--ink);
-  background: linear-gradient(180deg, #ffffff 0%, #d9e9fd 100%);
+  background: linear-gradient(180deg, #ffffff 0%, var(--fog-100) 100%);
   transform: translateY(1px);
   box-shadow:
     inset 0 1.5px 0 #fff,
-    inset 0 -2px 0 rgba(38, 46, 77, 0.09),
+    inset 0 -2px 0 rgba(28, 43, 32, 0.09),
     0 3px 0 var(--ink),
-    0 8px 12px -8px rgba(27, 33, 64, 0.5);
+    0 8px 12px -8px rgba(16, 26, 19, 0.5);
 }
 
 .ui-btn-secondary:active,
@@ -258,9 +295,9 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
   transform: translateY(4px);
   box-shadow:
     inset 0 1.5px 0 rgba(255, 255, 255, 0.7),
-    inset 0 -1px 0 rgba(38, 46, 77, 0.09),
+    inset 0 -1px 0 rgba(28, 43, 32, 0.09),
     0 0 0 var(--ink),
-    0 2px 4px -2px rgba(27, 33, 64, 0.4);
+    0 2px 4px -2px rgba(16, 26, 19, 0.4);
 }
 
 .ui-btn-secondary:focus-visible,
@@ -268,13 +305,13 @@ body.ui-404 .ui-main > .ui-section:first-of-type::after {
 .ui-masthead-links a:focus-visible {
   outline: 3px solid var(--ink);
   outline-offset: 4px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
 }
 
-/* The primary key gets the same travel on top of its jelly squash. */
+/* The primary key gets the same travel. */
 .ui-btn-primary:active,
 .ui-masthead-links a:first-child:active {
-  transform: translateY(2px) scale(0.97, 1.03);
+  transform: translateY(3px);
 }
 
 /* An arrow drawn from a mask, so it takes the label's colour and slides on hover. */
@@ -370,7 +407,7 @@ button:hover > .ui-arrow {
 }
 
 .ui-icon .ic-a {
-  stroke: var(--color-jelly);
+  stroke: var(--birch-600);
 }
 
 .ui-icon .ic-dot {
@@ -378,23 +415,22 @@ button:hover > .ui-arrow {
   stroke: none;
 }
 
-/* The numbered/glyph discs become small drawn plates: a rounded square with an inner rule, the
-   icon in ink, one stroke in red. */
+/* Small drawn plates: a square with an inner rule, the icon in pine, one stroke in birch. */
 .ui-more-icon {
   width: 2.75rem;
   height: 2.75rem;
-  border-radius: 12px;
-  background: var(--color-sky-soft);
+  border-radius: 6px;
+  background: var(--color-fog-soft);
   color: var(--ink);
   box-shadow:
-    inset 0 0 0 1.5px rgba(38, 46, 77, 0.22),
+    inset 0 0 0 1.5px rgba(28, 43, 32, 0.22),
     inset 0 1.5px 0 rgba(255, 255, 255, 0.7);
   transition: background-color 160ms ease, transform 260ms var(--press);
 }
 
 .ui-more-card:hover .ui-more-icon {
-  background: var(--color-sky);
-  transform: rotate(-4deg) scale(1.04);
+  background: var(--color-fog);
+  transform: rotate(-3deg);
 }
 
 .ui-more-card {
@@ -406,7 +442,7 @@ button:hover > .ui-arrow {
 }
 
 /* ===== FIGURE PLATES ================================================================== */
-/* An anatomy figure in its plate (views/includes/figure.php): a cream card with a drawing border,
+/* An anatomy figure in its plate (views/includes/figure.php): a stone card with a drawing border,
    corner labels in the label face, and the true caption under it. */
 .fig {
   margin: var(--space-10) 0 0;
@@ -434,7 +470,7 @@ button:hover > .ui-arrow {
   height: 3px;
   margin-bottom: var(--space-4);
   border-radius: 2px;
-  background: var(--color-jelly);
+  background: var(--color-lit);
 }
 
 @media (max-width: 900px) {
@@ -576,7 +612,7 @@ button:hover > .ui-arrow {
   top: 0;
   bottom: auto;
   height: 14px;
-  background: url("../images/blueprint/ruler-down.svg") 50% 0 / 160px 14px repeat-x;
+  background: url("../images/blueprint/ruler-down.svg?v=20261031") 50% 0 / 160px 14px repeat-x;
 }
 
 .ui-footer {
@@ -593,12 +629,12 @@ button:hover > .ui-arrow {
 .ui-masthead-facts {
   gap: 0;
   overflow: hidden;
-  background: rgba(251, 248, 244, 0.92);
+  background: rgba(247, 248, 246, 0.93);
   border-radius: var(--radius-lg);
   box-shadow:
     inset 0 1.5px 0 #fff,
-    0 0 0 1px rgba(38, 46, 77, 0.12),
-    0 10px 22px -14px rgba(27, 33, 64, 0.5);
+    0 0 0 1px rgba(28, 43, 32, 0.12),
+    0 10px 22px -14px rgba(16, 26, 19, 0.5);
 }
 
 .ui-masthead-fact {
@@ -606,7 +642,7 @@ button:hover > .ui-arrow {
   border-radius: 0;
   box-shadow: none;
   padding: 11px 18px;
-  border-top: 1px dashed rgba(38, 46, 77, 0.22);
+  border-top: 1px dashed rgba(28, 43, 32, 0.22);
 }
 
 .ui-masthead-fact:first-child {

@@ -31,7 +31,7 @@
 @media(max-width:600px){ .ui-collection-index ol { grid-template-columns:minmax(0,1fr); } .ui-collection .ui-postcode-stat-bar { gap:1rem 1.5rem; } .ui-collection-tools { gap:.5rem; } }
 @media(prefers-reduced-motion:reduce){ .ui-collection * { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
 
-.ui-music-seek { width:100%; min-width:40px; min-height:44px; accent-color:var(--color-jelly); cursor:pointer; }
+.ui-music-seek { width:100%; min-width:40px; min-height:44px; accent-color:var(--color-action); cursor:pointer; }
 .ui-collection .ui-music-player { position:sticky; bottom:1rem; z-index:5; background:var(--color-bg-card); border:0; border-radius:var(--radius-xl); box-shadow:var(--shadow-lg); }
 .ui-collection .ui-music-track { transition:background-color .2s; }
 .ui-collection .ui-music-play-btn { min-width:44px; min-height:44px; }

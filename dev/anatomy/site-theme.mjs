@@ -1,14 +1,15 @@
 /* The site's skin for anatomy figures.
  *
  * The kit ships a neutral "light" token set (paper, ink, one lit accent). Figures on this site use the
- * same tokens remapped to the Jelly palette from assets/css/variables.css, so a figure reads as part
- * of the page instead of a pasted-in diagram:
+ * same tokens remapped to the Field palette from assets/css/variables.css (sampled from the owner's
+ * pine-stand and fog photographs), so a figure reads as part of the page instead of a pasted-in diagram:
  *
- *   paper / tops   cream  #fbf8f4 / white      the surfaces of the parts
- *   shades 0..3    navy-tinted greys           the four facing tones (three percent apart in luminance)
- *   hi, mid, lo    navy #262e4d, #586390, #8e9ac0, faint #c3cce4
- *   lit            jelly red #db1816           the one part the reader should watch
- *   halo           navy at 28 %                the soft shadow under the base
+ *   paper / tops   stone  #f7f8f6 / white      the surfaces of the parts
+ *   shades 0..3    pine-tinted greys           the four facing tones (three percent apart in luminance)
+ *   hi, mid, lo    pine #1c2b20, #4d6450, #8a9c8c, faint #c2cec4
+ *   lit            birch gold #e3a227          the one part the reader should watch
+ *   halo           pine at 28 %                the soft shadow under the base
+ *   .pn-needles    moss greens                 conifer foliage (the pine specimen's whorls)
  *
  * Figures are written as standalone SVG files and embedded with <img>, so the CSS below travels inside
  * each file. Motion inside a figure is limited to discrete opacity steps (LED blinks), which repaint a
@@ -18,14 +19,15 @@ import { ISO_CSS } from "./kit/iso-kit.mjs";
 
 export const SITE_TOKENS = `
 .iso[data-theme="light"]{
-  --anatomy-paper:#fbf8f4;--anatomy-face:#ffffff;--anatomy-top:#ffffff;
-  --anatomy-shade-0:#c9d2e8;--anatomy-shade-1:#d9e0f0;--anatomy-shade-2:#e7ebf5;--anatomy-shade-3:#f3f5fb;
-  --anatomy-lit-top:#ffffff;--anatomy-lit-shade:#eef1f9;
-  --anatomy-hi:#262e4d;--anatomy-mid:#586390;--anatomy-lo:#8e9ac0;--anatomy-faint:#c3cce4;--anatomy-lit:#db1816;
-  --anatomy-halo:#1b2140;--anatomy-halo-opacity:.3;--anatomy-dot:#262e4d;
-  --anatomy-red:#db1816;--anatomy-green:#1c7448;--anatomy-blue:#2a6fc0;
+  --anatomy-paper:#f7f8f6;--anatomy-face:#ffffff;--anatomy-top:#ffffff;
+  --anatomy-shade-0:#c8d3ca;--anatomy-shade-1:#d8e0d9;--anatomy-shade-2:#e6ebe6;--anatomy-shade-3:#f2f5f2;
+  --anatomy-lit-top:#fdf4dc;--anatomy-lit-shade:#f6e3b4;
+  --anatomy-hi:#1c2b20;--anatomy-mid:#4d6450;--anatomy-lo:#8a9c8c;--anatomy-faint:#c2cec4;--anatomy-lit:#d6950f;
+  --anatomy-halo:#142019;--anatomy-halo-opacity:.28;--anatomy-dot:#1c2b20;
+  --anatomy-red:#a3352a;--anatomy-green:#2b6a3c;--anatomy-blue:#3c5067;
 }
 .iso-svg .iso-line{stroke-width:.7px}
+.pn-needles{--anatomy-paper:#5f8762;--anatomy-face:#6f9470;--anatomy-top:#86a986;--anatomy-shade-0:#3d6142;--anatomy-shade-1:#4a6f4e;--anatomy-shade-2:#567c5a;--anatomy-shade-3:#638a66;--anatomy-lit-top:#86a986;--anatomy-lit-shade:#567c5a}
 .rk-led{stroke:none}
 .rk-led--ok{fill:var(--anatomy-green)}
 .rk-led--err{fill:var(--anatomy-red)}

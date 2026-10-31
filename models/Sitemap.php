@@ -370,9 +370,9 @@ class Sitemap {
         $img = fn(string $path, string $title): array => ['loc' => $this->baseUrl . '/' . $path, 'title' => $title, 'caption' => null];
         return match ($page) {
             '' => [
-                $img('assets/images/og-image.png', 'Yunus Emre Vurgun, software developer and IT specialist, beside Jell-omo, the red jelly mascot in a baseball cap'),
+                $img('assets/images/og-image.png', 'Yunus Emre Vurgun, software developer and IT specialist, photographed in front of a pine stand with one gold birch'),
                 $img('assets/images/yunus-emre-vurgun-portrait.jpg', 'Portrait of Yunus Emre Vurgun'),
-                $img('assets/images/mascot-640.webp', 'Jell-omo, the site mascot: a glossy red jelly wearing a navy and cream baseball cap'),
+                $img('assets/images/field/portrait-738.jpg', 'Yunus Emre Vurgun standing in front of a pine stand with one birch turned gold, under an overcast sky'),
             ],
             'about' => [$img('assets/images/yunus-emre-vurgun-portrait.jpg', 'Portrait of Yunus Emre Vurgun')],
             'chessko' => [$img('assets/images/og-chessko.png', 'Chessko: browser chess against Stockfish')],

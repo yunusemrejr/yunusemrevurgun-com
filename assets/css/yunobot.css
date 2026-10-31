@@ -1,6 +1,6 @@
 /* ============================================
    YUNOBOT PAGE — YEV Design System
-   Jelly system: cream panels on the sky field, navy ink, jelly-red send
+   Field system: stone panels on the page field, pine ink, muted green send
    ============================================ */
 
 /* ===== CUSTOM PROPERTIES ===== */
@@ -537,7 +537,7 @@
  margin-top: var(--space-1);
 }
 
-/* Send button — matches active filter-pill language (solid muted teal) */
+/* Send button — matches active filter-pill language (solid muted green) */
 .chat-send-button {
  width: 44px;
  height: 44px;
@@ -703,7 +703,7 @@
 
 
 /* ============================================================
-   JELLY SYSTEM — moulded shapes, mascot as the bot's face.
+   FIELD SYSTEM — the logo mark as the bot's face.
    Later in the file so it wins over the structural rules above.
    ============================================================ */
 
@@ -715,14 +715,14 @@
 }
 
 .chat-status-bar {
- background: var(--color-sky-soft);
+ background: var(--color-fog-soft);
  border: 0;
  border-radius: var(--radius-full);
  padding: var(--space-2) var(--space-4);
 }
 
-/* The status marker is Jell-omo himself: he wobbles while the network loads,
-   stands still when it is ready, and tips over, greyed, if it fails. */
+/* The status marker is the logo mark: it stands still while the network loads
+   and once it is ready, and tips over, greyed, if it fails. */
 .chat-status-dot,
 .chat-status-dot.loading,
 .chat-status-dot.ready,
@@ -731,12 +731,8 @@
  height: 26px;
  margin: -3px 0;
  border-radius: 0;
- background: url("../images/mascot-160.webp") center / contain no-repeat;
+ background: url("../images/brand/logo-mark.svg") center / contain no-repeat;
  transform-origin: 50% 92%;
-}
-
-.chat-status-dot.loading {
- animation: jelly-wobble 900ms var(--ease-jelly) infinite;
 }
 
 .chat-status-dot.error {
@@ -745,15 +741,11 @@
  transform: rotate(-24deg);
 }
 
-@media (prefers-reduced-motion: reduce) {
- .chat-status-dot.loading { animation: none; }
-}
-
 .chat-status-text {
  font-family: var(--font-display);
  font-size: var(--text-sm);
  font-weight: 500;
- color: var(--color-navy);
+ color: var(--color-pine);
  text-transform: none;
  letter-spacing: 0;
 }
@@ -763,16 +755,16 @@
  height: 36px;
  border-radius: var(--radius-full);
  border: 0;
- background: var(--color-sky-soft);
- color: var(--color-navy);
+ background: var(--color-fog-soft);
+ color: var(--color-pine);
  font-family: var(--font-display);
  font-weight: 600;
 }
 
-/* The bot answers as the mascot; the letters stay in the DOM for
+/* The bot answers as the logo mark; the letters stay in the DOM for
    assistive tech but are visually replaced. */
 .bot-message .message-avatar {
- background: var(--color-sky) url("../images/mascot-160.webp") center 60% / 128% no-repeat;
+ background: var(--color-fog) url("../images/brand/logo-mark.svg") center / 100% no-repeat;
  font-size: 0;
  color: transparent;
  overflow: hidden;
@@ -783,14 +775,14 @@
 }
 
 .user-message .message-content {
- background: var(--color-navy);
+ background: var(--color-pine);
  border: 0;
  color: var(--color-text-inverse);
  border-bottom-right-radius: 6px;
 }
 
 .user-message .message-content a {
- color: var(--color-sky-soft);
+ color: var(--color-fog-soft);
 }
 
 .bot-message .message-content {
@@ -801,14 +793,14 @@
 }
 
 .message-content code {
- background: var(--color-sky-soft);
- color: var(--color-navy);
+ background: var(--color-fog-soft);
+ color: var(--color-pine);
  border-radius: 6px;
 }
 
 .message-content pre {
- background: var(--navy-800);
- color: var(--color-cream);
+ background: var(--pine-800);
+ color: var(--color-stone);
  border-radius: var(--radius-md);
 }
 
@@ -817,15 +809,15 @@
 }
 
 .source-chip {
- background: var(--color-sky-soft);
+ background: var(--color-fog-soft);
  border: 0;
  border-radius: var(--radius-full);
- color: var(--color-navy);
+ color: var(--color-pine);
 }
 
 .source-chip:hover {
- background: var(--color-sky);
- color: var(--color-navy);
+ background: var(--color-fog);
+ color: var(--color-pine);
 }
 
 .example-questions {
@@ -846,22 +838,22 @@
 .example-question-chip,
 .chat-action-btn {
  background: var(--color-bg-card);
- border: 2px solid var(--color-navy);
+ border: 2px solid var(--color-pine);
  border-radius: var(--radius-full);
- color: var(--color-navy);
+ color: var(--color-pine);
  font-family: var(--font-display);
  font-weight: 500;
  font-size: var(--text-sm);
  text-transform: none;
  letter-spacing: 0;
- transition: transform 300ms var(--ease-jelly), background-color var(--transition-fast);
+ transition: transform 300ms var(--ease-settle), background-color var(--transition-fast);
 }
 
 .example-question-chip:hover,
 .chat-action-btn:hover {
- background: var(--color-sky-soft);
- border-color: var(--color-navy);
- color: var(--color-navy);
+ background: var(--color-fog-soft);
+ border-color: var(--color-pine);
+ color: var(--color-pine);
  transform: scale(1.04, 0.97);
 }
 
@@ -882,24 +874,24 @@
 
 .chat-input:focus {
  outline: 0;
- border-color: var(--color-navy);
- box-shadow: 0 0 0 4px rgba(105, 176, 249, 0.55);
+ border-color: var(--color-pine);
+ box-shadow: 0 0 0 4px rgba(227, 162, 39, 0.55);
 }
 
 .chat-send-button {
  width: 46px;
  height: 46px;
- background: var(--color-jelly);
- border: 2px solid var(--color-jelly);
+ background: var(--color-action);
+ border: 2px solid var(--color-action);
  border-radius: var(--radius-full);
  color: #fff;
- box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(120, 8, 8, 0.28);
- transition: transform 320ms var(--ease-jelly), background-color var(--transition-fast);
+ box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(12, 22, 15, 0.28);
+ transition: transform 320ms var(--ease-settle), background-color var(--transition-fast);
 }
 
 .chat-send-button:hover {
- background: var(--color-jelly-hover);
- border-color: var(--color-jelly-hover);
+ background: var(--color-action-hover);
+ border-color: var(--color-action-hover);
  transform: scale(1.08, 0.94);
 }
 
@@ -908,8 +900,8 @@
 }
 
 .chat-send-button:disabled {
- background: var(--color-sky-soft);
- border-color: var(--color-sky-soft);
+ background: var(--color-fog-soft);
+ border-color: var(--color-fog-soft);
  box-shadow: none;
  color: var(--color-text-tertiary);
 }

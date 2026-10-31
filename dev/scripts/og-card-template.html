@@ -3,11 +3,17 @@
 <head>
 <meta charset="utf-8">
 <style>
-  /* Fonts are the same self-hosted variable files the site serves. */
+  /* Fonts are the same self-hosted files the site serves. */
   @font-face {
-    font-family: 'Fredoka';
-    src: url('FONT_DIR_PLACEHOLDER/fredoka-latin.woff2') format('woff2');
-    font-weight: 300 700;
+    font-family: 'Barlow Semi Condensed';
+    src: url('FONT_DIR_PLACEHOLDER/barlow-semicondensed-700-latin.woff2') format('woff2');
+    font-weight: 700;
+    font-display: block;
+  }
+  @font-face {
+    font-family: 'Barlow Semi Condensed';
+    src: url('FONT_DIR_PLACEHOLDER/barlow-semicondensed-600-latin.woff2') format('woff2');
+    font-weight: 600;
     font-display: block;
   }
   @font-face {
@@ -17,105 +23,113 @@
     font-display: block;
   }
 
-  html, body { margin: 0; padding: 0; background: #69b0f9; }
+  html, body { margin: 0; padding: 0; background: #cddcea; }
 
   /* Open Graph / Twitter share card: 1200x630 (1.91:1).
-     The brand blue field as a drafting sheet (faint grid, a degree ring behind the mascot), the mascot on
-     the baseline, a navy band whose top edge is a steel-rule scale, the name in Fredoka. Title, subtitle and
-     label are filled in by build-og-image.sh. Same language as assets/css/blueprint.css. */
+     The site's survey sheet: fog field with contours and a drafting grid, the hill line from the fog
+     photograph along its foot, a pine band whose top edge is a steel-rule scale, and the owner's field
+     portrait mounted as a plate on the right. Title, subtitle and label are filled in by
+     build-og-image.sh. Same language as assets/css/blueprint.css and hero.css. */
   #card {
     position: relative;
     width: 1200px; height: 630px;
     box-sizing: border-box;
-    background-color: #69b0f9;
-    background-image:
-      linear-gradient(to right, rgba(38, 46, 77, 0.12) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(38, 46, 77, 0.12) 1px, transparent 1px),
-      linear-gradient(to right, rgba(38, 46, 77, 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(38, 46, 77, 0.06) 1px, transparent 1px);
-    background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-    background-position: 0 0, 0 0, 0 0, 0 0;
+    background-color: #cddcea;
+    background-image: url('FIELD_DIR_PLACEHOLDER/contours.svg'), url('GRID_PLACEHOLDER');
+    background-size: 360px 360px, 120px 120px;
     overflow: hidden;
     font-family: 'Atkinson Hyperlegible Next', sans-serif;
-    color: #1b2140;
+    color: #142019;
   }
-
-  /* navy band; its top edge carries the scale: a tick every 8 px, a taller one every 40 px */
+  #ridge {
+    position: absolute; left: 0; right: 0; bottom: 92px; width: 1200px; height: 120px;
+  }
+  /* pine band; its top edge carries the scale: a tick every 8 px, a taller one every 40 px */
   #band {
     position: absolute; left: 0; right: 0; bottom: 0; height: 92px;
-    background: #1b2140;
+    background: #142019;
   }
-  #ticks, #ticks2 {
-    position: absolute; left: 0; right: 0;
-  }
+  #ticks, #ticks2 { position: absolute; left: 0; right: 0; }
   #ticks {
     bottom: 92px; height: 6px;
-    background: repeating-linear-gradient(90deg, #1b2140 0 1px, transparent 1px 8px);
+    background: repeating-linear-gradient(90deg, #142019 0 1px, transparent 1px 8px);
   }
   #ticks2 {
     bottom: 92px; height: 12px;
-    background: repeating-linear-gradient(90deg, #1b2140 0 2px, transparent 2px 40px);
+    background: repeating-linear-gradient(90deg, #142019 0 2px, transparent 2px 40px);
   }
-  #ring {
-    position: absolute; left: 603px; top: 51px; width: 620px; height: 620px;
-  }
-  #ring circle { fill: none; stroke: #262e4d; }
   #url {
-    position: absolute; left: 76px; bottom: 30px;
-    font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 30px; letter-spacing: 0.01em;
-    color: #fbf8f4;
+    position: absolute; left: 76px; bottom: 28px;
+    font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 600; font-size: 32px; letter-spacing: 0.01em;
+    color: #f7f8f6;
   }
+  #url b { color: #e3a227; font-weight: 600; }
 
-  #text { position: absolute; left: 76px; top: 86px; width: 640px; }
-  /* the label plate: navy, a rivet at each end, engraved capitals (as the eyebrow on the site) */
+  #text { position: absolute; left: 76px; top: 78px; width: 640px; }
+  /* the label plate: pine, a birch rivet at each end, engraved capitals (as the eyebrow on the site) */
   #label {
     position: relative; display: inline-block;
     font-family: ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace; font-weight: 700; font-size: 22px;
     letter-spacing: 0.16em; text-transform: uppercase;
-    color: #e9f1ff; background: #262e4d;
-    padding: 12px 40px 11px; border-radius: 10px; margin-bottom: 30px;
-    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.18), 0 3px 0 rgba(20, 26, 51, 0.38);
+    color: #eef0ec; background: #1c2b20;
+    padding: 12px 40px 11px; border-radius: 6px; margin-bottom: 28px;
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.18), 0 3px 0 rgba(16, 26, 19, 0.38);
   }
   #label::before, #label::after {
     content: ""; position: absolute; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #fff 0 16%, #b6c1e0 46%, #66719c 100%);
-    box-shadow: 0 0 0 1.5px rgba(10, 14, 32, 0.55);
+    background: radial-gradient(circle at 35% 30%, #fff8e4 0 16%, #eeb53a 46%, #8f5d06 100%);
+    box-shadow: 0 0 0 1.5px rgba(8, 14, 10, 0.55);
   }
   #label::before { left: 15px; }
   #label::after { right: 15px; }
   #title {
-    margin: 0 0 22px;
-    font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: TITLE_SIZE_PLACEHOLDERpx; line-height: 1.02; letter-spacing: -0.02em;
-    color: #1b2140;
+    margin: 0 0 20px;
+    font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 700; font-size: TITLE_SIZE_PLACEHOLDERpx; line-height: 0.98; letter-spacing: -0.01em;
+    color: #142019;
   }
-  #sub { margin: 0; font-size: 34px; line-height: 1.32; color: #1b2140; max-width: 600px; }
+  #sub { margin: 0; font-size: 32px; line-height: 1.32; color: #1c2b20; max-width: 610px; }
 
-  #mascot {
-    position: absolute; right: 52px; bottom: 44px;
-    width: 470px; height: 470px;
-    filter: drop-shadow(0 26px 22px rgba(20, 26, 51, 0.38));
+  /* the portrait plate */
+  #plate {
+    position: absolute; right: 70px; top: 40px; width: 318px;
+    padding: 34px 14px 14px 32px; box-sizing: border-box;
+    background: #f7f8f6; border-radius: 10px;
+    box-shadow: 0 0 0 1px rgba(28, 43, 32, 0.12), 0 26px 40px -20px rgba(16, 26, 19, 0.6);
+    transform: rotate(1.5deg);
+  }
+  #plate::before {
+    content: ""; position: absolute; inset: 6px; border: 1px solid rgba(28, 43, 32, 0.16); border-radius: 6px;
+  }
+  #plate img { display: block; width: 100%; height: 410px; object-fit: cover; object-position: 50% 30%; border-radius: 3px; }
+  #plate .c { position: absolute; top: 14px; font: 700 13px/1 ui-monospace, 'DejaVu Sans Mono', monospace; letter-spacing: 0.14em; color: #4d6450; }
+  #plate .c1 { left: 16px; color: #1c2b20; }
+  #plate .c2 { right: 16px; }
+  #plate .scale {
+    position: absolute; left: 12px; top: 34px; bottom: 14px; width: 12px; opacity: .55;
+    border-right: 1.5px solid #1c2b20;
+    background:
+      repeating-linear-gradient(to bottom, #1c2b20 0 1px, transparent 1px 10%) 100% 0 / 12px 100% no-repeat,
+      repeating-linear-gradient(to bottom, #1c2b20 0 1px, transparent 1px 2%) 100% 0 / 6px 100% no-repeat;
   }
 </style>
 </head>
 <body>
   <div id="card">
+    <img id="ridge" src="FIELD_DIR_PLACEHOLDER/ridge.svg" alt="">
     <div id="text">
       <span id="label">LABEL_PLACEHOLDER</span>
       <h1 id="title">TITLE_PLACEHOLDER</h1>
       <p id="sub">SUB_PLACEHOLDER</p>
     </div>
-    <svg id="ring" viewBox="-250 -250 500 500" aria-hidden="true">
-      <circle r="238" stroke-width="1.2" opacity=".35"/>
-      <circle r="230" pathLength="360" stroke-width="9" stroke-dasharray=".55 4.45" opacity=".34"/>
-      <circle r="226" pathLength="360" stroke-width="17" stroke-dasharray=".9 29.1" opacity=".5"/>
-      <circle r="210" stroke-width="1.1" stroke-dasharray="3 7" opacity=".28"/>
-      <path d="M-7.5-248h15L0-231z" fill="#db1816" stroke="#262e4d" stroke-width="1.2" stroke-linejoin="round"/>
-    </svg>
+    <div id="plate">
+      <span class="c c1">FIG. 0</span><span class="c c2">FIELD PORTRAIT</span>
+      <span class="scale"></span>
+      <img src="FIELD_DIR_PLACEHOLDER/portrait-738.jpg" alt="">
+    </div>
     <div id="ticks"></div>
     <div id="ticks2"></div>
     <div id="band"></div>
-    <div id="url">yunusemrevurgun.com</div>
-    <img id="mascot" src="MASCOT_PATH_PLACEHOLDER" alt="">
+    <div id="url">yunusemrevurgun<b>.</b>com</div>
   </div>
 </body>
 </html>

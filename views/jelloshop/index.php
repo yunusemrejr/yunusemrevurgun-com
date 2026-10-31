@@ -32,7 +32,7 @@ $description = 'A calm browser game: walk Jell-omo, a 3D jelly in a baseball cap
 
 $faq = [
     ['What is Jello Shop?', 'It is a tiny cosy room: a hand-drawn coffee shop with a rainy window, a fireplace, a striped rug and a sleeping cat. Jell-omo, the jelly mascot of this site, lives in it, and you tell him where to go by clicking the floor.'],
-    ['Who is Jell-omo?', 'The red jelly in the navy and cream baseball cap, the same mascot that sits in the corner of every page on this site. In the shop he is a real 3D model, so he turns to face the way he walks, squashes when he lands, wobbles when he stops, and shows you the back of his cap when he walks away.'],
+    ['Who is Jell-omo?', 'The red jelly in the navy and cream baseball cap that used to be the mascot of this site, sitting in the corner of every page. In the shop he is a real 3D model, so he turns to face the way he walks, squashes when he lands, wobbles when he stops, and shows you the back of his cap when he walks away.'],
     ['How do I move him?', 'Click or tap anywhere on the floor and Jell-omo waddles over. On a desktop, move the mouse and he turns to look at you. Arrow keys and WASD work too.'],
     ['What are the coffee beans for?', 'Walking over one picks it up and adds it to the counter in the corner, and each pickup chimes a note higher up a little scale. That is the whole game. There is nothing to win and nothing to spend them on, although the menu on the wall is priced in them.'],
     ['Can I pet the cat?', 'Click the cat and it wakes up, meows and sends up a heart. Walk Jell-omo close to it and it lifts its head to look at him.'],
@@ -190,8 +190,8 @@ ui_render_head($title, $description, [
             <h2 id="js-credits">Credits</h2>
             <ul class="js-credits">
                 <li>The room, Jell-omo, the beans and the music are written for this page. No images, no audio files, no libraries, no tracking.</li>
-                <li>Jell-omo is the same red jelly in the navy and cream cap that appears elsewhere on this site, rebuilt as a 3D model.</li>
-                <li>Type is Fredoka and Atkinson Hyperlegible Next, served from this site.</li>
+                <li>Jell-omo is the red jelly in the navy and cream cap that used to be the mascot of this site, rebuilt as a 3D model.</li>
+                <li>The café's signs are lettered in Fredoka; the page text is Barlow Semi Condensed and Atkinson Hyperlegible Next, all served from this site.</li>
             </ul>
         </section>
     </main>

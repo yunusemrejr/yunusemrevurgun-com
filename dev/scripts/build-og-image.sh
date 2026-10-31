@@ -2,33 +2,34 @@
 # build-og-image.sh — regenerate the social-share cards.
 #
 # Social platforms (X/Twitter, LinkedIn, Facebook, etc.) do not render SVG and
-# prefer a 1.91:1 raster. This composes the mascot with the site name on the
-# brand palette at 1200x630, so a shared link previews like the site it points
+# prefer a 1.91:1 raster. This composes the field portrait with the site name on
+# the survey sheet at 1200x630, so a shared link previews like the site it points
 # to. Cards built here:
 #   assets/images/og-image.png     default card for every page
 #   assets/images/og-chessko.png   /chessko and its articles
-# Re-run after the mascot (dev/scripts/build-brand-assets.py) or the palette
-# tokens in assets/css/variables.css change.
+# Re-run after the field assets (dev/scripts/build-field-assets.py) or the
+# palette tokens in assets/css/variables.css change.
 #
 # Requires: google-chrome (headless) + ImageMagick `identify` (for the size check).
 # Dev-only; never executed in production.
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-MASCOT="$ROOT/assets/images/mascot.png"
+FIELD="$ROOT/assets/images/field"
+GRID="$ROOT/assets/images/blueprint/grid.svg"
 FONTS="$ROOT/assets/fonts"
 TEMPLATE="$ROOT/dev/scripts/og-card-template.html"
 
 for bin in google-chrome identify; do
   command -v "$bin" >/dev/null 2>&1 || { echo "ERROR: required tool '$bin' not found" >&2; exit 1; }
 done
-[ -f "$MASCOT" ]   || { echo "ERROR: mascot not found: $MASCOT (run build-brand-assets.py)" >&2; exit 1; }
+[ -f "$FIELD/portrait-738.jpg" ] || { echo "ERROR: field assets missing in $FIELD (run build-field-assets.py)" >&2; exit 1; }
 [ -f "$TEMPLATE" ] || { echo "ERROR: template not found: $TEMPLATE" >&2; exit 1; }
 
 # out-file | label | title | title px | subtitle
 CARDS=(
   "assets/images/og-image.png|Yemre|Yunus Emre Vurgun|92|AI/ML systems and industrial automation, built and documented in Istanbul."
-  "assets/images/og-chessko.png|Chessko|Jelly chess in your browser|74|Seven levels, up to Stockfish 19 in WebAssembly. No sign-up."
+  "assets/images/og-chessko.png|Chessko|Chess in your browser|80|Seven levels, up to Stockfish 19 in WebAssembly. No sign-up."
 )
 
 build_card() {
@@ -36,7 +37,8 @@ build_card() {
   local html prof
   html="$(mktemp /tmp/og-card-XXXXXX.html)"
   prof="$(mktemp -d /tmp/og-chrome-XXXXXX)"
-  sed -e "s#MASCOT_PATH_PLACEHOLDER#file://$MASCOT#" \
+  sed -e "s#FIELD_DIR_PLACEHOLDER#file://$FIELD#g" \
+      -e "s#GRID_PLACEHOLDER#file://$GRID#g" \
       -e "s#FONT_DIR_PLACEHOLDER#file://$FONTS#g" \
       -e "s#TITLE_SIZE_PLACEHOLDER#$size#" \
       -e "s#LABEL_PLACEHOLDER#$label#" \

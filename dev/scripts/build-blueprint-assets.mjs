@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /* Writes the small drafting-furniture SVG tiles used by assets/css/blueprint.css:
  *
- *   ruler-up.svg    160x14  ticks rising from a baseline, on the sky band's lower edge
- *   ruler-down.svg  160x14  the same, hanging from the footer's top edge, in the pale sky tint
+ *   ruler-up.svg    160x14  ticks rising from a baseline, on the fog sheet's lower edge
+ *   ruler-down.svg  160x14  the same, hanging from the footer's top edge, in the pale fog tint
  *   grid.svg        120x120 drafting grid: a minor line every 24 px, a major line every 120 px
  *   crosshair.svg   28x28   registration mark for the sheet corners
  *   arrow.svg       16x16   the button arrow, used as a CSS mask so it takes the label colour
  *
  * Tick spacing follows the scale on a steel rule: a short tick every 8 px, a taller one every 40 px
  * and the tallest at the tile edge (every 160 px). Colours are literal because SVG used as a CSS
- * background cannot read custom properties; they are the brand navy #262e4d and sky-soft #c9e0fc.
+ * background cannot read custom properties; they are the Field pine #1c2b20 and fog-soft #cddcea.
  * Run: node dev/scripts/build-blueprint-assets.mjs
  */
 import { writeFileSync, mkdirSync } from "node:fs";
@@ -18,8 +18,8 @@ import { fileURLToPath } from "node:url";
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "assets", "images", "blueprint");
 mkdirSync(OUT, { recursive: true });
-const NAVY = "#262e4d";
-const PALE = "#c9e0fc";
+const NAVY = "#1c2b20"; // pine (the name is kept from the drafting layer)
+const PALE = "#cddcea"; // fog-soft
 
 function ruler(up, colour) {
   const W = 160;
