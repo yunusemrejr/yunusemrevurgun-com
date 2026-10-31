@@ -4761,7 +4761,7 @@
       "url": "https://yunusemrevurgun.com/portfolio",
       "title": "Project Archive",
       "heading": "It's Fully Online!",
-      "text": "itsfully.online (It's Fully Online!) is a collection of free, browser-based web tools for anyone."
+      "text": "itsfullyonline.yunusemrevurgun.com (It's Fully Online!) is a collection of free, browser-based web tools for anyone."
     },
     {
       "page": "portfolio",
@@ -4802,7 +4802,7 @@
       "page": "portfolio",
       "url": "https://yunusemrevurgun.com/portfolio",
       "title": "Project Archive",
-      "heading": "AIPlanter.online",
+      "heading": "AI Planter",
       "text": "This is one of my projects where users can use ML to select most suitable plant for their home or garden."
     },
     {
@@ -6535,5 +6535,5 @@
       "text": "My predictions about the future of artificial intelligence and its effects over the next few years, and this video is for me to review later; I will see how much of it I got right."
     }
   ],
-  "digest": "9edda1854a56766f"
+  "digest": "432d2eecea0615d7"
 }
