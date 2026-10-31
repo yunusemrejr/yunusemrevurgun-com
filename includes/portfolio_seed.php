@@ -9,6 +9,13 @@
  * because deleting a project unlinks its image.
  */
 return [
+    // Update only this previous URL once; later admin edits remain untouched.
+    'shopfloor-subdomain-20261031' => [
+        'replace_project_url' => [
+            'from' => 'https://shopfloor.space',
+            'to' => 'https://shopfloorspace.yunusemrevurgun.com/',
+        ],
+    ],
     'faultory' => [
         'title' => 'Faultory',
         'description' => 'An independent interactive investigation platform for curious minds. Explore 24 source-linked case files across engineering failures, scientific discoveries, history and complex systems. Examine evidence and timelines, compare explanations, and trace cause and effect. No accounts: the notebook stays in the browser, with export/import and offline PWA support. Don’t just read what happened. Investigate why.',

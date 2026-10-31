@@ -82,6 +82,14 @@ class Portfolio {
                 $this->db->beginTransaction();
                 $this->db->prepare('INSERT INTO portfolio_seeds (seed_key) VALUES (?)')->execute([$key]);
 
+                if (isset($seed['replace_project_url'])) {
+                    $replacement = $seed['replace_project_url'];
+                    $update = $this->db->prepare('UPDATE portfolio_projects SET project_url = ? WHERE project_url = ?');
+                    $update->execute([$replacement['to'], $replacement['from']]);
+                    $this->db->commit();
+                    continue;
+                }
+
                 $exists = $this->db->prepare('SELECT COUNT(*) FROM portfolio_projects WHERE title = ?');
                 $exists->execute([$seed['title']]);
                 if (!$exists->fetchColumn()) {
