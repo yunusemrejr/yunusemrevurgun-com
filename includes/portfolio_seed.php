@@ -9,6 +9,17 @@
  * because deleting a project unlinks its image.
  */
 return [
+    'faultory' => [
+        'title' => 'Faultory',
+        'description' => 'An independent interactive investigation platform for curious minds. Explore 24 source-linked case files across engineering failures, scientific discoveries, history and complex systems. Examine evidence and timelines, compare explanations, and trace cause and effect. No accounts: the notebook stays in the browser, with export/import and offline PWA support. Don’t just read what happened. Investigate why.',
+        'image_source' => 'assets/images/portfolio/faultory.png',
+        'project_url' => 'https://faultory.cc/',
+        'github_url' => '',
+        'technologies' => 'JavaScript, HTML, CSS, PHP 8+ hosting, SQLite editorial tooling, PWA',
+        'category' => 'Web Development',
+        'completion_date' => '2026-10-31',
+        'featured' => 0,
+    ],
     'paperoom' => [
         'title' => 'Paperoom',
         'description' => 'Free printable games for gatherings, classrooms and family tables. Make custom word or 75-ball bingo, 90-ball tickets, word searches with answer keys, and editable prompt cards in English, Spanish, Arabic, Brazilian Portuguese, Simplified Chinese and French. All game content is processed in the browser, with direct A4 and Letter PDF downloads, large-print layouts, offline PWA support and separate optional analytics.',
