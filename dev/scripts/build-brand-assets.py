@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Rebuild every brand mark and icon from one drawing: the forked Y.
+"""Rebuild every brand mark and icon from one drawing: the trees in the owner's photograph.
 
-The mark is the letter Y drawn as a tree forking: a trunk that splits into two branches, the way a
-birch forks, and the way a binary tree or a decision tree does. One branch ends in a birch-gold node,
-the other in a stone one. It sits on a pine plate with a ground line under the trunk. Colours are the
+The mark is the pine stand with its gold birch, traced from the portrait (assets/images/field/stand.svg,
+built by build-field-assets.py; run that first), cropped to the birch and the pines beside it, on a fog
+plate with a pine ground strip and a pine rim. Colours are the
 Field tokens in assets/css/variables.css (pine #1c2b20, stone #eef0ec, birch #e3a227, fog #a9c3dc).
 
 Outputs (assets/images/):
@@ -34,27 +34,36 @@ BIRCH = "#e3a227"
 FOG = "#a9c3dc"
 
 
+STAND = ROOT / "assets" / "images" / "field" / "stand.svg"
+CROP = (30, 10, 480, 480)  # x, y, w, h in stand.svg units: the gold birch and the pines either side
+
+
+def _stand_paths():
+    """The pine-stand silhouette traced from the owner's portrait (build-field-assets.py)."""
+    import re
+    svg = STAND.read_text()
+    return re.findall(r"<path [^>]*/>", svg)
+
+
 def mark(size=64, plate=True, rx=13, ground=True, inset=0.0):
-    """The drawing in a 64-unit box. `inset` shrinks the drawing toward the centre (maskable icon)."""
+    """The trees from the photograph on a fog plate, a pine ground strip under them.
+    `inset` shrinks the drawing toward the centre (maskable icon)."""
+    x, y, w, h = CROP
     k = 1 - inset
-    t = f'translate({32 - 32 * k:.2f} {32 - 32 * k:.2f}) scale({k:.4f})'
-    body = []
-    if plate:
-        body.append(f'<rect x="1" y="1" width="62" height="62" rx="{rx}" fill="{PINE}"/>')
-        body.append(f'<rect x="2.5" y="2.5" width="59" height="59" rx="{rx - 1.5}" fill="none" stroke="{PINE_EDGE}" stroke-width="1"/>')
-    g = []
-    if ground:
-        g.append(f'<path d="M15 52.5H49" stroke="{FOG}" stroke-width="2.4" stroke-linecap="round" opacity=".9"/>')
-        g.append(f'<path d="M21 52.5v3.2M43 52.5v3.2" stroke="{FOG}" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>')
-    # trunk and the two branches, slightly curved like a real fork
-    g.append(
-        f'<path d="M32 52V35.5C32 29.5 27.5 24.5 20.5 17.5M32 35.5C32 29.5 36.5 24.5 43.5 17.5" '
-        f'fill="none" stroke="{STONE}" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/>'
+    pad = (4 if plate else 0) + 28 * inset
+    clip = f'<rect x="1" y="1" width="62" height="62" rx="{rx}"/>' if plate else '<rect width="64" height="64"/>'
+    body = [f'<defs><clipPath id="pl">{clip}</clipPath></defs>']
+    body.append(f'<g clip-path="url(#pl)">')
+    body.append(f'<rect width="64" height="64" fill="{FOG}"/>')
+    body.append(
+        f'<svg x="{pad:.2f}" y="{pad + 2:.2f}" width="{64 - 2 * pad:.2f}" height="{64 - 2 * pad:.2f}" '
+        f'viewBox="{x} {y} {w} {h}" preserveAspectRatio="xMidYMax meet">' + "".join(_stand_paths()) + "</svg>"
     )
-    # nodes
-    g.append(f'<circle cx="44.6" cy="16.4" r="5.6" fill="{BIRCH}"/>')
-    g.append(f'<circle cx="19.4" cy="16.4" r="4" fill="{STONE}"/>')
-    body.append(f'<g transform="{t}">' + "".join(g) + "</g>")
+    if ground:
+        body.append(f'<rect x="0" y="{64 - pad - 0.5:.2f}" width="64" height="{pad + 1:.2f}" fill="{PINE}"/>')
+    body.append("</g>")
+    if plate:
+        body.append(f'<rect x="1.5" y="1.5" width="61" height="61" rx="{rx - 0.5}" fill="none" stroke="{PINE}" stroke-width="3"/>')
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" viewBox="0 0 64 64">'
         + "".join(body)
@@ -63,9 +72,9 @@ def mark(size=64, plate=True, rx=13, ground=True, inset=0.0):
 
 
 def full_bleed(size, inset):
-    """Square pine field (no rounded corners): apple-touch and maskable icons."""
+    """Square field (no rounded corners): apple-touch and maskable icons."""
     svg = mark(64, plate=False, inset=inset)
-    return svg.replace('viewBox="0 0 64 64">', f'viewBox="0 0 64 64"><rect width="64" height="64" fill="{PINE}"/>', 1).replace(
+    return svg.replace(
         'width="64" height="64" viewBox', f'width="{size}" height="{size}" viewBox', 1
     )
 
@@ -103,7 +112,7 @@ def main():
     fav.resize((32, 32), Image.LANCZOS).save(IMG / "favicon-32.png", optimize=True)
     fav.save(IMG / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
     render(full_bleed(64, 0.16), 512).convert("RGB").save(IMG / "pwa-maskable-512.png", optimize=True)
-    render(full_bleed(64, 0.06), 180).convert("RGB").save(IMG / "apple-touch-icon.png", optimize=True)
+    render(full_bleed(64, 0.0), 180).convert("RGB").save(IMG / "apple-touch-icon.png", optimize=True)
     print("brand mark and icons written to", IMG)
 
 
